@@ -33,7 +33,7 @@ namespace Chummer.Backend.Equipment
 {
     public class Drug : IHasName, IHasXmlNode, ICanSort, IHasStolenProperty, ICanRemove
     {
-        private Logger Log = NLog.LogManager.GetCurrentClassLogger();
+        private readonly Logger Log = NLog.LogManager.GetCurrentClassLogger();
         private Guid _guiSourceID = Guid.Empty;
         private Guid _guiID;
         private string _strName = "";
@@ -133,11 +133,20 @@ namespace Chummer.Backend.Equipment
             objXmlWriter.WriteEndElement();
             objXmlWriter.WriteElementString("availability", _strAvailability);
             if (_decCost != 0)
+            {
                 objXmlWriter.WriteElementString("cost", _decCost.ToString(GlobalOptions.InvariantCultureInfo));
+            }
+
             if (_intAddictionRating != 0)
+            {
                 objXmlWriter.WriteElementString("rating", _intAddictionRating.ToString());
+            }
+
             if (_intAddictionThreshold != 0)
+            {
                 objXmlWriter.WriteElementString("threshold", _intAddictionThreshold.ToString());
+            }
+
             objXmlWriter.WriteElementString("grade", _strGrade);
             objXmlWriter.WriteElementString("sortorder", _intSortOrder.ToString());
             objXmlWriter.WriteElementString("stolen", _blnStolen.ToString());
@@ -224,7 +233,9 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteEndElement();
 
             if (_objCharacter.Options.PrintNotes)
+            {
                 objWriter.WriteElementString("notes", Notes);
+            }
 
             objWriter.WriteEndElement();
         }
@@ -253,7 +264,10 @@ namespace Chummer.Backend.Equipment
             get
             {
                 if (string.IsNullOrEmpty(_strDescription))
+                {
                     _strDescription = GenerateDescription(0);
+                }
+
                 return _strDescription;
             }
             set => _strDescription = value;
@@ -267,7 +281,10 @@ namespace Chummer.Backend.Equipment
             get
             {
                 if (string.IsNullOrEmpty(_strEffectDescription))
+                {
                     _strEffectDescription = GenerateDescription(0, true);
+                }
+
                 return _strEffectDescription;
             }
             set => _strEffectDescription = value;
@@ -297,7 +314,9 @@ namespace Chummer.Backend.Equipment
         public string DisplayCategory(string strLanguage)
         {
             if (strLanguage == GlobalOptions.DefaultLanguage)
+            {
                 return Category;
+            }
 
             return XmlManager.Load("gear.xml", strLanguage).SelectSingleNode("/chummer/categories/category[. = \"" + Category + "\"]/@translate")?.InnerText ?? Category;
         }
@@ -321,7 +340,10 @@ namespace Chummer.Backend.Equipment
             get
             {
                 if (_decCachedCost != decimal.MinValue)
+                {
                     return _decCachedCost;
+                }
+
                 _decCachedCost = Components.Sum(d => d.CostPerLevel);
                 return _decCachedCost;
             }
@@ -354,10 +376,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Total Availability.
         /// </summary>
-        public string TotalAvail(CultureInfo objCulture, string strLanguage)
-        {
-            return TotalAvailTuple().ToString(objCulture, strLanguage);
-        }
+        public string TotalAvail(CultureInfo objCulture, string strLanguage) => TotalAvailTuple().ToString(objCulture, strLanguage);
 
         /// <summary>
         /// Total Availability as a triple.
@@ -387,7 +406,9 @@ namespace Chummer.Backend.Equipment
 
                 object objProcess = CommonFunctions.EvaluateInvariantXPath(objAvail.ToString(), out bool blnIsSuccess);
                 if (blnIsSuccess)
+                {
                     intAvail += Convert.ToInt32(objProcess);
+                }
             }
             if (blnCheckChildren)
             {
@@ -396,16 +417,25 @@ namespace Chummer.Backend.Equipment
                 {
                     AvailabilityValue objLoopAvail = objComponent.TotalAvailTuple();
                     if (objLoopAvail.AddToParent)
+                    {
                         intAvail += objLoopAvail.Value;
+                    }
+
                     if (objLoopAvail.Suffix == 'F')
+                    {
                         chrLastAvailChar = 'F';
+                    }
                     else if (chrLastAvailChar != 'F' && objLoopAvail.Suffix == 'R')
+                    {
                         chrLastAvailChar = 'R';
+                    }
                 }
             }
 
             if (intAvail < 0)
+            {
                 intAvail = 0;
+            }
 
             return new AvailabilityValue(intAvail, chrLastAvailChar, blnModifyParentAvail);
         }
@@ -420,7 +450,10 @@ namespace Chummer.Backend.Equipment
             get
             {
                 if (_intCachedAddictionThreshold != int.MinValue)
+                {
                     return _intCachedAddictionThreshold;
+                }
+
                 _intCachedAddictionThreshold = Components.Sum(d => d.AddictionThreshold);
                 return _intCachedAddictionThreshold;
             }
@@ -435,7 +468,10 @@ namespace Chummer.Backend.Equipment
             get
             {
                 if (_intCachedAddictionRating != int.MinValue)
+                {
                     return _intCachedAddictionRating;
+                }
+
                 _intCachedAddictionRating = Components.Sum(d => d.AddictionRating);
                 return _intCachedAddictionRating;
             }
@@ -447,7 +483,10 @@ namespace Chummer.Backend.Equipment
             get
             {
                 if (_blnCachedLimitFlag)
+                {
                     return _dicCachedLimits;
+                }
+
                 _dicCachedLimits = Components.Where(d => d.ActiveDrugEffect?.Limits.Count > 0)
                     .SelectMany(d => d.ActiveDrugEffect.Limits)
                     .GroupBy(x => x.Key).ToDictionary(x => x.Key, x => x.Sum(y => y.Value));
@@ -463,7 +502,10 @@ namespace Chummer.Backend.Equipment
             get
             {
                 if (_blnCachedQualityFlag)
+                {
                     return _lstCachedQualities;
+                }
+
                 foreach (DrugComponent d in Components.Where(d => d.ActiveDrugEffect != null))
                 {
                     _lstCachedQualities.AddRange(d.ActiveDrugEffect.Qualities);
@@ -481,7 +523,10 @@ namespace Chummer.Backend.Equipment
             get
             {
                 if (_blnCachedInfoFlag)
+                {
                     return _lstCachedInfos;
+                }
+
                 foreach (DrugComponent d in Components.Where(d => d.ActiveDrugEffect != null))
                 {
                     _lstCachedInfos.AddRange(d.ActiveDrugEffect.Infos);
@@ -500,7 +545,10 @@ namespace Chummer.Backend.Equipment
             get
             {
                 if (_intCachedInitiative != int.MinValue)
+                {
                     return _intCachedInitiative;
+                }
+
                 _intCachedInitiative = Components.Sum(d => d.ActiveDrugEffect?.Initiative ?? 0);
                 return _intCachedInitiative;
             }
@@ -512,7 +560,10 @@ namespace Chummer.Backend.Equipment
             get
             {
                 if (_intCachedInitiativeDice != int.MinValue)
+                {
                     return _intCachedInitiativeDice;
+                }
+
                 _intCachedInitiativeDice = Components.Sum(d => d.ActiveDrugEffect?.InitiativeDice ?? 0);
                 return _intCachedInitiativeDice;
             }
@@ -524,7 +575,10 @@ namespace Chummer.Backend.Equipment
             get
             {
                 if (_intCachedSpeed != int.MinValue)
+                {
                     return _intCachedSpeed;
+                }
+
                 _intCachedSpeed = Components.Sum(d => d.ActiveDrugEffect?.Speed ?? 0);
                 return _intCachedSpeed;
             }
@@ -536,7 +590,10 @@ namespace Chummer.Backend.Equipment
             get
             {
                 if (_intCachedDuration != int.MinValue)
+                {
                     return _intCachedDuration;
+                }
+
                 _intCachedDuration = Components.Sum(d => d.ActiveDrugEffect?.Duration ?? 0);
                 return _intCachedDuration;
             }
@@ -548,7 +605,10 @@ namespace Chummer.Backend.Equipment
             get
             {
                 if (_intCachedCrashDamage != int.MinValue)
+                {
                     return _intCachedCrashDamage;
+                }
+
                 _intCachedCrashDamage = Components.Sum(d => d.ActiveDrugEffect?.CrashDamage ?? 0);
                 return _intCachedCrashDamage;
             }
@@ -574,7 +634,9 @@ namespace Chummer.Backend.Equipment
         public string DisplayNameShort(string strLanguage)
         {
             if (strLanguage == GlobalOptions.DefaultLanguage)
+            {
                 return Name;
+            }
 
             return LanguageManager.TranslateExtra(Name, strLanguage);
         }
@@ -587,7 +649,10 @@ namespace Chummer.Backend.Equipment
             string strReturn = DisplayNameShort(strLanguage);
             string strSpaceCharacter = LanguageManager.GetString("String_Space", strLanguage);
             if (Quantity != 1)
+            {
                 strReturn = Quantity.ToString("#,0.##", objCulture) + strSpaceCharacter + strReturn;
+            }
+
             return strReturn;
         }
 
@@ -602,7 +667,10 @@ namespace Chummer.Backend.Equipment
             get
             {
                 if (_blnCachedAttributeFlag)
+                {
                     return _dicCachedAttributes;
+                }
+
                 _dicCachedAttributes = new Dictionary<string, int>();
                 foreach (DrugComponent objComponent in Components)
                 {
@@ -613,9 +681,13 @@ namespace Chummer.Backend.Equipment
                             foreach (KeyValuePair<string, int> objAttributeEntry in objDrugEffect.Attributes)
                             {
                                 if (_dicCachedAttributes.ContainsKey(objAttributeEntry.Key))
+                                {
                                     _dicCachedAttributes[objAttributeEntry.Key] += objAttributeEntry.Value;
+                                }
                                 else
+                                {
                                     _dicCachedAttributes.Add(objAttributeEntry.Key, objAttributeEntry.Value);
+                                }
                             }
                         }
                     }
@@ -678,7 +750,9 @@ namespace Chummer.Backend.Equipment
             TreeNodeCollection lstChildNodes = objNode.Nodes;
 
             if (lstChildNodes.Count > 0)
+            {
                 objNode.Expand();
+            }
 
             return objNode;
         }
@@ -687,9 +761,15 @@ namespace Chummer.Backend.Equipment
         public string GenerateDescription(int intLevel = -1, bool blnEffectsOnly = false, string strLanguage = "", CultureInfo objCulture = null, bool blnDoCache = true)
         {
             if (string.IsNullOrEmpty(strLanguage))
+            {
                 strLanguage = GlobalOptions.Language;
+            }
+
             if (objCulture == null)
+            {
                 objCulture = GlobalOptions.CultureInfo;
+            }
+
             StringBuilder strbldDescription = new StringBuilder();
             bool blnNewLineFlag = false;
             string strSpaceString = LanguageManager.GetString("String_Space", strLanguage);
@@ -698,7 +778,9 @@ namespace Chummer.Backend.Equipment
             {
                 string strName = DisplayNameShort(strLanguage);
                 if (!string.IsNullOrWhiteSpace(strName))
+                {
                     strbldDescription.AppendLine(strName);
+                }
             }
 
             if (intLevel != -1)
@@ -749,35 +831,54 @@ namespace Chummer.Backend.Equipment
                     {
                         strbldDescription.Append(Initiative.ToString("+#;-#"));
                         if (InitiativeDice != 0)
+                        {
                             strbldDescription.Append(InitiativeDice.ToString("+#;-#")).Append(LanguageManager.GetString("String_D6", strLanguage));
+                        }
                     }
                     else if (InitiativeDice != 0)
+                    {
                         strbldDescription.Append(InitiativeDice.ToString("+#;-#")).Append(LanguageManager.GetString("String_D6", strLanguage));
+                    }
+
                     strbldDescription.AppendLine();
                 }
 
                 foreach (string strQuality in Qualities)
+                {
                     strbldDescription.Append(LanguageManager.TranslateExtra(strQuality, strLanguage)).Append(strSpaceString).AppendLine(LanguageManager.GetString("String_Quality", strLanguage));
+                }
+
                 foreach (string strInfo in Infos)
+                {
                     strbldDescription.AppendLine(LanguageManager.TranslateExtra(strInfo, strLanguage));
+                }
 
                 if (Category == "Custom Drug" || Duration != 0)
+                {
                     strbldDescription.Append(LanguageManager.GetString("Label_Duration", strLanguage)).Append(strColonString).Append(strSpaceString)
                             .Append("10 ⨯ ").Append((Duration + 1).ToString(objCulture)).Append(LanguageManager.GetString("String_D6", strLanguage)).Append(strSpaceString).AppendLine(LanguageManager.GetString("String_Minutes", strLanguage));
+                }
 
                 if (Category == "Custom Drug" || Speed != 0)
                 {
                     strbldDescription.Append(LanguageManager.GetString("Label_Speed", strLanguage)).Append(strColonString).Append(strSpaceString);
                     if (Speed <= 3)
+                    {
                         strbldDescription.AppendLine(LanguageManager.GetString("String_Immediate", strLanguage));
+                    }
                     else
+                    {
                         strbldDescription.AppendLine((3 - Speed).ToString(objCulture) + LanguageManager.GetString("String_CombatTurns", strLanguage));
+                    }
                 }
 
                 if (CrashDamage != 0)
+                {
                     strbldDescription.Append(LanguageManager.GetString("Label_CrashEffect", strLanguage)).Append(strSpaceString)
                         .Append(CrashDamage.ToString(objCulture)).Append(LanguageManager.GetString("String_DamageStun", strLanguage)).Append(strSpaceString)
                         .AppendLine(LanguageManager.GetString("String_DamageUnresisted", strLanguage));
+                }
+
                 if (!blnEffectsOnly)
                 {
                     strbldDescription.Append(LanguageManager.GetString("Label_AddictionRating", strLanguage)).Append(strSpaceString).AppendLine((AddictionRating * (intLevel + 1)).ToString(objCulture));
@@ -796,14 +897,14 @@ namespace Chummer.Backend.Equipment
 
             string strReturn = strbldDescription.ToString();
             if (blnDoCache)
+            {
                 _strDescription = strReturn;
+            }
+
             return strReturn;
         }
 
-        public XmlNode GetNode()
-        {
-            return GetNode(GlobalOptions.Language);
-        }
+        public XmlNode GetNode() => GetNode(GlobalOptions.Language);
 
         public XmlNode GetNode(string strLanguage)
         {
@@ -839,7 +940,7 @@ namespace Chummer.Backend.Equipment
     /// </summary>
     public class DrugComponent : IHasName, IHasInternalId, IHasXmlNode
     {
-        private Logger Log = NLog.LogManager.GetCurrentClassLogger();
+        private readonly Logger Log = NLog.LogManager.GetCurrentClassLogger();
         private Guid _guidId;
         private Guid _guiSourceID;
         private string _strName;
@@ -894,14 +995,19 @@ namespace Chummer.Backend.Equipment
                                     {
                                         int intEffectValue = 0;
                                         if (!string.IsNullOrEmpty(strEffectName) && objXmlEffect.TryGetInt32FieldQuickly("value", ref intEffectValue))
+                                        {
                                             objDrugEffect.Attributes[strEffectName] = intEffectValue;
+                                        }
                                     }
                                     break;
                                 case "limit":
                                     {
                                         int intEffectValue = 0;
                                         if (!string.IsNullOrEmpty(strEffectName) && objXmlEffect.TryGetInt32FieldQuickly("value", ref intEffectValue))
+                                        {
                                             objDrugEffect.Limits[strEffectName] = intEffectValue;
+                                        }
+
                                         break;
                                     }
                                 case "quality":
@@ -913,31 +1019,46 @@ namespace Chummer.Backend.Equipment
                                 case "initiative":
                                     {
                                         if (int.TryParse(objXmlEffect.InnerText, out int intInnerText))
+                                        {
                                             objDrugEffect.Initiative = intInnerText;
+                                        }
+
                                         break;
                                     }
                                 case "initiativedice":
                                     {
                                         if (int.TryParse(objXmlEffect.InnerText, out int intInnerText))
+                                        {
                                             objDrugEffect.InitiativeDice = intInnerText;
+                                        }
+
                                         break;
                                     }
                                 case "crashdamage":
                                     {
                                         if (int.TryParse(objXmlEffect.InnerText, out int intInnerText))
+                                        {
                                             objDrugEffect.CrashDamage = intInnerText;
+                                        }
+
                                         break;
                                     }
                                 case "speed":
                                     {
                                         if (int.TryParse(objXmlEffect.InnerText, out int intInnerText))
+                                        {
                                             objDrugEffect.Speed = intInnerText;
+                                        }
+
                                         break;
                                     }
                                 case "duration":
                                     {
                                         if (int.TryParse(objXmlEffect.InnerText, out int intInnerText))
+                                        {
                                             objDrugEffect.Duration = intInnerText;
+                                        }
+
                                         break;
                                     }
                                 default:
@@ -994,15 +1115,30 @@ namespace Chummer.Backend.Equipment
                     objXmlWriter.WriteElementString("info", strInfo);
                 }
                 if (objDrugEffect.Initiative != 0)
+                {
                     objXmlWriter.WriteElementString("initiative", objDrugEffect.Initiative.ToString());
+                }
+
                 if (objDrugEffect.InitiativeDice != 0)
+                {
                     objXmlWriter.WriteElementString("initiativedice", objDrugEffect.InitiativeDice.ToString());
+                }
+
                 if (objDrugEffect.Duration != 0)
+                {
                     objXmlWriter.WriteElementString("duration", objDrugEffect.Duration.ToString());
+                }
+
                 if (objDrugEffect.Speed != 0)
+                {
                     objXmlWriter.WriteElementString("speed", objDrugEffect.Speed.ToString());
+                }
+
                 if (objDrugEffect.CrashDamage != 0)
+                {
                     objXmlWriter.WriteElementString("crashdamage", objDrugEffect.CrashDamage.ToString());
+                }
+
                 objXmlWriter.WriteEndElement();
             }
             objXmlWriter.WriteEndElement();
@@ -1011,9 +1147,15 @@ namespace Chummer.Backend.Equipment
             objXmlWriter.WriteElementString("cost", _strCost);
             objXmlWriter.WriteElementString("level", _intLevel.ToString());
             if (_intAddictionRating != 0)
+            {
                 objXmlWriter.WriteElementString("rating", _intAddictionRating.ToString());
+            }
+
             if (_intAddictionThreshold != 0)
+            {
                 objXmlWriter.WriteElementString("threshold", _intAddictionThreshold.ToString());
+            }
+
             objXmlWriter.WriteElementString("source", _strSource);
             objXmlWriter.WriteElementString("page", _strPage);
         }
@@ -1034,7 +1176,9 @@ namespace Chummer.Backend.Equipment
         public string DisplayNameShort(string strLanguage)
         {
             if (strLanguage == GlobalOptions.DefaultLanguage)
+            {
                 return Name;
+            }
 
             XmlNode xmlGearDataNode = GetNode(strLanguage);
             if (xmlGearDataNode?["name"]?.InnerText == "Custom Item")
@@ -1068,7 +1212,9 @@ namespace Chummer.Backend.Equipment
         public string DisplayCategory(string strLanguage)
         {
             if (strLanguage == GlobalOptions.DefaultLanguage)
+            {
                 return Category;
+            }
 
             return XmlManager.Load("drugcomponents.xml", strLanguage).SelectSingleNode("/chummer/categories/category[. = \"" + Category + "\"]/@translate")?.InnerText ?? Category;
         }
@@ -1096,7 +1242,9 @@ namespace Chummer.Backend.Equipment
         public string Page(string strLanguage)
         {
             if (strLanguage == GlobalOptions.DefaultLanguage)
+            {
                 return _strPage;
+            }
 
             return GetNode(strLanguage)?["altpage"]?.InnerText ?? _strPage;
         }
@@ -1127,7 +1275,9 @@ namespace Chummer.Backend.Equipment
                 }
 
                 if (string.IsNullOrEmpty(strCostExpression))
+                {
                     return 0;
+                }
 
                 StringBuilder objCost = new StringBuilder(strCostExpression.TrimStart('+'));
                 objCost.Replace("Level", Level.ToString());
@@ -1150,10 +1300,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Total Availability.
         /// </summary>
-        public string TotalAvail(CultureInfo objCulture, string strLanguage)
-        {
-            return TotalAvailTuple().ToString(objCulture, strLanguage);
-        }
+        public string TotalAvail(CultureInfo objCulture, string strLanguage) => TotalAvailTuple().ToString(objCulture, strLanguage);
 
         /// <summary>
         /// Total Availability as a triple.
@@ -1183,11 +1330,15 @@ namespace Chummer.Backend.Equipment
 
                 object objProcess = CommonFunctions.EvaluateInvariantXPath(objAvail.ToString(), out bool blnIsSuccess);
                 if (blnIsSuccess)
+                {
                     intAvail += Convert.ToInt32(objProcess);
+                }
             }
 
             if (intAvail < 0)
+            {
                 intAvail = 0;
+            }
 
             return new AvailabilityValue(intAvail, chrLastAvailChar, blnModifyParentAvail);
         }
@@ -1227,7 +1378,9 @@ namespace Chummer.Backend.Equipment
         public string GenerateDescription(int intLevel = -1)
         {
             if (intLevel >= _lstEffects.Count)
+            {
                 return null;
+            }
 
             StringBuilder strbldDescription = new StringBuilder();
             bool blnNewLineFlag = false;
@@ -1285,35 +1438,53 @@ namespace Chummer.Backend.Equipment
                     {
                         strbldDescription.Append(objDrugEffect.Initiative.ToString("+#;-#"));
                         if (objDrugEffect.InitiativeDice != 0)
+                        {
                             strbldDescription.Append(objDrugEffect.InitiativeDice.ToString("+#;-#")).Append(LanguageManager.GetString("String_D6"));
+                        }
                     }
                     else if (objDrugEffect.InitiativeDice != 0)
+                    {
                         strbldDescription.Append(objDrugEffect.InitiativeDice.ToString("+#;-#")).Append(LanguageManager.GetString("String_D6"));
+                    }
+
                     strbldDescription.AppendLine();
                 }
 
                 foreach (string strQuality in objDrugEffect.Qualities)
+                {
                     strbldDescription.Append(LanguageManager.TranslateExtra(strQuality, GlobalOptions.Language)).Append(strSpaceString).AppendLine(LanguageManager.GetString("String_Quality"));
+                }
+
                 foreach (string strInfo in objDrugEffect.Infos)
+                {
                     strbldDescription.AppendLine(LanguageManager.TranslateExtra(strInfo, GlobalOptions.Language));
+                }
 
                 if (Category == "Custom Drug" || objDrugEffect.Duration != 0)
+                {
                     strbldDescription.Append(LanguageManager.GetString("Label_Duration")).Append(strColonString).Append(strSpaceString)
                         .Append("10 ⨯ ").Append((objDrugEffect.Duration + 1).ToString(GlobalOptions.CultureInfo)).Append(LanguageManager.GetString("String_D6")).Append(strSpaceString).AppendLine(LanguageManager.GetString("String_Minutes"));
+                }
 
                 if (Category == "Custom Drug" || objDrugEffect.Speed != 0)
                 {
                     strbldDescription.Append(LanguageManager.GetString("Label_Speed")).Append(strColonString).Append(strSpaceString);
                     if (objDrugEffect.Speed <= 3)
+                    {
                         strbldDescription.AppendLine(LanguageManager.GetString("String_Immediate"));
+                    }
                     else
+                    {
                         strbldDescription.AppendLine((3 - objDrugEffect.Speed).ToString(GlobalOptions.CultureInfo) + LanguageManager.GetString("String_CombatTurns"));
+                    }
                 }
 
                 if (objDrugEffect.CrashDamage != 0)
+                {
                     strbldDescription.Append(LanguageManager.GetString("Label_CrashEffect")).Append(strSpaceString)
                         .Append(objDrugEffect.CrashDamage.ToString(GlobalOptions.CultureInfo)).Append(LanguageManager.GetString("String_DamageStun")).Append(strSpaceString)
                         .AppendLine(LanguageManager.GetString("String_DamageUnresisted"));
+                }
 
                 strbldDescription.Append(LanguageManager.GetString("Label_AddictionRating")).Append(strSpaceString).AppendLine((AddictionRating * (intLevel + 1)).ToString(GlobalOptions.CultureInfo));
                 strbldDescription.Append(LanguageManager.GetString("Label_AddictionThreshold")).Append(strSpaceString).AppendLine((AddictionThreshold * (intLevel + 1)).ToString(GlobalOptions.CultureInfo));
@@ -1335,10 +1506,7 @@ namespace Chummer.Backend.Equipment
             return strbldDescription.ToString();
         }
 
-        public XmlNode GetNode()
-        {
-            return GetNode(GlobalOptions.Language);
-        }
+        public XmlNode GetNode() => GetNode(GlobalOptions.Language);
 
         public XmlNode GetNode(string strLanguage)
         {

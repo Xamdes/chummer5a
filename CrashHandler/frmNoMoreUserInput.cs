@@ -18,10 +18,7 @@ namespace CrashHandler
             }
         }
 
-        private void Dmper_CrashDumperProgressChanged(object sender, CrashDumperProgressChangedEventArgs args)
-        {
-            Invoke(new ChangeDesc(ChangeProgress), args.Progress, args.Progress.GetDescription());
-        }
+        private void Dmper_CrashDumperProgressChanged(object sender, CrashDumperProgressChangedEventArgs args) => Invoke(new ChangeDesc(ChangeProgress), args.Progress, args.Progress.GetDescription());
 
         private void ChangeProgress(CrashDumperProgress progress, string desc)
         {

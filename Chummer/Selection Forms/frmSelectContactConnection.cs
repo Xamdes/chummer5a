@@ -40,45 +40,21 @@ namespace Chummer
             LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
         }
 
-        private void cboMembership_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            ValuesChanged();
-        }
+        private void cboMembership_SelectedIndexChanged(object sender, EventArgs e) => ValuesChanged();
 
-        private void cboAreaOfInfluence_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            ValuesChanged();
-        }
+        private void cboAreaOfInfluence_SelectedIndexChanged(object sender, EventArgs e) => ValuesChanged();
 
-        private void cboMagicalResources_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            ValuesChanged();
-        }
+        private void cboMagicalResources_SelectedIndexChanged(object sender, EventArgs e) => ValuesChanged();
 
-        private void cboMatrixResources_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            ValuesChanged();
-        }
+        private void cboMatrixResources_SelectedIndexChanged(object sender, EventArgs e) => ValuesChanged();
 
-        private void txtGroupName_TextChanged(object sender, EventArgs e)
-        {
-            ValuesChanged();
-        }
+        private void txtGroupName_TextChanged(object sender, EventArgs e) => ValuesChanged();
 
-        private void cmdCancel_Click(object sender, EventArgs e)
-        {
-            DialogResult = DialogResult.Cancel;
-        }
+        private void cmdCancel_Click(object sender, EventArgs e) => DialogResult = DialogResult.Cancel;
 
-        private void cmdOK_Click(object sender, EventArgs e)
-        {
-            DialogResult = DialogResult.OK;
-        }
+        private void cmdOK_Click(object sender, EventArgs e) => DialogResult = DialogResult.OK;
 
-        private void chkFreeContact_CheckedChanged(object sender, EventArgs e)
-        {
-            ValuesChanged();
-        }
+        private void chkFreeContact_CheckedChanged(object sender, EventArgs e) => ValuesChanged();
 
         private void frmSelectContactConnection_Load(object sender, EventArgs e)
         {
@@ -213,7 +189,9 @@ namespace Chummer
         private void ValuesChanged()
         {
             if (_blnSkipUpdate)
+            {
                 return;
+            }
 
             _intMembership = Convert.ToInt32(cboMembership.Text.Substring(0, 2));
             _intAreaOfInfluence = Convert.ToInt32(cboAreaOfInfluence.Text.Substring(0, 2));

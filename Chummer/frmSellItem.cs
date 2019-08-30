@@ -30,15 +30,9 @@ namespace Chummer
             LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
         }
 
-        private void cmdOK_Click(object sender, EventArgs e)
-        {
-            DialogResult = DialogResult.OK;
-        }
+        private void cmdOK_Click(object sender, EventArgs e) => DialogResult = DialogResult.OK;
 
-        private void cmdCancel_Click(object sender, EventArgs e)
-        {
-            DialogResult = DialogResult.Cancel;
-        }
+        private void cmdCancel_Click(object sender, EventArgs e) => DialogResult = DialogResult.Cancel;
         #endregion
 
 

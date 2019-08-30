@@ -149,8 +149,8 @@ namespace ChummerHub.Models.V1
                                     .ThenInclude(b => b.Tags)
                                     .ThenInclude(b => b.Tags)
                                     .ThenInclude(b => b.Tags)
-                                                  where a.MyGroup.Id == this.Id
-                                                        && this.Id != null
+                                                  where a.MyGroup.Id == Id
+                                                        && Id != null
                                                   select a).ToListAsync();
                         }
                         else
@@ -160,8 +160,8 @@ namespace ChummerHub.Models.V1
                                                       //.Include(a => a.SINnerMetaData)
                                                       //.Include(a => a.MyExtendedAttributes)
                                                       //.Include(a => a.SINnerMetaData.Visibility)
-                                                  where a.MyGroup.Id == this.Id
-                                                  && this.Id != null
+                                                  where a.MyGroup.Id == Id
+                                                  && Id != null
                                                   select a).ToListAsync();
                         }
 
@@ -171,13 +171,24 @@ namespace ChummerHub.Models.V1
                             //if (member.MyExtendedAttributes == null)
                             //    member.MyExtendedAttributes = new SINnerExtended(member);
                             if (member.SINnerMetaData == null)
+                            {
                                 member.SINnerMetaData = new SINnerMetaData();
+                            }
+
                             if (member.SINnerMetaData.Tags == null)
+                            {
                                 member.SINnerMetaData.Tags = new List<Tag>();
+                            }
+
                             if (member.SINnerMetaData.Visibility == null)
+                            {
                                 member.SINnerMetaData.Visibility = new SINnerVisibility();
+                            }
+
                             if (member.SINnerMetaData.Visibility.UserRights == null)
+                            {
                                 member.SINnerMetaData.Visibility.UserRights = new List<SINnerUserRight>();
+                            }
                         }
                         t.Complete();
                         return res;

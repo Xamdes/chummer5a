@@ -12,7 +12,7 @@ namespace ChummerHub.Client.UI
 {
     public partial class ucSINnersUserControl : UserControl
     {
-        private Logger Log = NLog.LogManager.GetCurrentClassLogger();
+        private readonly Logger Log = NLog.LogManager.GetCurrentClassLogger();
         private CharacterShared _mySINner = null;
         private ucSINnersBasic TabSINnersBasic;
 
@@ -47,10 +47,10 @@ namespace ChummerHub.Client.UI
             };
 
 
-            this.tabPageBasic.Controls.Add(TabSINnersBasic);
-            this.tabPageAdvanced.Controls.Add(TabSINnersAdvanced);
+            tabPageBasic.Controls.Add(TabSINnersBasic);
+            tabPageAdvanced.Controls.Add(TabSINnersAdvanced);
 
-            this.AutoSize = true;
+            AutoSize = true;
 
             if ((ucSINnersOptions.UploadOnSave == true))
             {

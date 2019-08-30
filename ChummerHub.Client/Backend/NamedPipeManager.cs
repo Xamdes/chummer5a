@@ -11,7 +11,7 @@ namespace ChummerHub.Client.Backend
     /// </summary>
     public class NamedPipeManager
     {
-        private static NLog.Logger Log = NLog.LogManager.GetCurrentClassLogger();
+        private static readonly NLog.Logger Log = NLog.LogManager.GetCurrentClassLogger();
         public string NamedPipeName = "Chummer";
         public event Action<string> ReceiveString;
 
@@ -19,10 +19,7 @@ namespace ChummerHub.Client.Backend
         private bool _isRunning = false;
         private Thread Thread;
 
-        public NamedPipeManager(string name)
-        {
-            NamedPipeName = name;
-        }
+        public NamedPipeManager(string name) => NamedPipeName = name;
 
         /// <summary>
         /// Starts a new Pipe server on a new thread
@@ -33,7 +30,10 @@ namespace ChummerHub.Client.Backend
             Thread = new Thread((pipeName) =>
             {
                 if (!(pipeName is string pipeNameString))
+                {
                     throw new ArgumentNullException(nameof(pipeName));
+                }
+
                 _isRunning = true;
                 while (true)
                 {
@@ -59,7 +59,9 @@ namespace ChummerHub.Client.Backend
                         }
 
                         if (text == EXIT_STRING)
+                        {
                             break;
+                        }
 
                         OnReceiveString(text);
                     }
@@ -76,7 +78,9 @@ namespace ChummerHub.Client.Backend
 
 
                     if (_isRunning == false)
+                    {
                         break;
+                    }
                 }
             });
             Thread.Start(NamedPipeName);
@@ -133,7 +137,9 @@ namespace ChummerHub.Client.Backend
                     }
 
                     if (!client.IsConnected)
+                    {
                         return false;
+                    }
 
                     using (StreamWriter writer = new StreamWriter(client))
                     {

@@ -31,7 +31,7 @@ namespace Chummer
     [DebuggerDisplay("{DisplayName(GlobalOptions.DefaultLanguage)}")]
     public class MartialArtManeuver : IHasInternalId, IHasName, IHasXmlNode, IHasNotes, IHasSource
     {
-        private Logger Log = NLog.LogManager.GetCurrentClassLogger();
+        private readonly Logger Log = NLog.LogManager.GetCurrentClassLogger();
         private Guid _guiID;
         private Guid _guiSourceID;
         private string _strName = string.Empty;
@@ -58,11 +58,16 @@ namespace Chummer
                 Utils.BreakIfDebug();
             }
             if (objXmlManeuverNode.TryGetStringFieldQuickly("name", ref _strName))
+            {
                 _objCachedMyXmlNode = null;
+            }
+
             objXmlManeuverNode.TryGetStringFieldQuickly("source", ref _strSource);
             objXmlManeuverNode.TryGetStringFieldQuickly("page", ref _strPage);
             if (!objXmlManeuverNode.TryGetStringFieldQuickly("altnotes", ref _strNotes))
+            {
                 objXmlManeuverNode.TryGetStringFieldQuickly("notes", ref _strNotes);
+            }
         }
 
         private SourceString _objCachedSourceDetail;
@@ -102,7 +107,10 @@ namespace Chummer
                 node?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
             }
             if (objNode.TryGetStringFieldQuickly("name", ref _strName))
+            {
                 _objCachedMyXmlNode = null;
+            }
+
             objNode.TryGetStringFieldQuickly("source", ref _strSource);
             objNode.TryGetStringFieldQuickly("page", ref _strPage);
             objNode.TryGetStringFieldQuickly("notes", ref _strNotes);
@@ -122,7 +130,10 @@ namespace Chummer
             objWriter.WriteElementString("source", CommonFunctions.LanguageBookShort(Source, strLanguageToPrint));
             objWriter.WriteElementString("page", Page(strLanguageToPrint));
             if (_objCharacter.Options.PrintNotes)
+            {
                 objWriter.WriteElementString("notes", Notes);
+            }
+
             objWriter.WriteEndElement();
         }
         #endregion
@@ -141,7 +152,10 @@ namespace Chummer
             set
             {
                 if (_guiSourceID == value)
+                {
                     return;
+                }
+
                 _guiSourceID = value;
                 _objCachedMyXmlNode = null;
             }
@@ -161,7 +175,10 @@ namespace Chummer
             set
             {
                 if (_strName != value)
+                {
                     _objCachedMyXmlNode = null;
+                }
+
                 _strName = value;
             }
         }
@@ -173,7 +190,9 @@ namespace Chummer
         {
             // Get the translated name if applicable.
             if (strLanguage == GlobalOptions.DefaultLanguage)
+            {
                 return Name;
+            }
 
             return GetNode(strLanguage)?["translate"]?.InnerText ?? Name;
         }
@@ -204,7 +223,9 @@ namespace Chummer
         {
             // Get the translated name if applicable.
             if (strLanguage != GlobalOptions.DefaultLanguage)
+            {
                 return _strPage;
+            }
 
             return GetNode(strLanguage)?["altpage"]?.InnerText ?? _strPage;
         }
@@ -221,10 +242,7 @@ namespace Chummer
         private XmlNode _objCachedMyXmlNode;
         private string _strCachedXmlNodeLanguage = string.Empty;
 
-        public XmlNode GetNode()
-        {
-            return GetNode(GlobalOptions.Language);
-        }
+        public XmlNode GetNode() => GetNode(GlobalOptions.Language);
 
         public XmlNode GetNode(string strLanguage)
         {
@@ -277,7 +295,10 @@ namespace Chummer
         public void SetSourceDetail(Control sourceControl)
         {
             if (_objCachedSourceDetail?.Language != GlobalOptions.Language)
+            {
                 _objCachedSourceDetail = null;
+            }
+
             SourceDetail.SetControl(sourceControl);
         }
     }

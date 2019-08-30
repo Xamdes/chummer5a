@@ -19,7 +19,7 @@ namespace ChummerHub.Client.Model
 {
     public class CharacterExtended
     {
-        private Logger Log = NLog.LogManager.GetCurrentClassLogger();
+        private readonly Logger Log = NLog.LogManager.GetCurrentClassLogger();
         public CharacterExtended(Character character, string fileElement = null, frmCharacterRoster.CharacterCache myCharacterCache = null)
         {
             MyCharacter = character;
@@ -61,23 +61,33 @@ namespace ChummerHub.Client.Model
             if (MySINnerFile.SiNnerMetaData.Visibility != null)
             {
                 if (MySINnerFile.SiNnerMetaData.Visibility.Id == null)
+                {
                     MySINnerFile.SiNnerMetaData.Visibility.Id = Guid.NewGuid();
+                }
             }
 
             if (!string.IsNullOrEmpty(Properties.Settings.Default.SINnerVisibility))
+            {
                 MySINnerFile.SiNnerMetaData.Visibility =
                     JsonConvert.DeserializeObject<SINners.Models.SINnerVisibility>(Properties.Settings.Default.SINnerVisibility);
+            }
 
             if (MySINnerFile.SiNnerMetaData.Visibility?.Id == null)
+            {
                 if (MySINnerFile?.SiNnerMetaData?.Visibility != null)
+                {
                     MySINnerFile.SiNnerMetaData.Visibility.Id = Guid.NewGuid();
+                }
+            }
 
             frmCharacterRoster.CharacterCache cache = new frmCharacterRoster.CharacterCache(character.FileName);
 
-            this.MySINnerFile.LastChange = MyCharacter.FileLastWriteTime;
+            MySINnerFile.LastChange = MyCharacter.FileLastWriteTime;
 
             if (MySINnerIds.TryGetValue(MyCharacter.FileName, out Guid singuid))
+            {
                 MySINnerFile.Id = singuid;
+            }
             else
             {
                 MySINnerFile.Id = Guid.NewGuid();
@@ -90,18 +100,21 @@ namespace ChummerHub.Client.Model
         {
             if (mySINnerLoading != null)
             {
-                SINner backup = this._MySINnerFile;
-                this._MySINnerFile = mySINnerLoading;
-                if ((this._MySINnerFile?.SiNnerMetaData?.Id == null)
-                    || (this._MySINnerFile.SiNnerMetaData?.Id == Guid.Empty))
+                SINner backup = _MySINnerFile;
+                _MySINnerFile = mySINnerLoading;
+                if ((_MySINnerFile?.SiNnerMetaData?.Id == null)
+                    || (_MySINnerFile.SiNnerMetaData?.Id == Guid.Empty))
                 {
-                    if (this._MySINnerFile?.SiNnerMetaData != null)
-                        this._MySINnerFile.SiNnerMetaData.Id = backup.SiNnerMetaData.Id;
+                    if (_MySINnerFile?.SiNnerMetaData != null)
+                    {
+                        _MySINnerFile.SiNnerMetaData.Id = backup.SiNnerMetaData.Id;
+                    }
                 }
 
-                if (this._MySINnerFile?.SiNnerMetaData?.Tags?.Count() < backup?.SiNnerMetaData?.Tags?.Count())
-                    this._MySINnerFile.SiNnerMetaData.Tags = backup.SiNnerMetaData.Tags;
-
+                if (_MySINnerFile?.SiNnerMetaData?.Tags?.Count() < backup?.SiNnerMetaData?.Tags?.Count())
+                {
+                    _MySINnerFile.SiNnerMetaData.Tags = backup.SiNnerMetaData.Tags;
+                }
             }
 
         }
@@ -119,13 +132,7 @@ namespace ChummerHub.Client.Model
         private SINner _MySINnerFile = null;
 
         // ReSharper disable once InconsistentNaming
-        public SINner MySINnerFile
-        {
-            get
-            {
-                return _MySINnerFile;
-            }
-        }
+        public SINner MySINnerFile => _MySINnerFile;
 
         public void SetSINner(SINner sinner)
         {
@@ -148,7 +155,10 @@ namespace ChummerHub.Client.Model
             get
             {
                 if (_SINnerIds != null)
+                {
                     return _SINnerIds;
+                }
+
                 string save = Properties.Settings.Default.SINnerIds;
                 _SINnerIds = !string.IsNullOrEmpty(save)
                     ? JsonConvert.DeserializeObject<Dictionary<string, Guid>>(save)
@@ -159,7 +169,10 @@ namespace ChummerHub.Client.Model
             {
                 _SINnerIds = value;
                 if (_SINnerIds == null)
+                {
                     return;
+                }
+
                 string save = JsonConvert.SerializeObject(_SINnerIds);
                 Properties.Settings.Default.SINnerIds = save;
                 Properties.Settings.Default.Save();
@@ -217,7 +230,7 @@ namespace ChummerHub.Client.Model
                                 myState.myWorker?.ReportProgress(myState.CurrentProgress, myState);
                             }
 
-                            if (MySINnerFile.DownloadedFromSINnersTime > this.MyCharacter.FileLastWriteTime)
+                            if (MySINnerFile.DownloadedFromSINnersTime > MyCharacter.FileLastWriteTime)
                             {
                                 if (myState != null)
                                 {
@@ -230,20 +243,23 @@ namespace ChummerHub.Client.Model
                             }
 
                             SINners.SINnersClient client = StaticUtils.GetClient();
-                            found = await client.GetSINByIdWithHttpMessagesAsync(this.MySINnerFile.Id.GetValueOrDefault());
+                            found = await client.GetSINByIdWithHttpMessagesAsync(MySINnerFile.Id.GetValueOrDefault());
                             await Backend.Utils.HandleError(found, found.Body);
                         }
 
                         if (myState != null)
+                        {
                             //2 Step
                             myState.CurrentProgress += myState.ProgressSteps;
+                        }
+
                         using (CustomActivity op_VisibilityChummer = Timekeeper.StartSyncron(
                             "Setting Visibility for Chummer", op_uploadChummer,
                             CustomActivity.OperationType.DependencyOperation, MyCharacter?.FileName))
                         {
                             if (found.Response.StatusCode == System.Net.HttpStatusCode.OK)
                             {
-                                if (found.Body.MySINner.LastChange >= this.MyCharacter.FileLastWriteTime)
+                                if (found.Body.MySINner.LastChange >= MyCharacter.FileLastWriteTime)
                                 {
                                     if (myState != null)
                                     {
@@ -273,14 +289,14 @@ namespace ChummerHub.Client.Model
                             "Populating Reflection Tags", op_uploadChummer,
                             CustomActivity.OperationType.DependencyOperation, MyCharacter?.FileName))
                         {
-                            this.MySINnerFile.SiNnerMetaData.Tags = this.PopulateTags();
+                            MySINnerFile.SiNnerMetaData.Tags = PopulateTags();
                         }
 
                         using (CustomActivity op_PopulatingChummer = Timekeeper.StartSyncron(
                             "Preparing Model", op_uploadChummer,
                             CustomActivity.OperationType.DependencyOperation, MyCharacter?.FileName))
                         {
-                            await this.PrepareModel();
+                            await PrepareModel();
                         }
 
                         if (myState != null)
@@ -314,7 +330,7 @@ namespace ChummerHub.Client.Model
                                 "Uploading File", op_uploadChummer,
                                 CustomActivity.OperationType.DependencyOperation, MyCharacter?.FileName))
                             {
-                                var uploadres = await ChummerHub.Client.Backend.Utils.UploadChummerFileAsync(this);
+                                HttpOperationResponse uploadres = await ChummerHub.Client.Backend.Utils.UploadChummerFileAsync(this);
                                 if (uploadres.Response.IsSuccessStatusCode)
                                 {
                                     if (myState != null)
@@ -363,7 +379,10 @@ namespace ChummerHub.Client.Model
         public void PopulateTree(ref TreeNode root, IList<Tag> tags, IList<SearchTag> filtertags)
         {
             if (tags == null)
+            {
                 tags = MySINnerFile.SiNnerMetaData.Tags;
+            }
+
             if (root == null)
             {
                 root = new TreeNode
@@ -381,9 +400,15 @@ namespace ChummerHub.Client.Model
                         Tag = branch.Id,
                     };
                     if (!string.IsNullOrEmpty(branch.TagValue))
+                    {
                         child.Text += ": " + branch.TagValue;
+                    }
+
                     if (!string.IsNullOrEmpty(branch.TagComment))
+                    {
                         child.ToolTipText = branch.TagComment;
+                    }
+
                     PopulateTree(ref child, branch.Tags, filtertags);
                     root.Nodes.Add(child);
                 }
@@ -395,17 +420,25 @@ namespace ChummerHub.Client.Model
                 foreach (Tag tag in tags)
                 {
                     if (filtertags != null && (filtertags.All(x => x.TagName != tag.TagName) && (!tag.Tags.Any())))
+                    {
                         continue;
+                    }
+
                     TreeNode child = new TreeNode()
                     {
                         Text = "",
                         Tag = tag.Id
                     };
                     if (!string.IsNullOrEmpty(tag.TagComment))
+                    {
                         child.Text = "(" + tag.TagComment + ") ";
+                    }
+
                     child.Text += tag.TagName;
                     if (!string.IsNullOrEmpty(tag.TagValue))
+                    {
                         child.Text += ": " + tag.TagValue;
+                    }
 
                     PopulateTree(ref child, tag.Tags, filtertags);
                     root.Nodes.Add(child);
@@ -420,7 +453,9 @@ namespace ChummerHub.Client.Model
             if (PluginHandler.MySINnerLoading != null)
             {
                 if (MySINnerIds.ContainsKey(MyCharacter.FileName))
+                {
                     MySINnerIds.Remove(MyCharacter.FileName);
+                }
             }
             object sinidob = null;
             if (MyCharacterCache?.MyPluginDataDic?.TryGetValue("SINnerId", out sinidob) == true)
@@ -428,7 +463,9 @@ namespace ChummerHub.Client.Model
                 MySINnerFile.Id = (Guid)sinidob;
             }
             else if (MySINnerIds.TryGetValue(MyCharacter.FileName, out Guid singuid))
+            {
                 MySINnerFile.Id = singuid;
+            }
             else
             {
                 if (PluginHandler.MySINnerLoading != null)
@@ -436,7 +473,9 @@ namespace ChummerHub.Client.Model
                     _MySINnerFile = PluginHandler.MySINnerLoading;
                     MySINnerIds.Add(MyCharacter.FileName, MySINnerFile.Id.Value);
                     if (File.Exists(zipPath))
+                    {
                         return zipPath;
+                    }
                 }
                 else
                 {
@@ -444,7 +483,9 @@ namespace ChummerHub.Client.Model
                     {
                         MySINnerFile.Alias = MyCharacter.Alias;
                         if (string.IsNullOrEmpty(MySINnerFile.Alias))
+                        {
                             MySINnerFile.Alias = MyCharacter.Name;
+                        }
                     }
                     SINners.SINnersClient client = StaticUtils.GetClient();
                     HttpOperationResponse<ResultSinnerGetOwnedSINByAlias> res = null;
@@ -494,15 +535,17 @@ namespace ChummerHub.Client.Model
                         DialogResult result = PluginHandler.MainForm.ShowMessageBox(message, "SIN already found online", MessageBoxButtons.YesNoCancel,
                             MessageBoxIcon.Asterisk, MessageBoxDefaultButton.Button1);
                         if (result == DialogResult.Cancel)
+                        {
                             throw new ArgumentException("User aborted perparation for upload!");
+                        }
                         else if (result == DialogResult.No)
                         {
                             MySINnerFile.Id = Guid.NewGuid();
                         }
                         else
                         {
-                            var list = res.Body.MySINners;
-                            foreach (var sin in list)
+                            IList<SINner> list = res.Body.MySINners;
+                            foreach (SINner sin in list)
                             {
                                 if (sin.Id != null)
                                 {
@@ -515,7 +558,10 @@ namespace ChummerHub.Client.Model
                 }
 
                 if (MySINnerIds.ContainsKey(MyCharacter.FileName))
+                {
                     MySINnerIds.Remove(MyCharacter.FileName);
+                }
+
                 MySINnerIds.Add(MyCharacter.FileName, MySINnerFile.Id.Value);
                 MySINnerIds = MySINnerIds; //Save it!
             }
@@ -562,20 +608,30 @@ namespace ChummerHub.Client.Model
 
             string tempDir = Path.Combine(Path.GetTempPath(), "SINner", MySINnerFile.Id.Value.ToString());
             if (!Directory.Exists(tempDir))
+            {
                 Directory.CreateDirectory(tempDir);
+            }
+
             foreach (string file in Directory.GetFiles(tempDir))
             {
                 FileInfo fi = new FileInfo(file);
                 if (fi.LastWriteTimeUtc < MyCharacter.FileLastWriteTime)
+                {
                     File.Delete(file);
+                }
             }
             frmCharacterRoster.CharacterCache summary = new frmCharacterRoster.CharacterCache(MyCharacter.FileName);
 
             if (string.IsNullOrEmpty(summary.FileName))
+            {
                 return null;
+            }
+
             string tempfile = Path.Combine(tempDir, summary.FileName);
             if (File.Exists(tempfile))
+            {
                 File.Delete(tempfile);
+            }
 
             bool readCallback = false;
             if (MyCharacter.OnSaveCompleted != null)
@@ -594,7 +650,9 @@ namespace ChummerHub.Client.Model
             MyCharacter.Save(tempfile, false, false);
             MySINnerFile.LastChange = MyCharacter.FileLastWriteTime;
             if (readCallback)
+            {
                 MyCharacter.OnSaveCompleted += PluginHandler.MyOnSaveUpload;
+            }
 
             if (File.Exists(zipPath))
             {
@@ -625,7 +683,9 @@ namespace ChummerHub.Client.Model
             for (int i = 0; i < pathParts.Length; i++)
             {
                 if (i > 0)
+                {
                     pathParts[i] = Path.Combine(pathParts[i - 1], pathParts[i]);
+                }
 
                 if (!Directory.Exists(pathParts[i]))
                 {
@@ -655,8 +715,8 @@ namespace ChummerHub.Client.Model
                         myState.StatusText = "Preparing file to upload...";
                         myState.myWorker?.ReportProgress(myState.CurrentProgress, myState);
                     }
-                    this.PopulateTags();
-                    await this.PrepareModel();
+                    PopulateTags();
+                    await PrepareModel();
                     if (myState != null)
                     {
                         myState.CurrentProgress += myState.ProgressSteps;
@@ -671,14 +731,14 @@ namespace ChummerHub.Client.Model
                         {
                             try
                             {
-                                this.MySINnerFile.Id = response.Body.MySINners.FirstOrDefault().Id;
+                                MySINnerFile.Id = response.Body.MySINners.FirstOrDefault().Id;
                             }
                             catch (Exception ex)
                             {
                                 Log.Error(ex);
                                 throw;
                             }
-                            Log.Debug("Character " + this.MyCharacter.Alias + " posted with ID " + this.MySINnerFile.Id);
+                            Log.Debug("Character " + MyCharacter.Alias + " posted with ID " + MySINnerFile.Id);
                             if (myState != null)
                             {
                                 myState.CurrentProgress += myState.ProgressSteps;
@@ -698,13 +758,16 @@ namespace ChummerHub.Client.Model
                                     myState.myWorker?.ReportProgress(myState.CurrentProgress, myState);
                                 }
                                 if (uploadresult.MyException is Exception aException)
+                                {
                                     throw aException;
+                                }
+
                                 return false;
                             }
                             else
                             {
-                                string msg = "Character " + this.MyCharacter.Alias + " uploaded with Id " +
-                                             this.MySINnerFile.Id;
+                                string msg = "Character " + MyCharacter.Alias + " uploaded with Id " +
+                                             MySINnerFile.Id;
                                 Log.Trace(msg);
                                 if (myState != null)
                                 {

@@ -83,7 +83,9 @@ namespace Chummer
             objNode.TryGetInt32FieldQuickly("sortorder", ref _intSortOrder);
 
             if (Parent?.Contains(this) == false)
+            {
                 Parent.Add(this);
+            }
         }
 
         /// <summary>
@@ -98,7 +100,10 @@ namespace Chummer
             objWriter.WriteElementString("fullname", DisplayName(strLanguageToPrint));
             objWriter.WriteElementString("name_english", Name);
             if (_objCharacter.Options.PrintNotes)
+            {
                 objWriter.WriteElementString("notes", Notes);
+            }
+
             objWriter.WriteEndElement();
         }
         #endregion
@@ -121,10 +126,7 @@ namespace Chummer
         /// <summary>
         /// The name of the object as it should be displayed on printouts (translated name only).
         /// </summary>
-        public string DisplayNameShort(string strLanguage)
-        {
-            return Name;
-        }
+        public string DisplayNameShort(string strLanguage) => Name;
 
         /// <summary>
         /// The name of the object as it should be displayed in lists. Name (Extra).
@@ -200,17 +202,29 @@ namespace Chummer
             {
                 case NotifyCollectionChangedAction.Add:
                     foreach (IHasLocation objNewItem in e.NewItems)
+                    {
                         objNewItem.Location = this;
+                    }
+
                     break;
                 case NotifyCollectionChangedAction.Remove:
                     foreach (IHasLocation objOldItem in e.OldItems)
+                    {
                         objOldItem.Location = null;
+                    }
+
                     break;
                 case NotifyCollectionChangedAction.Replace:
                     foreach (IHasLocation objOldItem in e.OldItems)
+                    {
                         objOldItem.Location = null;
+                    }
+
                     foreach (IHasLocation objNewItem in e.NewItems)
+                    {
                         objNewItem.Location = this;
+                    }
+
                     break;
                 case NotifyCollectionChangedAction.Reset:
                     foreach (IHasLocation objItem in Children)

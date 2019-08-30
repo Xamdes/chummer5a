@@ -32,12 +32,12 @@ namespace ChummerHub.Controllers
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'AccountController'
     {
 
-        private UserManager<ApplicationUser> _userManager = null;
-        private SignInManager<ApplicationUser> _signInManager = null;
-        private ApplicationDbContext _context;
-        private RoleManager<ApplicationRole> _roleManager;
+        private readonly UserManager<ApplicationUser> _userManager = null;
+        private readonly SignInManager<ApplicationUser> _signInManager = null;
+        private readonly ApplicationDbContext _context;
+        private readonly RoleManager<ApplicationRole> _roleManager;
         private readonly ILogger _logger;
-        private TelemetryClient tc;
+        private readonly TelemetryClient tc;
 
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'AccountController.AccountController(ApplicationDbContext, ILogger<AccountController>, UserManager<ApplicationUser>, SignInManager<ApplicationUser>, RoleManager<ApplicationRole>, TelemetryClient)'
         public AccountController(ApplicationDbContext context,
@@ -134,7 +134,10 @@ namespace ChummerHub.Controllers
                 ApplicationUser user = await _userManager.FindByEmailAsync(email);
                 res = new ResultAccountGetUserByEmail(user);
                 if (user == null)
+                {
                     return NotFound(res);
+                }
+
                 user.PasswordHash = "";
                 user.SecurityStamp = "";
                 return Ok(res);
@@ -161,9 +164,14 @@ namespace ChummerHub.Controllers
             try
             {
                 if (string.IsNullOrEmpty(username))
+                {
                     throw new ArgumentNullException(nameof(username));
+                }
+
                 if (string.IsNullOrEmpty(password))
+                {
                     throw new ArgumentNullException(nameof(password));
+                }
 
                 IPAddress startaddress = null;
                 if (!string.IsNullOrEmpty(start_ip_address))
@@ -307,11 +315,16 @@ namespace ChummerHub.Controllers
                 catch (Exception ex)
                 {
                     if (_logger != null)
+                    {
                         _logger.LogError(ex.ToString());
+                    }
                 }
                 result += Environment.NewLine + e;
                 if (e is HubException)
+                {
                     return BadRequest(e);
+                }
+
                 HubException hue = new HubException(result, e);
                 return BadRequest(hue);
             }
@@ -331,7 +344,10 @@ namespace ChummerHub.Controllers
             {
                 ApplicationUser user = await _userManager.FindByEmailAsync(email);
                 if (user == null)
+                {
                     return NotFound();
+                }
+
                 await SeedData.EnsureRole(Program.MyHost.Services, user.Id, userrole, _roleManager, _userManager);
                 user.PasswordHash = "";
                 user.SecurityStamp = "";
@@ -350,10 +366,15 @@ namespace ChummerHub.Controllers
                 catch (Exception ex)
                 {
                     if (_logger != null)
+                    {
                         _logger.LogError(ex.ToString());
+                    }
                 }
                 if (e is HubException)
+                {
                     return BadRequest(e);
+                }
+
                 HubException hue = new HubException(e.Message, e);
                 return BadRequest(hue);
             }
@@ -375,7 +396,9 @@ namespace ChummerHub.Controllers
                 ApplicationUser user = await _signInManager.UserManager.GetUserAsync(User);
                 res = new ResultAccountGetUserByAuthorization(user);
                 if (user == null)
+                {
                     return NotFound(res);
+                }
 
                 user.PasswordHash = "";
                 user.SecurityStamp = "";
@@ -394,7 +417,9 @@ namespace ChummerHub.Controllers
                 catch (Exception ex)
                 {
                     if (_logger != null)
+                    {
                         _logger.LogError(ex.ToString());
+                    }
                 }
                 res = new ResultAccountGetUserByAuthorization(e);
                 return BadRequest(res);
@@ -414,10 +439,16 @@ namespace ChummerHub.Controllers
             {
                 ApplicationUser user = await _signInManager.UserManager.GetUserAsync(User);
                 if (user == null)
+                {
                     return Unauthorized();
+                }
+
                 IList<string> roles = await _userManager.GetRolesAsync(user);
                 if (!roles.Contains("Administrator"))
+                {
                     return Unauthorized();
+                }
+
                 int count = await _context.SINners.CountAsync();
                 using (Microsoft.EntityFrameworkCore.Storage.IDbContextTransaction transaction = _context.Database.BeginTransaction())
                 {
@@ -449,10 +480,15 @@ namespace ChummerHub.Controllers
                 catch (Exception ex)
                 {
                     if (_logger != null)
+                    {
                         _logger.LogError(ex.ToString());
+                    }
                 }
                 if (e is HubException)
+                {
                     return BadRequest(e);
+                }
+
                 HubException hue = new HubException(e.Message, e);
                 return BadRequest(hue);
             }
@@ -496,10 +532,15 @@ namespace ChummerHub.Controllers
                 catch (Exception ex)
                 {
                     if (_logger != null)
+                    {
                         _logger.LogError(ex.ToString());
+                    }
                 }
                 if (e is HubException)
+                {
                     return BadRequest(e);
+                }
+
                 HubException hue = new HubException(e.Message, e);
                 return BadRequest(hue);
             }
@@ -576,7 +617,10 @@ namespace ChummerHub.Controllers
                         //check if that char is already added:
                         IEnumerable<SINnerSearchGroupMember> foundseq = (from a in ssg.MyMembers where a.MySINner.Id == sin.Id select a);
                         if (foundseq.Any())
+                        {
                             continue;
+                        }
+
                         sin.LastDownload = DateTime.Now;
                         SINnerSearchGroupMember ssgm = new SINnerSearchGroupMember
                         {
@@ -586,11 +630,12 @@ namespace ChummerHub.Controllers
                         if (sin.MyGroup?.Id != null)
                         {
                             if (!user.FavoriteGroups.Any(a => a.FavoriteGuid == sin.MyGroup.Id.Value))
+                            {
                                 user.FavoriteGroups.Add(new ApplicationUserFavoriteGroup()
                                 {
                                     FavoriteGuid = sin.MyGroup.Id.Value
                                 });
-
+                            }
                         }
                         else
                         {
@@ -629,7 +674,10 @@ namespace ChummerHub.Controllers
                             //check if it is already added:
                             IEnumerable<SINnerSearchGroupMember> groupseq = from a in ssgFromSIN.MyMembers where a.MySINner == member select a;
                             if (groupseq.Any())
+                            {
                                 continue;
+                            }
+
                             ssgFromSIN.MyMembers.Add(sinssgGroupMember);
                             //}
                         }
@@ -773,7 +821,9 @@ namespace ChummerHub.Controllers
                 catch (Exception ex)
                 {
                     if (_logger != null)
+                    {
                         _logger.LogError(ex.ToString());
+                    }
                 }
                 res = new ResultAccountGetSinnersByAuthorization(e);
                 return BadRequest(res);
@@ -811,10 +861,15 @@ namespace ChummerHub.Controllers
                 catch (Exception ex)
                 {
                     if (_logger != null)
+                    {
                         _logger.LogError(ex.ToString());
+                    }
                 }
                 if (e is HubException)
+                {
                     return BadRequest(e);
+                }
+
                 HubException hue = new HubException(e.Message, e);
                 return BadRequest(hue);
             }

@@ -86,15 +86,20 @@ namespace Chummer
 
             // Populate the Category list.
             using (XmlNodeList xmlCategoryList = _objXmlDocument.SelectNodes("/chummer/categories/category"))
+            {
                 if (xmlCategoryList != null)
                 {
                     foreach (XmlNode objXmlCategory in xmlCategoryList)
                     {
                         string strInnerText = objXmlCategory.InnerText;
                         if (_hashLimitToCategories.Count == 0 || _hashLimitToCategories.Contains(strInnerText))
+                        {
                             _lstCategory.Add(new ListItem(strInnerText, objXmlCategory.Attributes?["translate"]?.InnerText ?? strInnerText));
+                        }
                     }
                 }
+            }
+
             _lstCategory.Sort(CompareListItems.CompareNames);
 
             if (_lstCategory.Count > 0)
@@ -111,33 +116,42 @@ namespace Chummer
 
             // Select the first Category in the list.
             if (string.IsNullOrEmpty(s_StrSelectCategory))
+            {
                 cboCategory.SelectedIndex = 0;
+            }
             else
+            {
                 cboCategory.SelectedValue = s_StrSelectCategory;
+            }
 
             if (cboCategory.SelectedIndex == -1)
+            {
                 cboCategory.SelectedIndex = 0;
+            }
+
             cboCategory.EndUpdate();
 
             _blnLoading = false;
             RefreshList();
         }
 
-        private void cboCategory_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            RefreshList();
-        }
+        private void cboCategory_SelectedIndexChanged(object sender, EventArgs e) => RefreshList();
 
         private void lstWeapon_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (_blnLoading || _blnSkipUpdate)
+            {
                 return;
+            }
 
             // Retireve the information for the selected Weapon.
             XmlNode xmlWeapon = null;
             string strSelectedId = lstWeapon.SelectedValue?.ToString();
             if (!string.IsNullOrEmpty(strSelectedId))
+            {
                 xmlWeapon = _objXmlDocument.SelectSingleNode("/chummer/weapons/weapon[id = \"" + lstWeapon.SelectedValue + "\"]");
+            }
+
             if (xmlWeapon != null)
             {
                 Weapon objWeapon = new Weapon(_objCharacter);
@@ -146,7 +160,9 @@ namespace Chummer
                 _objSelectedWeapon = objWeapon;
             }
             else
+            {
                 _objSelectedWeapon = null;
+            }
 
             UpdateWeaponInfo();
         }
@@ -154,7 +170,10 @@ namespace Chummer
         private void UpdateWeaponInfo()
         {
             if (_blnLoading || _blnSkipUpdate)
+            {
                 return;
+            }
+
             _blnSkipUpdate = true;
             if (_objSelectedWeapon != null)
             {
@@ -204,7 +223,9 @@ namespace Chummer
                     strAccessories.AppendLine(objAccessory.DisplayName(GlobalOptions.Language));
                 }
                 if (strAccessories.Length > 0)
+                {
                     strAccessories.Length -= Environment.NewLine.Length;
+                }
 
                 lblIncludedAccessories.Text = strAccessories.Length == 0 ? LanguageManager.GetString("String_None", GlobalOptions.Language) : strAccessories.ToString();
                 lblIncludedAccessoriesLabel.Visible = !string.IsNullOrEmpty(lblIncludedAccessories.Text);
@@ -268,22 +289,39 @@ namespace Chummer
                 foreach (XmlNode objXmlWeapon in objNodeList)
                 {
                     if (objXmlWeapon["cyberware"]?.InnerText == bool.TrueString)
+                    {
                         continue;
+                    }
+
                     string strTest = objXmlWeapon["mount"]?.InnerText;
                     if (!string.IsNullOrEmpty(strTest) && !Mounts.Contains(strTest))
+                    {
                         continue;
+                    }
+
                     strTest = objXmlWeapon["extramount"]?.InnerText;
                     if (!string.IsNullOrEmpty(strTest) && !Mounts.Contains(strTest))
+                    {
                         continue;
+                    }
+
                     if (chkHideOverAvailLimit.Checked && !SelectionShared.CheckAvailRestriction(objXmlWeapon, _objCharacter))
+                    {
                         continue;
+                    }
+
                     if (!chkFreeItem.Checked && chkShowOnlyAffordItems.Checked)
                     {
                         decimal decCostMultiplier = 1 + (nudMarkup.Value / 100.0m);
                         if (_setBlackMarketMaps.Contains(objXmlWeapon["category"]?.InnerText))
+                        {
                             decCostMultiplier *= 0.9m;
+                        }
+
                         if (!SelectionShared.CheckNuyenRestriction(objXmlWeapon, _objCharacter.Nuyen, decCostMultiplier))
+                        {
                             continue;
+                        }
                     }
 
                     Weapon objWeapon = new Weapon(_objCharacter);
@@ -297,7 +335,10 @@ namespace Chummer
                     string strDamage = objWeapon.CalculatedDamage(GlobalOptions.CultureInfo, GlobalOptions.Language);
                     string strAP = objWeapon.TotalAP(GlobalOptions.Language);
                     if (strAP == "-")
+                    {
                         strAP = "0";
+                    }
+
                     string strRC = objWeapon.TotalRC(GlobalOptions.CultureInfo, GlobalOptions.Language, true);
                     string strAmmo = objWeapon.CalculatedAmmo(GlobalOptions.CultureInfo, GlobalOptions.Language);
                     string strMode = objWeapon.CalculatedMode(GlobalOptions.Language);
@@ -308,7 +349,10 @@ namespace Chummer
                         strbldAccessories.AppendLine(objAccessory.DisplayName(GlobalOptions.Language));
                     }
                     if (strbldAccessories.Length > 0)
+                    {
                         strbldAccessories.Length -= Environment.NewLine.Length;
+                    }
+
                     AvailabilityValue objAvail = objWeapon.TotalAvailTuple();
                     SourceString strSource = new SourceString(objWeapon.Source, objWeapon.DisplayPage(GlobalOptions.Language), GlobalOptions.Language);
                     NuyenString strCost = new NuyenString(objWeapon.DisplayCost(out decimal _));
@@ -356,7 +400,9 @@ namespace Chummer
                 foreach (XmlNode objXmlWeapon in objNodeList)
                 {
                     if (objXmlWeapon["cyberware"]?.InnerText == bool.TrueString)
+                    {
                         continue;
+                    }
 
                     string strMount = objXmlWeapon["mount"]?.InnerText;
                     if (!string.IsNullOrEmpty(strMount) && !Mounts.Contains(strMount))
@@ -378,7 +424,10 @@ namespace Chummer
                     {
                         decimal decCostMultiplier = 1 + (nudMarkup.Value / 100.0m);
                         if (_setBlackMarketMaps.Contains(objXmlWeapon["category"]?.InnerText))
+                        {
                             decCostMultiplier *= 0.9m;
+                        }
+
                         if (!string.IsNullOrEmpty(ParentWeapon?.DoubledCostModificationSlots) &&
                             (!string.IsNullOrEmpty(strMount) || !string.IsNullOrEmpty(strExtraMount)))
                         {
@@ -389,7 +438,9 @@ namespace Chummer
                             }
                         }
                         if (!SelectionShared.CheckNuyenRestriction(objXmlWeapon, _objCharacter.Nuyen, decCostMultiplier))
+                        {
                             continue;
+                        }
                     }
                     lstWeapons.Add(new ListItem(objXmlWeapon["id"]?.InnerText, objXmlWeapon["translate"]?.InnerText ?? objXmlWeapon["name"]?.InnerText));
                 }
@@ -403,9 +454,14 @@ namespace Chummer
                 lstWeapon.DataSource = lstWeapons;
                 _blnLoading = false;
                 if (!string.IsNullOrEmpty(strOldSelected))
+                {
                     lstWeapon.SelectedValue = strOldSelected;
+                }
                 else
+                {
                     lstWeapon.SelectedIndex = -1;
+                }
+
                 lstWeapon.EndUpdate();
             }
         }
@@ -416,15 +472,9 @@ namespace Chummer
             AcceptForm();
         }
 
-        private void cmdCancel_Click(object sender, EventArgs e)
-        {
-            DialogResult = DialogResult.Cancel;
-        }
+        private void cmdCancel_Click(object sender, EventArgs e) => DialogResult = DialogResult.Cancel;
 
-        private void txtSearch_TextChanged(object sender, EventArgs e)
-        {
-            RefreshList();
-        }
+        private void txtSearch_TextChanged(object sender, EventArgs e) => RefreshList();
 
         private void cmdOKAdd_Click(object sender, EventArgs e)
         {
@@ -495,13 +545,12 @@ namespace Chummer
         private void txtSearch_KeyUp(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Up)
+            {
                 txtSearch.Select(txtSearch.Text.Length, 0);
+            }
         }
 
-        private void chkBlackMarketDiscount_CheckedChanged(object sender, EventArgs e)
-        {
-            UpdateWeaponInfo();
-        }
+        private void chkBlackMarketDiscount_CheckedChanged(object sender, EventArgs e) => UpdateWeaponInfo();
         #endregion
 
         #region Properties
@@ -552,7 +601,9 @@ namespace Chummer
             string strCategory = cboCategory.SelectedValue?.ToString();
             string strFilter = '(' + _objCharacter.Options.BookXPath() + ')';
             if (!string.IsNullOrEmpty(strCategory) && strCategory != "Show All" && (_objCharacter.Options.SearchInCategoryOnly || txtSearch.TextLength == 0))
+            {
                 strFilter += " and category = \"" + strCategory + '\"';
+            }
             else
             {
                 StringBuilder objCategoryFilter = new StringBuilder();
@@ -608,7 +659,10 @@ namespace Chummer
                         {
                             string strWeapon = dgvWeapons.SelectedRows[0].Cells[0].Value.ToString();
                             if (!string.IsNullOrEmpty(strWeapon))
+                            {
                                 strWeapon = strWeapon.Substring(0, strWeapon.LastIndexOf('(') - 1);
+                            }
+
                             objNode = _objXmlDocument.SelectSingleNode("/chummer/weapons/weapon[id = \"" + strWeapon + "\"]");
                         }
                         else
@@ -628,10 +682,7 @@ namespace Chummer
             }
         }
 
-        private void OpenSourceFromLabel(object sender, EventArgs e)
-        {
-            CommonFunctions.OpenPDFFromControl(sender, e);
-        }
+        private void OpenSourceFromLabel(object sender, EventArgs e) => CommonFunctions.OpenPDFFromControl(sender, e);
 
         private void tmrSearch_Tick(object sender, EventArgs e)
         {
@@ -641,10 +692,7 @@ namespace Chummer
             RefreshList();
         }
 
-        private void chkShowOnlyAffordItems_CheckedChanged(object sender, EventArgs e)
-        {
-            RefreshList();
-        }
+        private void chkShowOnlyAffordItems_CheckedChanged(object sender, EventArgs e) => RefreshList();
 
         private void dgvWeapons_DoubleClick(object sender, EventArgs e)
         {

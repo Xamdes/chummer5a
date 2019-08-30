@@ -50,10 +50,7 @@ namespace Chummer.UI.Table
         /// </summary>
         /// <param name="newValue">the extracted value, if there is a extractor in the column,
         /// the associated item otherwise</param>
-        protected internal virtual void UpdateValue(object newValue)
-        {
-            Value = newValue;
-        }
+        protected internal virtual void UpdateValue(object newValue) => Value = newValue;
 
         /// <summary>
         /// Apply layout depending on alignment.
@@ -63,7 +60,10 @@ namespace Chummer.UI.Table
         protected internal virtual void UpdateAvailableSize(int width, int height)
         {
             if (contentField == null)
+            {
                 return;
+            }
+
             Size size = contentField.Size;
             int x;
             if ((Alignment & Alignment.Left) != 0)

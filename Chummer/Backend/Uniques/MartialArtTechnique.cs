@@ -31,7 +31,7 @@ namespace Chummer
     [DebuggerDisplay("{DisplayName(GlobalOptions.DefaultLanguage)}")]
     public class MartialArtTechnique : IHasInternalId, IHasName, IHasXmlNode, IHasNotes, ICanRemove, IHasSource
     {
-        private Logger Log = NLog.LogManager.GetCurrentClassLogger();
+        private readonly Logger Log = NLog.LogManager.GetCurrentClassLogger();
         private Guid _guiID;
         private Guid _guiSourceID;
         private string _strName = string.Empty;
@@ -58,13 +58,21 @@ namespace Chummer
                 Utils.BreakIfDebug();
             }
             if (xmlTechniqueDataNode.TryGetStringFieldQuickly("name", ref _strName))
+            {
                 if (!xmlTechniqueDataNode.TryGetStringFieldQuickly("altnotes", ref _strNotes))
+                {
                     xmlTechniqueDataNode.TryGetStringFieldQuickly("notes", ref _strNotes);
+                }
+            }
+
             xmlTechniqueDataNode.TryGetStringFieldQuickly("source", ref _strSource);
             xmlTechniqueDataNode.TryGetStringFieldQuickly("page", ref _strPage);
 
             if (xmlTechniqueDataNode["bonus"] == null)
+            {
                 return;
+            }
+
             if (!ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.MartialArtTechnique, _guiID.ToString("D"), xmlTechniqueDataNode["bonus"], false, 1, DisplayName(GlobalOptions.Language)))
             {
                 _guiID = Guid.Empty;
@@ -125,7 +133,10 @@ namespace Chummer
             objWriter.WriteElementString("name", DisplayName(strLanguageToPrint));
             objWriter.WriteElementString("name_english", Name);
             if (_objCharacter.Options.PrintNotes)
+            {
                 objWriter.WriteElementString("notes", Notes);
+            }
+
             objWriter.WriteElementString("source", Source);
             objWriter.WriteElementString("page", Page(strLanguageToPrint));
             objWriter.WriteEndElement();
@@ -146,7 +157,10 @@ namespace Chummer
             set
             {
                 if (_guiSourceID == value)
+                {
                     return;
+                }
+
                 _guiSourceID = value;
                 _objCachedMyXmlNode = null;
             }
@@ -173,7 +187,9 @@ namespace Chummer
         {
             // Get the translated name if applicable.
             if (strLanguage == GlobalOptions.DefaultLanguage)
+            {
                 return Name;
+            }
 
             return GetNode(strLanguage)?["translate"]?.InnerText ?? Name;
         }
@@ -203,7 +219,9 @@ namespace Chummer
         {
             // Get the translated name if applicable.
             if (strLanguage != GlobalOptions.DefaultLanguage)
+            {
                 return _strPage;
+            }
 
             return GetNode(strLanguage)?["altpage"]?.InnerText ?? _strPage;
         }
@@ -211,10 +229,7 @@ namespace Chummer
         private XmlNode _objCachedMyXmlNode;
         private string _strCachedXmlNodeLanguage = string.Empty;
 
-        public XmlNode GetNode()
-        {
-            return GetNode(GlobalOptions.Language);
-        }
+        public XmlNode GetNode() => GetNode(GlobalOptions.Language);
 
         public XmlNode GetNode(string strLanguage)
         {
@@ -239,7 +254,9 @@ namespace Chummer
             {
                 if (!objCharacter.ConfirmDelete(LanguageManager.GetString("Message_DeleteMartialArt",
                     GlobalOptions.Language)))
+                {
                     return false;
+                }
             }
             // Find the selected Advantage object.
             //TODO: Advantages should know what their parent is.
@@ -289,7 +306,10 @@ namespace Chummer
         public void SetSourceDetail(Control sourceControl)
         {
             if (_objCachedSourceDetail?.Language != GlobalOptions.Language)
+            {
                 _objCachedSourceDetail = null;
+            }
+
             SourceDetail.SetControl(sourceControl);
         }
     }

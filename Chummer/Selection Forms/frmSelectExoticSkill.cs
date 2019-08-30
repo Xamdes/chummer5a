@@ -37,15 +37,9 @@ namespace Chummer
             _objCharacter = objCharacter;
         }
 
-        private void cmdOK_Click(object sender, EventArgs e)
-        {
-            DialogResult = DialogResult.OK;
-        }
+        private void cmdOK_Click(object sender, EventArgs e) => DialogResult = DialogResult.OK;
 
-        private void cmdCancel_Click(object sender, EventArgs e)
-        {
-            DialogResult = DialogResult.Cancel;
-        }
+        private void cmdCancel_Click(object sender, EventArgs e) => DialogResult = DialogResult.Cancel;
 
         private void frmSelectExoticSkill_Load(object sender, EventArgs e)
         {
@@ -53,13 +47,20 @@ namespace Chummer
 
             // Build the list of Exotic Active Skills from the Skills file.
             using (XmlNodeList objXmlSkillList = XmlManager.Load("skills.xml").SelectNodes("/chummer/skills/skill[exotic = \"True\"]"))
+            {
                 if (objXmlSkillList?.Count > 0)
+                {
                     foreach (XmlNode objXmlSkill in objXmlSkillList)
                     {
                         string strName = objXmlSkill["name"]?.InnerText;
                         if (!string.IsNullOrEmpty(strName))
+                        {
                             lstSkills.Add(new ListItem(strName, objXmlSkill["translate"]?.InnerText ?? strName));
+                        }
                     }
+                }
+            }
+
             lstSkills.Sort(CompareListItems.CompareNames);
             cboCategory.BeginUpdate();
             cboCategory.ValueMember = "Value";
@@ -68,19 +69,20 @@ namespace Chummer
 
             // Select the first Skill in the list.
             if (lstSkills.Count > 0)
+            {
                 cboCategory.SelectedIndex = 0;
+            }
             else
+            {
                 cmdOK.Enabled = false;
+            }
 
             cboCategory.EndUpdate();
 
             BuildList();
         }
 
-        private void cboCategory_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            BuildList();
-        }
+        private void cboCategory_SelectedIndexChanged(object sender, EventArgs e) => BuildList();
         #endregion
 
         #region Properties
@@ -104,21 +106,32 @@ namespace Chummer
                 List<ListItem> lstSkillSpecialisations = new List<ListItem>();
 
                 using (XmlNodeList objXmlWeaponList = XmlManager.Load("weapons.xml").SelectNodes("/chummer/weapons/weapon[(category = \"" + strSelectedCategory + "s\" or useskill = \"" + strSelectedCategory + "\") and (" + _objCharacter.Options.BookXPath() + ")]"))
+                {
                     if (objXmlWeaponList?.Count > 0)
+                    {
                         foreach (XmlNode objXmlWeapon in objXmlWeaponList)
                         {
                             string strName = objXmlWeapon["name"]?.InnerText;
                             if (!string.IsNullOrEmpty(strName))
+                            {
                                 lstSkillSpecialisations.Add(new ListItem(strName, objXmlWeapon["translate"]?.InnerText ?? strName));
+                            }
                         }
+                    }
+                }
 
                 using (XmlNodeList objXmlSelectedSkill = XmlManager.Load("skills.xml").SelectNodes("/chummer/skills/skill[name = \"" + strSelectedCategory + "\" and (" + _objCharacter.Options.BookXPath() + ")]/specs/spec"))
+                {
                     if (objXmlSelectedSkill?.Count > 0)
+                    {
                         foreach (XmlNode objXmlSpecialization in objXmlSelectedSkill)
                         {
                             string strInnerText = objXmlSpecialization.InnerText;
                             lstSkillSpecialisations.Add(new ListItem(strInnerText, objXmlSpecialization.Attributes?["translate"]?.InnerText ?? strInnerText));
                         }
+                    }
+                }
+
                 List<string> lstExistingExoticSkills = _objCharacter.SkillsSection.Skills
                     .Where(x => x.Name == strSelectedCategory).Select(x => ((ExoticSkill)x).Specific).ToList();
                 lstSkillSpecialisations.RemoveAll(x => lstExistingExoticSkills.Contains(x.Value));
@@ -130,7 +143,10 @@ namespace Chummer
 
                 // Select the first Skill in the list.
                 if (lstSkillSpecialisations.Count > 0)
+                {
                     cboSkillSpecialisations.SelectedIndex = 0;
+                }
+
                 cboSkillSpecialisations.EndUpdate();
             }
         }

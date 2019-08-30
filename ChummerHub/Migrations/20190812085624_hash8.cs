@@ -7,10 +7,7 @@ namespace ChummerHub.Migrations
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'hash8'
     {
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'hash8.Up(MigrationBuilder)'
-        protected override void Up(MigrationBuilder migrationBuilder)
-#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'hash8.Up(MigrationBuilder)'
-        {
-            migrationBuilder.AlterColumn<string>(
+        protected override void Up(MigrationBuilder migrationBuilder) => migrationBuilder.AlterColumn<string>(
                 name: "Hash",
                 table: "SINners",
                 maxLength: 8,
@@ -18,13 +15,9 @@ namespace ChummerHub.Migrations
                 oldClrType: typeof(string),
                 oldMaxLength: 64,
                 oldNullable: true);
-        }
 
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'hash8.Down(MigrationBuilder)'
-        protected override void Down(MigrationBuilder migrationBuilder)
-#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'hash8.Down(MigrationBuilder)'
-        {
-            migrationBuilder.AlterColumn<string>(
+        protected override void Down(MigrationBuilder migrationBuilder) => migrationBuilder.AlterColumn<string>(
                 name: "Hash",
                 table: "SINners",
                 maxLength: 64,
@@ -32,6 +25,5 @@ namespace ChummerHub.Migrations
                 oldClrType: typeof(string),
                 oldMaxLength: 8,
                 oldNullable: true);
-        }
     }
 }

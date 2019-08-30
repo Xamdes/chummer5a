@@ -68,7 +68,10 @@ namespace Chummer
                         strAmmoName += strSpace + '[' + strPlugins + ']';
                     }
                     if (objGear.Rating > 0)
+                    {
                         strAmmoName += strSpace + '(' + LanguageManager.GetString("String_Rating", GlobalOptions.Language) + strSpace + objGear.Rating.ToString(GlobalOptions.CultureInfo) + ')';
+                    }
+
                     strAmmoName += strSpace + 'x' + objGear.Quantity.ToString(GlobalOptions.InvariantCultureInfo);
                     lstItems.Add(new ListItem(objGear.InternalId, strAmmoName));
                 }
@@ -99,12 +102,16 @@ namespace Chummer
                 if (!_objCharacter.Options.LicenseRestricted)
                 {
                     using (XmlNodeList objXmlList = XmlManager.Load("licenses.xml").SelectNodes("/chummer/licenses/license"))
+                    {
                         if (objXmlList != null)
+                        {
                             foreach (XmlNode objNode in objXmlList)
                             {
                                 string strInnerText = objNode.InnerText;
                                 lstItems.Add(new ListItem(strInnerText, objNode.Attributes?["translate"]?.InnerText ?? strInnerText));
                             }
+                        }
+                    }
                 }
                 else
                 {
@@ -244,13 +251,17 @@ namespace Chummer
 
             // If there's only 1 value in the list, the character doesn't have a choice, so just accept it.
             if (cboAmmo.Items.Count == 1 && _blnAllowAutoSelect)
+            {
                 AcceptForm();
+            }
 
             if (!string.IsNullOrEmpty(_strForceItem))
             {
                 cboAmmo.SelectedIndex = cboAmmo.FindStringExact(_strForceItem);
                 if (cboAmmo.SelectedIndex != -1)
+                {
                     AcceptForm();
+                }
             }
             if (!string.IsNullOrEmpty(_strSelectItemOnLoad))
             {
@@ -259,26 +270,26 @@ namespace Chummer
                     string strOldSelected = cboAmmo.SelectedValue?.ToString();
                     cboAmmo.SelectedValue = _strSelectItemOnLoad;
                     if (cboAmmo.SelectedIndex == -1 && !string.IsNullOrEmpty(strOldSelected))
+                    {
                         cboAmmo.SelectedValue = strOldSelected;
+                    }
                 }
                 else
+                {
                     cboAmmo.Text = _strSelectItemOnLoad;
+                }
             }
             cboAmmo.EndUpdate();
 
             if (cboAmmo.Items.Count < 0)
+            {
                 cmdOK.Enabled = false;
+            }
         }
 
-        private void cmdCancel_Click(object sender, EventArgs e)
-        {
-            DialogResult = DialogResult.Cancel;
-        }
+        private void cmdCancel_Click(object sender, EventArgs e) => DialogResult = DialogResult.Cancel;
 
-        private void cmdOK_Click(object sender, EventArgs e)
-        {
-            AcceptForm();
-        }
+        private void cmdOK_Click(object sender, EventArgs e) => AcceptForm();
         #endregion
 
         #region Properties
@@ -350,9 +361,15 @@ namespace Chummer
             get
             {
                 if (cboAmmo == null)
+                {
                     return null;
+                }
+
                 if (cboAmmo.DropDownStyle == ComboBoxStyle.DropDownList && cboAmmo.SelectedValue != null)
+                {
                     return cboAmmo.SelectedValue.ToString();
+                }
+
                 return cboAmmo.Text;
             }
             set => _strSelectItemOnLoad = value;
@@ -393,10 +410,7 @@ namespace Chummer
         /// <summary>
         /// Accept the selected item and close the form.
         /// </summary>
-        private void AcceptForm()
-        {
-            DialogResult = DialogResult.OK;
-        }
+        private void AcceptForm() => DialogResult = DialogResult.OK;
         #endregion
     }
 }

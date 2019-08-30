@@ -121,13 +121,17 @@ namespace ChummerDataViewer.Model
                 _worker.StatusChanged += WorkerOnStatusChanged;
             }
             else
+            {
                 throw new InvalidOperationException();
+            }
         }
 
         private void WorkerOnStatusChanged(INotifyThreadStatus sender, StatusChangedEventArgs args)
         {
             if (args.AttachedData?.guid != Guid ?? false)
+            {
                 return;
+            }
 
             _worker.StatusChanged -= WorkerOnStatusChanged;
 
@@ -165,8 +169,9 @@ namespace ChummerDataViewer.Model
 
             _database.SetStackTrace(Guid, exception);
             if (userstory != null)
+            {
                 _database.SetUserStory(Guid, userstory);
-
+            }
 
             Progress = CrashReportProcessingProgress.Downloaded;
         }

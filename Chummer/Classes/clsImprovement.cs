@@ -38,11 +38,8 @@ namespace Chummer
     [DebuggerDisplay("{" + nameof(DisplayDebug) + "()}")]
     public class Improvement : IHasNotes, IHasInternalId, ICanSort
     {
-        private Logger Log = NLog.LogManager.GetCurrentClassLogger();
-        private string DisplayDebug()
-        {
-            return $"{_objImprovementType} ({_intVal}, {_intRating}) 🡐 {_objImprovementSource}, {_strSourceName}, {_strImprovedName}";
-        }
+        private readonly Logger Log = NLog.LogManager.GetCurrentClassLogger();
+        private string DisplayDebug() => $"{_objImprovementType} ({_intVal}, {_intRating}) 🡐 {_objImprovementSource}, {_strSourceName}, {_strImprovedName}";
 
         public enum ImprovementType
         {
@@ -410,7 +407,10 @@ namespace Chummer
                 strValue = strValue.Replace("InitiativePass", "InitiativeDice");
             }
             if (strValue == "ContactForceLoyalty")
+            {
                 strValue = "ContactForcedLoyalty";
+            }
+
             return (ImprovementType)Enum.Parse(typeof(ImprovementType), strValue);
         }
 
@@ -421,17 +421,17 @@ namespace Chummer
         public static ImprovementSource ConvertToImprovementSource(string strValue)
         {
             if (strValue == "MartialArtAdvantage")
+            {
                 strValue = "MartialArtTechnique";
+            }
+
             return (ImprovementSource)Enum.Parse(typeof(ImprovementSource), strValue);
         }
 
         #endregion
 
         #region Save and Load Methods
-        public Improvement(Character objCharacter)
-        {
-            _objCharacter = objCharacter;
-        }
+        public Improvement(Character objCharacter) => _objCharacter = objCharacter;
 
         /// <summary>
         /// Save the object's XML to the XmlWriter.
@@ -443,7 +443,10 @@ namespace Chummer
 
             objWriter.WriteStartElement("improvement");
             if (!string.IsNullOrEmpty(_strUniqueName))
+            {
                 objWriter.WriteElementString("unique", _strUniqueName);
+            }
+
             objWriter.WriteElementString("target", _strTarget);
             objWriter.WriteElementString("improvedname", _strImprovedName);
             objWriter.WriteElementString("sourcename", _strSourceName);
@@ -477,7 +480,10 @@ namespace Chummer
         public void Load(XmlNode objNode)
         {
             if (objNode == null)
+            {
                 return;
+            }
+
             Log.Trace("Load enter");
 
             objNode.TryGetStringFieldQuickly("unique", ref _strUniqueName);
@@ -493,9 +499,14 @@ namespace Chummer
             objNode.TryGetStringFieldQuickly("exclude", ref _strExclude);
             objNode.TryGetStringFieldQuickly("condition", ref _strCondition);
             if (objNode["improvementttype"] != null)
+            {
                 _objImprovementType = ConvertToImprovementType(objNode["improvementttype"].InnerText);
+            }
+
             if (objNode["improvementsource"] != null)
+            {
                 _objImprovementSource = ConvertToImprovementSource(objNode["improvementsource"].InnerText);
+            }
             // Legacy shim
             if (_objImprovementType == ImprovementType.LimitModifier && string.IsNullOrEmpty(_strCondition) && !string.IsNullOrEmpty(_strExclude))
             {
@@ -630,7 +641,9 @@ namespace Chummer
                 {
                     _objImprovementSource = value;
                     if (Enabled)
+                    {
                         ImprovementManager.ClearCachedValue(_objCharacter, ImprovementType.MatrixInitiativeDice, ImprovedName);
+                    }
                 }
             }
         }
@@ -674,7 +687,9 @@ namespace Chummer
                 {
                     _intAug = value;
                     if (Enabled)
+                    {
                         ImprovementManager.ClearCachedValue(_objCharacter, ImproveType, ImprovedName);
+                    }
                 }
             }
         }
@@ -691,7 +706,9 @@ namespace Chummer
                 {
                     _intVal = value;
                     if (Enabled)
+                    {
                         ImprovementManager.ClearCachedValue(_objCharacter, ImproveType, ImprovedName);
+                    }
                 }
             }
         }
@@ -708,7 +725,9 @@ namespace Chummer
                 {
                     _intRating = value;
                     if (Enabled)
+                    {
                         ImprovementManager.ClearCachedValue(_objCharacter, ImproveType, ImprovedName);
+                    }
                 }
             }
         }
@@ -743,7 +762,9 @@ namespace Chummer
                 {
                     _strUniqueName = value;
                     if (Enabled)
+                    {
                         ImprovementManager.ClearCachedValue(_objCharacter, ImproveType, ImprovedName);
+                    }
                 }
             }
         }
@@ -760,7 +781,9 @@ namespace Chummer
                 {
                     _blnAddToRating = value;
                     if (Enabled)
+                    {
                         ImprovementManager.ClearCachedValue(_objCharacter, ImproveType, ImprovedName);
+                    }
                 }
             }
         }
@@ -817,21 +840,34 @@ namespace Chummer
 
                         HashSet<string> setAttributePropertiesChanged = new HashSet<string>();
                         if (AugmentedMaximum != 0)
+                        {
                             setAttributePropertiesChanged.Add(nameof(CharacterAttrib.AugmentedMaximumModifiers));
+                        }
+
                         if (Maximum != 0)
+                        {
                             setAttributePropertiesChanged.Add(nameof(CharacterAttrib.MaximumModifiers));
+                        }
+
                         if (Minimum != 0)
+                        {
                             setAttributePropertiesChanged.Add(nameof(CharacterAttrib.MinimumModifiers));
+                        }
+
                         if (blnIsBase)
                         {
                             strTargetAttribute = strTargetAttribute.TrimEndOnce("Base", true);
                             if (Augmented != 0)
+                            {
                                 setAttributePropertiesChanged.Add(nameof(CharacterAttrib.AttributeValueModifiers));
+                            }
                         }
                         else
                         {
                             if (Augmented != 0)
+                            {
                                 setAttributePropertiesChanged.Add(nameof(CharacterAttrib.AttributeModifiers));
+                            }
                         }
                         if (setAttributePropertiesChanged.Count > 0)
                         {
@@ -1913,11 +1949,17 @@ namespace Chummer
                 if (!string.IsNullOrEmpty(Notes))
                 {
                     if (Enabled)
+                    {
                         return Color.SaddleBrown;
+                    }
+
                     return Color.SandyBrown;
                 }
                 if (Enabled)
+                {
                     return SystemColors.WindowText;
+                }
+
                 return SystemColors.GrayText;
             }
         }
@@ -1935,10 +1977,7 @@ namespace Chummer
         public Improvement.ImprovementType ImprovementType => _objTupleKey.Item2;
         public string ImprovementName => _objTupleKey.Item3;
 
-        public ImprovementDictionaryKey(Character objCharacter, Improvement.ImprovementType eImprovementType, string strImprovementName)
-        {
-            _objTupleKey = new Tuple<Character, Improvement.ImprovementType, string>(objCharacter, eImprovementType, strImprovementName);
-        }
+        public ImprovementDictionaryKey(Character objCharacter, Improvement.ImprovementType eImprovementType, string strImprovementName) => _objTupleKey = new Tuple<Character, Improvement.ImprovementType, string>(objCharacter, eImprovementType, strImprovementName);
 
         public override bool Equals(object obj)
         {
@@ -1957,43 +1996,22 @@ namespace Chummer
             return false;
         }
 
-        public override int GetHashCode()
-        {
-            return CharacterObject.GetHashCode() + ImprovementType.GetHashCode() + ImprovementName.GetHashCode();
-        }
+        public override int GetHashCode() => CharacterObject.GetHashCode() + ImprovementType.GetHashCode() + ImprovementName.GetHashCode();
 
-        public override string ToString()
-        {
-            return _objTupleKey.ToString();
-        }
+        public override string ToString() => _objTupleKey.ToString();
 
-        public static bool operator ==(ImprovementDictionaryKey x, object y)
-        {
-            return x.Equals(y);
-        }
+        public static bool operator ==(ImprovementDictionaryKey x, object y) => x.Equals(y);
 
-        public static bool operator !=(ImprovementDictionaryKey x, object y)
-        {
-            return !x.Equals(y);
-        }
+        public static bool operator !=(ImprovementDictionaryKey x, object y) => !x.Equals(y);
 
-        public static bool operator ==(object x, ImprovementDictionaryKey y)
-        {
-            return x?.Equals(y) ?? y == null;
-        }
+        public static bool operator ==(object x, ImprovementDictionaryKey y) => x?.Equals(y) ?? y == null;
 
-        public static bool operator !=(object x, ImprovementDictionaryKey y)
-        {
-            return !(x?.Equals(y) ?? y == null);
-        }
+        public static bool operator !=(object x, ImprovementDictionaryKey y) => !(x?.Equals(y) ?? y == null);
     }
 
     public class TransactingImprovement
     {
-        public TransactingImprovement(Improvement objImprovement)
-        {
-            ImprovementObject = objImprovement;
-        }
+        public TransactingImprovement(Improvement objImprovement) => ImprovementObject = objImprovement;
 
         public Improvement ImprovementObject
         {
@@ -2008,7 +2026,7 @@ namespace Chummer
 
     public static class ImprovementManager
     {
-        private static Logger Log = NLog.LogManager.GetCurrentClassLogger();
+        private static readonly Logger Log = NLog.LogManager.GetCurrentClassLogger();
         // String that will be used to limit the selection in Pick forms.
         private static string s_StrLimitSelection = string.Empty;
 
@@ -2053,16 +2071,26 @@ namespace Chummer
             {
                 ImprovementDictionaryKey objCheckKey = new ImprovementDictionaryKey(objCharacter, eImprovementType, strImprovementName);
                 if (!s_DictionaryCachedValues.TryAdd(objCheckKey, int.MinValue))
+                {
                     s_DictionaryCachedValues[objCheckKey] = int.MinValue;
+                }
+
                 if (!s_DictionaryCachedAugmentedValues.TryAdd(objCheckKey, int.MinValue))
+                {
                     s_DictionaryCachedAugmentedValues[objCheckKey] = int.MinValue;
+                }
             }
             else
             {
                 foreach (ImprovementDictionaryKey objCheckKey in s_DictionaryCachedValues.Keys.Where(x => x.CharacterObject == objCharacter && x.ImprovementType == eImprovementType).ToList())
+                {
                     s_DictionaryCachedValues[objCheckKey] = int.MinValue;
+                }
+
                 foreach (ImprovementDictionaryKey objCheckKey in s_DictionaryCachedAugmentedValues.Keys.Where(x => x.CharacterObject == objCharacter && x.ImprovementType == eImprovementType).ToList())
+                {
                     s_DictionaryCachedAugmentedValues[objCheckKey] = int.MinValue;
+                }
             }
         }
 
@@ -2071,12 +2099,16 @@ namespace Chummer
             foreach (ImprovementDictionaryKey objKey in s_DictionaryCachedValues.Keys.ToList())
             {
                 if (objKey.CharacterObject == objCharacter)
+                {
                     s_DictionaryCachedValues.TryRemove(objKey, out int _);
+                }
             }
             foreach (ImprovementDictionaryKey objKey in s_DictionaryCachedAugmentedValues.Keys.ToList())
             {
                 if (objKey.CharacterObject == objCharacter)
+                {
                     s_DictionaryCachedAugmentedValues.TryRemove(objKey, out int _);
+                }
             }
             s_DictionaryTransactions.TryRemove(objCharacter, out List<TransactingImprovement> _);
         }
@@ -2151,7 +2183,10 @@ namespace Chummer
                 if (objImprovement.ImproveType != objImprovementType || !objImprovement.Enabled ||
                     objImprovement.Custom ||
                     (blnUnconditionalOnly && !string.IsNullOrEmpty(objImprovement.Condition)))
+                {
                     continue;
+                }
+
                 string strLoopImprovedName = objImprovement.ImprovedName;
                 bool blnAllowed = objImprovement.ImproveType == objImprovementType &&
                                   !(objCharacter.RESEnabled && objImprovement.ImproveSource == Improvement.ImprovementSource.Gear &&
@@ -2163,7 +2198,10 @@ namespace Chummer
                                    blnIncludeNonImproved && string.IsNullOrWhiteSpace(strLoopImprovedName));
 
                 if (!blnAllowed)
+                {
                     continue;
+                }
+
                 string strUniqueName = objImprovement.UniqueName;
                 if (!string.IsNullOrEmpty(strUniqueName))
                 {
@@ -2171,7 +2209,9 @@ namespace Chummer
                     if (dicUniqueNames.TryGetValue(strLoopImprovedName, out HashSet<string> lstUniqueNames))
                     {
                         if (!lstUniqueNames.Contains(strUniqueName))
+                        {
                             lstUniqueNames.Add(strUniqueName);
+                        }
                     }
                     else
                     {
@@ -2218,7 +2258,9 @@ namespace Chummer
                         foreach (Tuple<string, int> objLoopUniquePair in lstUniquePairs)
                         {
                             if (objLoopUniquePair.Item1 == "precedence0")
+                            {
                                 intHighest = Math.Max(intHighest, objLoopUniquePair.Item2);
+                            }
                         }
                         if (lstUniqueNames.Contains("precedence-1"))
                         {
@@ -2240,16 +2282,24 @@ namespace Chummer
                             foreach (Tuple<string, int> objLoopUniquePair in lstUniquePairs)
                             {
                                 if (objLoopUniquePair.Item1 == strUniqueName)
+                                {
                                     intInnerLoopValue = Math.Max(intInnerLoopValue, objLoopUniquePair.Item2);
+                                }
                             }
                             if (intInnerLoopValue != int.MinValue)
+                            {
                                 intLoopValue += intInnerLoopValue;
+                            }
                         }
                     }
                     if (blnValuesDictionaryContains)
+                    {
                         dicValues[strLoopImprovedName] = intLoopValue;
+                    }
                     else
+                    {
                         dicValues.Add(strLoopImprovedName, intLoopValue);
+                    }
                 }
             }
 
@@ -2261,7 +2311,10 @@ namespace Chummer
             {
                 if (!objImprovement.Custom || !objImprovement.Enabled ||
                     (blnUnconditionalOnly && !string.IsNullOrEmpty(objImprovement.Condition)))
+                {
                     continue;
+                }
+
                 string strLoopImprovedName = objImprovement.ImprovedName;
                 bool blnAllowed = objImprovement.ImproveType == objImprovementType &&
                                   !(objCharacter.RESEnabled && objImprovement.ImproveSource == Improvement.ImprovementSource.Gear &&
@@ -2272,7 +2325,10 @@ namespace Chummer
                                   (string.IsNullOrEmpty(strImprovedName) || strImprovedName == strLoopImprovedName);
 
                 if (!blnAllowed)
+                {
                     continue;
+                }
+
                 string strUniqueName = objImprovement.UniqueName;
                 if (!string.IsNullOrEmpty(strUniqueName))
                 {
@@ -2280,7 +2336,9 @@ namespace Chummer
                     if (dicUniqueNames.TryGetValue(strLoopImprovedName, out HashSet<string> lstUniqueNames))
                     {
                         if (!lstUniqueNames.Contains(strUniqueName))
+                        {
                             lstUniqueNames.Add(strUniqueName);
+                        }
                     }
                     else
                     {
@@ -2326,15 +2384,23 @@ namespace Chummer
                         foreach (Tuple<string, int> objLoopUniquePair in lstUniquePairs)
                         {
                             if (objLoopUniquePair.Item1 == strUniqueName)
+                            {
                                 intInnerLoopValue = Math.Max(intInnerLoopValue, objLoopUniquePair.Item2);
+                            }
                         }
                         if (intInnerLoopValue != int.MinValue)
+                        {
                             intLoopValue += intInnerLoopValue;
+                        }
                     }
                     if (blnValuesDictionaryContains)
+                    {
                         dicCustomValues[strLoopImprovedName] = intLoopValue;
+                    }
                     else
+                    {
                         dicCustomValues.Add(strLoopImprovedName, intLoopValue);
+                    }
                 }
             }
 
@@ -2363,7 +2429,10 @@ namespace Chummer
                     int intLoopValue = objLoopValuePair.Value;
                     ImprovementDictionaryKey objLoopCacheKey = new ImprovementDictionaryKey(objCharacter, objImprovementType, strLoopImprovedName);
                     if (!s_DictionaryCachedValues.TryAdd(objLoopCacheKey, intLoopValue))
+                    {
                         s_DictionaryCachedValues[objLoopCacheKey] = intLoopValue;
+                    }
+
                     intReturn += intLoopValue;
                 }
             }
@@ -2455,7 +2524,9 @@ namespace Chummer
                             if (dicUniqueNames.TryGetValue(strLoopImprovedName, out HashSet<string> lstUniqueNames))
                             {
                                 if (!lstUniqueNames.Contains(strUniqueName))
+                                {
                                     lstUniqueNames.Add(strUniqueName);
+                                }
                             }
                             else
                             {
@@ -2504,7 +2575,9 @@ namespace Chummer
                         foreach (Tuple<string, int> objLoopUniquePair in lstUniquePairs)
                         {
                             if (objLoopUniquePair.Item1 == "precedence0")
+                            {
                                 intHighest = Math.Max(intHighest, objLoopUniquePair.Item2);
+                            }
                         }
                         if (lstUniqueNames.Contains("precedence-1"))
                         {
@@ -2526,16 +2599,24 @@ namespace Chummer
                             foreach (Tuple<string, int> objLoopUniquePair in lstUniquePairs)
                             {
                                 if (objLoopUniquePair.Item1 == strUniqueName)
+                                {
                                     intInnerLoopValue = Math.Max(intInnerLoopValue, objLoopUniquePair.Item2);
+                                }
                             }
                             if (intInnerLoopValue != int.MinValue)
+                            {
                                 intLoopValue += intInnerLoopValue;
+                            }
                         }
                     }
                     if (blnValuesDictionaryContains)
+                    {
                         dicValues[strLoopImprovedName] = intLoopValue;
+                    }
                     else
+                    {
                         dicValues.Add(strLoopImprovedName, intLoopValue);
+                    }
                 }
             }
 
@@ -2565,7 +2646,9 @@ namespace Chummer
                             if (dicUniqueNames.TryGetValue(strLoopImprovedName, out HashSet<string> lstUniqueNames))
                             {
                                 if (!lstUniqueNames.Contains(strUniqueName))
+                                {
                                     lstUniqueNames.Add(strUniqueName);
+                                }
                             }
                             else
                             {
@@ -2613,15 +2696,23 @@ namespace Chummer
                         foreach (Tuple<string, int> objLoopUniquePair in lstUniquePairs)
                         {
                             if (objLoopUniquePair.Item1 == strUniqueName)
+                            {
                                 intInnerLoopValue = Math.Max(intInnerLoopValue, objLoopUniquePair.Item2);
+                            }
                         }
                         if (intInnerLoopValue != int.MinValue)
+                        {
                             intLoopValue += intInnerLoopValue;
+                        }
                     }
                     if (blnValuesDictionaryContains)
+                    {
                         dicCustomValues[strLoopImprovedName] = intLoopValue;
+                    }
                     else
+                    {
                         dicCustomValues.Add(strLoopImprovedName, intLoopValue);
+                    }
                 }
             }
 
@@ -2650,7 +2741,10 @@ namespace Chummer
                     int intLoopValue = objLoopValuePair.Value;
                     ImprovementDictionaryKey objLoopCacheKey = new ImprovementDictionaryKey(objCharacter, objImprovementType, strLoopImprovedName);
                     if (!s_DictionaryCachedAugmentedValues.TryAdd(objLoopCacheKey, intLoopValue))
+                    {
                         s_DictionaryCachedAugmentedValues[objLoopCacheKey] = intLoopValue;
+                    }
+
                     intReturn += intLoopValue;
                 }
             }
@@ -2667,7 +2761,9 @@ namespace Chummer
         public static int ValueToInt(Character objCharacter, string strValue, int intRating)
         {
             if (string.IsNullOrEmpty(strValue))
+            {
                 return 0;
+            }
             //         Log.Enter("ValueToInt");
             //         Log.Info("strValue = " + strValue);
             //Log.Info("intRating = " + intRating.ToString());
@@ -2709,11 +2805,16 @@ namespace Chummer
                 int intMinimumRating = 0;
                 string strMinimumRating = xmlBonusNode.Attributes?["minimumrating"]?.InnerText;
                 if (!string.IsNullOrWhiteSpace(strMinimumRating))
+                {
                     intMinimumRating = ValueToInt(objCharacter, strMinimumRating, intRating);
+                }
+
                 int intMaximumRating = int.MaxValue;
                 string strMaximumRating = xmlBonusNode.Attributes?["maximumrating"]?.InnerText;
                 if (!string.IsNullOrWhiteSpace(strMaximumRating))
+                {
                     intMaximumRating = ValueToInt(objCharacter, strMaximumRating, intRating);
+                }
 
                 HashSet<string> setAllowedCategories = null;
                 string strOnlyCategory = xmlBonusNode.SelectSingleNode("@skillcategory")?.InnerText;
@@ -2797,7 +2898,10 @@ namespace Chummer
                     if (setForbiddenCategories?.Count > 0)
                     {
                         if (objFilter.Length > 0)
+                        {
                             objFilter.Append(" and ");
+                        }
+
                         objFilter.Append("not(");
                         foreach (string strCategory in setForbiddenCategories)
                         {
@@ -2810,7 +2914,10 @@ namespace Chummer
                     if (setAllowedNames?.Count > 0)
                     {
                         if (objFilter.Length > 0)
+                        {
                             objFilter.Append(" and ");
+                        }
+
                         objFilter.Append('(');
                         foreach (string strName in setAllowedNames)
                         {
@@ -2823,7 +2930,10 @@ namespace Chummer
                     if (setProcessedSkillNames.Count > 0)
                     {
                         if (objFilter.Length > 0)
+                        {
                             objFilter.Append(" and ");
+                        }
+
                         objFilter.Append("not(");
                         foreach (string strName in setProcessedSkillNames)
                         {
@@ -2836,7 +2946,10 @@ namespace Chummer
                     if (setAllowedLinkedAttributes?.Count > 0)
                     {
                         if (objFilter.Length > 0)
+                        {
                             objFilter.Append(" and ");
+                        }
+
                         objFilter.Append('(');
                         foreach (string strAttribute in setAllowedLinkedAttributes)
                         {
@@ -2856,7 +2969,9 @@ namespace Chummer
                             {
                                 string strName = xmlSkill["name"]?.InnerText;
                                 if (!string.IsNullOrEmpty(strName))
+                                {
                                     lstDropdownItems.Add(new ListItem(strName, xmlSkill["translate"]?.InnerText ?? strName));
+                                }
                             }
                         }
                     }
@@ -2869,9 +2984,13 @@ namespace Chummer
                     Description = LanguageManager.GetString("Title_SelectSkill", GlobalOptions.Language)
                 };
                 if (setAllowedNames != null)
+                {
                     frmPickSkill.GeneralItems = lstDropdownItems;
+                }
                 else
+                {
                     frmPickSkill.DropdownItems = lstDropdownItems;
+                }
 
                 frmPickSkill.ShowDialog();
 
@@ -2893,35 +3012,63 @@ namespace Chummer
                 };
                 string strMinimumRating = xmlBonusNode.Attributes?["minimumrating"]?.InnerText;
                 if (!string.IsNullOrWhiteSpace(strMinimumRating))
+                {
                     frmPickSkill.MinimumRating = ValueToInt(objCharacter, strMinimumRating, intRating);
+                }
+
                 string strMaximumRating = xmlBonusNode.Attributes?["maximumrating"]?.InnerText;
                 if (!string.IsNullOrWhiteSpace(strMaximumRating))
+                {
                     frmPickSkill.MaximumRating = ValueToInt(objCharacter, strMaximumRating, intRating);
+                }
 
                 XmlNode xmlSkillCategories = xmlBonusNode.SelectSingleNode("skillcategories");
                 if (xmlSkillCategories != null)
+                {
                     frmPickSkill.LimitToCategories = xmlSkillCategories;
+                }
+
                 string strTemp = xmlBonusNode.SelectSingleNode("@skillcategory")?.InnerText;
                 if (!string.IsNullOrEmpty(strTemp))
+                {
                     frmPickSkill.OnlyCategory = strTemp;
+                }
+
                 strTemp = xmlBonusNode.SelectSingleNode("@skillgroup")?.InnerText;
                 if (!string.IsNullOrEmpty(strTemp))
+                {
                     frmPickSkill.OnlySkillGroup = strTemp;
+                }
+
                 strTemp = xmlBonusNode.SelectSingleNode("@excludecategory")?.InnerText;
                 if (!string.IsNullOrEmpty(strTemp))
+                {
                     frmPickSkill.ExcludeCategory = strTemp;
+                }
+
                 strTemp = xmlBonusNode.SelectSingleNode("@excludeskillgroup")?.InnerText;
                 if (!string.IsNullOrEmpty(strTemp))
+                {
                     frmPickSkill.ExcludeSkillGroup = strTemp;
+                }
+
                 strTemp = xmlBonusNode.SelectSingleNode("@limittoskill")?.InnerText;
                 if (!string.IsNullOrEmpty(strTemp))
+                {
                     frmPickSkill.LimitToSkill = strTemp;
+                }
+
                 strTemp = xmlBonusNode.SelectSingleNode("@excludeskill")?.InnerText;
                 if (!string.IsNullOrEmpty(strTemp))
+                {
                     frmPickSkill.ExcludeSkill = strTemp;
+                }
+
                 strTemp = xmlBonusNode.SelectSingleNode("@limittoattribute")?.InnerText;
                 if (!string.IsNullOrEmpty(strTemp))
+                {
                     frmPickSkill.LinkedAttribute = strTemp;
+                }
 
                 if (!string.IsNullOrEmpty(ForcedValue))
                 {
@@ -2996,7 +3143,9 @@ namespace Chummer
             string strUnique = nodBonus.Attributes?["unique"]?.InnerText ?? string.Empty;
             // If no friendly name was provided, use the one from SourceName.
             if (string.IsNullOrEmpty(strFriendlyName))
+            {
                 strFriendlyName = strSourceName;
+            }
 
             if (nodBonus.HasChildNodes)
             {
@@ -3043,7 +3192,10 @@ namespace Chummer
                         s_StrSelectedValue = frmPickText.SelectedValue;
                     }
                     if (blnConcatSelectedValue)
+                    {
                         strSourceName += LanguageManager.GetString("String_Space", GlobalOptions.Language) + '(' + SelectedValue + ')';
+                    }
+
                     Log.Info("_strSelectedValue = " + SelectedValue);
                     Log.Info("strSourceName = " + strSourceName);
 
@@ -3106,7 +3258,9 @@ namespace Chummer
             bool blnConcatSelectedValue, int intRating, string strFriendlyName, XmlNode bonusNode, string strUnique, bool blnIgnoreMethodNotFound = false)
         {
             if (bonusNode == null)
+            {
                 return false;
+            }
             //As this became a really big nest of **** that it searched past, several places having equal paths just adding a different improvement, a more flexible method was chosen.
             //So far it is just a slower Dictionar<string, Action> but should (in theory...) be able to leverage this in the future to do it smarter with methods that are the same but
             //getting a different parameter injected
@@ -3189,7 +3343,9 @@ namespace Chummer
                         foreach (KnowledgeSkill objKnowledgeSkill in objCharacter.SkillsSection.KnowsoftSkills)
                         {
                             if (!objCharacter.SkillsSection.KnowledgeSkills.Contains(objKnowledgeSkill))
+                            {
                                 objCharacter.SkillsSection.KnowledgeSkills.Add(objKnowledgeSkill);
+                            }
                         }
                         break;
                     case Improvement.ImprovementType.Skillsoft:
@@ -3197,7 +3353,9 @@ namespace Chummer
                             foreach (KnowledgeSkill objKnowledgeSkill in objCharacter.SkillsSection.KnowsoftSkills.Where(x => x.InternalId == objImprovement.ImprovedName).ToList())
                             {
                                 if (blnCharacterHasSkillsoftAccess && !objCharacter.SkillsSection.KnowledgeSkills.Contains(objKnowledgeSkill))
+                                {
                                     objCharacter.SkillsSection.KnowledgeSkills.Add(objKnowledgeSkill);
+                                }
                             }
                         }
                         break;
@@ -3260,9 +3418,14 @@ namespace Chummer
                         string strImprovedName = objImprovement.ImprovedName;
                         // Legacy compatibility
                         if (string.IsNullOrEmpty(strImprovedName))
+                        {
                             objCharacter.PrototypeTranshuman = 1;
+                        }
                         else
+                        {
                             objCharacter.PrototypeTranshuman += Convert.ToDecimal(strImprovedName);
+                        }
+
                         break;
                     case Improvement.ImprovementType.Adapsin:
                         break;
@@ -3526,10 +3689,15 @@ namespace Chummer
                         if (string.IsNullOrEmpty(strImprovedName))
                         {
                             if (!blnHasDuplicate)
+                            {
                                 objCharacter.PrototypeTranshuman = 0;
+                            }
                         }
                         else
+                        {
                             objCharacter.PrototypeTranshuman -= Convert.ToDecimal(strImprovedName);
+                        }
+
                         break;
                     case Improvement.ImprovementType.Adapsin:
                         break;
@@ -3648,10 +3816,14 @@ namespace Chummer
                                         break;
                                 }
                                 if (strLoopCategory == strCategory)
+                                {
                                     break;
+                                }
                             }
                             if (strLoopCategory == strCategory)
+                            {
                                 continue;
+                            }
 
                             foreach (Skill objSkill in objCharacter.SkillsSection.Skills.Where(x => x.SkillCategory == strCategory).ToList())
                             {
@@ -3871,7 +4043,9 @@ namespace Chummer
                         if (string.IsNullOrEmpty(strImprovedName))
                         {
                             if (!blnHasDuplicate)
+                            {
                                 objCharacter.PrototypeTranshuman = 0;
+                            }
                         }
                         else
                         {
@@ -3880,8 +4054,12 @@ namespace Chummer
                             if (objCharacter.PrototypeTranshuman <= 0 && !blnReapplyImprovements)
                             {
                                 foreach (Cyberware objCyberware in objCharacter.Cyberware)
+                                {
                                     if (objCyberware.PrototypeTranshuman)
+                                    {
                                         objCyberware.PrototypeTranshuman = false;
+                                    }
+                                }
                             }
                         }
                         break;
@@ -3901,7 +4079,10 @@ namespace Chummer
                     case Improvement.ImprovementType.AddContact:
                         Contact NewContact = objCharacter.Contacts.FirstOrDefault(c => c.GUID == objImprovement.ImprovedName);
                         if (NewContact != null)
+                        {
                             objCharacter.Contacts.Remove(NewContact);
+                        }
+
                         break;
                     case Improvement.ImprovementType.Initiation:
                         objCharacter.InitiateGrade -= objImprovement.Value;
@@ -3972,15 +4153,25 @@ namespace Chummer
                                 decReturn += objWeapon.TotalCost;
                                 Weapon objParent = objWeapon.Parent;
                                 if (objParent != null)
+                                {
                                     objParent.Children.Remove(objWeapon);
+                                }
                                 else if (objVehicleMod != null)
+                                {
                                     objVehicleMod.Weapons.Remove(objWeapon);
+                                }
                                 else if (objWeaponMount != null)
+                                {
                                     objWeaponMount.Weapons.Remove(objWeapon);
+                                }
                                 else if (objVehicle != null)
+                                {
                                     objVehicle.Weapons.Remove(objWeapon);
+                                }
                                 else
+                                {
                                     objCharacter.Weapons.Remove(objWeapon);
+                                }
                             }
                         }
                         break;
@@ -4015,7 +4206,10 @@ namespace Chummer
                         break;
                     case Improvement.ImprovementType.SpecialSkills:
                         if (!blnHasDuplicate)
+                        {
                             objCharacter.SkillsSection.RemoveSkills((FilterOptions)Enum.Parse(typeof(FilterOptions), objImprovement.ImprovedName), !blnReapplyImprovements);
+                        }
+
                         break;
                     case Improvement.ImprovementType.SpecificQuality:
                         Quality objQuality = objCharacter.Qualities.FirstOrDefault(objLoopQuality => objLoopQuality.InternalId == objImprovement.ImprovedName);
@@ -4030,7 +4224,9 @@ namespace Chummer
                             Skill objSkill = objCharacter.SkillsSection.GetActiveSkill(objImprovement.ImprovedName);
                             SkillSpecialization objSkillSpec = objSkill?.Specializations.FirstOrDefault(x => x.Name == objImprovement.UniqueName);
                             if (objSkillSpec != null)
+                            {
                                 objSkill.Specializations.Remove(objSkillSpec);
+                            }
                         }
                         break;
                     case Improvement.ImprovementType.AIProgram:
@@ -4158,7 +4354,9 @@ namespace Chummer
 
                 // Add the Improvement to the Transaction List.
                 if (!s_DictionaryTransactions.TryAdd(objCharacter, new List<TransactingImprovement> { new TransactingImprovement(objImprovement) }))
+                {
                     s_DictionaryTransactions[objCharacter].Add(new TransactingImprovement(objImprovement));
+                }
             }
 
             Log.Debug("CreateImprovement exit");
@@ -4234,7 +4432,9 @@ namespace Chummer
             }
             // Fire each event once
             foreach (KeyValuePair<INotifyMultiplePropertyChanged, HashSet<string>> pairPropertiesChanged in dicPropertiesChanged)
+            {
                 pairPropertiesChanged.Key.OnMultiplePropertyChanged(pairPropertiesChanged.Value.ToArray());
+            }
         }
         #endregion
     }

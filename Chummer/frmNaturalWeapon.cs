@@ -52,7 +52,9 @@ namespace Chummer
             {
                 string strName = objXmlSkill.SelectSingleNode("name")?.Value;
                 if (!string.IsNullOrEmpty(strName))
+                {
                     lstSkills.Add(new ListItem(strName, objXmlSkill.SelectSingleNode("translate")?.Value ?? strName));
+                }
             }
 
             List<ListItem> lstDVBase = new List<ListItem>
@@ -94,15 +96,9 @@ namespace Chummer
             cboDVType.EndUpdate();
         }
 
-        private void cmdCancel_Click(object sender, EventArgs e)
-        {
-            DialogResult = DialogResult.Cancel;
-        }
+        private void cmdCancel_Click(object sender, EventArgs e) => DialogResult = DialogResult.Cancel;
 
-        private void cmdOK_Click(object sender, EventArgs e)
-        {
-            AcceptForm();
-        }
+        private void cmdOK_Click(object sender, EventArgs e) => AcceptForm();
         #endregion
 
         #region Methods
@@ -129,20 +125,30 @@ namespace Chummer
             if (decimal.ToInt32(nudDVMod.Value) != 0)
             {
                 if (nudDVMod.Value < 0)
+                {
                     strDamage += nudDVMod.Value.ToString(GlobalOptions.InvariantCultureInfo);
+                }
                 else
+                {
                     strDamage += '+' + nudDVMod.Value.ToString(GlobalOptions.InvariantCultureInfo);
+                }
             }
             strDamage += cboDVType.SelectedValue.ToString();
 
             // Create the AP value.
             string strAP;
             if (nudAP.Value == 0)
+            {
                 strAP = "0";
+            }
             else if (nudAP.Value > 0)
+            {
                 strAP = '+' + nudAP.Value.ToString(GlobalOptions.InvariantCultureInfo);
+            }
             else
+            {
                 strAP = nudAP.Value.ToString(GlobalOptions.InvariantCultureInfo);
+            }
 
             // Get the information for the Natural Weapon Critter Power.
             XPathNavigator objPower = _objXmlPowersDocument.SelectSingleNode("powers/power[name = \"Natural Weapon\"]");

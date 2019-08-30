@@ -87,9 +87,13 @@ namespace Chummer
                                         if (!string.IsNullOrEmpty(strKey) && !string.IsNullOrEmpty(strText))
                                         {
                                             if (TranslatedStrings.ContainsKey(strKey))
+                                            {
                                                 TranslatedStrings[strKey] = strText.Replace("\\n\\r", Environment.NewLine).Replace("\\n", Environment.NewLine);
+                                            }
                                             else
+                                            {
                                                 TranslatedStrings.Add(strKey, strText.Replace("\\n\\r", Environment.NewLine).Replace("\\n", Environment.NewLine));
+                                            }
                                         }
                                     }
                                 }
@@ -184,6 +188,7 @@ namespace Chummer
                     if (string.IsNullOrEmpty(ManagerErrorMessage))
                     {
                         using (XmlNodeList xmlStringList = objEnglishDocument.SelectNodes("/chummer/strings/string"))
+                        {
                             if (xmlStringList != null)
                             {
                                 foreach (XmlNode objNode in xmlStringList)
@@ -193,9 +198,13 @@ namespace Chummer
                                     if (!string.IsNullOrEmpty(strKey) && !string.IsNullOrEmpty(strText))
                                     {
                                         if (s_DictionaryEnglishStrings.ContainsKey(strKey))
+                                        {
                                             Utils.BreakIfDebug();
+                                        }
                                         else
+                                        {
                                             s_DictionaryEnglishStrings.Add(strKey, strText.Replace("\\n\\r", Environment.NewLine).Replace("\\n", Environment.NewLine));
+                                        }
                                     }
                                 }
                             }
@@ -204,11 +213,14 @@ namespace Chummer
                                 ManagerErrorMessage += "Language strings for the default language (" + GlobalOptions.DefaultLanguage + ") could not be loaded:" +
                                                        Environment.NewLine + Environment.NewLine + "No strings found in file.";
                             }
+                        }
                     }
                 }
                 else
+                {
                     ManagerErrorMessage += "Language strings for the default language (" + GlobalOptions.DefaultLanguage + ") could not be loaded:" +
                                            Environment.NewLine + Environment.NewLine + "File " + strFilePath + " does not exist or cannot be found.";
+                }
             }
         }
         #endregion
@@ -234,7 +246,9 @@ namespace Chummer
                     UpdateControls(objObject, strIntoLanguage, eIntoRightToLeft);
                 }
                 else if (strIntoLanguage != GlobalOptions.DefaultLanguage)
+                {
                     UpdateControls(objObject, GlobalOptions.DefaultLanguage, RightToLeft.No);
+                }
             }
         }
 
@@ -269,7 +283,9 @@ namespace Chummer
         private static void UpdateControls(Control objParent, string strIntoLanguage, RightToLeft eIntoRightToLeft)
         {
             if (objParent == null)
+            {
                 return;
+            }
 
             objParent.RightToLeft = eIntoRightToLeft;
 
@@ -279,14 +295,22 @@ namespace Chummer
                 // Update the Form itself.
                 string strControlTag = frmForm.Tag?.ToString();
                 if (!string.IsNullOrEmpty(strControlTag) && !int.TryParse(strControlTag, out int _) && !strControlTag.IsGuid())
+                {
                     frmForm.Text = GetString(strControlTag, strIntoLanguage);
+                }
                 else if (frmForm.Text.StartsWith('['))
+                {
                     frmForm.Text = string.Empty;
+                }
 
                 // update any menu strip items that have tags
                 if (frmForm.MainMenuStrip != null)
+                {
                     foreach (ToolStripMenuItem tssItem in frmForm.MainMenuStrip.Items)
+                    {
                         TranslateToolStripItemsRecursively(tssItem, strIntoLanguage, eIntoRightToLeft);
+                    }
+                }
             }
 
             // Translatable items are identified by having a value in their Tag attribute. The contents of Tag is the string to lookup in the language list.
@@ -305,9 +329,13 @@ namespace Chummer
                 {
                     string strControlTag = objChild.Tag?.ToString();
                     if (!string.IsNullOrEmpty(strControlTag) && !int.TryParse(strControlTag, out int _) && !strControlTag.IsGuid())
+                    {
                         objChild.Text = GetString(strControlTag, strIntoLanguage);
+                    }
                     else if (objChild.Text.StartsWith('['))
+                    {
                         objChild.Text = string.Empty;
+                    }
                 }
                 else if (objChild is ToolStrip tssStrip)
                 {
@@ -322,9 +350,13 @@ namespace Chummer
                     {
                         string strControlTag = objHeader.Tag?.ToString();
                         if (!string.IsNullOrEmpty(strControlTag) && !int.TryParse(strControlTag, out int _) && !strControlTag.IsGuid())
+                        {
                             objHeader.Text = GetString(strControlTag, strIntoLanguage);
+                        }
                         else if (objHeader.Text.StartsWith('['))
+                        {
                             objHeader.Text = string.Empty;
+                        }
                     }
                 }
                 else if (objChild is TabControl objTabControl)
@@ -333,9 +365,13 @@ namespace Chummer
                     {
                         string strControlTag = tabPage.Tag?.ToString();
                         if (!string.IsNullOrEmpty(strControlTag) && !int.TryParse(strControlTag, out int _) && !strControlTag.IsGuid())
+                        {
                             tabPage.Text = GetString(strControlTag, strIntoLanguage);
+                        }
                         else if (tabPage.Text.StartsWith('['))
+                        {
                             tabPage.Text = string.Empty;
+                        }
 
                         UpdateControls(tabPage, strIntoLanguage, eIntoRightToLeft);
                     }
@@ -349,9 +385,14 @@ namespace Chummer
                 {
                     string strControlTag = objChild.Tag?.ToString();
                     if (!string.IsNullOrEmpty(strControlTag) && !int.TryParse(strControlTag, out int _) && !strControlTag.IsGuid())
+                    {
                         objChild.Text = GetString(strControlTag, strIntoLanguage);
+                    }
                     else if (objChild.Text.StartsWith('['))
+                    {
                         objChild.Text = string.Empty;
+                    }
+
                     UpdateControls(objChild, strIntoLanguage, eIntoRightToLeft);
                 }
                 else if (objChild is Panel)
@@ -370,10 +411,14 @@ namespace Chummer
                                 objNode.Text = GetString(strControlTag, strIntoLanguage);
                             }
                             else if (objNode.Text.StartsWith('['))
+                            {
                                 objNode.Text = string.Empty;
+                            }
                         }
                         else if (objNode.Text.StartsWith('['))
+                        {
                             objNode.Text = string.Empty;
+                        }
                     }
                 }
                 else if (objChild is DataGridView objDataGridView)
@@ -413,13 +458,21 @@ namespace Chummer
 
             string strControlTag = tssItem.Tag?.ToString();
             if (!string.IsNullOrEmpty(strControlTag) && !int.TryParse(strControlTag, out int _) && !strControlTag.IsGuid())
+            {
                 tssItem.Text = GetString(strControlTag, strIntoLanguage);
+            }
             else if (tssItem.Text.StartsWith('['))
+            {
                 tssItem.Text = string.Empty;
+            }
 
             if (tssItem is ToolStripDropDownItem tssDropDownItem)
+            {
                 foreach (ToolStripItem tssDropDownChild in tssDropDownItem.DropDownItems)
+                {
                     TranslateToolStripItemsRecursively(tssDropDownChild, strIntoLanguage, eIntoRightToLeft);
+                }
+            }
         }
 
         /// <summary>
@@ -428,10 +481,7 @@ namespace Chummer
         /// <param name="strKey">Key to retrieve.</param>
         /// <param name="blnReturnError">Should an error string be returned if the key isn't found?</param>
         /// <returns></returns>
-        public static string GetString(string strKey, bool blnReturnError = true)
-        {
-            return GetString(strKey, GlobalOptions.Language, blnReturnError);
-        }
+        public static string GetString(string strKey, bool blnReturnError = true) => GetString(strKey, GlobalOptions.Language, blnReturnError);
         /// <summary>
         /// Retrieve a string from the language file.
         /// </summary>
@@ -441,7 +491,10 @@ namespace Chummer
         public static string GetString(string strKey, string strLanguage, bool blnReturnError = true)
         {
             if (Utils.IsDesignerMode)
+            {
                 return strKey;
+            }
+
             string strReturn;
             if (LoadLanguage(strLanguage))
             {
@@ -470,14 +523,21 @@ namespace Chummer
         public static string ProcessCompoundString(string strInput, string strLanguage, bool blnUseTranslateExtra = false)
         {
             if (Utils.IsDesignerMode)
+            {
                 return strInput;
+            }
             // Exit out early if we don't have a pair of curly brackets, which is what would signify localized strings
             int intStartPosition = strInput.IndexOf('{');
             if (intStartPosition < 0)
+            {
                 return strInput;
+            }
+
             int intEndPosition = strInput.LastIndexOf('}');
             if (intEndPosition < 0)
+            {
                 return strInput;
+            }
 
             // strInput will get split up based on curly brackets and put into this list as a string-bool Tuple.
             // String value in Tuple will be a section of strInput either enclosed in curly brackets or between sets of enclosed curly brackets
@@ -610,13 +670,19 @@ namespace Chummer
                     if (objEnglishDocument != null)
                     {
                         using (XmlNodeList xmlEnglishStringList = objEnglishDocument.SelectNodes("/chummer/strings/string"))
+                        {
                             if (xmlEnglishStringList != null)
+                            {
                                 foreach (XmlNode objNode in xmlEnglishStringList)
                                 {
                                     string strKey = objNode["key"]?.InnerText;
                                     if (!string.IsNullOrEmpty(strKey))
+                                    {
                                         lstEnglish.Add(strKey);
+                                    }
                                 }
+                            }
+                        }
                     }
                 },
                 () =>
@@ -644,13 +710,19 @@ namespace Chummer
                     if (objLanguageDocument != null)
                     {
                         using (XmlNodeList xmlLanguageStringList = objLanguageDocument.SelectNodes("/chummer/strings/string"))
+                        {
                             if (xmlLanguageStringList != null)
+                            {
                                 foreach (XmlNode objNode in xmlLanguageStringList)
                                 {
                                     string strKey = objNode["key"]?.InnerText;
                                     if (!string.IsNullOrEmpty(strKey))
+                                    {
                                         lstLanguage.Add(strKey);
+                                    }
                                 }
+                            }
+                        }
                     }
                 }
             );
@@ -664,7 +736,9 @@ namespace Chummer
                     foreach (string strKey in lstEnglish)
                     {
                         if (!lstLanguage.Contains(strKey))
+                        {
                             objMissingMessage.AppendLine("Missing String: " + strKey);
+                        }
                     }
                 },
                 () =>
@@ -673,7 +747,9 @@ namespace Chummer
                     foreach (string strKey in lstLanguage)
                     {
                         if (!lstEnglish.Contains(strKey))
+                        {
                             objUnusedMessage.AppendLine("Unused String: " + strKey);
+                        }
                     }
                 }
             );
@@ -764,7 +840,10 @@ namespace Chummer
         public static string TranslateExtra(string strExtra, string strIntoLanguage)
         {
             if (string.IsNullOrEmpty(strExtra))
+            {
                 return "";
+            }
+
             string strReturn = string.Empty;
 
             // Only attempt to translate if we're not using English. Don't attempt to translate an empty string either.
@@ -841,7 +920,9 @@ namespace Chummer
                        {
                            Tuple<string, string, Func<XmlNode, string>, Func<XmlNode, string>> objXPathPair = s_LstXPathsToSearch[i];
                            using (XmlNodeList xmlNodeList = XmlManager.Load(objXPathPair.Item1, strIntoLanguage).SelectNodes(objXPathPair.Item2))
+                           {
                                if (xmlNodeList != null)
+                               {
                                    foreach (XmlNode objNode in xmlNodeList)
                                    {
                                        if (objXPathPair.Item3(objNode) == strExtraNoQuotes)
@@ -850,12 +931,17 @@ namespace Chummer
                                            if (!string.IsNullOrEmpty(strTranslate))
                                            {
                                                lock (strReturnLock)
+                                               {
                                                    strReturn = strTranslate;
+                                               }
+
                                                state.Stop();
                                                break;
                                            }
                                        }
                                    }
+                               }
+                           }
                        });
                         break;
                 }
@@ -863,7 +949,9 @@ namespace Chummer
 
             // If no translation could be found, just use whatever we were passed.
             if (string.IsNullOrEmpty(strReturn) || strReturn.Contains("not found; check language file for string"))
+            {
                 strReturn = strExtra;
+            }
 
             return strReturn;
         }
@@ -989,7 +1077,9 @@ namespace Chummer
                {
                    Tuple<string, string, Func<XmlNode, string>, Func<XmlNode, string>> objXPathPair = s_LstXPathsToSearch[i];
                    using (XmlNodeList xmlNodeList = XmlManager.Load(objXPathPair.Item1, strFromLanguage).SelectNodes(objXPathPair.Item2))
+                   {
                        if (xmlNodeList != null)
+                       {
                            foreach (XmlNode xmlNode in xmlNodeList)
                            {
                                if (objXPathPair.Item4(xmlNode) == strExtraNoQuotes)
@@ -998,12 +1088,17 @@ namespace Chummer
                                    if (!string.IsNullOrEmpty(strOriginal))
                                    {
                                        lock (strReturnLock)
+                                       {
                                            strReturn = strOriginal;
+                                       }
+
                                        state.Stop();
                                        break;
                                    }
                                }
                            }
+                       }
+                   }
                });
             }
 

@@ -83,34 +83,39 @@ namespace Chummer
 
             // Select the first Category in the list.
             if (string.IsNullOrEmpty(s_StrSelectCategory))
+            {
                 cboCategory.SelectedIndex = 0;
+            }
             else
             {
                 cboCategory.SelectedValue = s_StrSelectCategory;
 
                 if (cboCategory.SelectedIndex == -1)
+                {
                     cboCategory.SelectedIndex = 0;
+                }
             }
             cboCategory.Enabled = _lstCategory.Count > 1;
             cboCategory.EndUpdate();
 
             if (_objCharacter.MetageneticLimit == 0)
+            {
                 chkNotMetagenetic.Checked = true;
+            }
 
             lblBPLabel.Text = LanguageManager.GetString("Label_Karma", GlobalOptions.Language);
             _blnLoading = false;
             BuildQualityList();
         }
 
-        private void cboCategory_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            BuildQualityList();
-        }
+        private void cboCategory_SelectedIndexChanged(object sender, EventArgs e) => BuildQualityList();
 
         private void lstQualities_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (_blnLoading)
+            {
                 return;
+            }
 
             XPathNavigator xmlQuality = null;
             string strSelectedQuality = lstQualities.SelectedValue?.ToString();
@@ -122,7 +127,9 @@ namespace Chummer
             if (xmlQuality != null)
             {
                 if (chkFree.Checked)
+                {
                     lblBP.Text = 0.ToString(GlobalOptions.CultureInfo);
+                }
                 else
                 {
                     string strKarma = xmlQuality.SelectSingleNode("karma")?.Value ?? string.Empty;
@@ -138,12 +145,18 @@ namespace Chummer
                             int.TryParse(strValues[1], out intMax);
                         }
                         else
+                        {
                             int.TryParse(strCost.FastEscape('+'), out intMin);
+                        }
 
                         if (intMax == int.MaxValue)
+                        {
                             lblBP.Text = intMin.ToString(GlobalOptions.CultureInfo);
+                        }
                         else
+                        {
                             lblBP.Text = intMin.ToString(GlobalOptions.CultureInfo) + " - " + intMax.ToString(GlobalOptions.CultureInfo);
+                        }
                     }
                     else
                     {
@@ -221,10 +234,7 @@ namespace Chummer
             AcceptForm();
         }
 
-        private void cmdCancel_Click(object sender, EventArgs e)
-        {
-            DialogResult = DialogResult.Cancel;
-        }
+        private void cmdCancel_Click(object sender, EventArgs e) => DialogResult = DialogResult.Cancel;
 
         private void lstQualities_DoubleClick(object sender, EventArgs e)
         {
@@ -232,34 +242,31 @@ namespace Chummer
             AcceptForm();
         }
 
-        private void chkLimitList_CheckedChanged(object sender, EventArgs e)
-        {
-            BuildQualityList();
-        }
+        private void chkLimitList_CheckedChanged(object sender, EventArgs e) => BuildQualityList();
 
-        private void chkFree_CheckedChanged(object sender, EventArgs e)
-        {
-            lstQualities_SelectedIndexChanged(sender, e);
-        }
+        private void chkFree_CheckedChanged(object sender, EventArgs e) => lstQualities_SelectedIndexChanged(sender, e);
 
         private void chkMetagenetic_CheckedChanged(object sender, EventArgs e)
         {
             if (chkMetagenetic.Checked)
+            {
                 chkNotMetagenetic.Checked = false;
+            }
+
             BuildQualityList();
         }
 
         private void chkNotMetagenetic_CheckedChanged(object sender, EventArgs e)
         {
             if (chkNotMetagenetic.Checked)
+            {
                 chkMetagenetic.Checked = false;
+            }
+
             BuildQualityList();
         }
 
-        private void txtSearch_TextChanged(object sender, EventArgs e)
-        {
-            BuildQualityList();
-        }
+        private void txtSearch_TextChanged(object sender, EventArgs e) => BuildQualityList();
 
         private void txtSearch_KeyDown(object sender, KeyEventArgs e)
         {
@@ -290,7 +297,9 @@ namespace Chummer
         private void txtSearch_KeyUp(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Up)
+            {
                 txtSearch.Select(txtSearch.Text.Length, 0);
+            }
         }
 
         private void KarmaFilter(object sender, EventArgs e)
@@ -360,7 +369,9 @@ namespace Chummer
         private void BuildQualityList()
         {
             if (_blnLoading)
+            {
                 return;
+            }
 
             string strCategory = cboCategory.SelectedValue?.ToString() ?? string.Empty;
             StringBuilder strFilter = new StringBuilder("(");
@@ -378,7 +389,9 @@ namespace Chummer
                 foreach (string strItem in _lstCategory.Select(x => x.Value))
                 {
                     if (!string.IsNullOrEmpty(strItem))
+                    {
                         objCategoryFilter.Append("category = \"" + strItem + "\" or ");
+                    }
                 }
                 if (objCategoryFilter.Length > 0)
                 {
@@ -448,9 +461,14 @@ namespace Chummer
             lstQualities.DataSource = lstQuality;
             _blnLoading = false;
             if (string.IsNullOrEmpty(strOldSelectedQuality))
+            {
                 lstQualities.SelectedIndex = -1;
+            }
             else
+            {
                 lstQualities.SelectedValue = strOldSelectedQuality;
+            }
+
             lstQualities.EndUpdate();
         }
 
@@ -461,22 +479,23 @@ namespace Chummer
         {
             string strSelectedQuality = lstQualities.SelectedValue?.ToString();
             if (string.IsNullOrEmpty(strSelectedQuality))
+            {
                 return;
+            }
 
             XPathNavigator objNode = _xmlBaseQualityDataNode.SelectSingleNode("qualities/quality[id = \"" + strSelectedQuality + "\"]");
 
             if (objNode == null || !objNode.RequirementsMet(_objCharacter, null, LanguageManager.GetString("String_Quality", GlobalOptions.Language), IgnoreQuality))
+            {
                 return;
+            }
 
             _strSelectedQuality = strSelectedQuality;
             s_StrSelectCategory = (_objCharacter.Options.SearchInCategoryOnly || txtSearch.TextLength == 0) ? cboCategory.SelectedValue?.ToString() : objNode.SelectSingleNode("category")?.Value;
             DialogResult = DialogResult.OK;
         }
 
-        private void OpenSourceFromLabel(object sender, EventArgs e)
-        {
-            CommonFunctions.OpenPDFFromControl(sender, e);
-        }
+        private void OpenSourceFromLabel(object sender, EventArgs e) => CommonFunctions.OpenPDFFromControl(sender, e);
         #endregion
     }
 }

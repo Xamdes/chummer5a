@@ -23,7 +23,10 @@ namespace ChummerHub.Client.Tests
             Debug.WriteLine("Unit test initialized for: LoadCharacter()");
             string path = AppDomain.CurrentDomain.SetupInformation.ApplicationBase;
             if (MainForm == null)
+            {
                 MainForm = new frmChummerMain(true);
+            }
+
             path = System.IO.Path.Combine(path, "data");
             DirectoryInfo d = new DirectoryInfo(path);//Assuming Test is your Folder
             FileInfo[] Files = d.GetFiles("*.chum5"); //Getting Text files
@@ -34,7 +37,10 @@ namespace ChummerHub.Client.Tests
                     Debug.WriteLine("Loading: " + file.Name);
                     Character c = await MainForm.LoadCharacter(file.FullName);
                     if (c == null)
+                    {
                         continue;
+                    }
+
                     Debug.WriteLine("Character loaded: " + c.Name);
                     if (c.Created)
                     {

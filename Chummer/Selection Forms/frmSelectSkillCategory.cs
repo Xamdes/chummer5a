@@ -45,12 +45,17 @@ namespace Chummer
             using (XmlNodeList objXmlCategoryList = !string.IsNullOrEmpty(_strForceCategory)
                 ? _objXmlDocument.SelectNodes("/chummer/categories/category[. = \"" + _strForceCategory + "\"]")
                 : _objXmlDocument.SelectNodes("/chummer/categories/category"))
+            {
                 if (objXmlCategoryList != null)
+                {
                     foreach (XmlNode objXmlCategory in objXmlCategoryList)
                     {
                         string strInnerText = objXmlCategory.InnerText;
                         lstCategory.Add(new ListItem(strInnerText, objXmlCategory.Attributes?["translate"]?.InnerText ?? strInnerText));
                     }
+                }
+            }
+
             cboCategory.BeginUpdate();
             cboCategory.ValueMember = "Value";
             cboCategory.DisplayMember = "Name";
@@ -61,7 +66,9 @@ namespace Chummer
             cboCategory.EndUpdate();
 
             if (cboCategory.Items.Count == 1)
+            {
                 cmdOK_Click(sender, e);
+            }
         }
 
         private void cmdOK_Click(object sender, EventArgs e)
@@ -94,9 +101,6 @@ namespace Chummer
         }
         #endregion
 
-        private void cmdCancel_Click(object sender, EventArgs e)
-        {
-            DialogResult = DialogResult.Cancel;
-        }
+        private void cmdCancel_Click(object sender, EventArgs e) => DialogResult = DialogResult.Cancel;
     }
 }

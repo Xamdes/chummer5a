@@ -96,7 +96,10 @@ namespace Chummer
         public void Load(XmlNode objNode)
         {
             if (!objNode.TryGetField("guid", Guid.TryParse, out _guiID))
+            {
                 _guiID = Guid.NewGuid();
+            }
+
             objNode.TryGetStringFieldQuickly("name", ref _strName);
             objNode.TryGetStringFieldQuickly("limit", ref _strLimit);
             objNode.TryGetInt32FieldQuickly("bonus", ref _intBonus);
@@ -120,7 +123,10 @@ namespace Chummer
             objWriter.WriteElementString("name_english", Name);
             objWriter.WriteElementString("condition", Condition);
             if (_objCharacter.Options.PrintNotes)
+            {
                 objWriter.WriteElementString("notes", Notes);
+            }
+
             objWriter.WriteEndElement();
         }
         #endregion
@@ -202,13 +208,20 @@ namespace Chummer
             {
                 string strBonus;
                 if (_intBonus > 0)
+                {
                     strBonus = '+' + _intBonus.ToString();
+                }
                 else
+                {
                     strBonus = _intBonus.ToString();
+                }
 
                 string strReturn = DisplayNameShort + LanguageManager.GetString("String_Space", GlobalOptions.Language) + '[' + strBonus + ']';
                 if (!string.IsNullOrEmpty(_strCondition))
+                {
                     strReturn += LanguageManager.GetString("String_Space", GlobalOptions.Language) + '(' + _strCondition + ')';
+                }
+
                 return strReturn;
             }
         }

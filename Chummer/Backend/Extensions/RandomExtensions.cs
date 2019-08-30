@@ -63,9 +63,6 @@ namespace Chummer
         /// <param name="objRandom">Instance of Random to use.</param>
         /// <param name="minValue">Minimum value (inclusive) to generate.</param>
         /// <param name="maxValue">Maximum value (exclusive) to generate.</param>
-        public static int NextModuloBiasRemoved(this Random objRandom, int minValue, int maxValue)
-        {
-            return objRandom.NextModuloBiasRemoved(maxValue - minValue) + minValue;
-        }
+        public static int NextModuloBiasRemoved(this Random objRandom, int minValue, int maxValue) => objRandom.NextModuloBiasRemoved(maxValue - minValue) + minValue;
     }
 }

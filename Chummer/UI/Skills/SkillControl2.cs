@@ -176,7 +176,9 @@ namespace Chummer.UI.Skills
         private void Skill_PropertyChanged(object sender, PropertyChangedEventArgs propertyChangedEventArgs)
         {
             if (_blnLoading)
+            {
                 return;
+            }
 
             bool blnUpdateAll = false;
             //I learned something from this but i'm not sure it is a good solution
@@ -194,7 +196,10 @@ namespace Chummer.UI.Skills
                 case nameof(Skill.Default):
                     lblName.Font = !_skill.Default ? _italicName : _normalName;
                     if (blnUpdateAll)
+                    {
                         goto case nameof(Skill.CGLSpecializations);
+                    }
+
                     break;
                 case nameof(Skill.CGLSpecializations):
                     if (!_skill.CharacterObject.Created && !_skill.IsExoticSkill)
@@ -206,12 +211,16 @@ namespace Chummer.UI.Skills
                         cboSpec.DisplayMember = nameof(ListItem.Name);
                         cboSpec.ValueMember = nameof(ListItem.Value);
                         if (string.IsNullOrEmpty(strOldSpec))
+                        {
                             cboSpec.SelectedIndex = -1;
+                        }
                         else
                         {
                             cboSpec.SelectedValue = strOldSpec;
                             if (cboSpec.SelectedIndex == -1)
+                            {
                                 cboSpec.Text = strOldSpec;
+                            }
                         }
                         cboSpec.ResumeLayout();
                     }
@@ -222,7 +231,9 @@ namespace Chummer.UI.Skills
         private void Attribute_PropertyChanged(object sender, PropertyChangedEventArgs propertyChangedEventArgs)
         {
             if (_blnLoading)
+            {
                 return;
+            }
 
             switch (propertyChangedEventArgs?.PropertyName)
             {
@@ -238,7 +249,9 @@ namespace Chummer.UI.Skills
                     _skill.DisplayName, _skill.Rating + 1, _skill.UpgradeKarmaCost);
 
             if (!_skill.CharacterObject.ConfirmKarmaExpense(confirmstring))
+            {
                 return;
+            }
 
             _skill.Upgrade();
         }
@@ -258,31 +271,44 @@ namespace Chummer.UI.Skills
                     if (objLoopImprovement.ImprovedName == _skill.SkillCategory)
                     {
                         if (objLoopImprovement.ImproveType == Improvement.ImprovementType.SkillCategorySpecializationKarmaCost)
+                        {
                             intExtraSpecCost += objLoopImprovement.Value;
+                        }
                         else if (objLoopImprovement.ImproveType == Improvement.ImprovementType.SkillCategorySpecializationKarmaCostMultiplier)
+                        {
                             decSpecCostMultiplier *= objLoopImprovement.Value / 100.0m;
+                        }
                     }
                 }
             }
             if (decSpecCostMultiplier != 1.0m)
+            {
                 price = decimal.ToInt32(decimal.Ceiling(price * decSpecCostMultiplier));
+            }
+
             price += intExtraSpecCost; //Spec
 
             string confirmstring = string.Format(LanguageManager.GetString("Message_ConfirmKarmaExpenseSkillSpecialization", GlobalOptions.Language), price.ToString());
 
             if (!_skill.CharacterObject.ConfirmKarmaExpense(confirmstring))
+            {
                 return;
+            }
 
             frmSelectSpec selectForm = new frmSelectSpec(_skill);
             selectForm.ShowDialog();
 
             if (selectForm.DialogResult != DialogResult.OK)
+            {
                 return;
+            }
 
             _skill.AddSpecialization(selectForm.SelectedItem);
 
             if (ParentForm is CharacterShared frmParent)
+            {
                 frmParent.IsCharacterUpdateRequested = true;
+            }
         }
 
         private void SetupDropdown()
@@ -291,7 +317,9 @@ namespace Chummer.UI.Skills
             foreach (string strLoopAttribute in AttributeSection.AttributeStrings)
             {
                 if (strLoopAttribute != "MAGAdept")
+                {
                     lstAttributeItems.Add(new ListItem(strLoopAttribute, LanguageManager.GetString($"String_Attribute{strLoopAttribute}Short", GlobalOptions.Language)));
+                }
             }
 
             cboSelectAttribute.BeginUpdate();
@@ -334,7 +362,10 @@ namespace Chummer.UI.Skills
         public void ResetSelectAttribute()
         {
             if (!CustomAttributeSet)
+            {
                 return;
+            }
+
             _attributeActive.PropertyChanged -= Attribute_PropertyChanged;
             cboSelectAttribute.SelectedValue = _skill.AttributeObject.Abbrev;
             cboSelectAttribute_Closed(null, null);
@@ -354,10 +385,7 @@ namespace Chummer.UI.Skills
             }
         }
 
-        private void lblName_Click(object sender, EventArgs e)
-        {
-            CommonFunctions.OpenPDF(_skill.Source + ' ' + _skill.DisplayPage(GlobalOptions.Language));
-        }
+        private void lblName_Click(object sender, EventArgs e) => CommonFunctions.OpenPDF(_skill.Source + ' ' + _skill.DisplayPage(GlobalOptions.Language));
 
         [UsedImplicitly]
         public void MoveControls(int i)
@@ -402,7 +430,10 @@ namespace Chummer.UI.Skills
             set
             {
                 if (value == ActiveButton)
+                {
                     return;
+                }
+
                 ActiveButton?.ToolTipObject.Hide(this);
                 _activeButton = value;
                 if (_activeButton?.Visible == true)
@@ -417,22 +448,21 @@ namespace Chummer.UI.Skills
             foreach (Control c in Controls)
             {
                 if (!(c is ButtonWithToolTip))
+                {
                     continue;
+                }
+
                 if (c.Bounds.Contains(pt))
+                {
                     return c;
+                }
             }
             return null;
         }
 
-        private void OnMouseMove(object sender, MouseEventArgs e)
-        {
-            ActiveButton = FindToolTipControl(e.Location) as ButtonWithToolTip;
-        }
+        private void OnMouseMove(object sender, MouseEventArgs e) => ActiveButton = FindToolTipControl(e.Location) as ButtonWithToolTip;
 
-        private void OnMouseLeave(object sender, EventArgs e)
-        {
-            ActiveButton = null;
-        }
+        private void OnMouseLeave(object sender, EventArgs e) => ActiveButton = null;
         #endregion
     }
 }

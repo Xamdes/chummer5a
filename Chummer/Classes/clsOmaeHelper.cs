@@ -337,7 +337,9 @@ namespace Chummer
 
             // If the directory does not exist, create it.
             if (!Directory.Exists(strFilePath))
+            {
                 Directory.CreateDirectory(strFilePath);
+            }
 
             MemoryStream objStream = new MemoryStream();
             objStream.Write(bytBuffer, 0, bytBuffer.Length);
@@ -353,12 +355,16 @@ namespace Chummer
                 if (!strDirectory[1].EndsWith(".chum5"))
                 {
                     if (!Directory.Exists(Path.Combine(strFilePath, strDirectory[1])))
+                    {
                         Directory.CreateDirectory(Path.Combine(strFilePath, strDirectory[1]));
+                    }
                 }
                 if (!strDirectory[2].EndsWith(".chum5"))
                 {
                     if (!Directory.Exists(Path.Combine(strFilePath, strDirectory[1] + Path.DirectorySeparatorChar + strDirectory[2])))
+                    {
                         Directory.CreateDirectory(Path.Combine(strFilePath, strDirectory[1] + Path.DirectorySeparatorChar + strDirectory[2]));
+                    }
                 }
 
                 Stream objDestination = File.OpenWrite(strFilePath + strTarget.Replace('/', Path.DirectorySeparatorChar));
@@ -384,7 +390,9 @@ namespace Chummer
 
             // If the directory does not exist, create it.
             if (!Directory.Exists(strFilePath))
+            {
                 Directory.CreateDirectory(strFilePath);
+            }
 
             Package objPackage = Package.Open(strExtract, FileMode.Open, FileAccess.Read);
 
@@ -398,12 +406,16 @@ namespace Chummer
                 if (!strDirectory[1].EndsWith(".chum5"))
                 {
                     if (!Directory.Exists(Path.Combine(strFilePath, strDirectory[1])))
+                    {
                         Directory.CreateDirectory(Path.Combine(strFilePath, strDirectory[1]));
+                    }
                 }
                 if (!strDirectory[2].EndsWith(".chum5"))
                 {
                     if (!Directory.Exists(Path.Combine(strFilePath, strDirectory[1] + Path.DirectorySeparatorChar + strDirectory[2])))
+                    {
                         Directory.CreateDirectory(Path.Combine(strFilePath, strDirectory[1] + Path.DirectorySeparatorChar + strDirectory[2]));
+                    }
                 }
 
                 Stream objDestination = File.OpenWrite(strFilePath + strTarget.Replace('/', Path.DirectorySeparatorChar));

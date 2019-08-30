@@ -77,21 +77,36 @@ namespace Chummer
                     case Improvement.ImprovementType.FreeSpellsATT:
                         int intAttValue = _objCharacter.GetAttribute(imp.ImprovedName).TotalValue;
                         if (imp.UniqueName.Contains("half"))
+                        {
                             intAttValue = (intAttValue + 1) / 2;
+                        }
+
                         if (imp.UniqueName.Contains("touchonly"))
+                        {
                             intFreeTouchOnlySpells += intAttValue;
+                        }
                         else
+                        {
                             intFreeGenericSpells += intAttValue;
+                        }
+
                         break;
                     case Improvement.ImprovementType.FreeSpellsSkill:
                         Skill skill = _objCharacter.SkillsSection.GetActiveSkill(imp.ImprovedName);
                         int intSkillValue = _objCharacter.SkillsSection.GetActiveSkill(imp.ImprovedName).TotalBaseRating;
                         if (imp.UniqueName.Contains("half"))
+                        {
                             intSkillValue = (intSkillValue + 1) / 2;
+                        }
+
                         if (imp.UniqueName.Contains("touchonly"))
+                        {
                             intFreeTouchOnlySpells += intSkillValue;
+                        }
                         else
+                        {
                             intFreeGenericSpells += intSkillValue;
+                        }
                         //TODO: I don't like this being hardcoded, even though I know full well CGL are never going to reuse this.
                         foreach (SkillSpecialization spec in skill.Specializations)
                         {
@@ -127,9 +142,15 @@ namespace Chummer
             {
                 string strCategory = objXmlCategory.Value;
                 if (limit.Count != 0 && !limit.Contains(strCategory))
+                {
                     continue;
+                }
+
                 if (!string.IsNullOrEmpty(_strLimitCategory) && _strLimitCategory != strCategory)
+                {
                     continue;
+                }
+
                 _lstCategory.Add(new ListItem(strCategory, objXmlCategory.SelectSingleNode("@translate")?.Value ?? strCategory));
             }
             _lstCategory.Sort(CompareListItems.CompareNames);
@@ -146,12 +167,19 @@ namespace Chummer
             cboCategory.DataSource = _lstCategory;
             // Select the first Category in the list.
             if (string.IsNullOrEmpty(s_StrSelectCategory))
+            {
                 cboCategory.SelectedIndex = 0;
+            }
             else
+            {
                 cboCategory.SelectedValue = s_StrSelectCategory;
+            }
 
             if (cboCategory.SelectedIndex == -1)
+            {
                 cboCategory.SelectedIndex = 0;
+            }
+
             cboCategory.EndUpdate();
 
             // Don't show the Extended Spell checkbox if the option to Extend any Detection Spell is disabled.
@@ -160,10 +188,7 @@ namespace Chummer
             BuildSpellList();
         }
 
-        private void lstSpells_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            UpdateSpellInfo();
-        }
+        private void lstSpells_SelectedIndexChanged(object sender, EventArgs e) => UpdateSpellInfo();
 
         private void cmdOK_Click(object sender, EventArgs e)
         {
@@ -177,20 +202,11 @@ namespace Chummer
             AcceptForm();
         }
 
-        private void cmdCancel_Click(object sender, EventArgs e)
-        {
-            DialogResult = DialogResult.Cancel;
-        }
+        private void cmdCancel_Click(object sender, EventArgs e) => DialogResult = DialogResult.Cancel;
 
-        private void cboCategory_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            BuildSpellList();
-        }
+        private void cboCategory_SelectedIndexChanged(object sender, EventArgs e) => BuildSpellList();
 
-        private void txtSearch_TextChanged(object sender, EventArgs e)
-        {
-            BuildSpellList();
-        }
+        private void txtSearch_TextChanged(object sender, EventArgs e) => BuildSpellList();
 
         private void cmdOKAdd_Click(object sender, EventArgs e)
         {
@@ -203,42 +219,62 @@ namespace Chummer
             if (lstSpells.SelectedIndex == -1)
             {
                 if (lstSpells.Items.Count > 0)
+                {
                     lstSpells.SelectedIndex = 0;
+                }
             }
             if (e.KeyCode == Keys.Down)
             {
                 int intNewIndex = lstSpells.SelectedIndex + 1;
                 if (intNewIndex >= lstSpells.Items.Count)
+                {
                     intNewIndex = 0;
+                }
+
                 if (lstSpells.Items.Count > 0)
+                {
                     lstSpells.SelectedIndex = intNewIndex;
+                }
             }
             if (e.KeyCode == Keys.Up)
             {
                 int intNewIndex = lstSpells.SelectedIndex - 1;
                 if (intNewIndex <= 0)
+                {
                     intNewIndex = lstSpells.Items.Count - 1;
+                }
+
                 if (lstSpells.Items.Count > 0)
+                {
                     lstSpells.SelectedIndex = intNewIndex;
+                }
             }
         }
 
         private void txtSearch_KeyUp(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Up)
+            {
                 txtSearch.Select(txtSearch.Text.Length, 0);
+            }
         }
 
         private void chkExtended_CheckedChanged(object sender, EventArgs e)
         {
             if (_blnRefresh)
+            {
                 return;
+            }
+
             UpdateSpellInfo();
         }
         private void chkLimited_CheckedChanged(object sender, EventArgs e)
         {
             if (_blnRefresh)
+            {
                 return;
+            }
+
             UpdateSpellInfo();
         }
         #endregion
@@ -303,14 +339,18 @@ namespace Chummer
             string strCategory = cboCategory.SelectedValue?.ToString();
             string strFilter = '(' + _objCharacter.Options.BookXPath() + ')';
             if (!string.IsNullOrEmpty(strCategory) && strCategory != "Show All" && (_objCharacter.Options.SearchInCategoryOnly || txtSearch.TextLength == 0))
+            {
                 strFilter += " and category = \"" + strCategory + '\"';
+            }
             else
             {
                 StringBuilder objCategoryFilter = new StringBuilder();
                 foreach (string strItem in _lstCategory.Select(x => x.Value))
                 {
                     if (!string.IsNullOrEmpty(strItem))
+                    {
                         objCategoryFilter.Append("category = \"" + strItem + "\" or ");
+                    }
                 }
                 if (objCategoryFilter.Length > 0)
                 {
@@ -318,7 +358,9 @@ namespace Chummer
                 }
             }
             if (_objCharacter.Options.ExtendAnyDetectionSpell)
+            {
                 strFilter += " and ((not(contains(name, \", Extended\"))))";
+            }
 
             strFilter += CommonFunctions.GenerateSearchXPath(txtSearch.Text);
 
@@ -334,14 +376,18 @@ namespace Chummer
                     {
                         if (!((strSpellCategory == "Rituals" && !strDescriptor.Contains("Spell")) ||
                             (_blnCanTouchOnlySpellBeFree && (objXmlSpell.SelectSingleNode("range")?.Value == "T") || objXmlSpell.SelectSingleNode("range")?.Value == "T (A)")))
+                        {
                             continue;
+                        }
                     }
                     else if (!_objCharacter.AdeptEnabled && strDescriptor.Contains("Adept"))
                     {
                         continue;
                     }
                     if (!objXmlSpell.RequirementsMet(_objCharacter))
+                    {
                         continue;
+                    }
                 }
                 HashSet<string> limit = new HashSet<string>();
                 foreach (Improvement improvement in _objCharacter.Improvements.Where(x => x.ImproveType == Improvement.ImprovementType.LimitSpellDescriptor && x.Enabled))
@@ -350,7 +396,10 @@ namespace Chummer
                 }
 
                 if (limit.Count != 0 && limit.Any(l => strDescriptor.Contains(l)))
+                {
                     continue;
+                }
+
                 string strDisplayName = objXmlSpell.SelectSingleNode("translate")?.Value ?? objXmlSpell.SelectSingleNode("name")?.Value ?? LanguageManager.GetString("String_Unknown", GlobalOptions.Language);
                 if (!_objCharacter.Options.SearchInCategoryOnly && txtSearch.TextLength != 0)
                 {
@@ -375,9 +424,14 @@ namespace Chummer
             lstSpells.DataSource = lstSpellItems;
             _blnLoading = false;
             if (!string.IsNullOrEmpty(strOldSelected))
+            {
                 lstSpells.SelectedValue = strOldSelected;
+            }
             else
+            {
                 lstSpells.SelectedIndex = -1;
+            }
+
             lstSpells.EndUpdate();
         }
 
@@ -388,7 +442,9 @@ namespace Chummer
         {
             string strSelectedItem = lstSpells.SelectedValue?.ToString();
             if (string.IsNullOrEmpty(strSelectedItem))
+            {
                 return;
+            }
 
             // Display the Spell information.
             XPathNavigator objXmlSpell = _xmlBaseSpellDataNode.SelectSingleNode("spells/spell[id = \"" + strSelectedItem + "\"]");
@@ -455,15 +511,14 @@ namespace Chummer
             DialogResult = DialogResult.OK;
         }
 
-        private void OpenSourceFromLabel(object sender, EventArgs e)
-        {
-            CommonFunctions.OpenPDFFromControl(sender, e);
-        }
+        private void OpenSourceFromLabel(object sender, EventArgs e) => CommonFunctions.OpenPDFFromControl(sender, e);
 
         private void UpdateSpellInfo()
         {
             if (_blnLoading)
+            {
                 return;
+            }
 
             XPathNavigator xmlSpell = null;
             string strSelectedSpellId = lstSpells.SelectedValue?.ToString();
@@ -586,10 +641,16 @@ namespace Chummer
 
             // Remove the trailing comma.
             if (objDescriptors.Length > 2)
+            {
                 objDescriptors.Length -= 2;
+            }
+
             lblDescriptors.Text = objDescriptors.ToString();
             if (string.IsNullOrEmpty(lblDescriptors.Text))
+            {
                 lblDescriptors.Text = LanguageManager.GetString("String_None", GlobalOptions.Language);
+            }
+
             lblDescriptorsLabel.Visible = !string.IsNullOrEmpty(lblDescriptors.Text);
 
             switch (xmlSpell.SelectSingleNode("type")?.Value)
@@ -684,16 +745,24 @@ namespace Chummer
                     strAfter = strDV.Substring(intPos, strDV.Length - intPos);
                     strDV = strDV.Substring(0, intPos);
                     if (string.IsNullOrEmpty(strAfter))
+                    {
                         strAfter = "+2";
+                    }
                     else
                     {
                         int intValue = Convert.ToInt32(strAfter) + 2;
                         if (intValue == 0)
+                        {
                             strAfter = string.Empty;
+                        }
                         else if (intValue > 0)
+                        {
                             strAfter = '+' + intValue.ToString();
+                        }
                         else
+                        {
                             strAfter = intValue.ToString();
+                        }
                     }
                 }
                 else
@@ -726,9 +795,13 @@ namespace Chummer
                         int intAfter = Convert.ToInt32(strAfter);
                         intAfter -= 2;
                         if (intAfter > 0)
+                        {
                             strDV += '+' + intAfter.ToString();
+                        }
                         else if (intAfter < 0)
+                        {
                             strDV += intAfter.ToString();
+                        }
                     }
                     else
                     {

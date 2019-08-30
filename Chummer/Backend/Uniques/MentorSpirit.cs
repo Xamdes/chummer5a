@@ -29,7 +29,7 @@ namespace Chummer
     public class MentorSpirit : IHasInternalId, IHasName, IHasXmlNode, IHasSource
     {
 
-        private Logger Log = NLog.LogManager.GetCurrentClassLogger();
+        private readonly Logger Log = NLog.LogManager.GetCurrentClassLogger();
         private Guid _guiID;
         private string _strName = string.Empty;
         private string _strAdvantage = string.Empty;
@@ -54,12 +54,17 @@ namespace Chummer
             _objCharacter = objCharacter;
             XmlNode namenode = xmlNodeMentor?.SelectSingleNode("name");
             if (namenode != null)
+            {
                 Name = namenode.InnerText;
+            }
+
             XmlNode typenode = xmlNodeMentor?.SelectSingleNode("mentortype");
             if (typenode != null)
             {
                 if (Enum.TryParse(typenode.InnerText, true, out Improvement.ImprovementType outEnum))
+                {
                     _eMentorType = outEnum;
+                }
             }
         }
 
@@ -79,7 +84,10 @@ namespace Chummer
             xmlMentor.TryGetStringFieldQuickly("source", ref _strSource);
             xmlMentor.TryGetStringFieldQuickly("page", ref _strPage);
             if (!xmlMentor.TryGetStringFieldQuickly("altnotes", ref _strNotes))
+            {
                 xmlMentor.TryGetStringFieldQuickly("notes", ref _strNotes);
+            }
+
             if (!xmlMentor.TryGetField("id", Guid.TryParse, out _guiSourceID))
             {
                 Log.Warn(new object[] { "Missing id field for xmlnode", xmlMentor });
@@ -193,17 +201,32 @@ namespace Chummer
             objWriter.WriteElementString("disadvantage", _strDisadvantage);
             objWriter.WriteElementString("mentormask", _blnMentorMask.ToString());
             if (_nodBonus != null)
+            {
                 objWriter.WriteRaw("<bonus>" + _nodBonus.InnerXml + "</bonus>");
+            }
             else
+            {
                 objWriter.WriteElementString("bonus", string.Empty);
+            }
+
             if (_nodChoice1 != null)
+            {
                 objWriter.WriteRaw("<choice1>" + _nodChoice1.InnerXml + "</choice1>");
+            }
             else
+            {
                 objWriter.WriteElementString("choice1", string.Empty);
+            }
+
             if (_nodChoice2 != null)
+            {
                 objWriter.WriteRaw("<choice2>" + _nodChoice2.InnerXml + "</choice2>");
+            }
             else
+            {
                 objWriter.WriteElementString("choice2", string.Empty);
+            }
+
             objWriter.WriteElementString("notes", _strNotes);
 
             if (!string.IsNullOrEmpty(strSourceID))
@@ -236,7 +259,10 @@ namespace Chummer
                 }
             }
             if (objNode.TryGetStringFieldQuickly("name", ref _strName))
+            {
                 _objCachedMyXmlNode = null;
+            }
+
             if (objNode["mentortype"] != null)
             {
                 _eMentorType = Improvement.ConvertToImprovementType(objNode["mentortype"].InnerText);
@@ -272,7 +298,10 @@ namespace Chummer
             objWriter.WriteElementString("page", Page(strLanguageToPrint));
             objWriter.WriteElementString("mentormask", MentorMask.ToString());
             if (_objCharacter.Options.PrintNotes)
+            {
                 objWriter.WriteElementString("notes", _strNotes);
+            }
+
             objWriter.WriteEndElement();
         }
         #endregion
@@ -300,7 +329,9 @@ namespace Chummer
                 if (string.IsNullOrEmpty(_strName))
                 {
                     if (_objCharacter.MentorSpirits.Count > 0 && _objCharacter.MentorSpirits[0] == this)
+                    {
                         _strName = _objCharacter.MentorSpirits[0].Name;
+                    }
                 }
                 return _strName;
             }
@@ -311,7 +342,9 @@ namespace Chummer
                     _objCachedMyXmlNode = null;
                     _strName = value;
                     if (_objCharacter.MentorSpirits.Count > 0 && _objCharacter.MentorSpirits[0] == this)
+                    {
                         _objCharacter.OnPropertyChanged(nameof(Character.FirstMentorSpiritDisplayName));
+                    }
                 }
             }
         }
@@ -328,7 +361,9 @@ namespace Chummer
                 {
                     _strExtra = value;
                     if (_objCharacter.MentorSpirits.Count > 0 && _objCharacter.MentorSpirits[0] == this)
+                    {
                         _objCharacter.OnPropertyChanged(nameof(Character.FirstMentorSpiritDisplayName));
+                    }
                 }
             }
         }
@@ -354,7 +389,9 @@ namespace Chummer
                 {
                     _strAdvantage = value;
                     if (_objCharacter.MentorSpirits.Count > 0 && _objCharacter.MentorSpirits[0] == this)
+                    {
                         _objCharacter.OnPropertyChanged(nameof(Character.FirstMentorSpiritDisplayInformation));
+                    }
                 }
             }
         }
@@ -387,7 +424,9 @@ namespace Chummer
                 {
                     _strDisadvantage = value;
                     if (_objCharacter.MentorSpirits.Count > 0 && _objCharacter.MentorSpirits[0] == this)
+                    {
                         _objCharacter.OnPropertyChanged(nameof(Character.FirstMentorSpiritDisplayInformation));
+                    }
                 }
             }
         }
@@ -398,7 +437,9 @@ namespace Chummer
         public string DisplayNameShort(string strLanguage)
         {
             if (strLanguage == GlobalOptions.DefaultLanguage)
+            {
                 return Name;
+            }
 
             return GetNode(strLanguage)?["translate"]?.InnerText ?? Name;
         }
@@ -418,7 +459,9 @@ namespace Chummer
         public string Page(string strLanguage)
         {
             if (strLanguage == GlobalOptions.DefaultLanguage)
+            {
                 return _strPage;
+            }
 
             return GetNode(strLanguage)?["altpage"]?.InnerText ?? _strPage;
         }
@@ -431,10 +474,7 @@ namespace Chummer
         private XmlNode _objCachedMyXmlNode;
         private string _strCachedXmlNodeLanguage = string.Empty;
 
-        public XmlNode GetNode()
-        {
-            return GetNode(GlobalOptions.Language);
-        }
+        public XmlNode GetNode() => GetNode(GlobalOptions.Language);
 
         public XmlNode GetNode(string strLanguage)
         {
@@ -458,7 +498,10 @@ namespace Chummer
         public void SetSourceDetail(Control sourceControl)
         {
             if (_objCachedSourceDetail?.Language != GlobalOptions.Language)
+            {
                 _objCachedSourceDetail = null;
+            }
+
             SourceDetail.SetControl(sourceControl);
         }
     }

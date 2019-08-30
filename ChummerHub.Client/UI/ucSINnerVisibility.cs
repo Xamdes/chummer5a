@@ -10,14 +10,11 @@ namespace ChummerHub.Client.UI
 {
     public partial class ucSINnerVisibility : UserControl
     {
-        private Logger Log = NLog.LogManager.GetCurrentClassLogger();
+        private readonly Logger Log = NLog.LogManager.GetCurrentClassLogger();
         private SINnerVisibility _mySINnerVisibility;
         public SINnerVisibility MyVisibility
         {
-            get
-            {
-                return _mySINnerVisibility;
-            }
+            get => _mySINnerVisibility;
             set
             {
                 _mySINnerVisibility = value;
@@ -25,13 +22,7 @@ namespace ChummerHub.Client.UI
             }
         }
 
-        public CheckedListBox MyCheckBoxList
-        {
-            get
-            {
-                return this.clbVisibilityToUsers;
-            }
-        }
+        public CheckedListBox MyCheckBoxList => clbVisibilityToUsers;
 
         public ucSINnerVisibility()
         {
@@ -40,50 +31,45 @@ namespace ChummerHub.Client.UI
             {
                 UserRights = new List<SINnerUserRight>()
             };
-            this.clbVisibilityToUsers.ItemCheck += clbVisibilityToUsers_ItemCheck;
+            clbVisibilityToUsers.ItemCheck += clbVisibilityToUsers_ItemCheck;
         }
 
         public ucSINnerVisibility(SINnerVisibility vis)
         {
             MyVisibility = vis;
             InitializeComponent();
-            this.clbVisibilityToUsers.ItemCheck += clbVisibilityToUsers_ItemCheck;
+            clbVisibilityToUsers.ItemCheck += clbVisibilityToUsers_ItemCheck;
         }
 
-        private void FillVisibilityListBox()
-        {
-            PluginHandler.MainForm.DoThreadSafe(new Action(() =>
-            {
-                try
-                {
-                    //((ListBox)clbVisibilityToUsers).DataSource = null;
-                    if (MyVisibility != null)
-                    {
-                        ((ListBox)clbVisibilityToUsers).DataSource = MyVisibility.UserRightsObservable;
-                    }
-                    ((ListBox)clbVisibilityToUsers).DisplayMember = "EMail";
-                    ((ListBox)clbVisibilityToUsers).ValueMember = "CanEdit";
-                    for (int i = 0; i < clbVisibilityToUsers.Items.Count; i++)
-                    {
-                        SINnerUserRight obj = (SINnerUserRight)clbVisibilityToUsers.Items[i];
-                        clbVisibilityToUsers.SetItemChecked(i, obj.CanEdit != null && obj.CanEdit.Value);
-                    }
-                    clbVisibilityToUsers.Refresh();
-                }
-                catch (Exception e)
-                {
-                    Log.Error(e);
-                    throw;
-                }
+        private void FillVisibilityListBox() => PluginHandler.MainForm.DoThreadSafe(new Action(() =>
+                                              {
+                                                  try
+                                                  {
+                                                      //((ListBox)clbVisibilityToUsers).DataSource = null;
+                                                      if (MyVisibility != null)
+                                                      {
+                                                          ((ListBox)clbVisibilityToUsers).DataSource = MyVisibility.UserRightsObservable;
+                                                      }
+                                                      ((ListBox)clbVisibilityToUsers).DisplayMember = "EMail";
+                                                      ((ListBox)clbVisibilityToUsers).ValueMember = "CanEdit";
+                                                      for (int i = 0; i < clbVisibilityToUsers.Items.Count; i++)
+                                                      {
+                                                          SINnerUserRight obj = (SINnerUserRight)clbVisibilityToUsers.Items[i];
+                                                          clbVisibilityToUsers.SetItemChecked(i, obj.CanEdit != null && obj.CanEdit.Value);
+                                                      }
+                                                      clbVisibilityToUsers.Refresh();
+                                                  }
+                                                  catch (Exception e)
+                                                  {
+                                                      Log.Error(e);
+                                                      throw;
+                                                  }
 
-            }));
-
-
-        }
+                                              }));
 
         private void bVisibilityAddEmail_Click(object sender, EventArgs e)
         {
-            string email = this.tbVisibilityAddEmail.Text;
+            string email = tbVisibilityAddEmail.Text;
             MyVisibility.AddVisibilityForEmail(email);
             FillVisibilityListBox();
         }
@@ -103,7 +89,9 @@ namespace ChummerHub.Client.UI
                     if (userright != null)
                     {
                         if (e.NewValue == CheckState.Checked)
+                        {
                             userright.CanEdit = true;
+                        }
                         else
                         {
                             userright.CanEdit = false;
@@ -112,7 +100,9 @@ namespace ChummerHub.Client.UI
                 }
             }
             else
+            {
                 Program.MainForm.ShowMessageBox("No email selected!");
+            }
         }
 
         private void bVisibilityRemove_Click(object sender, EventArgs e)
@@ -130,7 +120,9 @@ namespace ChummerHub.Client.UI
                 FillVisibilityListBox();
             }
             else
+            {
                 Program.MainForm.ShowMessageBox("No email selected!");
+            }
         }
 
 

@@ -25,10 +25,7 @@ namespace Chummer
     {
         private readonly TelemetryConfiguration _configuration;
 
-        public LiveStreamProvider(TelemetryConfiguration configuration)
-        {
-            this._configuration = configuration;
-        }
+        public LiveStreamProvider(TelemetryConfiguration configuration) => _configuration = configuration;
 
         public void Enable()
         {

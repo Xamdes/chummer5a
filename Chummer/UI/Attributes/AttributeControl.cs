@@ -65,10 +65,14 @@ namespace Chummer.UI.Attributes
             else
             {
                 while (_objAttribute.KarmaMaximum < 0 && _objAttribute.Base > 0)
+                {
                     _objAttribute.Base -= 1;
+                }
                 // Very rough fix for when Karma values somehow exceed KarmaMaximum after loading in. This shouldn't happen in the first place, but this ad-hoc patch will help fix crashes.
                 if (_objAttribute.Karma > _objAttribute.KarmaMaximum)
+                {
                     _objAttribute.Karma = _objAttribute.KarmaMaximum;
+                }
 
                 nudBase.DataBindings.Add("Visible", _objCharacter, nameof(Character.BuildMethodHasSkillPoints), false, DataSourceUpdateMode.OnPropertyChanged);
                 nudBase.DataBindings.Add("Maximum", _dataSource, nameof(CharacterAttrib.PriorityMaximum), false, DataSourceUpdateMode.OnPropertyChanged);
@@ -91,7 +95,10 @@ namespace Chummer.UI.Attributes
         private void AttributePropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName != nameof(AttributeSection.AttributeCategory))
+            {
                 return;
+            }
+
             _dataSource.DataSource = _objCharacter.AttributeSection.GetAttributeByName(AttributeName);
             _dataSource.ResetBindings(false);
         }
@@ -112,7 +119,10 @@ namespace Chummer.UI.Attributes
             int intUpgradeKarmaCost = attrib.UpgradeKarmaCost;
 
             if (intUpgradeKarmaCost == -1)
+            {
                 return; //TODO: more descriptive
+            }
+
             if (intUpgradeKarmaCost > _objCharacter.Karma)
             {
                 Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_NotEnoughKarma", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_NotEnoughKarma", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -121,7 +131,9 @@ namespace Chummer.UI.Attributes
 
             string confirmstring = string.Format(LanguageManager.GetString("Message_ConfirmKarmaExpense", GlobalOptions.Language), attrib.DisplayNameFormatted, attrib.Value + 1, intUpgradeKarmaCost);
             if (!attrib.CharacterObject.ConfirmKarmaExpense(confirmstring))
+            {
                 return;
+            }
 
             attrib.Upgrade();
             ValueChanged?.Invoke(this, e);
@@ -132,7 +144,10 @@ namespace Chummer.UI.Attributes
             CharacterAttrib attrib = _objCharacter.AttributeSection.GetAttributeByName(AttributeName);
             decimal d = ((NumericUpDownEx)sender).Value;
             if (d == _oldBase)
+            {
                 return;
+            }
+
             if (!CanBeMetatypeMax(
                 Math.Max(
                     decimal.ToInt32(nudKarma.Value) + attrib.FreeBase + attrib.RawMinimum +
@@ -159,7 +174,10 @@ namespace Chummer.UI.Attributes
             CharacterAttrib attrib = _objCharacter.AttributeSection.GetAttributeByName(AttributeName);
             decimal d = ((NumericUpDownEx)sender).Value;
             if (d == _oldKarma)
+            {
                 return;
+            }
+
             if (!CanBeMetatypeMax(
                 Math.Max(
                     decimal.ToInt32(nudBase.Value) + attrib.FreeBase + attrib.RawMinimum +
@@ -201,10 +219,15 @@ namespace Chummer.UI.Attributes
         {
             CharacterAttrib attrib = _objCharacter.AttributeSection.GetAttributeByName(AttributeName);
             if (_objCharacter.IgnoreRules || attrib.MetatypeCategory == CharacterAttrib.AttributeCategory.Special)
+            {
                 return true;
+            }
+
             int intTotalMaximum = attrib.TotalMaximum;
             if (intValue < intTotalMaximum || intTotalMaximum == 0)
+            {
                 return true;
+            }
             //TODO: This should be in AttributeSection, but I can't be bothered finagling the option into working.
             //Ideally return 2 or 1, allow for an improvement type to increase or decrease the value. 
             int intMaxOtherAttributesAtMax = _objCharacter.Options.Allow2ndMaxAttribute ? 1 : 0;
@@ -212,7 +235,10 @@ namespace Chummer.UI.Attributes
                 att.AtMetatypeMaximum && att.Abbrev != AttributeName && att.MetatypeCategory == CharacterAttrib.AttributeCategory.Standard);
 
             if (intNumOtherAttributeAtMax <= intMaxOtherAttributesAtMax)
+            {
                 return true;
+            }
+
             Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_AttributeMaximum", GlobalOptions.Language),
                 LanguageManager.GetString("MessageTitle_Attribute", GlobalOptions.Language), MessageBoxButtons.OK,
                 MessageBoxIcon.Information);
@@ -232,7 +258,9 @@ namespace Chummer.UI.Attributes
 
             // Verify that the user wants to Burn a point of Edge.
             if (MessageBox.Show(LanguageManager.GetString("Message_BurnEdge", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_BurnEdge", GlobalOptions.Language), MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
+            {
                 return;
+            }
 
             _objAttribute.Degrade(1);
             ValueChanged?.Invoke(this, e);
@@ -242,7 +270,10 @@ namespace Chummer.UI.Attributes
         {
             CharacterAttrib attrib = _objCharacter.AttributeSection.GetAttributeByName(AttributeName);
             if (nudBase.Value + Math.Max(nudKarma.Value, 0) != attrib.TotalMaximum || nudKarma.Value == nudKarma.Minimum)
+            {
                 return;
+            }
+
             if (nudKarma.Value - nudBase.Increment >= 0)
             {
                 nudKarma.Value -= nudBase.Increment;
@@ -257,7 +288,10 @@ namespace Chummer.UI.Attributes
         {
             CharacterAttrib attrib = _objCharacter.AttributeSection.GetAttributeByName(AttributeName);
             if (nudBase.Value + nudKarma.Value != attrib.TotalMaximum || nudBase.Value == nudBase.Minimum)
+            {
                 return;
+            }
+
             if (nudBase.Value - nudKarma.Increment >= 0)
             {
                 nudBase.Value -= nudKarma.Increment;
@@ -281,7 +315,10 @@ namespace Chummer.UI.Attributes
             set
             {
                 if (value == ActiveButton)
+                {
                     return;
+                }
+
                 ActiveButton?.ToolTipObject.Hide(this);
                 _activeButton = value;
                 if (_activeButton?.Visible == true)
@@ -296,22 +333,21 @@ namespace Chummer.UI.Attributes
             foreach (Control c in Controls)
             {
                 if (!(c is ButtonWithToolTip))
+                {
                     continue;
+                }
+
                 if (c.Bounds.Contains(pt))
+                {
                     return c;
+                }
             }
             return null;
         }
 
-        private void OnMouseMove(object sender, MouseEventArgs e)
-        {
-            ActiveButton = FindToolTipControl(e.Location) as ButtonWithToolTip;
-        }
+        private void OnMouseMove(object sender, MouseEventArgs e) => ActiveButton = FindToolTipControl(e.Location) as ButtonWithToolTip;
 
-        private void OnMouseLeave(object sender, EventArgs e)
-        {
-            ActiveButton = null;
-        }
+        private void OnMouseLeave(object sender, EventArgs e) => ActiveButton = null;
         #endregion
     }
 }

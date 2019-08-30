@@ -111,15 +111,9 @@ namespace CrashHandler
             }
         }
 
-        public void AllowSending()
-        {
-            _startSendEvent.Set();
-        }
+        public void AllowSending() => _startSendEvent.Set();
 
-        private static string GenerateFolderName()
-        {
-            return $"chummer_crash_{DateTime.UtcNow.ToFileTimeUtc()}";
-        }
+        private static string GenerateFolderName() => $"chummer_crash_{DateTime.UtcNow.ToFileTimeUtc()}";
 
         private void SetProgress(CrashDumperProgress progress)
         {
@@ -130,7 +124,9 @@ namespace CrashHandler
         public void StartCollecting()
         {
             if (!_worker.IsBusy)
+            {
                 _worker.RunWorkerAsync();
+            }
         }
 
         private void CollectCrashDump(object sender, DoWorkEventArgs e)
@@ -290,7 +286,9 @@ namespace CrashHandler
                 foreach (string strFilePath in _lstFilePaths)
                 {
                     if (!File.Exists(strFilePath))
+                    {
                         continue;
+                    }
 
                     string name = Path.GetFileName(strFilePath) ?? string.Empty;
                     string destination = Path.Combine(WorkingDirectory, name);
@@ -398,10 +396,7 @@ namespace CrashHandler
             //string result = msg.Content.ReadAsStringAsync().Result;
         }
 
-        private void Clean()
-        {
-            Directory.Delete(WorkingDirectory, true);
-        }
+        private void Clean() => Directory.Delete(WorkingDirectory, true);
 
         //public void StartPoint(string[] args)
         //{
@@ -480,10 +475,7 @@ namespace CrashHandler
             return false;
         }
 
-        private static string MakeStringKey(byte[] iv, byte[] key)
-        {
-            return string.Join("", iv.Select(x => x.ToString("X2"))) + ":" + string.Join("", key.Select(x => x.ToString("X2")));
-        }
+        private static string MakeStringKey(byte[] iv, byte[] key) => string.Join("", iv.Select(x => x.ToString("X2"))) + ":" + string.Join("", key.Select(x => x.ToString("X2")));
 
         #region IDisposable Support
         private bool disposedValue; // To detect redundant calls
@@ -507,12 +499,7 @@ namespace CrashHandler
         //   Dispose(false);
         // }
 
-        public void Dispose()
-        {
-            Dispose(true);
-            // Uncomment the following line if the destructor is overridden above.
-            // GC.SuppressFinalize(this);
-        }
+        public void Dispose() => Dispose(true);// Uncomment the following line if the destructor is overridden above.// GC.SuppressFinalize(this);
         #endregion
     }
 
@@ -532,10 +519,7 @@ namespace CrashHandler
             get;
         }
 
-        public CrashDumperProgressChangedEventArgs(CrashDumperProgress progress)
-        {
-            Progress = progress;
-        }
+        public CrashDumperProgressChangedEventArgs(CrashDumperProgress progress) => Progress = progress;
     }
 
     public enum CrashDumperProgress

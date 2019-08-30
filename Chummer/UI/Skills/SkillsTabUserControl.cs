@@ -58,7 +58,10 @@ namespace Chummer.UI.Skills
         private void LstSkillControlsOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             if (!HasLoaded)
+            {
                 return;
+            }
+
             int intNameLabelWidth = _lstSkillControls.Max(i => i.NameWidth);
 
             foreach (SkillControl2 objSkillControl in _lstSkillControls)
@@ -67,13 +70,19 @@ namespace Chummer.UI.Skills
             }
 
             if (_objCharacter.Created)
+            {
                 return;
+            }
+
             int intRatingLabelWidth = _lstSkillControls.Max(i => i.NudSkillWidth);
             lblActiveSp.Left = lblActiveSkills.Left + intNameLabelWidth + 6;
             lblActiveKarma.Left = lblActiveSp.Left + intRatingLabelWidth + 6;
             //When in karma mode, we will occasionally fail to load the proper size; break if this is the case during debug and try a failback. 
             if (lblActiveKarma.Left >= intNameLabelWidth)
+            {
                 return;
+            }
+
             Utils.BreakIfDebug();
             lblActiveKarma.Left = intNameLabelWidth + 6;
         }
@@ -81,13 +90,12 @@ namespace Chummer.UI.Skills
         public void MissingDatabindingsWorkaround()
         {
             if (!_objCharacter.Created)
+            {
                 UpdateKnoSkillRemaining();
+            }
         }
 
-        private void UpdateKnoSkillRemaining()
-        {
-            lblKnowledgeSkillPoints.Text = $"{_objCharacter.SkillsSection.KnowledgeSkillPointsRemain}{LanguageManager.GetString("String_Of", GlobalOptions.Language)}{_objCharacter.SkillsSection.KnowledgeSkillPoints}";
-        }
+        private void UpdateKnoSkillRemaining() => lblKnowledgeSkillPoints.Text = $"{_objCharacter.SkillsSection.KnowledgeSkillPointsRemain}{LanguageManager.GetString("String_Of", GlobalOptions.Language)}{_objCharacter.SkillsSection.KnowledgeSkillPoints}";
 
         public bool HasLoaded => _objCharacter != null;
         private Character _objCharacter;
@@ -104,17 +112,24 @@ namespace Chummer.UI.Skills
             if (_objCharacter == null)
             {
                 if (ParentForm != null)
+                {
                     ParentForm.Cursor = Cursors.WaitCursor;
+                }
+
                 RealLoad();
                 if (ParentForm != null)
+                {
                     ParentForm.Cursor = Cursors.Default;
+                }
             }
         }
 
         public void RealLoad()
         {
             if (ParentForm is CharacterShared frmParent)
+            {
                 _objCharacter = frmParent.CharacterObject;
+            }
             else
             {
                 _objCharacter = new Character();
@@ -366,7 +381,9 @@ namespace Chummer.UI.Skills
             //TODO: TRANSLATIONS
 
             using (XmlNodeList xmlSkillCategoryList = XmlManager.Load("skills.xml").SelectNodes("/chummer/categories/category[@type = \"active\"]"))
+            {
                 if (xmlSkillCategoryList != null)
+                {
                     foreach (XmlNode xmlCategoryNode in xmlSkillCategoryList)
                     {
                         string strName = xmlCategoryNode.InnerText;
@@ -374,6 +391,8 @@ namespace Chummer.UI.Skills
                             $"{LanguageManager.GetString("Label_Category", GlobalOptions.Language)} {xmlCategoryNode.Attributes?["translate"]?.InnerText ?? strName}",
                             skill => skill.SkillCategory == strName));
                     }
+                }
+            }
 
             foreach (string strAttribute in AttributeSection.AttributeStrings)
             {
@@ -386,7 +405,9 @@ namespace Chummer.UI.Skills
             }
 
             using (XmlNodeList xmlSkillGroupList = XmlManager.Load("skills.xml").SelectNodes("/chummer/skillgroups/name"))
+            {
                 if (xmlSkillGroupList != null)
+                {
                     foreach (XmlNode xmlSkillGroupNode in xmlSkillGroupList)
                     {
                         string strName = xmlSkillGroupNode.InnerText;
@@ -394,6 +415,8 @@ namespace Chummer.UI.Skills
                             $"{LanguageManager.GetString("String_ExpenseSkillGroup", GlobalOptions.Language)} {xmlSkillGroupNode.Attributes?["translate"]?.InnerText ?? strName}",
                             skill => skill.SkillGroup == strName));
                     }
+                }
+            }
 
             return ret;
         }
@@ -437,7 +460,9 @@ namespace Chummer.UI.Skills
             };
             //TODO: TRANSLATIONS
             using (XmlNodeList xmlSkillCategoryList = XmlManager.Load("skills.xml").SelectNodes("/chummer/categories/category[@type = \"knowledge\"]"))
+            {
                 if (xmlSkillCategoryList != null)
+                {
                     foreach (XmlNode xmlCategoryNode in xmlSkillCategoryList)
                     {
                         string strName = xmlCategoryNode.InnerText;
@@ -445,6 +470,8 @@ namespace Chummer.UI.Skills
                             $"{LanguageManager.GetString("Label_Category", GlobalOptions.Language)} {xmlCategoryNode.Attributes?["translate"]?.InnerText ?? strName}",
                             skill => skill.SkillCategory == strName));
                     }
+                }
+            }
 
             foreach (string strAttribute in AttributeSection.AttributeStrings)
             {
@@ -467,10 +494,7 @@ namespace Chummer.UI.Skills
             return objSkillControl;
         }
 
-        private void Control_CustomAttributeChanged(object sender, EventArgs e)
-        {
-            btnResetCustomDisplayAttribute.Visible = _lstSkillControls.Any(x => x.CustomAttributeSet);
-        }
+        private void Control_CustomAttributeChanged(object sender, EventArgs e) => btnResetCustomDisplayAttribute.Visible = _lstSkillControls.Any(x => x.CustomAttributeSet);
 
         private void Panel1_Resize(object sender, EventArgs e)
         {
@@ -569,7 +593,9 @@ namespace Chummer.UI.Skills
         private void cboSort_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (cboSort.SelectedItem is Tuple<string, IComparer<Skill>> selectedItem)
+            {
                 _lstActiveSkills.Sort(selectedItem.Item2);
+            }
         }
 
         private void btnExotic_Click(object sender, EventArgs e)
@@ -579,7 +605,9 @@ namespace Chummer.UI.Skills
             frmPickExoticSkill.ShowDialog(this);
 
             if (frmPickExoticSkill.DialogResult == DialogResult.Cancel)
+            {
                 return;
+            }
 
             XmlNode xmlSkillNode = xmlSkillsDocument.SelectSingleNode("/chummer/skills/skill[name = \"" + frmPickExoticSkill.SelectedExoticSkill + "\"]");
 
@@ -598,7 +626,9 @@ namespace Chummer.UI.Skills
             string key = objSkill.Name + " (" + objSkill.DisplaySpecializationMethod(GlobalOptions.DefaultLanguage) +
                          ')';
             if (!_objCharacter.SkillsSection.SkillsDictionary.ContainsKey(key))
+            {
                 _objCharacter.SkillsSection.SkillsDictionary.Add(key, objSkill);
+            }
         }
 
         private void btnKnowledge_Click(object sender, EventArgs e)
@@ -640,7 +670,9 @@ namespace Chummer.UI.Skills
         private void cboSortKnowledge_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (cboSortKnowledge.SelectedItem is Tuple<string, IComparer<KnowledgeSkill>> selectedItem)
+            {
                 _lstKnowledgeSkills.Sort(selectedItem.Item2);
+            }
         }
 
         private void cboDisplayFilterKnowledge_SelectedIndexChanged(object sender, EventArgs e)

@@ -68,12 +68,16 @@ namespace Chummer
         private void lstPowers_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (_blnLoading)
+            {
                 return;
+            }
 
             string strSelectedId = lstPowers.SelectedValue?.ToString();
             XPathNavigator objXmlPower = null;
             if (!string.IsNullOrEmpty(strSelectedId))
+            {
                 objXmlPower = _xmlBasePowerDataNode.SelectSingleNode("powers/power[id = \"" + strSelectedId + "\"]");
+            }
 
             if (objXmlPower != null)
             {
@@ -107,10 +111,7 @@ namespace Chummer
             lblSourceLabel.Visible = !string.IsNullOrEmpty(lblSource.Text);
         }
 
-        private void cmdCancel_Click(object sender, EventArgs e)
-        {
-            DialogResult = DialogResult.Cancel;
-        }
+        private void cmdCancel_Click(object sender, EventArgs e) => DialogResult = DialogResult.Cancel;
 
         private void cmdOKAdd_Click(object sender, EventArgs e)
         {
@@ -118,10 +119,7 @@ namespace Chummer
             AcceptForm();
         }
 
-        private void txtSearch_TextChanged(object sender, EventArgs e)
-        {
-            BuildPowerList();
-        }
+        private void txtSearch_TextChanged(object sender, EventArgs e) => BuildPowerList();
 
         private void txtSearch_KeyDown(object sender, KeyEventArgs e)
         {
@@ -152,7 +150,9 @@ namespace Chummer
         private void txtSearch_KeyUp(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Up)
+            {
                 txtSearch.Select(txtSearch.Text.Length, 0);
+            }
         }
         #endregion
 
@@ -206,15 +206,22 @@ namespace Chummer
         private void BuildPowerList()
         {
             if (_blnLoading)
+            {
                 return;
+            }
 
             string strFilter = "(" + _objCharacter.Options.BookXPath() + ')';
             if (!string.IsNullOrEmpty(_strLimitToPowers))
             {
                 StringBuilder objFilter = new StringBuilder();
                 foreach (string strPower in _strLimitToPowers.Split(','))
+                {
                     if (!string.IsNullOrEmpty(strPower))
+                    {
                         objFilter.Append("name = \"" + strPower.Trim() + "\" or ");
+                    }
+                }
+
                 if (objFilter.Length > 0)
                 {
                     strFilter += " and (" + objFilter.ToString().TrimEndOnce(" or ") + ')';
@@ -233,7 +240,9 @@ namespace Chummer
                 {
                     //If this power has already had its rating paid for with PP, we don't care about the extrapoints cost.
                     if (!_objCharacter.Powers.Any(power => power.Name == strName && power.TotalRating > 0))
+                    {
                         decPoints += Convert.ToDecimal(strExtraPointCost, GlobalOptions.InvariantCultureInfo);
+                    }
                 }
                 if (_decLimitToRating > 0 && decPoints > _decLimitToRating)
                 {
@@ -241,7 +250,9 @@ namespace Chummer
                 }
 
                 if (!objXmlPower.RequirementsMet(_objCharacter, null, string.Empty, string.Empty, string.Empty, string.Empty, IgnoreLimits))
+                {
                     continue;
+                }
 
                 lstPower.Add(new ListItem(objXmlPower.SelectSingleNode("id")?.Value ?? string.Empty, objXmlPower.SelectSingleNode("translate")?.Value ?? strName));
             }
@@ -254,9 +265,14 @@ namespace Chummer
             lstPowers.DataSource = lstPower;
             _blnLoading = false;
             if (!string.IsNullOrEmpty(strOldSelected))
+            {
                 lstPowers.SelectedValue = strOldSelected;
+            }
             else
+            {
                 lstPowers.SelectedIndex = -1;
+            }
+
             lstPowers.EndUpdate();
         }
 
@@ -279,10 +295,7 @@ namespace Chummer
             }
         }
 
-        private void OpenSourceFromLabel(object sender, EventArgs e)
-        {
-            CommonFunctions.OpenPDFFromControl(sender, e);
-        }
+        private void OpenSourceFromLabel(object sender, EventArgs e) => CommonFunctions.OpenPDFFromControl(sender, e);
         #endregion
     }
 }

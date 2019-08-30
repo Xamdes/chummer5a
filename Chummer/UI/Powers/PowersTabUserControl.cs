@@ -60,17 +60,24 @@ namespace Chummer.UI.Powers
             if (_objCharacter == null)
             {
                 if (ParentForm != null)
+                {
                     ParentForm.Cursor = Cursors.WaitCursor;
+                }
+
                 RealLoad();
                 if (ParentForm != null)
+                {
                     ParentForm.Cursor = Cursors.Default;
+                }
             }
         }
 
         public void RealLoad()
         {
             if (ParentForm is CharacterShared frmParent)
+            {
                 _objCharacter = frmParent.CharacterObject;
+            }
             else
             {
                 Utils.BreakIfDebug();
@@ -216,10 +223,7 @@ namespace Chummer.UI.Powers
             while (blnAddAgain);
         }
 
-        public void RefreshPowerInfo(object sender, EventArgs e)
-        {
-            CalculatePowerPoints();
-        }
+        public void RefreshPowerInfo(object sender, EventArgs e) => CalculatePowerPoints();
 
         /// <summary>
         /// Calculate the number of Adept Power Points used.
@@ -379,7 +383,9 @@ namespace Chummer.UI.Powers
                     frmPowerNotes.ShowDialog(this);
 
                     if (frmPowerNotes.DialogResult == DialogResult.OK)
+                    {
                         p.Notes = frmPowerNotes.Notes;
+                    }
                 },
                 Alignment = Alignment.Center
             })
@@ -390,7 +396,10 @@ namespace Chummer.UI.Powers
                 {
                     string strTooltip = LanguageManager.GetString("Tip_Power_EditNotes", GlobalOptions.Language);
                     if (!string.IsNullOrEmpty(p.Notes))
+                    {
                         strTooltip += Environment.NewLine + Environment.NewLine + p.Notes;
+                    }
+
                     return strTooltip.WordWrap(100);
                 })
             };
@@ -416,7 +425,9 @@ namespace Chummer.UI.Powers
                     p.UnbindPower();
 
                     if (frmParent is CharacterShared objParent)
+                    {
                         objParent.IsCharacterUpdateRequested = true;
+                    }
                 },
                 EnabledExtractor = (p => p.FreeLevels == 0)
             });
@@ -437,9 +448,6 @@ namespace Chummer.UI.Powers
             pnlPowers.Controls.Add(_table);
         }
 
-        private static Size GetImageSize(Image image)
-        {
-            return new Size(image.Width, image.Height);
-        }
+        private static Size GetImageSize(Image image) => new Size(image.Width, image.Height);
     }
 }

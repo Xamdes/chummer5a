@@ -62,15 +62,9 @@ namespace Chummer.Plugins
 
     public class PluginControl : IDisposable
     {
-        private static Logger Log = NLog.LogManager.GetCurrentClassLogger();
+        private static readonly Logger Log = NLog.LogManager.GetCurrentClassLogger();
         private static CompositionContainer container = null;
-        public static CompositionContainer Container
-        {
-            get
-            {
-                return container;
-            }
-        }
+        public static CompositionContainer Container => container;
         public string PathToPlugins
         {
             get; set;
@@ -85,7 +79,7 @@ namespace Chummer.Plugins
 
         ~PluginControl()
         {
-            foreach (IPlugin plugin in this.MyActivePlugins)
+            foreach (IPlugin plugin in MyActivePlugins)
             {
                 plugin.Dispose();
             }
@@ -101,16 +95,26 @@ namespace Chummer.Plugins
             if (key != null)
             {
                 if (key.GetValue(string.Empty)?.ToString() != "URL: Chummer Protocol")
+                {
                     reregisterKey = true;
+                }
+
                 if (key.GetValue("URL Protocol")?.ToString() != string.Empty)
+                {
                     reregisterKey = true;
+                }
+
                 key = key.OpenSubKey(@"shell\open\command");
                 if (key == null)
+                {
                     reregisterKey = true;
+                }
                 else
                 {
                     if (key.GetValue(string.Empty)?.ToString() != startupExe + " " + "%1")
+                    {
                         reregisterKey = true;
+                    }
                 }
                 key.Close();
             }
@@ -165,7 +169,10 @@ namespace Chummer.Plugins
 
             RegistryKey shell = key.OpenSubKey(@"shell\open\command", RegistryKeyPermissionCheck.ReadWriteSubTree);
             if (shell == null)
+            {
                 shell = key.CreateSubKey(@"shell\open\command", RegistryKeyPermissionCheck.ReadWriteSubTree);
+            }
+
             shell.SetValue(string.Empty, myAppPath + " " + "%1");
             //%1 represents the argument - this tells windows to open this program with an argument / parameter
             shell.Close();
@@ -273,7 +280,10 @@ namespace Chummer.Plugins
             catch (Exception e)
             {
                 if (e is ApplicationException)
+                {
                     throw;
+                }
+
                 Log.Fatal(e);
                 throw;
             }
@@ -292,16 +302,23 @@ namespace Chummer.Plugins
             {
                 List<IPlugin> result = new List<IPlugin>();
                 if (GlobalOptions.PluginsEnabled == false)
+                {
                     return result;
+                }
+
                 if (MyPlugins == null)
+                {
                     return result;
+                }
+
                 List<IPlugin> list = MyPlugins.ToList();
                 foreach (IPlugin plugin in list)
                 {
-                    bool enabled = true;
-                    GlobalOptions.PluginsEnabledDic.TryGetValue(plugin.ToString(), out enabled);
+                    GlobalOptions.PluginsEnabledDic.TryGetValue(plugin.ToString(), out bool enabled);
                     if (enabled)
+                    {
                         result.Add(plugin);
+                    }
                 }
                 return result;
             }
@@ -315,7 +332,9 @@ namespace Chummer.Plugins
             {
                 string lName = e.Name.ToLower();
                 if (lName.EndsWith(".dll") || lName.EndsWith(".exe"))
+                {
                     Refresh();
+                }
             };
             watcher.EnableRaisingEvents = true;
         }
@@ -323,7 +342,9 @@ namespace Chummer.Plugins
         public static void Refresh()
         {
             foreach (DirectoryCatalog dCatalog in catalog.Catalogs)
+            {
                 dCatalog.Refresh();
+            }
         }
 
         internal void LoadPlugins(CustomActivity parentActivity)
@@ -333,7 +354,7 @@ namespace Chummer.Plugins
                 using (CustomActivity op_plugin = Timekeeper.StartSyncron("LoadPlugins", parentActivity,
                     CustomActivity.OperationType.DependencyOperation, myDirectoryCatalog?.FullPath))
                 {
-                    this.Initialize();
+                    Initialize();
                 }
             }
             catch (System.Security.SecurityException e)
@@ -392,13 +413,18 @@ namespace Chummer.Plugins
                 {
                     IEnumerable<TabPage> pages = plugin.GetTabPages(frmCareer);
                     if (pages == null)
+                    {
                         continue;
+                    }
+
                     foreach (TabPage page in pages)
                     {
                         if (page != null)
                         {
                             if (!frmCareer.TabCharacterTabs.TabPages.Contains(page))
+                            {
                                 frmCareer.TabCharacterTabs.TabPages.Add(page);
+                            }
                         }
                     }
                 }
@@ -413,13 +439,18 @@ namespace Chummer.Plugins
                 {
                     IEnumerable<TabPage> pages = plugin.GetTabPages(frmCreate);
                     if (pages == null)
+                    {
                         continue;
+                    }
+
                     foreach (TabPage page in pages)
                     {
                         if (page != null)
                         {
                             if (!frmCreate.TabCharacterTabs.TabPages.Contains(page))
+                            {
                                 frmCreate.TabCharacterTabs.TabPages.Add(page);
+                            }
                         }
                     }
                 }
@@ -435,13 +466,18 @@ namespace Chummer.Plugins
                 {
                     IEnumerable<ToolStripMenuItem> menuitems = plugin.GetMenuItems(menu);
                     if (menuitems == null)
+                    {
                         continue;
+                    }
+
                     foreach (ToolStripMenuItem plugInMenu in menuitems)
                     {
                         if (plugInMenu != null)
                         {
                             if (!menu.DropDownItems.Contains(plugInMenu))
+                            {
                                 menu.DropDownItems.Add(plugInMenu);
+                            }
                         }
                     }
                 }
@@ -452,7 +488,9 @@ namespace Chummer.Plugins
         public void Dispose()
         {
             foreach (IPlugin plugin in MyActivePlugins)
+            {
                 plugin.Dispose();
+            }
         }
     }
 }

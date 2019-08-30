@@ -35,21 +35,14 @@ namespace Microsoft.AspNetCore.Identity
         }
 
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'ApplicationUser.ApplicationUser()'
-        public ApplicationUser()
-#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'ApplicationUser.ApplicationUser()'
-        {
-            FavoriteGroups = new List<ApplicationUserFavoriteGroup>();
-        }
+        public ApplicationUser() => FavoriteGroups = new List<ApplicationUserFavoriteGroup>();
 
         private ILazyLoader LazyLoader
         {
             get; set;
         }
 
-        private ApplicationUser(ILazyLoader lazyLoader)
-        {
-            LazyLoader = lazyLoader;
-        }
+        private ApplicationUser(ILazyLoader lazyLoader) => LazyLoader = lazyLoader;
 
     }
 }

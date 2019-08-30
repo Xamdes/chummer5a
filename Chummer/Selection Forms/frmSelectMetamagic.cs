@@ -79,7 +79,9 @@ namespace Chummer
         private void lstMetamagic_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (_blnLoading)
+            {
                 return;
+            }
 
             string strSelectedId = lstMetamagic.SelectedValue?.ToString();
             if (!string.IsNullOrEmpty(strSelectedId))
@@ -110,30 +112,15 @@ namespace Chummer
             lblSourceLabel.Visible = !string.IsNullOrEmpty(lblSource.Text);
         }
 
-        private void cmdOK_Click(object sender, EventArgs e)
-        {
-            AcceptForm();
-        }
+        private void cmdOK_Click(object sender, EventArgs e) => AcceptForm();
 
-        private void cmdCancel_Click(object sender, EventArgs e)
-        {
-            DialogResult = DialogResult.Cancel;
-        }
+        private void cmdCancel_Click(object sender, EventArgs e) => DialogResult = DialogResult.Cancel;
 
-        private void lstMetamagic_DoubleClick(object sender, EventArgs e)
-        {
-            AcceptForm();
-        }
+        private void lstMetamagic_DoubleClick(object sender, EventArgs e) => AcceptForm();
 
-        private void chkLimitList_CheckedChanged(object sender, EventArgs e)
-        {
-            BuildMetamagicList();
-        }
+        private void chkLimitList_CheckedChanged(object sender, EventArgs e) => BuildMetamagicList();
 
-        private void txtSearch_TextChanged(object sender, EventArgs e)
-        {
-            BuildMetamagicList();
-        }
+        private void txtSearch_TextChanged(object sender, EventArgs e) => BuildMetamagicList();
         #endregion
 
         #region Properties
@@ -158,16 +145,22 @@ namespace Chummer
                 if (blnIsMagician != _objCharacter.AdeptEnabled)
                 {
                     if (blnIsMagician)
+                    {
                         strFilter = "magician = 'True' and (" + strFilter + ')';
+                    }
                     else
+                    {
                         strFilter = "adept = 'True' and (" + strFilter + ')';
+                    }
                 }
             }
 
             strFilter += CommonFunctions.GenerateSearchXPath(txtSearch.Text);
             List<ListItem> lstMetamagics = new List<ListItem>();
             using (XmlNodeList objXmlMetamagicList = _objXmlDocument.SelectNodes(_strRootXPath + '[' + strFilter + ']'))
+            {
                 if (objXmlMetamagicList?.Count > 0)
+                {
                     foreach (XmlNode objXmlMetamagic in objXmlMetamagicList)
                     {
                         string strId = objXmlMetamagic["id"]?.InnerText;
@@ -179,6 +172,9 @@ namespace Chummer
                             }
                         }
                     }
+                }
+            }
+
             lstMetamagics.Sort(CompareListItems.CompareNames);
             string strOldSelected = lstMetamagic.SelectedValue?.ToString();
             _blnLoading = true;
@@ -188,9 +184,14 @@ namespace Chummer
             lstMetamagic.DataSource = lstMetamagics;
             _blnLoading = false;
             if (!string.IsNullOrEmpty(strOldSelected))
+            {
                 lstMetamagic.SelectedValue = strOldSelected;
+            }
             else
+            {
                 lstMetamagic.SelectedIndex = -1;
+            }
+
             lstMetamagic.EndUpdate();
         }
 
@@ -206,7 +207,9 @@ namespace Chummer
                 XmlNode objXmlMetamagic = _objXmlDocument.SelectSingleNode(_strRootXPath + "[id = \"" + strSelectedId + "\"]");
 
                 if (!objXmlMetamagic.RequirementsMet(_objCharacter, _strType))
+                {
                     return;
+                }
 
                 _strSelectedMetamagic = strSelectedId;
 
@@ -214,10 +217,7 @@ namespace Chummer
             }
         }
 
-        private void OpenSourceFromLabel(object sender, EventArgs e)
-        {
-            CommonFunctions.OpenPDFFromControl(sender, e);
-        }
+        private void OpenSourceFromLabel(object sender, EventArgs e) => CommonFunctions.OpenPDFFromControl(sender, e);
         #endregion
     }
 }

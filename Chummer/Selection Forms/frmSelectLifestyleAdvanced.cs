@@ -60,7 +60,9 @@ namespace Chummer
                 return;
             }
             if (notifyCollectionChangedEventArgs.Action == NotifyCollectionChangedAction.Move)
+            {
                 return;
+            }
 
             TreeNode nodFreeGridsRoot = treLifestyleQualities.FindNode("Node_SelectAdvancedLifestyle_FreeMatrixGrids", false);
 
@@ -72,7 +74,10 @@ namespace Chummer
                         {
                             TreeNode objNode = objFreeGrid.CreateTreeNode();
                             if (objNode == null)
+                            {
                                 return;
+                            }
+
                             if (nodFreeGridsRoot == null)
                             {
                                 nodFreeGridsRoot = new TreeNode
@@ -110,7 +115,9 @@ namespace Chummer
                                 TreeNode objParent = objNode.Parent;
                                 objNode.Remove();
                                 if (objParent.Level == 0 && objParent.Nodes.Count == 0)
+                                {
                                     objParent.Remove();
+                                }
                             }
                         }
                         break;
@@ -124,7 +131,10 @@ namespace Chummer
                             if (objNode != null)
                             {
                                 if (objNode.Parent != null)
+                                {
                                     lstOldParents.Add(objNode.Parent);
+                                }
+
                                 objNode.Remove();
                             }
                         }
@@ -132,7 +142,10 @@ namespace Chummer
                         {
                             TreeNode objNode = objFreeGrid.CreateTreeNode();
                             if (objNode == null)
+                            {
                                 return;
+                            }
+
                             if (nodFreeGridsRoot == null)
                             {
                                 nodFreeGridsRoot = new TreeNode
@@ -161,7 +174,9 @@ namespace Chummer
                         foreach (TreeNode objOldParent in lstOldParents)
                         {
                             if (objOldParent.Level == 0 && objOldParent.Nodes.Count == 0)
+                            {
                                 objOldParent.Remove();
+                            }
                         }
                         break;
                     }
@@ -183,7 +198,10 @@ namespace Chummer
             {
                 TreeNode objNode = objQuality.CreateTreeNode();
                 if (objNode == null)
+                {
                     continue;
+                }
+
                 switch (objQuality.Type)
                 {
                     case QualityType.Positive:
@@ -232,7 +250,10 @@ namespace Chummer
             {
                 TreeNode objNode = objFreeGrid.CreateTreeNode();
                 if (objNode == null)
+                {
                     return;
+                }
+
                 if (nodFreeGridsRoot == null)
                 {
                     nodFreeGridsRoot = new TreeNode
@@ -257,7 +278,9 @@ namespace Chummer
                 return;
             }
             if (notifyCollectionChangedEventArgs.Action == NotifyCollectionChangedAction.Move)
+            {
                 return;
+            }
 
             TreeNode nodPositiveQualityRoot = treLifestyleQualities.FindNode("Node_SelectAdvancedLifestyle_PositiveQualities", false);
             TreeNode nodNegativeQualityRoot = treLifestyleQualities.FindNode("Node_SelectAdvancedLifestyle_NegativeQualities", false);
@@ -283,7 +306,9 @@ namespace Chummer
                                 TreeNode objParent = objNode.Parent;
                                 objNode.Remove();
                                 if (objParent.Level == 0 && objParent.Nodes.Count == 0)
+                                {
                                     objParent.Remove();
+                                }
                             }
                         }
                         break;
@@ -297,7 +322,10 @@ namespace Chummer
                             if (objNode != null)
                             {
                                 if (objNode.Parent != null)
+                                {
                                     lstOldParents.Add(objNode.Parent);
+                                }
+
                                 objNode.Remove();
                             }
                         }
@@ -308,7 +336,9 @@ namespace Chummer
                         foreach (TreeNode objOldParent in lstOldParents)
                         {
                             if (objOldParent.Level == 0 && objOldParent.Nodes.Count == 0)
+                            {
                                 objOldParent.Remove();
+                            }
                         }
                         break;
                     }
@@ -318,7 +348,10 @@ namespace Chummer
             {
                 TreeNode objNode = objQuality.CreateTreeNode();
                 if (objNode == null)
+                {
                     return;
+                }
+
                 TreeNode objParentNode;
                 switch (objQuality.Type)
                 {
@@ -385,7 +418,9 @@ namespace Chummer
             // Lifestyles.
             List<ListItem> lstLifestyles = new List<ListItem>();
             using (XmlNodeList xmlLifestyleList = _xmlDocument.SelectNodes("/chummer/lifestyles/lifestyle[" + _objCharacter.Options.BookXPath() + "]"))
+            {
                 if (xmlLifestyleList?.Count > 0)
+                {
                     foreach (XmlNode objXmlLifestyle in xmlLifestyleList)
                     {
                         string strLifestyleName = objXmlLifestyle["name"]?.InnerText;
@@ -399,6 +434,8 @@ namespace Chummer
                             lstLifestyles.Add(new ListItem(strLifestyleName, objXmlLifestyle["translate"]?.InnerText ?? strLifestyleName));
                         }
                     }
+                }
+            }
 
             chkBonusLPRandomize.DoNegatableDatabinding("Checked", SelectedLifestyle, nameof(Lifestyle.AllowBonusLP));
             nudBonusLP.DoDatabinding("Value", SelectedLifestyle, nameof(Lifestyle.BonusLP));
@@ -431,7 +468,10 @@ namespace Chummer
             lblSecurityTotal.DoDatabinding("Text", SelectedLifestyle, nameof(Lifestyle.TotalSecurity));
             lblTotalLP.DoDatabinding("Text", SelectedLifestyle, nameof(Lifestyle.TotalLP));
             if (cboBaseLifestyle.SelectedIndex == -1)
+            {
                 cboBaseLifestyle.SelectedIndex = 0;
+            }
+
             cboBaseLifestyle.EndUpdate();
 
             SelectedLifestyle.LifestyleQualities.CollectionChanged += LifestyleQualitiesOnCollectionChanged;
@@ -447,15 +487,14 @@ namespace Chummer
             AcceptForm();
         }
 
-        private void cmdCancel_Click(object sender, EventArgs e)
-        {
-            DialogResult = DialogResult.Cancel;
-        }
+        private void cmdCancel_Click(object sender, EventArgs e) => DialogResult = DialogResult.Cancel;
 
         private void chkTrustFund_Changed(object sender, EventArgs e)
         {
             if (_blnSkipRefresh)
+            {
                 return;
+            }
 
             if (chkTrustFund.Checked)
             {
@@ -474,14 +513,19 @@ namespace Chummer
         private void cboBaseLifestyle_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (_blnSkipRefresh)
+            {
                 return;
+            }
+
             RefreshSelectedLifestyle();
         }
 
         private void nudRoommates_ValueChanged(object sender, EventArgs e)
         {
             if (_blnSkipRefresh)
+            {
                 return;
+            }
 
             if (nudRoommates.Value == 0 && !chkPrimaryTenant.Checked)
             {
@@ -514,7 +558,9 @@ namespace Chummer
                 frmSelectLifestyleQuality.Close();
                 //objNode.ContextMenuStrip = cmsQuality;
                 if (objQuality.InternalId.IsEmptyGuid())
+                {
                     continue;
+                }
 
                 SelectedLifestyle.LifestyleQualities.Add(objQuality);
             }
@@ -525,10 +571,15 @@ namespace Chummer
         {
             // Locate the selected Quality.
             if (treLifestyleQualities.SelectedNode == null || treLifestyleQualities.SelectedNode.Level == 0 || treLifestyleQualities.SelectedNode.Parent.Name == "nodFreeMatrixGrids")
+            {
                 return;
+            }
 
             if (!(treLifestyleQualities.SelectedNode.Tag is LifestyleQuality objQuality))
+            {
                 return;
+            }
+
             if (objQuality.Name == "Not a Home" && cboBaseLifestyle.SelectedValue?.ToString() == "Bolt Hole")
             {
                 return;
@@ -572,10 +623,15 @@ namespace Chummer
         private void chkQualityContributesLP_CheckedChanged(object sender, EventArgs e)
         {
             if (_blnSkipRefresh)
+            {
                 return;
+            }
 
             if (!(treLifestyleQualities.SelectedNode?.Tag is LifestyleQuality objQuality))
+            {
                 return;
+            }
+
             objQuality.ContributesLP = chkQualityContributesLP.Checked;
             lblQualityLp.Text = objQuality.LP.ToString();
         }
@@ -638,7 +694,10 @@ namespace Chummer
             string strBaseLifestyle = cboBaseLifestyle.SelectedValue.ToString();
             XmlNode objXmlLifestyle = _xmlDocument.SelectSingleNode("/chummer/lifestyles/lifestyle[name = \"" + strBaseLifestyle + "\"]");
             if (objXmlLifestyle == null)
+            {
                 return;
+            }
+
             SelectedLifestyle.Source = objXmlLifestyle["source"]?.InnerText;
             SelectedLifestyle.Page = objXmlLifestyle["page"]?.InnerText;
             SelectedLifestyle.Name = txtLifestyleName.Text;
@@ -664,7 +723,9 @@ namespace Chummer
         private void RefreshSelectedLifestyle()
         {
             if (_blnSkipRefresh)
+            {
                 return;
+            }
 
             string strBaseLifestyle = cboBaseLifestyle.SelectedValue?.ToString() ?? string.Empty;
             SelectedLifestyle.BaseLifestyle = strBaseLifestyle;
@@ -732,10 +793,7 @@ namespace Chummer
             }
         }
 
-        private void OpenSourceFromLabel(object sender, EventArgs e)
-        {
-            CommonFunctions.OpenPDFFromControl(sender, e);
-        }
+        private void OpenSourceFromLabel(object sender, EventArgs e) => CommonFunctions.OpenPDFFromControl(sender, e);
         #endregion
     }
 }

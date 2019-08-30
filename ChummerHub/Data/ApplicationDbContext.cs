@@ -30,10 +30,7 @@ namespace ChummerHub.Data
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'ApplicationDbContext.ApplicationDbContext(DbContextOptions<ApplicationDbContext>, IHostingEnvironment)'
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options, IHostingEnvironment env)
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'ApplicationDbContext.ApplicationDbContext(DbContextOptions<ApplicationDbContext>, IHostingEnvironment)'
-            : base(options)
-        {
-            HostingEnvironment = env;
-        }
+            : base(options) => HostingEnvironment = env;
 
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'ApplicationDbContext.ApplicationDbContext()'
         public ApplicationDbContext()
@@ -148,7 +145,7 @@ namespace ChummerHub.Data
                 .HasIndex(b => b.FavoriteGuid);
             try
             {
-                this.Database.ExecuteSqlCommand(
+                Database.ExecuteSqlCommand(
                     @"CREATE VIEW View_SINnerUserRights AS 
         SELECT        dbo.SINners.Alias, dbo.UserRights.EMail, dbo.SINners.Id, dbo.UserRights.CanEdit, dbo.SINners.GoogleDriveFileId, dbo.SINners.MyGroupId, dbo.SINners.LastChange
                          

@@ -137,7 +137,10 @@ namespace Chummer
         public static int GetTotalMatrixAttribute(this IHasMatrixAttributes objThis, string strAttributeName)
         {
             if (objThis == null)
+            {
                 return 0;
+            }
+
             return objThis.GetBaseMatrixAttribute(strAttributeName) + objThis.GetBonusMatrixAttribute(strAttributeName);
         }
 
@@ -147,7 +150,10 @@ namespace Chummer
         public static bool IsActiveCommlink(this IHasMatrixAttributes objThis, Character objCharacter)
         {
             if (objThis == null || objCharacter == null || !objThis.IsCommlink)
+            {
                 return false;
+            }
+
             return objCharacter.ActiveCommlink == objThis;
         }
 
@@ -157,7 +163,9 @@ namespace Chummer
         public static void SetActiveCommlink(this IHasMatrixAttributes objThis, Character objCharacter, bool blnValue)
         {
             if (objThis == null || objCharacter == null)
+            {
                 return;
+            }
 
             if (blnValue && objThis.IsCommlink)
             {
@@ -175,7 +183,10 @@ namespace Chummer
         public static bool IsHomeNode(this IHasMatrixAttributes objThis, Character objCharacter)
         {
             if (objThis == null || objCharacter == null)
+            {
                 return false;
+            }
+
             return objCharacter.HomeNode == objThis;
         }
 
@@ -185,12 +196,18 @@ namespace Chummer
         public static void SetHomeNode(this IHasMatrixAttributes objThis, Character objCharacter, bool blnValue)
         {
             if (objThis == null || objCharacter == null)
+            {
                 return;
+            }
 
             if (blnValue)
+            {
                 objCharacter.HomeNode = objThis;
+            }
             else if (objCharacter.ActiveCommlink == objThis)
+            {
                 objCharacter.ActiveCommlink = null;
+            }
         }
 
         /// <summary>
@@ -202,7 +219,10 @@ namespace Chummer
         public static string GetMatrixAttributeString(this IHasMatrixAttributes objThis, string strAttributeName)
         {
             if (objThis == null)
+            {
                 return string.Empty;
+            }
+
             switch (strAttributeName)
             {
                 case "Attack":
@@ -235,7 +255,9 @@ namespace Chummer
         public static void RefreshMatrixAttributeCBOs(this IHasMatrixAttributes objThis, ComboBox cboAttack, ComboBox cboSleaze, ComboBox cboDP, ComboBox cboFirewall)
         {
             if (objThis == null)
+            {
                 return;
+            }
 
             int intBaseAttack = objThis.GetBaseMatrixAttribute("Attack");
             int intBaseSleaze = objThis.GetBaseMatrixAttribute("Sleaze");
@@ -304,7 +326,9 @@ namespace Chummer
         public static bool ProcessMatrixAttributeCBOChange(this IHasMatrixAttributes objThis, Character objCharacter, ComboBox cboChangedAttributeCBO, ComboBox cboAttack, ComboBox cboSleaze, ComboBox cboDP, ComboBox cboFirewall)
         {
             if (objThis == null)
+            {
                 return false;
+            }
 
             string strTemp;
             Action<string> funcAttributePropertySetter;
@@ -330,7 +354,9 @@ namespace Chummer
                 funcAttributePropertySetter = (x => objThis.Firewall = x);
             }
             else
+            {
                 return false;
+            }
 
             int intCurrentIndex = cboChangedAttributeCBO.SelectedIndex;
             bool blnRefreshCharacter = false;
@@ -375,9 +401,15 @@ namespace Chummer
         public static void RefreshMatrixAttributeArray(this IHasMatrixAttributes objThis)
         {
             if (objThis == null)
+            {
                 return;
+            }
+
             if (!objThis.CanSwapAttributes)
+            {
                 return;
+            }
+
             int intBaseAttack = objThis.GetBaseMatrixAttribute("Attack");
             int intBaseSleaze = objThis.GetBaseMatrixAttribute("Sleaze");
             int intBaseDP = objThis.GetBaseMatrixAttribute("Data Processing");

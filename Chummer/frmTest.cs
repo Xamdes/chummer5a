@@ -30,10 +30,7 @@ namespace Chummer
 {
     public partial class frmTest : Form
     {
-        public frmTest()
-        {
-            InitializeComponent();
-        }
+        public frmTest() => InitializeComponent();
 
         private bool _blnAddExceptionInfoToErrors;
         private readonly StringBuilder _objOutputBuilder = new StringBuilder();
@@ -74,7 +71,10 @@ namespace Chummer
             }
 
             if (_objOutputBuilder.Length == 0)
+            {
                 _objOutputBuilder.Append("Validation finished with no errors.");
+            }
+
             txtOutput.Text = _objOutputBuilder.ToString();
             cmdTest.Enabled = true;
         }
@@ -98,7 +98,10 @@ namespace Chummer
                     pgbProgress.PerformStep();
                     string strName = objXmlGear["name"]?.InnerText ?? objXmlGear["id"]?.InnerText;
                     if (string.IsNullOrEmpty(strName))
+                    {
                         continue;
+                    }
+
                     Application.DoEvents();
                     try
                     {
@@ -116,9 +119,13 @@ namespace Chummer
                             catch (Exception e)
                             {
                                 if (_blnAddExceptionInfoToErrors)
+                                {
                                     _objOutputBuilder.AppendLine(strName + " failed " + objProperty.Name + ". Exception: " + e.ToString());
+                                }
                                 else
+                                {
                                     _objOutputBuilder.AppendLine(strName + " failed " + objProperty.Name);
+                                }
                             }
                         }
                         try
@@ -128,17 +135,25 @@ namespace Chummer
                         catch (Exception e)
                         {
                             if (_blnAddExceptionInfoToErrors)
+                            {
                                 _objOutputBuilder.AppendLine(strName + " failed CalculatedAvail. Exception: " + e.ToString());
+                            }
                             else
+                            {
                                 _objOutputBuilder.AppendLine(strName + " failed CalculatedAvail");
+                            }
                         }
                     }
                     catch (Exception e)
                     {
                         if (_blnAddExceptionInfoToErrors)
+                        {
                             _objOutputBuilder.AppendLine(strName + " general failure. Exception: " + e.ToString());
+                        }
                         else
+                        {
                             _objOutputBuilder.AppendLine(strName + " general failure");
+                        }
                     }
                 }
             }
@@ -151,7 +166,10 @@ namespace Chummer
                     pgbProgress.PerformStep();
                     string strName = objXmlGear["name"]?.InnerText ?? objXmlGear["id"]?.InnerText;
                     if (string.IsNullOrEmpty(strName))
+                    {
                         continue;
+                    }
+
                     Application.DoEvents();
                     try
                     {
@@ -169,9 +187,13 @@ namespace Chummer
                             catch (Exception e)
                             {
                                 if (_blnAddExceptionInfoToErrors)
+                                {
                                     _objOutputBuilder.AppendLine(strName + " failed " + objProperty.Name + ". Exception: " + e.ToString());
+                                }
                                 else
+                                {
                                     _objOutputBuilder.AppendLine(strName + " failed " + objProperty.Name);
+                                }
                             }
                         }
                         try
@@ -181,17 +203,25 @@ namespace Chummer
                         catch (Exception e)
                         {
                             if (_blnAddExceptionInfoToErrors)
+                            {
                                 _objOutputBuilder.AppendLine(strName + " failed TotalAvail. Exception: " + e.ToString());
+                            }
                             else
+                            {
                                 _objOutputBuilder.AppendLine(strName + " failed TotalAvail");
+                            }
                         }
                     }
                     catch (Exception e)
                     {
                         if (_blnAddExceptionInfoToErrors)
+                        {
                             _objOutputBuilder.AppendLine(strName + " general failure. Exception: " + e.ToString());
+                        }
                         else
+                        {
                             _objOutputBuilder.AppendLine(strName + " general failure");
+                        }
                     }
                 }
             }
@@ -218,7 +248,10 @@ namespace Chummer
                     pgbProgress.PerformStep();
                     string strName = objXmlGear["name"]?.InnerText ?? objXmlGear["id"]?.InnerText;
                     if (string.IsNullOrEmpty(strName))
+                    {
                         continue;
+                    }
+
                     Application.DoEvents();
                     try
                     {
@@ -236,9 +269,13 @@ namespace Chummer
                             catch (Exception e)
                             {
                                 if (_blnAddExceptionInfoToErrors)
+                                {
                                     _objOutputBuilder.AppendLine(strName + " failed " + objProperty.Name + ". Exception: " + e.ToString());
+                                }
                                 else
+                                {
                                     _objOutputBuilder.AppendLine(strName + " failed " + objProperty.Name);
+                                }
                             }
                         }
                         try
@@ -248,9 +285,13 @@ namespace Chummer
                         catch (Exception e)
                         {
                             if (_blnAddExceptionInfoToErrors)
+                            {
                                 _objOutputBuilder.AppendLine(strName + " failed TotalAP. Exception: " + e.ToString());
+                            }
                             else
+                            {
                                 _objOutputBuilder.AppendLine(strName + " failed TotalAP");
+                            }
                         }
 
                         try
@@ -260,9 +301,13 @@ namespace Chummer
                         catch (Exception e)
                         {
                             if (_blnAddExceptionInfoToErrors)
+                            {
                                 _objOutputBuilder.AppendLine(strName + " failed TotalAvail. Exception: " + e.ToString());
+                            }
                             else
+                            {
                                 _objOutputBuilder.AppendLine(strName + " failed TotalAvail");
+                            }
                         }
 
                         try
@@ -272,9 +317,13 @@ namespace Chummer
                         catch (Exception e)
                         {
                             if (_blnAddExceptionInfoToErrors)
+                            {
                                 _objOutputBuilder.AppendLine(strName + " failed CalculatedAmmo. Exception: " + e.ToString());
+                            }
                             else
+                            {
                                 _objOutputBuilder.AppendLine(strName + " failed CalculatedAmmo");
+                            }
                         }
 
                         try
@@ -284,9 +333,13 @@ namespace Chummer
                         catch (Exception e)
                         {
                             if (_blnAddExceptionInfoToErrors)
+                            {
                                 _objOutputBuilder.AppendLine(strName + " failed CalculatedConcealability. Exception: " + e.ToString());
+                            }
                             else
+                            {
                                 _objOutputBuilder.AppendLine(strName + " failed CalculatedConcealability");
+                            }
                         }
 
                         try
@@ -296,17 +349,25 @@ namespace Chummer
                         catch (Exception e)
                         {
                             if (_blnAddExceptionInfoToErrors)
+                            {
                                 _objOutputBuilder.AppendLine(strName + " failed CalculatedDamage. Exception: " + e.ToString());
+                            }
                             else
+                            {
                                 _objOutputBuilder.AppendLine(strName + " failed CalculatedDamage");
+                            }
                         }
                     }
                     catch (Exception e)
                     {
                         if (_blnAddExceptionInfoToErrors)
+                        {
                             _objOutputBuilder.AppendLine(strName + " general failure. Exception: " + e.ToString());
+                        }
                         else
+                        {
                             _objOutputBuilder.AppendLine(strName + " general failure");
+                        }
                     }
                 }
             }
@@ -319,7 +380,10 @@ namespace Chummer
                     pgbProgress.PerformStep();
                     string strName = objXmlGear["name"]?.InnerText ?? objXmlGear["id"]?.InnerText;
                     if (string.IsNullOrEmpty(strName))
+                    {
                         continue;
+                    }
+
                     Application.DoEvents();
                     try
                     {
@@ -337,9 +401,13 @@ namespace Chummer
                             catch (Exception e)
                             {
                                 if (_blnAddExceptionInfoToErrors)
+                                {
                                     _objOutputBuilder.AppendLine(strName + " failed " + objProperty.Name + ". Exception: " + e.ToString());
+                                }
                                 else
+                                {
                                     _objOutputBuilder.AppendLine(strName + " failed " + objProperty.Name);
+                                }
                             }
                         }
 
@@ -350,17 +418,25 @@ namespace Chummer
                         catch (Exception e)
                         {
                             if (_blnAddExceptionInfoToErrors)
+                            {
                                 _objOutputBuilder.AppendLine(strName + " failed TotalAvail. Exception: " + e.ToString());
+                            }
                             else
+                            {
                                 _objOutputBuilder.AppendLine(strName + " failed TotalAvail");
+                            }
                         }
                     }
                     catch (Exception e)
                     {
                         if (_blnAddExceptionInfoToErrors)
+                        {
                             _objOutputBuilder.AppendLine(strName + " general failure. Exception: " + e.ToString());
+                        }
                         else
+                        {
                             _objOutputBuilder.AppendLine(strName + " general failure");
+                        }
                     }
                 }
             }
@@ -387,7 +463,10 @@ namespace Chummer
                     pgbProgress.PerformStep();
                     string strName = objXmlGear["name"]?.InnerText ?? objXmlGear["id"]?.InnerText;
                     if (string.IsNullOrEmpty(strName))
+                    {
                         continue;
+                    }
+
                     Application.DoEvents();
                     try
                     {
@@ -406,9 +485,13 @@ namespace Chummer
                             catch (Exception e)
                             {
                                 if (_blnAddExceptionInfoToErrors)
+                                {
                                     _objOutputBuilder.AppendLine(strName + " failed " + objProperty.Name + ". Exception: " + e.ToString());
+                                }
                                 else
+                                {
                                     _objOutputBuilder.AppendLine(strName + " failed " + objProperty.Name);
+                                }
                             }
                         }
                         try
@@ -418,17 +501,25 @@ namespace Chummer
                         catch (Exception e)
                         {
                             if (_blnAddExceptionInfoToErrors)
+                            {
                                 _objOutputBuilder.AppendLine(strName + " failed TotalAvail. Exception: " + e.ToString());
+                            }
                             else
+                            {
                                 _objOutputBuilder.AppendLine(strName + " failed TotalAvail");
+                            }
                         }
                     }
                     catch (Exception e)
                     {
                         if (_blnAddExceptionInfoToErrors)
+                        {
                             _objOutputBuilder.AppendLine(strName + " general failure. Exception: " + e.ToString());
+                        }
                         else
+                        {
                             _objOutputBuilder.AppendLine(strName + " general failure");
+                        }
                     }
                 }
             }
@@ -441,7 +532,10 @@ namespace Chummer
                     pgbProgress.PerformStep();
                     string strName = objXmlGear["name"]?.InnerText ?? objXmlGear["id"]?.InnerText;
                     if (string.IsNullOrEmpty(strName))
+                    {
                         continue;
+                    }
+
                     Application.DoEvents();
                     try
                     {
@@ -460,9 +554,13 @@ namespace Chummer
                             catch (Exception e)
                             {
                                 if (_blnAddExceptionInfoToErrors)
+                                {
                                     _objOutputBuilder.AppendLine(strName + " failed " + objProperty.Name + ". Exception: " + e.ToString());
+                                }
                                 else
+                                {
                                     _objOutputBuilder.AppendLine(strName + " failed " + objProperty.Name);
+                                }
                             }
                         }
                         try
@@ -472,17 +570,25 @@ namespace Chummer
                         catch (Exception e)
                         {
                             if (_blnAddExceptionInfoToErrors)
+                            {
                                 _objOutputBuilder.AppendLine(strName + " failed TotalAvail. Exception: " + e.ToString());
+                            }
                             else
+                            {
                                 _objOutputBuilder.AppendLine(strName + " failed TotalAvail");
+                            }
                         }
                     }
                     catch (Exception e)
                     {
                         if (_blnAddExceptionInfoToErrors)
+                        {
                             _objOutputBuilder.AppendLine(strName + " general failure. Exception: " + e.ToString());
+                        }
                         else
+                        {
                             _objOutputBuilder.AppendLine(strName + " general failure");
+                        }
                     }
                 }
             }
@@ -506,7 +612,10 @@ namespace Chummer
                         pgbProgress.PerformStep();
                         string strName = objXmlGear["name"]?.InnerText ?? objXmlGear["id"]?.InnerText;
                         if (string.IsNullOrEmpty(strName))
+                        {
                             continue;
+                        }
+
                         Application.DoEvents();
                         try
                         {
@@ -525,9 +634,13 @@ namespace Chummer
                                 catch (Exception e)
                                 {
                                     if (_blnAddExceptionInfoToErrors)
+                                    {
                                         _objOutputBuilder.AppendLine(strName + " failed " + objProperty.Name + ". Exception: " + e.ToString());
+                                    }
                                     else
+                                    {
                                         _objOutputBuilder.AppendLine(strName + " failed " + objProperty.Name);
+                                    }
                                 }
                             }
                             try
@@ -537,17 +650,25 @@ namespace Chummer
                             catch (Exception e)
                             {
                                 if (_blnAddExceptionInfoToErrors)
+                                {
                                     _objOutputBuilder.AppendLine(strName + " failed TotalAvail. Exception: " + e.ToString());
+                                }
                                 else
+                                {
                                     _objOutputBuilder.AppendLine(strName + " failed TotalAvail");
+                                }
                             }
                         }
                         catch (Exception e)
                         {
                             if (_blnAddExceptionInfoToErrors)
+                            {
                                 _objOutputBuilder.AppendLine(strName + " general failure. Exception: " + e.ToString());
+                            }
                             else
+                            {
                                 _objOutputBuilder.AppendLine(strName + " general failure");
+                            }
                         }
                     }
                 }
@@ -584,7 +705,10 @@ namespace Chummer
                         pgbProgress.PerformStep();
                         string strName = objXmlGear["name"]?.InnerText ?? objXmlGear["id"]?.InnerText;
                         if (string.IsNullOrEmpty(strName))
+                        {
                             continue;
+                        }
+
                         Application.DoEvents();
                         try
                         {
@@ -604,9 +728,13 @@ namespace Chummer
                                 catch (Exception e)
                                 {
                                     if (_blnAddExceptionInfoToErrors)
+                                    {
                                         _objOutputBuilder.AppendLine(strName + " failed " + objProperty.Name + ". Exception: " + e.ToString());
+                                    }
                                     else
+                                    {
                                         _objOutputBuilder.AppendLine(strName + " failed " + objProperty.Name);
+                                    }
                                 }
                             }
                             try
@@ -616,9 +744,13 @@ namespace Chummer
                             catch (Exception e)
                             {
                                 if (_blnAddExceptionInfoToErrors)
+                                {
                                     _objOutputBuilder.AppendLine(strName + " failed TotalAvail. Exception: " + e.ToString());
+                                }
                                 else
+                                {
                                     _objOutputBuilder.AppendLine(strName + " failed TotalAvail");
+                                }
                             }
                             try
                             {
@@ -627,17 +759,25 @@ namespace Chummer
                             catch (Exception e)
                             {
                                 if (_blnAddExceptionInfoToErrors)
+                                {
                                     _objOutputBuilder.AppendLine(strName + " failed CalculatedESS. Exception: " + e.ToString());
+                                }
                                 else
+                                {
                                     _objOutputBuilder.AppendLine(strName + " failed CalculatedESS");
+                                }
                             }
                         }
                         catch (Exception e)
                         {
                             if (_blnAddExceptionInfoToErrors)
+                            {
                                 _objOutputBuilder.AppendLine(strName + " general failure. Exception: " + e.ToString());
+                            }
                             else
+                            {
                                 _objOutputBuilder.AppendLine(strName + " general failure");
+                            }
                         }
                     }
                 }
@@ -665,7 +805,10 @@ namespace Chummer
                         pgbProgress.PerformStep();
                         string strName = objXmlGear["name"]?.InnerText ?? objXmlGear["id"]?.InnerText;
                         if (string.IsNullOrEmpty(strName))
+                        {
                             continue;
+                        }
+
                         Application.DoEvents();
                         try
                         {
@@ -684,18 +827,26 @@ namespace Chummer
                                 catch (Exception e)
                                 {
                                     if (_blnAddExceptionInfoToErrors)
+                                    {
                                         _objOutputBuilder.AppendLine(strName + " failed " + objProperty.Name + ". Exception: " + e.ToString());
+                                    }
                                     else
+                                    {
                                         _objOutputBuilder.AppendLine(strName + " failed " + objProperty.Name);
+                                    }
                                 }
                             }
                         }
                         catch (Exception e)
                         {
                             if (_blnAddExceptionInfoToErrors)
+                            {
                                 _objOutputBuilder.AppendLine(strName + " general failure. Exception: " + e.ToString());
+                            }
                             else
+                            {
                                 _objOutputBuilder.AppendLine(strName + " general failure");
+                            }
                         }
                     }
                 }
@@ -719,7 +870,10 @@ namespace Chummer
                         pgbProgress.PerformStep();
                         string strName = objXmlMetatype["name"]?.InnerText ?? objXmlMetatype["id"]?.InnerText;
                         if (string.IsNullOrEmpty(strName))
+                        {
                             continue;
+                        }
+
                         Application.DoEvents();
 
                         objXmlDocument = XmlManager.Load(strFile);
@@ -729,7 +883,9 @@ namespace Chummer
                         {
                             int intForce = 0;
                             if (objXmlMetatype["forcecreature"] != null)
+                            {
                                 intForce = 1;
+                            }
 
                             // Set Metatype information.
                             if (strFile != "critters.xml" || strName == "Ally Spirit")
@@ -894,7 +1050,9 @@ namespace Chummer
                                 int intRating = 0;
 
                                 if (objXmlPower.Attributes["rating"] != null)
+                                {
                                     intRating = Convert.ToInt32(objXmlPower.Attributes["rating"].InnerText);
+                                }
 
                                 objPower.Create(objXmlCritterPower, intRating, strForcedValue);
                                 objCharacter.CritterPowers.Add(objPower);
@@ -981,7 +1139,9 @@ namespace Chummer
                                 foreach (Skill objSkill in objCharacter.SkillsSection.Skills)
                                 {
                                     if (objSkill.RatingMaximum > intMaxRating)
+                                    {
                                         intMaxRating = objSkill.RatingMaximum;
+                                    }
                                 }
 
                                 // Now that we know the upper limit, set all of the Skill Rating Maximums to match.
@@ -1011,7 +1171,10 @@ namespace Chummer
                             {
                                 int intRating = 0;
                                 if (objXmlGear.Attributes["rating"] != null)
+                                {
                                     intRating = ExpressionToInt(objXmlGear.Attributes["rating"].InnerText, intForce, 0);
+                                }
+
                                 string strForceValue = objXmlGear.Attributes?["select"]?.InnerText ?? string.Empty;
                                 XmlNode objXmlGearItem = objXmlGearDocument.SelectSingleNode("/chummer/gears/gear[name = " + objXmlGear.InnerText.CleanXPath() + "]");
                                 Gear objGear = new Gear(objCharacter);
@@ -1024,9 +1187,13 @@ namespace Chummer
                         catch (Exception e)
                         {
                             if (_blnAddExceptionInfoToErrors)
+                            {
                                 _objOutputBuilder.AppendLine(strName + " general failure. Exception: " + e.ToString());
+                            }
                             else
+                            {
                                 _objOutputBuilder.AppendLine(strName + " general failure");
+                            }
                         }
 
                         objCharacter.DeleteCharacter();
@@ -1045,21 +1212,32 @@ namespace Chummer
         public static int ExpressionToInt(string strIn, int intForce, int intOffset)
         {
             if (string.IsNullOrWhiteSpace(strIn))
+            {
                 return intOffset;
+            }
+
             int intValue = 1;
             string strForce = intForce.ToString();
             // This statement is wrapped in a try/catch since trying 1 div 2 results in an error with XSLT.
             object objProcess = CommonFunctions.EvaluateInvariantXPath(strIn.Replace("/", " div ").Replace("F", strForce).Replace("1D6", strForce).Replace("2D6", strForce), out bool blnIsSuccess);
             if (blnIsSuccess)
+            {
                 intValue = Convert.ToInt32(Math.Ceiling((double)objProcess));
+            }
+
             intValue += intOffset;
             if (intForce > 0)
             {
                 if (intValue < 1)
+                {
                     return 1;
+                }
             }
             else if (intValue < 0)
+            {
                 return 0;
+            }
+
             return intValue;
         }
 
@@ -1070,9 +1248,6 @@ namespace Chummer
         /// <param name="intForce">Force value to use.</param>
         /// <param name="intOffset">Dice offset.</param>
         /// <returns></returns>
-        public static string ExpressionToString(string strIn, int intForce, int intOffset)
-        {
-            return ExpressionToInt(strIn, intForce, intOffset).ToString();
-        }
+        public static string ExpressionToString(string strIn, int intForce, int intOffset) => ExpressionToInt(strIn, intForce, intOffset).ToString();
     }
 }

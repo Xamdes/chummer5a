@@ -18,7 +18,7 @@ namespace ChummerHub.Client.UI
 {
     public partial class ucSINnerShare : UserControl
     {
-        private Logger Log = LogManager.GetCurrentClassLogger();
+        private readonly Logger Log = LogManager.GetCurrentClassLogger();
         public frmSINnerShare MyFrmSINnerShare;
 
         public frmCharacterRoster.CharacterCache MyCharacterCache
@@ -68,10 +68,7 @@ namespace ChummerHub.Client.UI
                 get; set;
             }
 
-            public MyUserState(ucSINnerShare worker)
-            {
-                myWorker = worker;
-            }
+            public MyUserState(ucSINnerShare worker) => myWorker = worker;
             public int CurrentProgress
             {
                 get; internal set;
@@ -112,7 +109,9 @@ namespace ChummerHub.Client.UI
                                                          where a.FileName == MyCharacterCache.FilePath
                                                          select a).ToList();
                             if (foundchar?.Any() == true)
+                            {
                                 c = foundchar?.FirstOrDefault();
+                            }
                             else
                             {
                                 using (frmLoading frmLoadingForm = new frmLoading
@@ -131,12 +130,18 @@ namespace ChummerHub.Client.UI
                             }
 
                             if (c == null)
+                            {
                                 throw new ArgumentNullException("Could not load Character file " +
                                                                 MyCharacterCache.FilePath +
                                                                 ".");
+                            }
+
                             ce = new CharacterExtended(c, null, null, MyCharacterCache);
                             if (ce?.MySINnerFile?.Id != null)
+                            {
                                 sinnerid = ce.MySINnerFile.Id.ToString();
+                            }
+
                             hash = ce?.MySINnerFile?.MyHash;
                             return ce;
                         }
@@ -179,18 +184,25 @@ namespace ChummerHub.Client.UI
                     {
                         checkresult = await client.GetSINByIdWithHttpMessagesAsync(SINid);
                         if (checkresult == null)
+                        {
                             throw new ArgumentException("Could not parse result from SINners Webservice!");
+                        }
+
                         if (checkresult.Response.StatusCode != HttpStatusCode.NotFound)
                         {
                             if (checkresult.Body.CallSuccess != true)
                             {
                                 if (checkresult.Body.MyException is Exception myException)
+                                {
                                     throw new ArgumentException(
                                         "Error from SINners Webservice: " + checkresult.Body.ErrorText,
                                         myException);
+                                }
                                 else
+                                {
                                     throw new ArgumentException("Error from SINners Webservice: " +
                                                                 checkresult.Body.ErrorText);
+                                }
                             }
                             else
                             {
@@ -223,18 +235,25 @@ namespace ChummerHub.Client.UI
                             myState.ProgressSteps = 10;
                             bool uploadtask = await ce.Upload(myState, op_uploadChummer);
                             SINid = ce.MySINnerFile.Id.Value;
-                            var result = await client.GetSINByIdWithHttpMessagesAsync(SINid);
+                            HttpOperationResponse<ResultSinnerGetSINById> result = await client.GetSINByIdWithHttpMessagesAsync(SINid);
                             if (result == null)
+                            {
                                 throw new ArgumentException("Could not parse result from SINners Webservice!");
+                            }
+
                             if (result.Body?.CallSuccess != true)
                             {
                                 if (result.Body?.MyException is Exception myException)
+                                {
                                     throw new ArgumentException(
                                         "Error from SINners Webservice: " + result.Body?.ErrorText,
                                         myException);
+                                }
                                 else
+                                {
                                     throw new ArgumentException(
                                         "Error from SINners Webservice: " + result.Body?.ErrorText);
+                                }
                             }
                             else
                             {
@@ -274,7 +293,9 @@ namespace ChummerHub.Client.UI
                 tbStatus.DoThreadSafe(() =>
                 {
                     if (!tbStatus.Text.Contains(us.StatusText))
+                    {
                         tbStatus.Text += us.StatusText + Environment.NewLine;
+                    }
                 });
                 tbLink.DoThreadSafe(() =>
                 {
@@ -294,9 +315,6 @@ namespace ChummerHub.Client.UI
             tbStatus.Text += "Process was completed" + Environment.NewLine;
         }
 
-        private void BOk_Click(object sender, EventArgs e)
-        {
-            MyFrmSINnerShare.Close();
-        }
+        private void BOk_Click(object sender, EventArgs e) => MyFrmSINnerShare.Close();
     }
 }

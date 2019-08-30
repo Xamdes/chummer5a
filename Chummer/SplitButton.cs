@@ -76,7 +76,9 @@ public class SplitButton : Button
                 value.Popup += SplitMenu_Popup;
             }
             else
+            {
                 ShowSplit = false;
+            }
 
             m_SplitMenu = value;
         }
@@ -103,8 +105,9 @@ public class SplitButton : Button
                 value.Opening += SplitMenuStrip_Opening;
             }
             else
+            {
                 ShowSplit = false;
-
+            }
 
             m_SplitMenuStrip = value;
         }
@@ -143,7 +146,9 @@ public class SplitButton : Button
     protected override bool IsInputKey(Keys keyData)
     {
         if (keyData.Equals(Keys.Down) && _showSplit)
+        {
             return true;
+        }
 
         return base.IsInputKey(keyData);
     }
@@ -266,7 +271,9 @@ public class SplitButton : Button
 
         //handle ContextMenu re-clicking the drop-down region to close the menu
         if (m_SplitMenu != null && e.Button == MouseButtons.Left && !isMouseEntered)
+        {
             _skipNextOpen = true;
+        }
 
         if (_dropDownRectangle.Contains(e.Location) && !_isSplitMenuVisible && e.Button == MouseButtons.Left)
         {
@@ -307,7 +314,9 @@ public class SplitButton : Button
         base.OnPaint(pevent);
 
         if (!_showSplit)
+        {
             return;
+        }
 
         Graphics g = pevent.Graphics;
         Rectangle bounds = ClientRectangle;
@@ -384,24 +393,36 @@ public class SplitButton : Button
         if (Image != null)
         {
             if (Enabled)
+            {
                 g.DrawImage(Image, image_rectangle.X, image_rectangle.Y, Image.Width, Image.Height);
+            }
             else
+            {
                 ControlPaint.DrawImageDisabled(g, Image, image_rectangle.X, image_rectangle.Y, BackColor);
+            }
         }
 
         // If we dont' use mnemonic, set formatFlag to NoPrefix as this will show ampersand.
         if (!UseMnemonic)
+        {
             _textFormatFlags = _textFormatFlags | TextFormatFlags.NoPrefix;
+        }
         else if (!ShowKeyboardCues)
+        {
             _textFormatFlags = _textFormatFlags | TextFormatFlags.HidePrefix;
+        }
 
         //draw the text
         if (!string.IsNullOrEmpty(Text))
         {
             if (Enabled)
+            {
                 TextRenderer.DrawText(g, Text, Font, text_rectangle, ForeColor, _textFormatFlags);
+            }
             else
+            {
                 ControlPaint.DrawStringDisabled(g, Text, Font, BackColor, text_rectangle, _textFormatFlags);
+            }
         }
     }
 
@@ -425,10 +446,14 @@ public class SplitButton : Button
         if (_showSplit)
         {
             if (AutoSize)
+            {
                 return CalculateButtonAutoSize();
+            }
 
             if (!string.IsNullOrEmpty(Text) && TextRenderer.MeasureText(Text, Font).Width + SplitSectionWidth > preferredSize.Width)
+            {
                 return preferredSize + new Size(SplitSectionWidth + BorderSize * 2, 0);
+            }
         }
 
         return preferredSize;
@@ -471,7 +496,9 @@ public class SplitButton : Button
 
         //pad the splitButton arrow region
         if (_showSplit)
+        {
             ret_size.Width += SplitSectionWidth;
+        }
 
         return ret_size;
     }
@@ -498,11 +525,15 @@ public class SplitButton : Button
 
                 //Offset on Windows 98 style when button is pressed
                 if (_state == PushButtonState.Pressed && !Application.RenderWithVisualStyles)
+                {
                     textRectangle.Offset(1, 1);
+                }
 
                 // Image is dependent on ImageAlign
                 if (Image != null)
+                {
                     imageRectangle = OverlayObjectRect(ref content_rect, ref image_size, ImageAlign);
+                }
 
                 break;
             case TextImageRelation.ImageAboveText:
@@ -581,7 +612,9 @@ public class SplitButton : Button
         int total_width = textSize.Width + element_spacing + imageSize.Width;
 
         if (!textFirst)
+        {
             element_spacing += 2;
+        }
 
         // If the text is too big, chop it down to the size we have available to it
         if (total_width > totalArea.Width)
@@ -600,13 +633,21 @@ public class SplitButton : Button
         HorizontalAlignment h_image = GetHorizontalAlignment(ImageAlign);
 
         if (h_image == HorizontalAlignment.Left)
+        {
             offset = 0;
+        }
         else if (h_image == HorizontalAlignment.Right && h_text == HorizontalAlignment.Right)
+        {
             offset = excess_width;
+        }
         else if (h_image == HorizontalAlignment.Center && (h_text == HorizontalAlignment.Left || h_text == HorizontalAlignment.Center))
+        {
             offset += excess_width / 3;
+        }
         else
+        {
             offset += 2 * (excess_width / 3);
+        }
 
         if (textFirst)
         {
@@ -629,10 +670,14 @@ public class SplitButton : Button
         int total_height = textSize.Height + element_spacing + imageSize.Height;
 
         if (textFirst)
+        {
             element_spacing += 2;
+        }
 
         if (textSize.Width > totalArea.Width)
+        {
             textSize.Width = totalArea.Width;
+        }
 
         // If the there isn't enough room and we're text first, cut out the image
         if (total_height > totalArea.Height && textFirst)
@@ -651,13 +696,21 @@ public class SplitButton : Button
         VerticalAlignment v_image = GetVerticalAlignment(ImageAlign);
 
         if (v_image == VerticalAlignment.Top)
+        {
             offset = 0;
+        }
         else if (v_image == VerticalAlignment.Bottom && v_text == VerticalAlignment.Bottom)
+        {
             offset = excess_height;
+        }
         else if (v_image == VerticalAlignment.Center && (v_text == VerticalAlignment.Top || v_text == VerticalAlignment.Center))
+        {
             offset += excess_height / 3;
+        }
         else
+        {
             offset += 2 * (excess_height / 3);
+        }
 
         if (textFirst)
         {
@@ -670,7 +723,9 @@ public class SplitButton : Button
             final_text_rect = new Rectangle(AlignInRectangle(totalArea, textSize, TextAlign).Left, final_image_rect.Bottom + element_spacing, textSize.Width, textSize.Height);
 
             if (final_text_rect.Bottom > totalArea.Bottom)
+            {
                 final_text_rect.Y = totalArea.Top;
+            }
         }
 
         textRect = final_text_rect;
@@ -725,17 +780,30 @@ public class SplitButton : Button
         int y = 0;
 
         if (align == System.Drawing.ContentAlignment.BottomLeft || align == System.Drawing.ContentAlignment.MiddleLeft || align == System.Drawing.ContentAlignment.TopLeft)
+        {
             x = outer.X;
+        }
         else if (align == System.Drawing.ContentAlignment.BottomCenter || align == System.Drawing.ContentAlignment.MiddleCenter || align == System.Drawing.ContentAlignment.TopCenter)
+        {
             x = Math.Max(outer.X + ((outer.Width - inner.Width) / 2), outer.Left);
+        }
         else if (align == System.Drawing.ContentAlignment.BottomRight || align == System.Drawing.ContentAlignment.MiddleRight || align == System.Drawing.ContentAlignment.TopRight)
+        {
             x = outer.Right - inner.Width;
+        }
+
         if (align == System.Drawing.ContentAlignment.TopCenter || align == System.Drawing.ContentAlignment.TopLeft || align == System.Drawing.ContentAlignment.TopRight)
+        {
             y = outer.Y;
+        }
         else if (align == System.Drawing.ContentAlignment.MiddleCenter || align == System.Drawing.ContentAlignment.MiddleLeft || align == System.Drawing.ContentAlignment.MiddleRight)
+        {
             y = outer.Y + (outer.Height - inner.Height) / 2;
+        }
         else if (align == System.Drawing.ContentAlignment.BottomCenter || align == System.Drawing.ContentAlignment.BottomRight || align == System.Drawing.ContentAlignment.BottomLeft)
+        {
             y = outer.Bottom - inner.Height;
+        }
 
         return new Rectangle(x, y, Math.Min(inner.Width, outer.Width), Math.Min(inner.Height, outer.Height));
     }
@@ -765,10 +833,7 @@ public class SplitButton : Button
         }
     }
 
-    private void SplitMenuStrip_Opening(object sender, CancelEventArgs e)
-    {
-        _isSplitMenuVisible = true;
-    }
+    private void SplitMenuStrip_Opening(object sender, CancelEventArgs e) => _isSplitMenuVisible = true;
 
     private void SplitMenuStrip_Closing(object sender, ToolStripDropDownClosingEventArgs e)
     {
@@ -782,10 +847,7 @@ public class SplitButton : Button
         }
     }
 
-    private void SplitMenu_Popup(object sender, EventArgs e)
-    {
-        _isSplitMenuVisible = true;
-    }
+    private void SplitMenu_Popup(object sender, EventArgs e) => _isSplitMenuVisible = true;
 
     protected override void WndProc(ref Message m)
     {

@@ -44,9 +44,9 @@ namespace ChummerHub.Models.V1
         public UploadClient()
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'UploadClient.UploadClient()'
         {
-            this.Id = Guid.Empty;
-            this.ChummerVersion = new Version().ToString();
-            this.ClientSecret = "";
+            Id = Guid.Empty;
+            ChummerVersion = new Version().ToString();
+            ClientSecret = "";
         }
 
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'UploadClient.UserEmail'

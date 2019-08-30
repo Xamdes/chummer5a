@@ -96,19 +96,26 @@ namespace ChummerDataViewer
             object o = cboBuild.SelectedItem;
             cboBuild.Items.Clear();
             foreach (string strBuildType in PersistentState.Database.GetAllBuildTypes())
+            {
                 cboBuild.Items.Add(strBuildType);
+            }
 
             if (o != null)
+            {
                 cboBuild.SelectedItem = o;
+            }
 
             o = cboVersion.SelectedItem;
             cboVersion.Items.Clear();
             foreach (Version objVersionType in PersistentState.Database.GetAllVersions().OrderByDescending(v => v))
+            {
                 cboVersion.Items.Add(objVersionType);
+            }
 
             if (o != null)
+            {
                 cboVersion.SelectedItem = o;
-
+            }
         }
 
         //This is used to subscribe to an action happening on another thread. Least ugly way i know to re-route it to ui thread
@@ -117,7 +124,9 @@ namespace ChummerDataViewer
             try
             {
                 if (Disposing || IsDisposed)
+                {
                     return;
+                }
 
                 Invoke(_mainThreadDelegate, sender, args);
             }
@@ -150,13 +159,17 @@ namespace ChummerDataViewer
             List<Guid> list = statusChangedEventArgs.AttachedData;
 
             if (list == null)
+            {
                 return;
+            }
 
             foreach (Guid guid in list)
             {
                 CrashReport item = PersistentState.Database.GetCrash(guid);
                 if (item != null)
+                {
                     _crashReports.Add(item);
+                }
             }
 
             UpdateDBDependantControls();
@@ -168,15 +181,9 @@ namespace ChummerDataViewer
             Application.Restart();
         }
 
-        private void cboAutomation_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            PersistentState.Database.SetKey("autodownload_automation", cboAutomation.SelectedIndex.ToString());
-        }
+        private void cboAutomation_SelectedIndexChanged(object sender, EventArgs e) => PersistentState.Database.SetKey("autodownload_automation", cboAutomation.SelectedIndex.ToString());
 
-        private void SearchParameterChanged(object sender, EventArgs e)
-        {
-            _bldCrashReports.Filter(report => TextFilter(report, txtSearch.Text) && OtherFilter(report), true);
-        }
+        private void SearchParameterChanged(object sender, EventArgs e) => _bldCrashReports.Filter(report => TextFilter(report, txtSearch.Text) && OtherFilter(report), true);
 
         private bool OtherFilter(CrashReport report)
         {
@@ -186,13 +193,17 @@ namespace ChummerDataViewer
             if (cboVersion.SelectedItem != null)
             {
                 if (!report.Version.Equals(cboVersion.SelectedItem))
+                {
                     versionOk = false;
+                }
             }
 
             if (cboBuild.SelectedItem != null)
             {
                 if (!report.BuildType.Equals(cboBuild.SelectedItem))
+                {
                     buildOk = false;
+                }
             }
 
             return buildOk && versionOk;
@@ -202,16 +213,24 @@ namespace ChummerDataViewer
         private static bool TextFilter(CrashReport report, string search)
         {
             if (report.Guid.ToString("D").Contains(search))
+            {
                 return true;
+            }
 
             if (report.ErrorFrindly.Contains(search))
+            {
                 return true;
+            }
 
             if (report.StackTrace?.Contains(search) ?? false)
+            {
                 return true;
+            }
 
             if (report.Userstory?.Contains(search) ?? false)
+            {
                 return false;
+            }
 
             return false;
         }
@@ -219,9 +238,6 @@ namespace ChummerDataViewer
 
     public sealed class CrashReportTimeStampFilter : IComparer<CrashReport>
     {
-        public int Compare(CrashReport x, CrashReport y)
-        {
-            return y?.Timestamp.CompareTo(x?.Timestamp) ?? ((x?.Timestamp == null) ? 0 : -1);
-        }
+        public int Compare(CrashReport x, CrashReport y) => y?.Timestamp.CompareTo(x?.Timestamp) ?? ((x?.Timestamp == null) ? 0 : -1);
     }
 }

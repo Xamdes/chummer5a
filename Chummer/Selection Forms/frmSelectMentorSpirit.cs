@@ -40,37 +40,35 @@ namespace Chummer
             // Load the Mentor information.
             _xmlBaseMentorSpiritDataNode = XmlManager.Load(strXmlFile).GetFastNavigator().SelectSingleNode("/chummer");
             if (strXmlFile == "paragons.xml")
+            {
                 Tag = "Title_SelectMentorSpirit_Paragon";
+            }
 
             LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
             _objCharacter = objCharacter;
             _blnEverShowMentorMask = strXmlFile == "mentors.xml" && _objCharacter.Options.Books.Contains("FA");
         }
 
-        private void frmSelectMentorSpirit_Load(object sender, EventArgs e)
-        {
-            RefreshMentorsList();
-        }
+        private void frmSelectMentorSpirit_Load(object sender, EventArgs e) => RefreshMentorsList();
 
-        private void cmdOK_Click(object sender, EventArgs e)
-        {
-            AcceptForm();
-        }
+        private void cmdOK_Click(object sender, EventArgs e) => AcceptForm();
 
-        private void lstMentor_DoubleClick(object sender, EventArgs e)
-        {
-            AcceptForm();
-        }
+        private void lstMentor_DoubleClick(object sender, EventArgs e) => AcceptForm();
 
         private void lstMentor_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (_blnSkipRefresh)
+            {
                 return;
+            }
 
             XPathNavigator objXmlMentor = null;
             string strSelectedId = lstMentor.SelectedValue?.ToString();
             if (!string.IsNullOrEmpty(strSelectedId))
+            {
                 objXmlMentor = _xmlBaseMentorSpiritDataNode.SelectSingleNode("mentors/mentor[id = \"" + lstMentor.SelectedValue + "\"]");
+            }
+
             if (objXmlMentor != null)
             {
                 cboChoice1.BeginUpdate();
@@ -91,9 +89,13 @@ namespace Chummer
                         if ((_objCharacter.AdeptEnabled || !strName.StartsWith("Adept:")) && (_objCharacter.MagicianEnabled || !strName.StartsWith("Magician:")))
                         {
                             if (objChoice.SelectSingleNode("@set")?.Value == "2")
+                            {
                                 lstChoice2.Add(new ListItem(strName, objChoice.SelectSingleNode("translate")?.Value ?? strName));
+                            }
                             else
+                            {
                                 lstChoice1.Add(new ListItem(strName, objChoice.SelectSingleNode("translate")?.Value ?? strName));
+                            }
                         }
                     }
 
@@ -163,15 +165,9 @@ namespace Chummer
             }
         }
 
-        private void txtSearch_TextChanged(object sender, EventArgs e)
-        {
-            RefreshMentorsList();
-        }
+        private void txtSearch_TextChanged(object sender, EventArgs e) => RefreshMentorsList();
 
-        private void cmdCancel_Click(object sender, EventArgs e)
-        {
-            DialogResult = DialogResult.Cancel;
-        }
+        private void cmdCancel_Click(object sender, EventArgs e) => DialogResult = DialogResult.Cancel;
         #endregion
 
         #region Properties
@@ -210,7 +206,9 @@ namespace Chummer
             {
                 XPathNavigator objXmlMentor = _xmlBaseMentorSpiritDataNode.SelectSingleNode("mentors/mentor[id = \"" + strSelectedId + "\"]");
                 if (objXmlMentor == null)
+                {
                     return;
+                }
 
                 SelectedMentor = strSelectedId;
 
@@ -233,7 +231,10 @@ namespace Chummer
                 string strName = objXmlMentor.SelectSingleNode("name")?.Value ?? LanguageManager.GetString("String_Unknown", GlobalOptions.Language);
                 string strId = objXmlMentor.SelectSingleNode("id")?.Value ?? string.Empty;
                 if (strName == _strForceMentor)
+                {
                     strForceId = strId;
+                }
+
                 lstMentors.Add(new ListItem(strId, objXmlMentor.SelectSingleNode("translate")?.Value ?? strName));
             }
             lstMentors.Sort(CompareListItems.CompareNames);
@@ -245,9 +246,14 @@ namespace Chummer
             lstMentor.DataSource = lstMentors;
             _blnSkipRefresh = false;
             if (!string.IsNullOrEmpty(strOldSelected))
+            {
                 lstMentor.SelectedValue = strOldSelected;
+            }
             else
+            {
                 lstMentor.SelectedIndex = -1;
+            }
+
             if (!string.IsNullOrEmpty(strForceId))
             {
                 lstMentor.SelectedValue = strForceId;
@@ -256,10 +262,7 @@ namespace Chummer
             lstMentor.EndUpdate();
         }
 
-        private void OpenSourceFromLabel(object sender, EventArgs e)
-        {
-            CommonFunctions.OpenPDFFromControl(sender, e);
-        }
+        private void OpenSourceFromLabel(object sender, EventArgs e) => CommonFunctions.OpenPDFFromControl(sender, e);
         #endregion
     }
 }

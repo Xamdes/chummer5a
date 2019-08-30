@@ -125,15 +125,22 @@ namespace Chummer
             Parallel.ForEach(lstCharacters, objCharacter =>
             {
                 if (_workerPrinter.CancellationPending)
+                {
                     throw new OperationCanceledException();
+                }
+
                 objCharacter.Load().RunSynchronously();
                 prgProgress.Invoke((Action)FuncIncreaseProgress);
             });
 
             if (_workerPrinter.CancellationPending)
+            {
                 e.Cancel = true;
+            }
             else
+            {
                 _lstCharacters = new List<Character>(lstCharacters);
+            }
         }
 
         private frmViewer _frmPrintView;

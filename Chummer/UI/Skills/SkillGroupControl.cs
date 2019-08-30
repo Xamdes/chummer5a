@@ -83,7 +83,9 @@ namespace Chummer.UI.Skills
                     _skillGroup.DisplayName, _skillGroup.Rating + 1, _skillGroup.UpgradeKarmaCost);
 
             if (!_skillGroup.CharacterObject.ConfirmKarmaExpense(confirmstring))
+            {
                 return;
+            }
 
             _skillGroup.Upgrade();
         }
@@ -129,7 +131,10 @@ namespace Chummer.UI.Skills
             set
             {
                 if (value == ActiveButton)
+                {
                     return;
+                }
+
                 ActiveButton?.ToolTipObject.Hide(this);
                 _activeButton = value;
                 if (_activeButton?.Visible == true)
@@ -144,22 +149,21 @@ namespace Chummer.UI.Skills
             foreach (Control c in Controls)
             {
                 if (!(c is ButtonWithToolTip))
+                {
                     continue;
+                }
+
                 if (c.Bounds.Contains(pt))
+                {
                     return c;
+                }
             }
             return null;
         }
 
-        private void OnMouseMove(object sender, MouseEventArgs e)
-        {
-            ActiveButton = FindToolTipControl(e.Location) as ButtonWithToolTip;
-        }
+        private void OnMouseMove(object sender, MouseEventArgs e) => ActiveButton = FindToolTipControl(e.Location) as ButtonWithToolTip;
 
-        private void OnMouseLeave(object sender, EventArgs e)
-        {
-            ActiveButton = null;
-        }
+        private void OnMouseLeave(object sender, EventArgs e) => ActiveButton = null;
         #endregion
     }
 }

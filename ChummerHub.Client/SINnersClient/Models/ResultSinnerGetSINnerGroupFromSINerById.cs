@@ -65,9 +65,9 @@ namespace SINners.Models
         /// </summary>
         public virtual void Validate()
         {
-            if (this.MySINnerGroup != null)
+            if (MySINnerGroup != null)
             {
-                this.MySINnerGroup.Validate();
+                MySINnerGroup.Validate();
             }
         }
     }

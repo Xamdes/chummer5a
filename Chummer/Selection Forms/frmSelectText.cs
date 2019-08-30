@@ -45,10 +45,7 @@ namespace Chummer
             }
         }
 
-        private void cmdCancel_Click(object sender, EventArgs e)
-        {
-            DialogResult = DialogResult.Cancel;
-        }
+        private void cmdCancel_Click(object sender, EventArgs e) => DialogResult = DialogResult.Cancel;
 
         private void frmSelectText_Shown(object sender, EventArgs e)
         {

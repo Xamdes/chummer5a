@@ -56,9 +56,9 @@ namespace SINners.Models
         /// </summary>
         public virtual void Validate()
         {
-            if (this.EMail != null)
+            if (EMail != null)
             {
-                if (this.EMail.Length > 64)
+                if (EMail.Length > 64)
                 {
                     throw new ValidationException(ValidationRules.MaxLength, "EMail", 64);
                 }

@@ -24,10 +24,7 @@ namespace ChummerHub.Services.Application_Insights
         /// 
         /// </summary>
         /// <param name="next"></param>
-        public ExceptionDataProcessor(ITelemetryProcessor next)
-        {
-            this.Next = next;
-        }
+        public ExceptionDataProcessor(ITelemetryProcessor next) => Next = next;
 
         /// <summary>
         /// 
@@ -38,7 +35,7 @@ namespace ChummerHub.Services.Application_Insights
             // Modify the item if required
             ModifyItem(item);
 
-            this.Next.Process(item);
+            Next.Process(item);
         }
 
         // Example: replace with your own modifiers.
@@ -52,7 +49,9 @@ namespace ChummerHub.Services.Application_Insights
                     foreach (DictionaryEntry de in exception.Exception.Data)
                     {
                         if (!exception.Properties.ContainsKey(de.Key.ToString()))
+                        {
                             exception.Properties.Add(de.Key.ToString(), de.Value?.ToString());
+                        }
                     }
                 }
                 return;

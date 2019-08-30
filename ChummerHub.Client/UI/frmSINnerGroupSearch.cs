@@ -10,7 +10,7 @@ namespace ChummerHub.Client.UI
 {
     public partial class frmSINnerGroupSearch : Form
     {
-        private Logger Log = NLog.LogManager.GetCurrentClassLogger();
+        private readonly Logger Log = NLog.LogManager.GetCurrentClassLogger();
         private CharacterExtended MyCE
         {
             get;
@@ -20,24 +20,20 @@ namespace ChummerHub.Client.UI
             get;
         }
 
-        public ucSINnerGroupSearch MySINnerGroupSearch
-        {
-            get
-            {
-                return this.siNnerGroupSearch1;
-            }
-        }
+        public ucSINnerGroupSearch MySINnerGroupSearch => siNnerGroupSearch1;
         public frmSINnerGroupSearch(CharacterExtended ce, ucSINnersBasic parentBasic)
         {
             MyCE = ce;
             MyParentForm = parentBasic;
             InitializeComponent();
-            this.siNnerGroupSearch1.MyCE = ce;
-            this.siNnerGroupSearch1.MyParentForm = this;
-            this.VisibleChanged += (sender, args) =>
+            siNnerGroupSearch1.MyCE = ce;
+            siNnerGroupSearch1.MyParentForm = this;
+            VisibleChanged += (sender, args) =>
             {
-                if (this.Visible == true)
+                if (Visible == true)
+                {
                     ReallyCenterToScreen();
+                }
             };
 
         }
@@ -46,10 +42,10 @@ namespace ChummerHub.Client.UI
             Screen screen = Screen.FromControl(PluginHandler.MainForm);
 
             Rectangle workingArea = screen.WorkingArea;
-            this.Location = new Point()
+            Location = new Point()
             {
-                X = Math.Max(workingArea.X, workingArea.X + (workingArea.Width - this.Width) / 2),
-                Y = Math.Max(workingArea.Y, workingArea.Y + (workingArea.Height - this.Height) / 2)
+                X = Math.Max(workingArea.X, workingArea.X + (workingArea.Width - Width) / 2),
+                Y = Math.Max(workingArea.Y, workingArea.Y + (workingArea.Height - Height) / 2)
             };
         }
 

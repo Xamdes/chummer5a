@@ -28,7 +28,7 @@ namespace Chummer
 {
     public partial class Chummy : Form
     {
-        private static NLog.Logger Log = NLog.LogManager.GetCurrentClassLogger();
+        private static readonly NLog.Logger Log = NLog.LogManager.GetCurrentClassLogger();
         private const int EyeBallWidth = 20;
         private const int EyeBallHeight = 32;
         private const int DistanceBetweenEyes = 10;
@@ -48,7 +48,7 @@ namespace Chummer
         {
             InitializeComponent();
 
-            this.Paint += panel1_Paint;
+            Paint += panel1_Paint;
 
             Timer tmrDraw = new Timer { Interval = 100 };
             tmrDraw.Tick += tmr_DrawTick;
@@ -66,22 +66,19 @@ namespace Chummer
             // See if the cursor has moved.
             Point newPos = Control.MousePosition;
             if (newPos.Equals(_oldMousePos))
+            {
                 return;
+            }
+
             _oldMousePos = newPos;
 
             // Redraw.
-            this.Invalidate();
+            Invalidate();
         }
 
-        private void tmr_TipTick(object sender, EventArgs e)
-        {
-            ShowBalloonTip();
-        }
+        private void tmr_TipTick(object sender, EventArgs e) => ShowBalloonTip();
 
-        private void panel1_Paint(object sender, PaintEventArgs e)
-        {
-            DrawEyes(e.Graphics);
-        }
+        private void panel1_Paint(object sender, PaintEventArgs e) => DrawEyes(e.Graphics);
 
         private void Chummy_MouseDown(object sender, MouseEventArgs e)
         {
@@ -92,7 +89,7 @@ namespace Chummer
                     // present on left mouse button
                     HideBalloonTip();
                     ReleaseCapture();
-                    SendMessage(this.Handle, 0xa1, 0x2, 0);
+                    SendMessage(Handle, 0xa1, 0x2, 0);
                     break;
                 case MouseButtons.Left:
                     ShowBalloonTip();
@@ -117,7 +114,7 @@ namespace Chummer
         private void DrawEyes(Graphics gr)
         {
             // Convert the cursor position into form units.
-            Point localPos = this.PointToClient(_oldMousePos);
+            Point localPos = PointToClient(_oldMousePos);
 
             // Find the positions of the eyes.
             int x1 = _eyeballCenter.X - DistanceBetweenEyes;
@@ -186,23 +183,23 @@ namespace Chummer
             {
                 string strId = objXmlTip.SelectSingleNode("id")?.Value;
                 if (string.IsNullOrEmpty(strId) || _usedTips.Contains(strId))
+                {
                     continue;
+                }
+
                 if (!objXmlTip.RequirementsMet(CharacterObject))
+                {
                     continue;
+                }
+
                 _usedTips.Add(strId);
                 return objXmlTip.SelectSingleNode("translate")?.Value ?? objXmlTip.SelectSingleNode("text")?.Value ?? string.Empty;
             }
             return string.Empty;
         }
-        private void ShowBalloonTip()
-        {
-            _myToolTip.Show(HelpfulAdvice().WordWrap(100), this, _mouthCenter);
-        }
+        private void ShowBalloonTip() => _myToolTip.Show(HelpfulAdvice().WordWrap(100), this, _mouthCenter);
 
-        private void HideBalloonTip()
-        {
-            _myToolTip.Hide(this);
-        }
+        private void HideBalloonTip() => _myToolTip.Hide(this);
         #endregion
         #region Properties
 

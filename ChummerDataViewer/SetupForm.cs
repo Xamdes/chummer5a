@@ -12,10 +12,7 @@ namespace ChummerDataViewer
         public string Key => txtKey.Text;
         public string BulkData => txtBulk.Text;
 
-        public SetupForm()
-        {
-            InitializeComponent();
-        }
+        public SetupForm() => InitializeComponent();
 
         private void SetupForm_Load(object sender, EventArgs e)
         {
@@ -58,14 +55,8 @@ namespace ChummerDataViewer
             btnOK.Enabled = true;
         }
 
-        private void btnOK_Click(object sender, EventArgs e)
-        {
-            DialogResult = DialogResult.OK;
-        }
+        private void btnOK_Click(object sender, EventArgs e) => DialogResult = DialogResult.OK;
 
-        private void btnCanel_Click(object sender, EventArgs e)
-        {
-            DialogResult = DialogResult.Cancel;
-        }
+        private void btnCanel_Click(object sender, EventArgs e) => DialogResult = DialogResult.Cancel;
     }
 }

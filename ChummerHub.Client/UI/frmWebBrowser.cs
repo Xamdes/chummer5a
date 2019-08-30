@@ -10,11 +10,8 @@ namespace ChummerHub.Client.UI
 {
     public partial class frmWebBrowser : Form
     {
-        private Logger Log = NLog.LogManager.GetCurrentClassLogger();
-        public frmWebBrowser()
-        {
-            InitializeComponent();
-        }
+        private readonly Logger Log = NLog.LogManager.GetCurrentClassLogger();
+        public frmWebBrowser() => InitializeComponent();
 
 
 
@@ -40,27 +37,25 @@ namespace ChummerHub.Client.UI
 
 
 
-        private void frmWebBrowser_Load(object sender, EventArgs e)
-        {
-
-            Invoke((Action)(() =>
-            {
-                this.SuspendLayout();
-                webBrowser2.Navigated += new System.Windows.Forms.WebBrowserNavigatedEventHandler(this.webBrowser2_Navigated);
-                webBrowser2.ScriptErrorsSuppressed = true;
-                webBrowser2.Navigate(LoginUrl);
-                this.BringToFront();
-            })
+        private void frmWebBrowser_Load(object sender, EventArgs e) => Invoke((Action)(() =>
+                                                                       {
+                                                                           SuspendLayout();
+                                                                           webBrowser2.Navigated += new System.Windows.Forms.WebBrowserNavigatedEventHandler(webBrowser2_Navigated);
+                                                                           webBrowser2.ScriptErrorsSuppressed = true;
+                                                                           webBrowser2.Navigate(LoginUrl);
+                                                                           BringToFront();
+                                                                       })
             );
-
-        }
 
         private bool login = false;
 
         private async void webBrowser2_Navigated(object sender, WebBrowserNavigatedEventArgs e)
         {
             if (e.Url.AbsoluteUri == LoginUrl)
+            {
                 return;
+            }
+
             if ((e.Url.AbsoluteUri.Contains("/Identity/Account/Logout")))
             {
                 //maybe we are logged in now
@@ -78,7 +73,7 @@ namespace ChummerHub.Client.UI
                         Log.Error("Cloud not create an instance of SINnersclient!");
                         return;
                     }
-                    var user = await client.GetUserByAuthorizationWithHttpMessagesAsync();
+                    Microsoft.Rest.HttpOperationResponse<ResultAccountGetUserByAuthorization> user = await client.GetUserByAuthorizationWithHttpMessagesAsync();
                     if (user.Body?.CallSuccess == true)
                     {
                         if (user.Body != null)
@@ -100,7 +95,7 @@ namespace ChummerHub.Client.UI
                             }
 
                             tempvis.AddVisibilityForEmail(user.Body.MyApplicationUser?.Email);
-                            this.Close();
+                            Close();
                         }
                         else
                         {
@@ -142,7 +137,9 @@ namespace ChummerHub.Client.UI
         private void FrmWebBrowser_FormClosing(object sender, FormClosingEventArgs e)
         {
             if (login == false)
+            {
                 GetCookieContainer();
+            }
         }
     }
 }

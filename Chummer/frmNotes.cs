@@ -38,15 +38,14 @@ namespace Chummer
             _blnLoading = false;
         }
 
-        private void frmNotes_FormClosing(object sender, FormClosingEventArgs e)
-        {
-            DialogResult = DialogResult.OK;
-        }
+        private void frmNotes_FormClosing(object sender, FormClosingEventArgs e) => DialogResult = DialogResult.OK;
 
         private void txtNotes_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Escape)
+            {
                 DialogResult = DialogResult.OK;
+            }
 
             if (e.Control && e.KeyCode == Keys.A)
             {
@@ -58,7 +57,9 @@ namespace Chummer
         private void frmNotes_Resize(object sender, EventArgs e)
         {
             if (_blnLoading)
+            {
                 return;
+            }
 
             s_IntWidth = Width;
             s_IntHeight = Height;

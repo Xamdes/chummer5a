@@ -17,11 +17,7 @@ namespace ChummerHub.Models.V1.Examples
         }
 
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'SINnerSearchExample.GetExamples()'
-        public object GetExamples()
-#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'SINnerSearchExample.GetExamples()'
-        {
-            return GetSINnerSearchExample();
-        }
+        public object GetExamples() => GetSINnerSearchExample();
 
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'SINnerSearchExample.GetSINnerSearchExample()'
         public SearchTag GetSINnerSearchExample()

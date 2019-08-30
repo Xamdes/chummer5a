@@ -70,7 +70,10 @@ namespace Chummer
                     foreach (XPathNavigator xmlTechnique in objTechniquesList)
                     {
                         if (_objMartialArt.Techniques.Any(x => x.Name == xmlTechnique.Value) || xmlTechnique.SelectSingleNode("name") == null)
+                        {
                             continue;
+                        }
+
                         _setAllowedTechniques.Add(xmlTechnique.SelectSingleNode("name")?.Value);
                     }
                 }
@@ -90,10 +93,7 @@ namespace Chummer
             AcceptForm();
         }
 
-        private void cmdCancel_Click(object sender, EventArgs e)
-        {
-            DialogResult = DialogResult.Cancel;
-        }
+        private void cmdCancel_Click(object sender, EventArgs e) => DialogResult = DialogResult.Cancel;
 
         private void lstTechniques_DoubleClick(object sender, EventArgs e)
         {
@@ -110,7 +110,9 @@ namespace Chummer
         private void lstTechniques_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (_blnLoading)
+            {
                 return;
+            }
 
             string strSelectedId = lstTechniques.SelectedValue?.ToString();
             if (!string.IsNullOrEmpty(strSelectedId))
@@ -141,10 +143,7 @@ namespace Chummer
             }
         }
 
-        private void txtSearch_TextChanged(object sender, EventArgs e)
-        {
-            RefreshTechniquesList();
-        }
+        private void txtSearch_TextChanged(object sender, EventArgs e) => RefreshTechniquesList();
         #endregion
 
         #region Properties
@@ -192,7 +191,9 @@ namespace Chummer
                     string strTechniqueName = xmlTechnique.SelectSingleNode("name")?.Value ?? LanguageManager.GetString("String_Unknown", GlobalOptions.Language);
 
                     if (_setAllowedTechniques?.Contains(strTechniqueName) == false)
+                    {
                         continue;
+                    }
 
                     if (xmlTechnique.RequirementsMet(_objCharacter, _objMartialArt))
                     {
@@ -209,16 +210,18 @@ namespace Chummer
             lstTechniques.DataSource = lstTechniqueItems;
             _blnLoading = false;
             if (!string.IsNullOrEmpty(strOldSelected))
+            {
                 lstTechniques.SelectedValue = strOldSelected;
+            }
             else
+            {
                 lstTechniques.SelectedIndex = -1;
+            }
+
             lstTechniques.EndUpdate();
         }
 
-        private void OpenSourceFromLabel(object sender, EventArgs e)
-        {
-            CommonFunctions.OpenPDFFromControl(sender, e);
-        }
+        private void OpenSourceFromLabel(object sender, EventArgs e) => CommonFunctions.OpenPDFFromControl(sender, e);
         #endregion
     }
 }

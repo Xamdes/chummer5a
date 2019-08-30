@@ -46,7 +46,7 @@ namespace Chummer
     [DesignerCategory("")]
     public class CharacterShared : Form
     {
-        private static Logger Log = LogManager.GetCurrentClassLogger();
+        private static readonly Logger Log = LogManager.GetCurrentClassLogger();
         private static readonly TelemetryClient TelemetryClient = new TelemetryClient();
         private readonly Character _objCharacter;
         private readonly CharacterOptions _objOptions;
@@ -59,9 +59,12 @@ namespace Chummer
         {
             _objCharacter = objCharacter;
             _objOptions = _objCharacter.Options;
-            string name = "Show_Form_" + this.GetType();
+            string name = "Show_Form_" + GetType();
             if (objCharacter != null)
+            {
                 name += "_" + objCharacter.CharacterName;
+            }
+
             PageViewTelemetry pvt = new PageViewTelemetry(name)
             {
                 Id = Guid.NewGuid().ToString(),
@@ -71,13 +74,15 @@ namespace Chummer
             pvt.Properties.Add("Name", objCharacter?.Name);
             pvt.Properties.Add("Path", objCharacter?.FileName);
             pvt.Timestamp = DateTimeOffset.UtcNow;
-            this.Shown += delegate (object sender, EventArgs args)
+            Shown += delegate (object sender, EventArgs args)
             {
                 pvt.Duration = DateTimeOffset.UtcNow - pvt.Timestamp;
                 if (objCharacter != null)
                 {
                     if (Uri.TryCreate(objCharacter.FileName, UriKind.Absolute, out Uri Uriresult))
+                    {
                         pvt.Url = Uriresult;
+                    }
                 }
                 TelemetryClient.TrackPageView(pvt);
             };
@@ -98,45 +103,21 @@ namespace Chummer
                 get;
             }
 
-            public TransportWrapper(Control objControl)
-            {
-                Control = objControl;
-            }
+            public TransportWrapper(Control objControl) => Control = objControl;
 
-            public override bool Equals(object obj)
-            {
-                return Control.Equals(obj);
-            }
+            public override bool Equals(object obj) => Control.Equals(obj);
 
-            public static bool operator ==(TransportWrapper objX, object objY)
-            {
-                return objX.Equals(objY);
-            }
+            public static bool operator ==(TransportWrapper objX, object objY) => objX.Equals(objY);
 
-            public static bool operator !=(TransportWrapper objX, object objY)
-            {
-                return !objX.Equals(objY);
-            }
+            public static bool operator !=(TransportWrapper objX, object objY) => !objX.Equals(objY);
 
-            public static bool operator ==(object objX, TransportWrapper objY)
-            {
-                return objX?.Equals(objY) ?? objY == null;
-            }
+            public static bool operator ==(object objX, TransportWrapper objY) => objX?.Equals(objY) ?? objY == null;
 
-            public static bool operator !=(object objX, TransportWrapper objY)
-            {
-                return objX?.Equals(objY) ?? objY == null;
-            }
+            public static bool operator !=(object objX, TransportWrapper objY) => objX?.Equals(objY) ?? objY == null;
 
-            public override int GetHashCode()
-            {
-                return Control.GetHashCode();
-            }
+            public override int GetHashCode() => Control.GetHashCode();
 
-            public override string ToString()
-            {
-                return Control.ToString();
-            }
+            public override string ToString() => Control.ToString();
         }
 
         protected Stopwatch AutosaveStopWatch { get; } = Stopwatch.StartNew();
@@ -177,7 +158,10 @@ namespace Chummer
             string strShowFileName = strFile[strFile.Length - 1];
 
             if (string.IsNullOrEmpty(strShowFileName))
+            {
                 strShowFileName = _objCharacter.CharacterName;
+            }
+
             char[] replaceChars = System.IO.Path.GetInvalidFileNameChars();
             foreach (char invalidChar in replaceChars)
             {
@@ -200,7 +184,10 @@ namespace Chummer
                 TreeNode objSelectedNode = treLimit.SelectedNode;
                 string strGuid = (objSelectedNode?.Tag as IHasInternalId)?.InternalId ?? string.Empty;
                 if (string.IsNullOrEmpty(strGuid) || strGuid.IsEmptyGuid())
+                {
                     return;
+                }
+
                 LimitModifier objLimitModifier = _objCharacter.LimitModifiers.FindById(strGuid);
                 //If the LimitModifier couldn't be found (Ie it comes from an Improvement or the user hasn't properly selected a treenode, fail out early.
                 if (objLimitModifier == null)
@@ -213,7 +200,9 @@ namespace Chummer
                     frmPickLimitModifier.ShowDialog(this);
 
                     if (frmPickLimitModifier.DialogResult == DialogResult.Cancel)
+                    {
                         return;
+                    }
 
                     //Remove the old LimitModifier to ensure we don't double up.
                     _objCharacter.LimitModifiers.Remove(objLimitModifier);
@@ -415,7 +404,9 @@ namespace Chummer
                                     TreeNode objParent = objNode.Parent;
                                     objNode.Remove();
                                     if (objParent.Level == 0 && objParent.Nodes.Count == 0)
+                                    {
                                         objParent.Remove();
+                                    }
                                 }
                                 if (objSpell.Grade > 0)
                                 {
@@ -452,7 +443,9 @@ namespace Chummer
                             foreach (TreeNode objOldParent in lstOldParents)
                             {
                                 if (objOldParent.Level == 0 && objOldParent.Nodes.Count == 0)
+                                {
                                     objOldParent.Remove();
+                                }
                             }
                             break;
                         }
@@ -463,7 +456,10 @@ namespace Chummer
             {
                 TreeNode objNode = objSpell.CreateTreeNode(cmsSpell);
                 if (objNode == null)
+                {
                     return;
+                }
+
                 TreeNode objParentNode = null;
                 switch (objSpell.Category)
                 {
@@ -591,7 +587,9 @@ namespace Chummer
 
                             nodMetamagicParentChildren.Insert(intTargetIndex, objMetamagicNode);
                             if (blnSingleAdd)
+                            {
                                 treMetamagic.SelectedNode = objMetamagicNode;
+                            }
                         }
                     }
                 }
@@ -615,7 +613,9 @@ namespace Chummer
                         treSpells.SelectedNode = objNode;
                     }
                     else
+                    {
                         objParentNode.Nodes.Add(objNode);
+                    }
                 }
             }
         }
@@ -660,7 +660,9 @@ namespace Chummer
                                     TreeNode objParent = objNode.Parent;
                                     objNode.Remove();
                                     if (objParent.Level == 0 && objParent.Nodes.Count == 0)
+                                    {
                                         objParent.Remove();
+                                    }
                                 }
                             }
                             break;
@@ -689,7 +691,9 @@ namespace Chummer
                             foreach (TreeNode objOldParent in lstOldParents)
                             {
                                 if (objOldParent.Level == 0 && objOldParent.Nodes.Count == 0)
+                                {
                                     objOldParent.Remove();
+                                }
                             }
                             break;
                         }
@@ -700,7 +704,9 @@ namespace Chummer
             {
                 TreeNode objNode = objAIProgram.CreateTreeNode(cmsAdvancedProgram);
                 if (objNode == null)
+                {
                     return;
+                }
 
                 if (objParentNode == null)
                 {
@@ -730,7 +736,9 @@ namespace Chummer
                     treAIPrograms.SelectedNode = objNode;
                 }
                 else
+                {
                     objParentNode.Nodes.Add(objNode);
+                }
             }
         }
 
@@ -781,7 +789,9 @@ namespace Chummer
                                     TreeNode objParent = objNode.Parent;
                                     objNode.Remove();
                                     if (objParent.Level == 0 && objParent.Nodes.Count == 0)
+                                    {
                                         objParent.Remove();
+                                    }
                                 }
                                 if (objComplexForm.Grade > 0)
                                 {
@@ -813,7 +823,9 @@ namespace Chummer
                             foreach (TreeNode objOldParent in lstOldParents)
                             {
                                 if (objOldParent.Level == 0 && objOldParent.Nodes.Count == 0)
+                                {
                                     objOldParent.Remove();
+                                }
                             }
                             break;
                         }
@@ -829,7 +841,10 @@ namespace Chummer
             {
                 TreeNode objNode = objComplexForm.CreateTreeNode(cmsComplexForm);
                 if (objNode == null)
+                {
                     return;
+                }
+
                 if (objParentNode == null)
                 {
                     objParentNode = new TreeNode()
@@ -862,7 +877,9 @@ namespace Chummer
 
                             nodMetamagicParentChildren.Insert(intTargetIndex, objMetamagicNode);
                             if (blnSingleAdd)
+                            {
                                 treMetamagic.SelectedNode = objMetamagicNode;
+                            }
                         }
                     }
                 }
@@ -883,7 +900,9 @@ namespace Chummer
                     treComplexForms.SelectedNode = objNode;
                 }
                 else
+                {
                     objParentNode.Nodes.Add(objNode);
+                }
             }
         }
 
@@ -1003,7 +1022,9 @@ namespace Chummer
                                 // Arts
                                 List<Art> lstRemoveArts = CharacterObject.Arts.Where(o => o.Grade == objGrade.Grade).ToList();
                                 foreach (Art objArt in lstRemoveArts)
+                                {
                                     CharacterObject.Arts.Remove(objArt);
+                                }
 
                                 // Metamagics
                                 List<Metamagic> lstRemoveMetamagics = CharacterObject.Metamagics.Where(o => o.Grade == objGrade.Grade).ToList();
@@ -1016,17 +1037,23 @@ namespace Chummer
                                 // Enhancements
                                 List<Enhancement> lstRemoveEnhancements = CharacterObject.Enhancements.Where(objEnhancement => objEnhancement.Grade == objGrade.Grade).ToList();
                                 foreach (Enhancement objEnhancement in lstRemoveEnhancements)
+                                {
                                     CharacterObject.Enhancements.Remove(objEnhancement);
+                                }
 
                                 // Spells
                                 List<Spell> lstRemoveSpells = CharacterObject.Spells.Where(objSpell => objSpell.Grade == objGrade.Grade).ToList();
                                 foreach (Spell objSpell in lstRemoveSpells)
+                                {
                                     CharacterObject.Spells.Remove(objSpell);
+                                }
 
                                 // Complex Forms
                                 List<ComplexForm> lstRemoveComplexForms = CharacterObject.ComplexForms.Where(cf => cf.Grade == objGrade.Grade).ToList();
                                 foreach (ComplexForm cf in lstRemoveComplexForms)
+                                {
                                     CharacterObject.ComplexForms.Remove(cf);
+                                }
 
                                 // Grade
                                 CharacterObject.InitiationGrades.Remove(objGrade);
@@ -1037,7 +1064,9 @@ namespace Chummer
                                     // Remove any existing Initiation Improvements.
                                     ImprovementManager.RemoveImprovements(CharacterObject, Improvement.ImprovementSource.Initiation);
                                     if (CharacterObject.InitiateGrade == 0)
+                                    {
                                         break;
+                                    }
                                     // Create the replacement Improvement.
                                     ImprovementManager.CreateImprovement(CharacterObject, "MAG", Improvement.ImprovementSource.Initiation, string.Empty, Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, CharacterObject.InitiateGrade);
                                     ImprovementManager.CreateImprovement(CharacterObject, "MAGAdept", Improvement.ImprovementSource.Initiation, string.Empty, Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, CharacterObject.InitiateGrade);
@@ -1050,7 +1079,9 @@ namespace Chummer
                                     // Remove any existing Initiation Improvements.
                                     ImprovementManager.RemoveImprovements(CharacterObject, Improvement.ImprovementSource.Submersion);
                                     if (CharacterObject.SubmersionGrade == 0)
+                                    {
                                         break;
+                                    }
                                     // Create the replacement Improvement.
                                     ImprovementManager.CreateImprovement(CharacterObject, "RES", Improvement.ImprovementSource.Submersion, string.Empty, Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, CharacterObject.SubmersionGrade);
                                     ImprovementManager.Commit(CharacterObject);
@@ -1118,7 +1149,10 @@ namespace Chummer
                     {
                         TreeNode objNode = objArt.CreateTreeNode(cmsInitiationNotes, true);
                         if (objNode == null)
+                        {
                             continue;
+                        }
+
                         int intNodesCount = lstParentNodeChildren.Count;
                         int intTargetIndex = 0;
                         for (; intTargetIndex < intNodesCount; ++intTargetIndex)
@@ -1137,7 +1171,10 @@ namespace Chummer
                     {
                         TreeNode objNode = objMetamagic.CreateTreeNode(cmsInitiationNotes, true);
                         if (objNode == null)
+                        {
                             continue;
+                        }
+
                         int intNodesCount = lstParentNodeChildren.Count;
                         int intTargetIndex = 0;
                         for (; intTargetIndex < intNodesCount; ++intTargetIndex)
@@ -1156,7 +1193,10 @@ namespace Chummer
                     {
                         TreeNode objNode = objSpell.CreateTreeNode(cmsInitiationNotes, true);
                         if (objNode == null)
+                        {
                             continue;
+                        }
+
                         int intNodesCount = lstParentNodeChildren.Count;
                         int intTargetIndex = 0;
                         for (; intTargetIndex < intNodesCount; ++intTargetIndex)
@@ -1175,7 +1215,10 @@ namespace Chummer
                     {
                         TreeNode objNode = objComplexForm.CreateTreeNode(cmsInitiationNotes);
                         if (objNode == null)
+                        {
                             continue;
+                        }
+
                         int intNodesCount = lstParentNodeChildren.Count;
                         int intTargetIndex = 0;
                         for (; intTargetIndex < intNodesCount; ++intTargetIndex)
@@ -1194,7 +1237,10 @@ namespace Chummer
                     {
                         TreeNode objNode = objEnhancement.CreateTreeNode(cmsInitiationNotes, true);
                         if (objNode == null)
+                        {
                             continue;
+                        }
+
                         int intNodesCount = lstParentNodeChildren.Count;
                         int intTargetIndex = 0;
                         for (; intTargetIndex < intNodesCount; ++intTargetIndex)
@@ -1215,7 +1261,10 @@ namespace Chummer
                         {
                             TreeNode objNode = objEnhancement.CreateTreeNode(cmsInitiationNotes, true);
                             if (objNode == null)
+                            {
                                 continue;
+                            }
+
                             int intNodesCount = lstParentNodeChildren.Count;
                             int intTargetIndex = 0;
                             for (; intTargetIndex < intNodesCount; ++intTargetIndex)
@@ -1231,16 +1280,22 @@ namespace Chummer
                 }
                 nodGrade.Expand();
                 if (intIndex < 0)
+                {
                     treMetamagic.Nodes.Add(nodGrade);
+                }
                 else
+                {
                     treMetamagic.Nodes.Insert(intIndex, nodGrade);
+                }
             }
         }
 
         protected void RefreshArtCollection(TreeView treMetamagic, ContextMenuStrip cmsMetamagic, ContextMenuStrip cmsInitiationNotes, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
         {
             if (notifyCollectionChangedEventArgs == null)
+            {
                 return;
+            }
 
             switch (notifyCollectionChangedEventArgs.Action)
             {
@@ -1291,7 +1346,10 @@ namespace Chummer
                         TreeNodeCollection nodMetamagicParentChildren = nodMetamagicParent.Nodes;
                         TreeNode objNode = objArt.CreateTreeNode(cmsInitiationNotes, true);
                         if (objNode == null)
+                        {
                             return;
+                        }
+
                         int intNodesCount = nodMetamagicParentChildren.Count;
                         int intTargetIndex = 0;
                         for (; intTargetIndex < intNodesCount; ++intTargetIndex)
@@ -1304,7 +1362,9 @@ namespace Chummer
                         nodMetamagicParentChildren.Insert(intTargetIndex, objNode);
                         nodMetamagicParent.Expand();
                         if (blnSingleAdd)
+                        {
                             treMetamagic.SelectedNode = objNode;
+                        }
                     }
                 }
             }
@@ -1313,7 +1373,9 @@ namespace Chummer
         protected void RefreshEnhancementCollection(TreeView treMetamagic, ContextMenuStrip cmsMetamagic, ContextMenuStrip cmsInitiationNotes, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
         {
             if (notifyCollectionChangedEventArgs == null)
+            {
                 return;
+            }
 
             switch (notifyCollectionChangedEventArgs.Action)
             {
@@ -1364,7 +1426,10 @@ namespace Chummer
                         TreeNodeCollection nodMetamagicParentChildren = nodMetamagicParent.Nodes;
                         TreeNode objNode = objEnhancement.CreateTreeNode(cmsInitiationNotes, true);
                         if (objNode == null)
+                        {
                             return;
+                        }
+
                         int intNodesCount = nodMetamagicParentChildren.Count;
                         int intTargetIndex = 0;
                         for (; intTargetIndex < intNodesCount; ++intTargetIndex)
@@ -1377,7 +1442,9 @@ namespace Chummer
                         nodMetamagicParentChildren.Insert(intTargetIndex, objNode);
                         nodMetamagicParent.Expand();
                         if (blnSingleAdd)
+                        {
                             treMetamagic.SelectedNode = objNode;
+                        }
                     }
                 }
             }
@@ -1419,7 +1486,9 @@ namespace Chummer
         protected void RefreshMetamagicCollection(TreeView treMetamagic, ContextMenuStrip cmsMetamagic, ContextMenuStrip cmsInitiationNotes, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
         {
             if (notifyCollectionChangedEventArgs == null)
+            {
                 return;
+            }
 
             switch (notifyCollectionChangedEventArgs.Action)
             {
@@ -1465,7 +1534,10 @@ namespace Chummer
                     TreeNodeCollection nodMetamagicParentChildren = treMetamagic.Nodes;
                     TreeNode objNode = objMetamagic.CreateTreeNode(cmsInitiationNotes, true);
                     if (objNode == null)
+                    {
                         return;
+                    }
+
                     int intNodesCount = nodMetamagicParentChildren.Count;
                     int intTargetIndex = CharacterObject.InitiationGrades.Count;
                     for (; intTargetIndex < intNodesCount; ++intTargetIndex)
@@ -1478,7 +1550,9 @@ namespace Chummer
                     nodMetamagicParentChildren.Insert(intTargetIndex, objNode);
                     objNode.Expand();
                     if (blnSingleAdd)
+                    {
                         treMetamagic.SelectedNode = objNode;
+                    }
                 }
                 else
                 {
@@ -1492,7 +1566,10 @@ namespace Chummer
                             TreeNodeCollection nodMetamagicParentChildren = nodMetamagicParent.Nodes;
                             TreeNode objNode = objMetamagic.CreateTreeNode(cmsInitiationNotes, true);
                             if (objNode == null)
+                            {
                                 return;
+                            }
+
                             int intNodesCount = nodMetamagicParentChildren.Count;
                             int intTargetIndex = 0;
                             for (; intTargetIndex < intNodesCount; ++intTargetIndex)
@@ -1505,7 +1582,9 @@ namespace Chummer
                             nodMetamagicParentChildren.Insert(intTargetIndex, objNode);
                             objNode.Expand();
                             if (blnSingleAdd)
+                            {
                                 treMetamagic.SelectedNode = objNode;
+                            }
                         }
                     }
                 }
@@ -1559,7 +1638,9 @@ namespace Chummer
                                     TreeNode objParent = objNode.Parent;
                                     objNode.Remove();
                                     if (objParent.Level == 0 && objParent.Nodes.Count == 0)
+                                    {
                                         objParent.Remove();
+                                    }
                                 }
                             }
                             break;
@@ -1588,7 +1669,9 @@ namespace Chummer
                             foreach (TreeNode objOldParent in lstOldParents)
                             {
                                 if (objOldParent.Level == 0 && objOldParent.Nodes.Count == 0)
+                                {
                                     objOldParent.Remove();
+                                }
                             }
                             break;
                         }
@@ -1599,7 +1682,10 @@ namespace Chummer
             {
                 TreeNode objNode = objPower.CreateTreeNode(cmsCritterPowers);
                 if (objNode == null)
+                {
                     return;
+                }
+
                 TreeNode objParentNode;
                 switch (objPower.Category)
                 {
@@ -1646,7 +1732,9 @@ namespace Chummer
                     treCritterPowers.SelectedNode = objNode;
                 }
                 else
+                {
                     objParentNode.Nodes.Add(objNode);
+                }
             }
         }
 
@@ -1680,7 +1768,9 @@ namespace Chummer
                 foreach (Quality objQuality in _objCharacter.Qualities)
                 {
                     if (!strQualitiesToPrint.Remove(objQuality.SourceIDString + '|' + objQuality.GetSourceName(GlobalOptions.Language) + '|' + objQuality.Extra))
+                    {
                         continue;
+                    }
 
                     AddToTree(objQuality, false);
                 }
@@ -1700,9 +1790,13 @@ namespace Chummer
                             foreach (Quality objQuality in notifyCollectionChangedEventArgs.NewItems)
                             {
                                 if (objQuality.Levels > 1)
+                                {
                                     blnDoNameRefresh = true;
+                                }
                                 else
+                                {
                                     AddToTree(objQuality);
+                                }
                             }
                             break;
                         }
@@ -1711,7 +1805,9 @@ namespace Chummer
                             foreach (Quality objQuality in notifyCollectionChangedEventArgs.OldItems)
                             {
                                 if (objQuality.Levels > 0)
+                                {
                                     blnDoNameRefresh = true;
+                                }
                                 else
                                 {
                                     TreeNode objNode = treQualities.FindNodeByTag(objQuality);
@@ -1720,7 +1816,9 @@ namespace Chummer
                                         TreeNode objParent = objNode.Parent;
                                         objNode.Remove();
                                         if (objParent.Level == 0 && objParent.Nodes.Count == 0)
+                                        {
                                             objParent.Remove();
+                                        }
                                     }
                                 }
                             }
@@ -1737,14 +1835,19 @@ namespace Chummer
                             foreach (Quality objQuality in notifyCollectionChangedEventArgs.OldItems)
                             {
                                 if (objQuality.Levels > 0)
+                                {
                                     blnDoNameRefresh = true;
+                                }
                                 else
                                 {
                                     TreeNode objNode = treQualities.FindNodeByTag(objQuality);
                                     if (objNode != null)
                                     {
                                         if (objNode.Parent != null)
+                                        {
                                             lstOldParents.Add(objNode.Parent);
+                                        }
+
                                         objNode.Remove();
                                     }
                                     else
@@ -1756,27 +1859,38 @@ namespace Chummer
                             foreach (Quality objQuality in notifyCollectionChangedEventArgs.NewItems)
                             {
                                 if (objQuality.Levels > 1)
+                                {
                                     blnDoNameRefresh = true;
+                                }
                                 else
+                                {
                                     AddToTree(objQuality);
+                                }
                             }
                             foreach (TreeNode objOldParent in lstOldParents)
                             {
                                 if (objOldParent.Level == 0 && objOldParent.Nodes.Count == 0)
+                                {
                                     objOldParent.Remove();
+                                }
                             }
                             break;
                         }
                 }
                 if (blnDoNameRefresh)
+                {
                     RefreshQualityNames(treQualities);
+                }
             }
 
             void AddToTree(Quality objQuality, bool blnSingleAdd = true)
             {
                 TreeNode objNode = objQuality.CreateTreeNode(cmsQuality);
                 if (objNode == null)
+                {
                     return;
+                }
+
                 TreeNode objParentNode = null;
                 switch (objQuality.Type)
                 {
@@ -1840,7 +1954,9 @@ namespace Chummer
                         treQualities.SelectedNode = objNode;
                     }
                     else
+                    {
                         objParentNode.Nodes.Add(objNode);
+                    }
                 }
             }
         }
@@ -1869,7 +1985,10 @@ namespace Chummer
         protected void RemoveAddedQualities(XmlNodeList objNodeList)
         {
             if (objNodeList == null || objNodeList.Count == 0)
+            {
                 return;
+            }
+
             foreach (XmlNode objNode in objNodeList)
             {
                 Quality objQuality = _objCharacter.Qualities.FirstOrDefault(x => x.Name == objNode.InnerText);
@@ -1884,7 +2003,9 @@ namespace Chummer
         protected void RefreshArmorLocations(TreeView treArmor, ContextMenuStrip cmsArmorLocation, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
         {
             if (notifyCollectionChangedEventArgs == null)
+            {
                 return;
+            }
 
             string strSelectedId = (treArmor.SelectedNode?.Tag as IHasInternalId)?.InternalId ?? string.Empty;
 
@@ -1895,7 +2016,9 @@ namespace Chummer
         protected void RefreshGearLocations(TreeView treGear, ContextMenuStrip cmsGearLocation, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
         {
             if (notifyCollectionChangedEventArgs == null)
+            {
                 return;
+            }
 
             string strSelectedId = (treGear.SelectedNode?.Tag as IHasInternalId)?.InternalId ?? string.Empty;
 
@@ -1906,7 +2029,9 @@ namespace Chummer
         protected void RefreshVehicleLocations(TreeView treVehicles, ContextMenuStrip cmsVehicleLocation, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
         {
             if (notifyCollectionChangedEventArgs == null)
+            {
                 return;
+            }
 
             TreeNode nodRoot = treVehicles.FindNode("Node_SelectedVehicles", false);
             string strSelectedId = (treVehicles.SelectedNode?.Tag as IHasInternalId)?.InternalId ?? string.Empty;
@@ -1915,7 +2040,9 @@ namespace Chummer
         protected void RefreshLocationsInVehicle(TreeView treVehicles, Vehicle objVehicle, ContextMenuStrip cmsVehicleLocation, Func<int> funcOffset, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
         {
             if (notifyCollectionChangedEventArgs == null)
+            {
                 return;
+            }
 
             string strSelectedId = (treVehicles.SelectedNode?.Tag as IHasInternalId)?.InternalId ?? string.Empty;
 
@@ -1927,7 +2054,9 @@ namespace Chummer
         protected void RefreshWeaponLocations(TreeView treWeapons, ContextMenuStrip cmsWeaponLocation, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
         {
             if (notifyCollectionChangedEventArgs == null)
+            {
                 return;
+            }
 
             string strSelectedId = (treWeapons.SelectedNode?.Tag as IHasInternalId)?.InternalId ?? string.Empty;
 
@@ -1938,7 +2067,9 @@ namespace Chummer
         protected void RefreshCustomImprovementLocations(TreeView treImprovements, ContextMenuStrip cmsImprovementLocation, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
         {
             if (notifyCollectionChangedEventArgs == null)
+            {
                 return;
+            }
 
             string strSelectedId = (treImprovements.SelectedNode?.Tag as IHasInternalId)?.InternalId ?? string.Empty;
 
@@ -2072,10 +2203,7 @@ namespace Chummer
 
         private void RefreshLocation(TreeView treSelected, TreeNode nodRoot, ContextMenuStrip cmsLocation,
             NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs,
-            ObservableCollection<Location> collection, string strSelectedId, string strNodeName)
-        {
-            RefreshLocation(treSelected, nodRoot, cmsLocation, () => 0, notifyCollectionChangedEventArgs, collection, strSelectedId, strNodeName);
-        }
+            ObservableCollection<Location> collection, string strSelectedId, string strNodeName) => RefreshLocation(treSelected, nodRoot, cmsLocation, () => 0, notifyCollectionChangedEventArgs, collection, strSelectedId, strNodeName);
 
         private void RefreshLocation(TreeView treSelected, TreeNode nodRoot, ContextMenuStrip cmsLocation,
             Func<int> funcOffset,
@@ -2089,7 +2217,10 @@ namespace Chummer
                     {
                         int intNewIndex = notifyCollectionChangedEventArgs.NewStartingIndex;
                         if (funcOffset != null)
+                        {
                             intNewIndex += funcOffset.Invoke();
+                        }
+
                         foreach (Location objLocation in notifyCollectionChangedEventArgs.NewItems)
                         {
                             if (rootSibling)
@@ -2111,7 +2242,10 @@ namespace Chummer
                         {
                             TreeNode nodLocation = treSelected.FindNodeByTag(objLocation, false);
                             if (nodLocation == null)
+                            {
                                 continue;
+                            }
+
                             if (nodLocation.Nodes.Count > 0)
                             {
                                 if (nodRoot == null)
@@ -2186,7 +2320,10 @@ namespace Chummer
                         {
                             TreeNode nodLocation = treSelected.FindNode(objLocation?.InternalId, false);
                             if (nodLocation == null)
+                            {
                                 continue;
+                            }
+
                             if (nodLocation.Nodes.Count > 0)
                             {
                                 if (nodRoot == null)
@@ -2324,7 +2461,10 @@ namespace Chummer
             {
                 TreeNode objNode = objWeapon.CreateTreeNode(cmsWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear);
                 if (objNode == null)
+                {
                     return;
+                }
+
                 TreeNode nodParent = null;
                 if (objWeapon.Location != null)
                 {
@@ -2345,12 +2485,19 @@ namespace Chummer
                 }
 
                 if (intIndex >= 0)
+                {
                     nodParent.Nodes.Insert(intIndex, objNode);
+                }
                 else
+                {
                     nodParent.Nodes.Add(objNode);
+                }
+
                 nodParent.Expand();
                 if (blnSingleAdd)
+                {
                     treWeapons.SelectedNode = objNode;
+                }
             }
         }
 
@@ -2377,12 +2524,17 @@ namespace Chummer
                     objArmor.ArmorMods.AddTaggedCollectionChanged(treArmor, (x, y) => RefreshArmorMods(treArmor, objArmor, cmsArmorMod, cmsArmorGear, y));
                     objArmor.Gear.AddTaggedCollectionChanged(treArmor, (x, y) => objArmor.RefreshChildrenGears(treArmor, cmsArmorGear, () => objArmor.ArmorMods.Count, y));
                     foreach (Gear objGear in objArmor.Gear)
+                    {
                         objGear.SetupChildrenGearsCollectionChanged(true, treArmor, cmsArmorGear);
+                    }
+
                     foreach (ArmorMod objArmorMod in objArmor.ArmorMods)
                     {
                         objArmorMod.Gear.AddTaggedCollectionChanged(treArmor, (x, y) => objArmorMod.RefreshChildrenGears(treArmor, cmsArmorGear, null, y));
                         foreach (Gear objGear in objArmorMod.Gear)
+                        {
                             objGear.SetupChildrenGearsCollectionChanged(true, treArmor, cmsArmorGear);
+                        }
                     }
                 }
 
@@ -2404,12 +2556,17 @@ namespace Chummer
                                 objArmor.ArmorMods.AddTaggedCollectionChanged(treArmor, (x, y) => RefreshArmorMods(treArmor, objArmor, cmsArmorMod, cmsArmorGear, y));
                                 objArmor.Gear.AddTaggedCollectionChanged(treArmor, (x, y) => objArmor.RefreshChildrenGears(treArmor, cmsArmorGear, () => objArmor.ArmorMods.Count, y));
                                 foreach (Gear objGear in objArmor.Gear)
+                                {
                                     objGear.SetupChildrenGearsCollectionChanged(true, treArmor, cmsArmorGear);
+                                }
+
                                 foreach (ArmorMod objArmorMod in objArmor.ArmorMods)
                                 {
                                     objArmorMod.Gear.AddTaggedCollectionChanged(treArmor, (x, y) => objArmorMod.RefreshChildrenGears(treArmor, cmsArmorGear, null, y));
                                     foreach (Gear objGear in objArmorMod.Gear)
+                                    {
                                         objGear.SetupChildrenGearsCollectionChanged(true, treArmor, cmsArmorGear);
+                                    }
                                 }
                             }
                         }
@@ -2421,12 +2578,17 @@ namespace Chummer
                                 objArmor.ArmorMods.RemoveTaggedCollectionChanged(treArmor);
                                 objArmor.Gear.RemoveTaggedCollectionChanged(treArmor);
                                 foreach (Gear objGear in objArmor.Gear)
+                                {
                                     objGear.SetupChildrenGearsCollectionChanged(false, treArmor);
+                                }
+
                                 foreach (ArmorMod objArmorMod in objArmor.ArmorMods)
                                 {
                                     objArmorMod.Gear.RemoveTaggedCollectionChanged(treArmor);
                                     foreach (Gear objGear in objArmorMod.Gear)
+                                    {
                                         objGear.SetupChildrenGearsCollectionChanged(true, treArmor, cmsArmorGear);
+                                    }
                                 }
                                 treArmor.FindNode(objArmor.InternalId)?.Remove();
                             }
@@ -2443,12 +2605,17 @@ namespace Chummer
                                 objArmor.ArmorMods.RemoveTaggedCollectionChanged(treArmor);
                                 objArmor.Gear.RemoveTaggedCollectionChanged(treArmor);
                                 foreach (Gear objGear in objArmor.Gear)
+                                {
                                     objGear.SetupChildrenGearsCollectionChanged(false, treArmor);
+                                }
+
                                 foreach (ArmorMod objArmorMod in objArmor.ArmorMods)
                                 {
                                     objArmorMod.Gear.RemoveTaggedCollectionChanged(treArmor);
                                     foreach (Gear objGear in objArmorMod.Gear)
+                                    {
                                         objGear.SetupChildrenGearsCollectionChanged(true, treArmor, cmsArmorGear);
+                                    }
                                 }
                                 treArmor.FindNode(objArmor.InternalId)?.Remove();
                             }
@@ -2460,12 +2627,17 @@ namespace Chummer
                                 objArmor.ArmorMods.AddTaggedCollectionChanged(treArmor, (x, y) => RefreshArmorMods(treArmor, objArmor, cmsArmorMod, cmsArmorGear, y));
                                 objArmor.Gear.AddTaggedCollectionChanged(treArmor, (x, y) => objArmor.RefreshChildrenGears(treArmor, cmsArmorGear, () => objArmor.ArmorMods.Count, y));
                                 foreach (Gear objGear in objArmor.Gear)
+                                {
                                     objGear.SetupChildrenGearsCollectionChanged(true, treArmor, cmsArmorGear);
+                                }
+
                                 foreach (ArmorMod objArmorMod in objArmor.ArmorMods)
                                 {
                                     objArmorMod.Gear.AddTaggedCollectionChanged(treArmor, (x, y) => objArmorMod.RefreshChildrenGears(treArmor, cmsArmorGear, null, y));
                                     foreach (Gear objGear in objArmorMod.Gear)
+                                    {
                                         objGear.SetupChildrenGearsCollectionChanged(true, treArmor, cmsArmorGear);
+                                    }
                                 }
                             }
                             if (nodRoot != null && nodRoot.Nodes.Count == 0)
@@ -2506,7 +2678,10 @@ namespace Chummer
             {
                 TreeNode objNode = objArmor.CreateTreeNode(cmsArmor, cmsArmorMod, cmsArmorGear);
                 if (objNode == null)
+                {
                     return;
+                }
+
                 TreeNode nodParent = null;
                 if (objArmor.Location != null)
                 {
@@ -2527,22 +2702,34 @@ namespace Chummer
                 }
 
                 if (intIndex >= 0)
+                {
                     nodParent.Nodes.Insert(intIndex, objNode);
+                }
                 else
+                {
                     nodParent.Nodes.Add(objNode);
+                }
+
                 nodParent.Expand();
                 if (blnSingleAdd)
+                {
                     treArmor.SelectedNode = objNode;
+                }
             }
         }
 
         protected void RefreshArmorMods(TreeView treArmor, Armor objArmor, ContextMenuStrip cmsArmorMod, ContextMenuStrip cmsArmorGear, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
         {
             if (notifyCollectionChangedEventArgs == null)
+            {
                 return;
+            }
+
             TreeNode nodArmor = treArmor.FindNode(objArmor.InternalId);
             if (nodArmor == null)
+            {
                 return;
+            }
 
             switch (notifyCollectionChangedEventArgs.Action)
             {
@@ -2554,7 +2741,10 @@ namespace Chummer
                             AddToTree(objArmorMod, intNewIndex);
                             objArmorMod.Gear.AddTaggedCollectionChanged(treArmor, (x, y) => objArmorMod.RefreshChildrenGears(treArmor, cmsArmorGear, null, y));
                             foreach (Gear objGear in objArmorMod.Gear)
+                            {
                                 objGear.SetupChildrenGearsCollectionChanged(true, treArmor, cmsArmorGear);
+                            }
+
                             intNewIndex += 1;
                         }
                     }
@@ -2565,7 +2755,10 @@ namespace Chummer
                         {
                             objArmorMod.Gear.RemoveTaggedCollectionChanged(treArmor);
                             foreach (Gear objGear in objArmorMod.Gear)
+                            {
                                 objGear.SetupChildrenGearsCollectionChanged(false, treArmor);
+                            }
+
                             nodArmor.FindNode(objArmorMod.InternalId)?.Remove();
                         }
                     }
@@ -2577,7 +2770,10 @@ namespace Chummer
                         {
                             objArmorMod.Gear.RemoveTaggedCollectionChanged(treArmor);
                             foreach (Gear objGear in objArmorMod.Gear)
+                            {
                                 objGear.SetupChildrenGearsCollectionChanged(false, treArmor);
+                            }
+
                             nodArmor.FindNode(objArmorMod.InternalId)?.Remove();
                         }
                         int intNewIndex = notifyCollectionChangedEventArgs.NewStartingIndex;
@@ -2586,7 +2782,10 @@ namespace Chummer
                             AddToTree(objArmorMod, intNewIndex);
                             objArmorMod.Gear.AddTaggedCollectionChanged(treArmor, (x, y) => objArmorMod.RefreshChildrenGears(treArmor, cmsArmorGear, null, y));
                             foreach (Gear objGear in objArmorMod.Gear)
+                            {
                                 objGear.SetupChildrenGearsCollectionChanged(true, treArmor, cmsArmorGear);
+                            }
+
                             intNewIndex += 1;
                         }
                         treArmor.SelectedNode = treArmor.FindNode(strSelectedId);
@@ -2619,14 +2818,24 @@ namespace Chummer
             {
                 TreeNode objNode = objArmorMod.CreateTreeNode(cmsArmorMod, cmsArmorGear);
                 if (objNode == null)
+                {
                     return;
+                }
+
                 if (intIndex >= 0)
+                {
                     nodArmor.Nodes.Insert(intIndex, objNode);
+                }
                 else
+                {
                     nodArmor.Nodes.Add(objNode);
+                }
+
                 nodArmor.Expand();
                 if (blnSingleAdd)
+                {
                     treArmor.SelectedNode = objNode;
+                }
             }
         }
 
@@ -2725,11 +2934,16 @@ namespace Chummer
             void AddToTree(Gear objGear, int intIndex = -1, bool blnSingleAdd = true)
             {
                 if (blnCommlinksOnly && !objGear.IsCommlink)
+                {
                     return;
+                }
 
                 TreeNode objNode = objGear.CreateTreeNode(cmsGear);
                 if (objNode == null)
+                {
                     return;
+                }
+
                 TreeNode nodParent = null;
                 if (objGear.Location != null)
                 {
@@ -2750,12 +2964,19 @@ namespace Chummer
                 }
 
                 if (intIndex >= 0)
+                {
                     nodParent.Nodes.Insert(intIndex, objNode);
+                }
                 else
+                {
                     nodParent.Nodes.Add(objNode);
+                }
+
                 nodParent.Expand();
                 if (blnSingleAdd)
+                {
                     treGear.SelectedNode = objNode;
+                }
             }
         }
 
@@ -2843,7 +3064,10 @@ namespace Chummer
             {
                 TreeNode objNode = objGear.CreateTreeNode();
                 if (objNode == null)
+                {
                     return;
+                }
+
                 if (nodRoot == null)
                 {
                     nodRoot = new TreeNode
@@ -2855,12 +3079,19 @@ namespace Chummer
                 }
 
                 if (intIndex >= 0)
+                {
                     nodRoot.Nodes.Insert(intIndex, objNode);
+                }
                 else
+                {
                     nodRoot.Nodes.Add(objNode);
+                }
+
                 nodRoot.Expand();
                 if (blnSingleAdd)
+                {
                     treGear.SelectedNode = objNode;
+                }
             }
         }
         protected void RefreshCyberware(TreeView treCyberware, ContextMenuStrip cmsCyberware, ContextMenuStrip cmsCyberwareGear, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs = null)
@@ -2914,7 +3145,9 @@ namespace Chummer
                                     TreeNode objParent = objNode.Parent;
                                     objNode.Remove();
                                     if (objParent != null && objParent.Level == 0 && objParent.Nodes.Count == 0)
+                                    {
                                         objParent.Remove();
+                                    }
                                 }
                             }
                         }
@@ -2932,7 +3165,9 @@ namespace Chummer
                                     TreeNode objParent = objNode.Parent;
                                     objNode.Remove();
                                     if (objParent != null && objParent.Level == 0)
+                                    {
                                         lstOldParentNodes.Add(objParent);
+                                    }
                                 }
                             }
                             foreach (Cyberware objCyberware in notifyCollectionChangedEventArgs.NewItems)
@@ -2943,7 +3178,9 @@ namespace Chummer
                             foreach (TreeNode objOldParent in lstOldParentNodes)
                             {
                                 if (objOldParent.Nodes.Count == 0)
+                                {
                                     objOldParent.Remove();
+                                }
                             }
                             treCyberware.SelectedNode = treCyberware.FindNode(strSelectedId);
                         }
@@ -2966,7 +3203,10 @@ namespace Chummer
                         treCyberware.Nodes.Insert(3, objHoleNode);
                     }
                     if (blnSingleAdd)
+                    {
                         treCyberware.SelectedNode = objHoleNode;
+                    }
+
                     return;
                 }
                 if (objCyberware.SourceID == Cyberware.EssenceAntiHoleGUID)
@@ -2977,13 +3217,18 @@ namespace Chummer
                         treCyberware.Nodes.Insert(3, objAntiHoleNode);
                     }
                     if (blnSingleAdd)
+                    {
                         treCyberware.SelectedNode = objAntiHoleNode;
+                    }
+
                     return;
                 }
 
                 TreeNode objNode = objCyberware.CreateTreeNode(cmsCyberware, cmsCyberwareGear);
                 if (objNode == null)
+                {
                     return;
+                }
 
                 TreeNode nodParent = null;
                 if (objCyberware.SourceType == Improvement.ImprovementSource.Cyberware)
@@ -3052,7 +3297,9 @@ namespace Chummer
                         treCyberware.SelectedNode = objNode;
                     }
                     else
+                    {
                         nodParent.Nodes.Add(objNode);
+                    }
                 }
             }
         }
@@ -3060,11 +3307,15 @@ namespace Chummer
         protected void RefreshVehicleMods(TreeView treVehicles, IHasInternalId objParent, ContextMenuStrip cmsVehicleMod, ContextMenuStrip cmsCyberware, ContextMenuStrip cmsCyberwareGear, ContextMenuStrip cmsVehicleWeapon, ContextMenuStrip cmsVehicleWeaponAccessory, ContextMenuStrip cmsVehicleWeaponAccessoryGear, Func<int> funcOffset, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
         {
             if (notifyCollectionChangedEventArgs == null)
+            {
                 return;
+            }
 
             TreeNode nodParent = treVehicles.FindNodeByTag(objParent);
             if (nodParent == null)
+            {
                 return;
+            }
 
             switch (notifyCollectionChangedEventArgs.Action)
             {
@@ -3072,16 +3323,25 @@ namespace Chummer
                     {
                         int intNewIndex = notifyCollectionChangedEventArgs.NewStartingIndex;
                         if (funcOffset != null)
+                        {
                             intNewIndex += funcOffset.Invoke();
+                        }
+
                         foreach (VehicleMod objVehicleMod in notifyCollectionChangedEventArgs.NewItems)
                         {
                             AddToTree(objVehicleMod, intNewIndex);
                             objVehicleMod.Cyberware.AddTaggedCollectionChanged(treVehicles, (x, y) => objVehicleMod.RefreshChildrenCyberware(treVehicles, cmsCyberware, cmsCyberwareGear, null, y));
                             foreach (Cyberware objCyberware in objVehicleMod.Cyberware)
+                            {
                                 objCyberware.SetupChildrenCyberwareCollectionChanged(true, treVehicles, cmsCyberware, cmsCyberwareGear);
+                            }
+
                             objVehicleMod.Weapons.AddTaggedCollectionChanged(treVehicles, (x, y) => objVehicleMod.RefreshChildrenWeapons(treVehicles, cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear, () => objVehicleMod.Cyberware.Count, y));
                             foreach (Weapon objWeapon in objVehicleMod.Weapons)
+                            {
                                 objWeapon.SetupChildrenWeaponsCollectionChanged(true, treVehicles, cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear);
+                            }
+
                             intNewIndex += 1;
                         }
                     }
@@ -3092,10 +3352,16 @@ namespace Chummer
                         {
                             objVehicleMod.Cyberware.RemoveTaggedCollectionChanged(treVehicles);
                             foreach (Cyberware objCyberware in objVehicleMod.Cyberware)
+                            {
                                 objCyberware.SetupChildrenCyberwareCollectionChanged(true, treVehicles);
+                            }
+
                             objVehicleMod.Weapons.RemoveTaggedCollectionChanged(treVehicles);
                             foreach (Weapon objWeapon in objVehicleMod.Weapons)
+                            {
                                 objWeapon.SetupChildrenWeaponsCollectionChanged(false, treVehicles);
+                            }
+
                             nodParent.FindNodeByTag(objVehicleMod)?.Remove();
                         }
                     }
@@ -3107,24 +3373,39 @@ namespace Chummer
                         {
                             objVehicleMod.Cyberware.RemoveTaggedCollectionChanged(treVehicles);
                             foreach (Cyberware objCyberware in objVehicleMod.Cyberware)
+                            {
                                 objCyberware.SetupChildrenCyberwareCollectionChanged(false, treVehicles);
+                            }
+
                             objVehicleMod.Weapons.RemoveTaggedCollectionChanged(treVehicles);
                             foreach (Weapon objWeapon in objVehicleMod.Weapons)
+                            {
                                 objWeapon.SetupChildrenWeaponsCollectionChanged(false, treVehicles);
+                            }
+
                             nodParent.FindNodeByTag(objVehicleMod)?.Remove();
                         }
                         int intNewIndex = notifyCollectionChangedEventArgs.NewStartingIndex;
                         if (funcOffset != null)
+                        {
                             intNewIndex += funcOffset.Invoke();
+                        }
+
                         foreach (VehicleMod objVehicleMod in notifyCollectionChangedEventArgs.NewItems)
                         {
                             AddToTree(objVehicleMod, intNewIndex);
                             objVehicleMod.Cyberware.AddTaggedCollectionChanged(treVehicles, (x, y) => objVehicleMod.RefreshChildrenCyberware(treVehicles, cmsCyberware, cmsCyberwareGear, null, y));
                             foreach (Cyberware objCyberware in objVehicleMod.Cyberware)
+                            {
                                 objCyberware.SetupChildrenCyberwareCollectionChanged(true, treVehicles, cmsCyberware, cmsCyberwareGear);
+                            }
+
                             objVehicleMod.Weapons.AddTaggedCollectionChanged(treVehicles, (x, y) => objVehicleMod.RefreshChildrenWeapons(treVehicles, cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear, () => objVehicleMod.Cyberware.Count, y));
                             foreach (Weapon objWeapon in objVehicleMod.Weapons)
+                            {
                                 objWeapon.SetupChildrenWeaponsCollectionChanged(true, treVehicles, cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear);
+                            }
+
                             intNewIndex += 1;
                         }
                         treVehicles.SelectedNode = treVehicles.FindNode(strSelectedId);
@@ -3139,7 +3420,10 @@ namespace Chummer
                         }
                         int intNewIndex = notifyCollectionChangedEventArgs.NewStartingIndex;
                         if (funcOffset != null)
+                        {
                             intNewIndex += funcOffset.Invoke();
+                        }
+
                         foreach (VehicleMod objVehicleMod in notifyCollectionChangedEventArgs.NewItems)
                         {
                             AddToTree(objVehicleMod, intNewIndex);
@@ -3159,26 +3443,40 @@ namespace Chummer
             {
                 TreeNode objNode = objVehicleMod.CreateTreeNode(cmsVehicleMod, cmsCyberware, cmsCyberwareGear, cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear);
                 if (objNode == null)
+                {
                     return;
+                }
 
                 if (intIndex >= 0)
+                {
                     nodParent.Nodes.Insert(intIndex, objNode);
+                }
                 else
+                {
                     nodParent.Nodes.Add(objNode);
+                }
+
                 nodParent.Expand();
                 if (blnSingleAdd)
+                {
                     treVehicles.SelectedNode = objNode;
+                }
             }
         }
 
         protected void RefreshVehicleWeaponMounts(TreeView treVehicles, IHasInternalId objParent, ContextMenuStrip cmsVehicleWeaponMount, ContextMenuStrip cmsVehicleWeapon, ContextMenuStrip cmsVehicleWeaponAccessory, ContextMenuStrip cmsVehicleWeaponAccessoryGear, ContextMenuStrip cmsCyberware, ContextMenuStrip cmsCyberwareGear, ContextMenuStrip cmsVehicleMod, Func<int> funcOffset, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
         {
             if (notifyCollectionChangedEventArgs == null)
+            {
                 return;
+            }
 
             TreeNode nodVehicleParent = treVehicles.FindNodeByTag(objParent);
             if (nodVehicleParent == null)
+            {
                 return;
+            }
+
             TreeNode nodParent = nodVehicleParent.FindNode("String_WeaponMounts", false);
 
             switch (notifyCollectionChangedEventArgs.Action)
@@ -3193,15 +3491,23 @@ namespace Chummer
                                 (x, y) => RefreshVehicleMods(treVehicles, objWeaponMount, cmsVehicleMod, cmsCyberware, cmsCyberwareGear, cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear, null, y));
                             objWeaponMount.Weapons.AddTaggedCollectionChanged(treVehicles, (x, y) => objWeaponMount.RefreshChildrenWeapons(treVehicles, cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear, () => objWeaponMount.Mods.Count, y));
                             foreach (Weapon objWeapon in objWeaponMount.Weapons)
+                            {
                                 objWeapon.SetupChildrenWeaponsCollectionChanged(true, treVehicles, cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear);
+                            }
+
                             foreach (VehicleMod objMod in objWeaponMount.Mods)
                             {
                                 objMod.Cyberware.AddTaggedCollectionChanged(treVehicles, (x, y) => objMod.RefreshChildrenCyberware(treVehicles, cmsCyberware, cmsCyberwareGear, null, y));
                                 foreach (Cyberware objCyberware in objMod.Cyberware)
+                                {
                                     objCyberware.SetupChildrenCyberwareCollectionChanged(true, treVehicles, cmsCyberware, cmsCyberwareGear);
+                                }
+
                                 objMod.Weapons.AddTaggedCollectionChanged(treVehicles, (x, y) => objMod.RefreshChildrenWeapons(treVehicles, cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear, () => objMod.Cyberware.Count, y));
                                 foreach (Weapon objWeapon in objMod.Weapons)
+                                {
                                     objWeapon.SetupChildrenWeaponsCollectionChanged(true, treVehicles, cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear);
+                                }
                             }
                             intNewIndex += 1;
                         }
@@ -3214,21 +3520,31 @@ namespace Chummer
                             objWeaponMount.Mods.RemoveTaggedCollectionChanged(treVehicles);
                             objWeaponMount.Weapons.RemoveTaggedCollectionChanged(treVehicles);
                             foreach (Weapon objWeapon in objWeaponMount.Weapons)
+                            {
                                 objWeapon.SetupChildrenWeaponsCollectionChanged(false, treVehicles);
+                            }
+
                             foreach (VehicleMod objMod in objWeaponMount.Mods)
                             {
                                 objMod.Cyberware.RemoveTaggedCollectionChanged(treVehicles);
                                 foreach (Cyberware objCyberware in objMod.Cyberware)
+                                {
                                     objCyberware.SetupChildrenCyberwareCollectionChanged(true, treVehicles);
+                                }
+
                                 objMod.Weapons.RemoveTaggedCollectionChanged(treVehicles);
                                 foreach (Weapon objWeapon in objMod.Weapons)
+                                {
                                     objWeapon.SetupChildrenWeaponsCollectionChanged(false, treVehicles);
+                                }
                             }
                             if (nodParent != null)
                             {
                                 nodParent.FindNodeByTag(objWeaponMount)?.Remove();
                                 if (nodParent.Nodes.Count == 0)
+                                {
                                     nodParent.Remove();
+                                }
                             }
                         }
                     }
@@ -3241,15 +3557,23 @@ namespace Chummer
                             objWeaponMount.Mods.RemoveTaggedCollectionChanged(treVehicles);
                             objWeaponMount.Weapons.RemoveTaggedCollectionChanged(treVehicles);
                             foreach (Weapon objWeapon in objWeaponMount.Weapons)
+                            {
                                 objWeapon.SetupChildrenWeaponsCollectionChanged(false, treVehicles);
+                            }
+
                             foreach (VehicleMod objMod in objWeaponMount.Mods)
                             {
                                 objMod.Cyberware.RemoveTaggedCollectionChanged(treVehicles);
                                 foreach (Cyberware objCyberware in objMod.Cyberware)
+                                {
                                     objCyberware.SetupChildrenCyberwareCollectionChanged(false, treVehicles);
+                                }
+
                                 objMod.Weapons.RemoveTaggedCollectionChanged(treVehicles);
                                 foreach (Weapon objWeapon in objMod.Weapons)
+                                {
                                     objWeapon.SetupChildrenWeaponsCollectionChanged(false, treVehicles);
+                                }
                             }
                             nodParent?.FindNodeByTag(objWeaponMount)?.Remove();
                         }
@@ -3261,15 +3585,23 @@ namespace Chummer
                                 (x, y) => RefreshVehicleMods(treVehicles, objWeaponMount, cmsVehicleMod, cmsCyberware, cmsCyberwareGear, cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear, null, y));
                             objWeaponMount.Weapons.AddTaggedCollectionChanged(treVehicles, (x, y) => objWeaponMount.RefreshChildrenWeapons(treVehicles, cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear, () => objWeaponMount.Mods.Count, y));
                             foreach (Weapon objWeapon in objWeaponMount.Weapons)
+                            {
                                 objWeapon.SetupChildrenWeaponsCollectionChanged(true, treVehicles, cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear);
+                            }
+
                             foreach (VehicleMod objMod in objWeaponMount.Mods)
                             {
                                 objMod.Cyberware.AddTaggedCollectionChanged(treVehicles, (x, y) => objMod.RefreshChildrenCyberware(treVehicles, cmsCyberware, cmsCyberwareGear, null, y));
                                 foreach (Cyberware objCyberware in objMod.Cyberware)
+                                {
                                     objCyberware.SetupChildrenCyberwareCollectionChanged(true, treVehicles, cmsCyberware, cmsCyberwareGear);
+                                }
+
                                 objMod.Weapons.AddTaggedCollectionChanged(treVehicles, (x, y) => objMod.RefreshChildrenWeapons(treVehicles, cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear, () => objMod.Cyberware.Count, y));
                                 foreach (Weapon objWeapon in objMod.Weapons)
+                                {
                                     objWeapon.SetupChildrenWeaponsCollectionChanged(true, treVehicles, cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear);
+                                }
                             }
                             intNewIndex += 1;
                         }
@@ -3303,7 +3635,9 @@ namespace Chummer
             {
                 TreeNode objNode = objWeaponMount.CreateTreeNode(cmsVehicleWeaponMount, cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear, cmsCyberware, cmsCyberwareGear, cmsVehicleMod);
                 if (objNode == null)
+                {
                     return;
+                }
 
                 if (nodParent == null)
                 {
@@ -3317,12 +3651,19 @@ namespace Chummer
                 }
 
                 if (intIndex >= 0)
+                {
                     nodParent.Nodes.Insert(intIndex, objNode);
+                }
                 else
+                {
                     nodParent.Nodes.Add(objNode);
+                }
+
                 nodParent.Expand();
                 if (blnSingleAdd)
+                {
                     treVehicles.SelectedNode = objNode;
+                }
             }
         }
 
@@ -3353,10 +3694,15 @@ namespace Chummer
                     {
                         objMod.Cyberware.AddTaggedCollectionChanged(treVehicles, (x, y) => objMod.RefreshChildrenCyberware(treVehicles, cmsCyberware, cmsCyberwareGear, null, y));
                         foreach (Cyberware objCyberware in objMod.Cyberware)
+                        {
                             objCyberware.SetupChildrenCyberwareCollectionChanged(true, treVehicles, cmsCyberware, cmsCyberwareGear);
+                        }
+
                         objMod.Weapons.AddTaggedCollectionChanged(treVehicles, (x, y) => objMod.RefreshChildrenWeapons(treVehicles, cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear, () => objMod.Cyberware.Count, y));
                         foreach (Weapon objWeapon in objMod.Weapons)
+                        {
                             objWeapon.SetupChildrenWeaponsCollectionChanged(true, treVehicles, cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear);
+                        }
                     }
                     foreach (WeaponMount objMount in objVehicle.WeaponMounts)
                     {
@@ -3364,20 +3710,34 @@ namespace Chummer
                             (x, y) => RefreshVehicleMods(treVehicles, objMount, cmsVehicle, cmsCyberware, cmsCyberwareGear, cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear, null, y));
                         objMount.Weapons.AddTaggedCollectionChanged(treVehicles, (x, y) => objMount.RefreshChildrenWeapons(treVehicles, cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear, () => objMount.Mods.Count, y));
                         foreach (Weapon objWeapon in objMount.Weapons)
+                        {
                             objWeapon.SetupChildrenWeaponsCollectionChanged(true, treVehicles, cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear);
+                        }
+
                         foreach (VehicleMod objMod in objMount.Mods)
                         {
                             foreach (Cyberware objCyberware in objMod.Cyberware)
+                            {
                                 objCyberware.SetupChildrenCyberwareCollectionChanged(true, treVehicles, cmsCyberware, cmsCyberwareGear);
+                            }
+
                             foreach (Weapon objWeapon in objMod.Weapons)
+                            {
                                 objWeapon.SetupChildrenWeaponsCollectionChanged(true, treVehicles, cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear);
+                            }
                         }
                     }
                     foreach (Weapon objWeapon in objVehicle.Weapons)
+                    {
                         objWeapon.SetupChildrenWeaponsCollectionChanged(true, treVehicles, cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear);
+                    }
+
                     objVehicle.Gear.AddTaggedCollectionChanged(treVehicles, (x, y) => objVehicle.RefreshChildrenGears(treVehicles, cmsVehicleGear, () => objVehicle.Mods.Count + objVehicle.Weapons.Count + (objVehicle.WeaponMounts.Count > 0 ? 1 : 0), y));
                     foreach (Gear objGear in objVehicle.Gear)
+                    {
                         objGear.SetupChildrenGearsCollectionChanged(true, treVehicles, cmsVehicleGear);
+                    }
+
                     objVehicle.Locations.AddTaggedCollectionChanged(treVehicles, (x, y) => RefreshLocationsInVehicle(treVehicles, objVehicle, cmsVehicleLocation, () => objVehicle.Mods.Count + objVehicle.Weapons.Count + (objVehicle.WeaponMounts.Count > 0 ? 1 : 0) + objVehicle.Gear.Count(z => z.Location == null), y));
                 }
 
@@ -3402,10 +3762,15 @@ namespace Chummer
                                 {
                                     objMod.Cyberware.AddTaggedCollectionChanged(treVehicles, (x, y) => objMod.RefreshChildrenCyberware(treVehicles, cmsCyberware, cmsCyberwareGear, null, y));
                                     foreach (Cyberware objCyberware in objMod.Cyberware)
+                                    {
                                         objCyberware.SetupChildrenCyberwareCollectionChanged(true, treVehicles, cmsCyberware, cmsCyberwareGear);
+                                    }
+
                                     objMod.Weapons.AddTaggedCollectionChanged(treVehicles, (x, y) => objMod.RefreshChildrenWeapons(treVehicles, cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear, () => objMod.Cyberware.Count, y));
                                     foreach (Weapon objWeapon in objMod.Weapons)
+                                    {
                                         objWeapon.SetupChildrenWeaponsCollectionChanged(true, treVehicles, cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear);
+                                    }
                                 }
                                 foreach (WeaponMount objMount in objVehicle.WeaponMounts)
                                 {
@@ -3413,20 +3778,34 @@ namespace Chummer
                                         (x, y) => RefreshVehicleMods(treVehicles, objMount, cmsVehicle, cmsCyberware, cmsCyberwareGear, cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear, null, y));
                                     objMount.Weapons.AddTaggedCollectionChanged(treVehicles, (x, y) => objMount.RefreshChildrenWeapons(treVehicles, cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear, () => objMount.Mods.Count, y));
                                     foreach (Weapon objWeapon in objMount.Weapons)
+                                    {
                                         objWeapon.SetupChildrenWeaponsCollectionChanged(true, treVehicles, cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear);
+                                    }
+
                                     foreach (VehicleMod objMod in objMount.Mods)
                                     {
                                         foreach (Cyberware objCyberware in objMod.Cyberware)
+                                        {
                                             objCyberware.SetupChildrenCyberwareCollectionChanged(true, treVehicles, cmsCyberware, cmsCyberwareGear);
+                                        }
+
                                         foreach (Weapon objWeapon in objMod.Weapons)
+                                        {
                                             objWeapon.SetupChildrenWeaponsCollectionChanged(true, treVehicles, cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear);
+                                        }
                                     }
                                 }
                                 foreach (Weapon objWeapon in objVehicle.Weapons)
+                                {
                                     objWeapon.SetupChildrenWeaponsCollectionChanged(true, treVehicles, cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear);
+                                }
+
                                 objVehicle.Gear.AddTaggedCollectionChanged(treVehicles, (x, y) => objVehicle.RefreshChildrenGears(treVehicles, cmsVehicleGear, () => objVehicle.Mods.Count + objVehicle.Weapons.Count + (objVehicle.WeaponMounts.Count > 0 ? 1 : 0), y));
                                 foreach (Gear objGear in objVehicle.Gear)
+                                {
                                     objGear.SetupChildrenGearsCollectionChanged(true, treVehicles, cmsVehicleGear);
+                                }
+
                                 objVehicle.Locations.AddTaggedCollectionChanged(treVehicles, (x, y) => RefreshLocationsInVehicle(treVehicles, objVehicle, cmsVehicleLocation, () => objVehicle.Mods.Count + objVehicle.Weapons.Count + (objVehicle.WeaponMounts.Count > 0 ? 1 : 0) + objVehicle.Gear.Count(z => z.Location == null), y));
                                 intNewIndex += 1;
                             }
@@ -3443,32 +3822,51 @@ namespace Chummer
                                 {
                                     objMod.Cyberware.RemoveTaggedCollectionChanged(treVehicles);
                                     foreach (Cyberware objCyberware in objMod.Cyberware)
+                                    {
                                         objCyberware.SetupChildrenCyberwareCollectionChanged(false, treVehicles);
+                                    }
+
                                     objMod.Weapons.RemoveTaggedCollectionChanged(treVehicles);
                                     foreach (Weapon objWeapon in objMod.Weapons)
+                                    {
                                         objWeapon.SetupChildrenWeaponsCollectionChanged(false, treVehicles);
+                                    }
                                 }
                                 foreach (WeaponMount objMount in objVehicle.WeaponMounts)
                                 {
                                     objMount.Mods.RemoveTaggedCollectionChanged(treVehicles);
                                     objMount.Weapons.RemoveTaggedCollectionChanged(treVehicles);
                                     foreach (Weapon objWeapon in objMount.Weapons)
+                                    {
                                         objWeapon.SetupChildrenWeaponsCollectionChanged(false, treVehicles);
+                                    }
+
                                     foreach (VehicleMod objMod in objMount.Mods)
                                     {
                                         objMod.Cyberware.RemoveTaggedCollectionChanged(treVehicles);
                                         foreach (Cyberware objCyberware in objMod.Cyberware)
+                                        {
                                             objCyberware.SetupChildrenCyberwareCollectionChanged(false, treVehicles);
+                                        }
+
                                         objMod.Weapons.RemoveTaggedCollectionChanged(treVehicles);
                                         foreach (Weapon objWeapon in objMod.Weapons)
+                                        {
                                             objWeapon.SetupChildrenWeaponsCollectionChanged(false, treVehicles);
+                                        }
                                     }
                                 }
                                 foreach (Weapon objWeapon in objVehicle.Weapons)
+                                {
                                     objWeapon.SetupChildrenWeaponsCollectionChanged(false, treVehicles);
+                                }
+
                                 objVehicle.Gear.RemoveTaggedCollectionChanged(treVehicles);
                                 foreach (Gear objGear in objVehicle.Gear)
+                                {
                                     objGear.SetupChildrenGearsCollectionChanged(false, treVehicles);
+                                }
+
                                 objVehicle.Locations.RemoveTaggedCollectionChanged(treVehicles);
                                 treVehicles.FindNodeByTag(objVehicle)?.Remove();
                             }
@@ -3485,32 +3883,51 @@ namespace Chummer
                                 {
                                     objMod.Cyberware.RemoveTaggedCollectionChanged(treVehicles);
                                     foreach (Cyberware objCyberware in objMod.Cyberware)
+                                    {
                                         objCyberware.SetupChildrenCyberwareCollectionChanged(false, treVehicles);
+                                    }
+
                                     objMod.Weapons.RemoveTaggedCollectionChanged(treVehicles);
                                     foreach (Weapon objWeapon in objMod.Weapons)
+                                    {
                                         objWeapon.SetupChildrenWeaponsCollectionChanged(false, treVehicles);
+                                    }
                                 }
                                 foreach (WeaponMount objMount in objVehicle.WeaponMounts)
                                 {
                                     objMount.Mods.RemoveTaggedCollectionChanged(treVehicles);
                                     objMount.Weapons.RemoveTaggedCollectionChanged(treVehicles);
                                     foreach (Weapon objWeapon in objMount.Weapons)
+                                    {
                                         objWeapon.SetupChildrenWeaponsCollectionChanged(false, treVehicles);
+                                    }
+
                                     foreach (VehicleMod objMod in objMount.Mods)
                                     {
                                         objMod.Cyberware.RemoveTaggedCollectionChanged(treVehicles);
                                         foreach (Cyberware objCyberware in objMod.Cyberware)
+                                        {
                                             objCyberware.SetupChildrenCyberwareCollectionChanged(false, treVehicles);
+                                        }
+
                                         objMod.Weapons.RemoveTaggedCollectionChanged(treVehicles);
                                         foreach (Weapon objWeapon in objMod.Weapons)
+                                        {
                                             objWeapon.SetupChildrenWeaponsCollectionChanged(false, treVehicles);
+                                        }
                                     }
                                 }
                                 foreach (Weapon objWeapon in objVehicle.Weapons)
+                                {
                                     objWeapon.SetupChildrenWeaponsCollectionChanged(false, treVehicles);
+                                }
+
                                 objVehicle.Gear.RemoveTaggedCollectionChanged(treVehicles);
                                 foreach (Gear objGear in objVehicle.Gear)
+                                {
                                     objGear.SetupChildrenGearsCollectionChanged(false, treVehicles);
+                                }
+
                                 objVehicle.Locations.RemoveTaggedCollectionChanged(treVehicles);
                                 treVehicles.FindNodeByTag(objVehicle)?.Remove();
                             }
@@ -3525,10 +3942,15 @@ namespace Chummer
                                 {
                                     objMod.Cyberware.AddTaggedCollectionChanged(treVehicles, (x, y) => objMod.RefreshChildrenCyberware(treVehicles, cmsCyberware, cmsCyberwareGear, null, y));
                                     foreach (Cyberware objCyberware in objMod.Cyberware)
+                                    {
                                         objCyberware.SetupChildrenCyberwareCollectionChanged(true, treVehicles, cmsCyberware, cmsCyberwareGear);
+                                    }
+
                                     objMod.Weapons.AddTaggedCollectionChanged(treVehicles, (x, y) => objMod.RefreshChildrenWeapons(treVehicles, cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear, () => objMod.Cyberware.Count, y));
                                     foreach (Weapon objWeapon in objMod.Weapons)
+                                    {
                                         objWeapon.SetupChildrenWeaponsCollectionChanged(true, treVehicles, cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear);
+                                    }
                                 }
                                 foreach (WeaponMount objMount in objVehicle.WeaponMounts)
                                 {
@@ -3536,22 +3958,36 @@ namespace Chummer
                                         (x, y) => RefreshVehicleMods(treVehicles, objMount, cmsVehicle, cmsCyberware, cmsCyberwareGear, cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear, null, y));
                                     objMount.Weapons.AddTaggedCollectionChanged(treVehicles, (x, y) => objMount.RefreshChildrenWeapons(treVehicles, cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear, () => objMount.Mods.Count, y));
                                     foreach (Weapon objWeapon in objMount.Weapons)
+                                    {
                                         objWeapon.SetupChildrenWeaponsCollectionChanged(true, treVehicles, cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear);
+                                    }
+
                                     foreach (VehicleMod objMod in objMount.Mods)
                                     {
                                         objMod.Cyberware.AddTaggedCollectionChanged(treVehicles, (x, y) => objMod.RefreshChildrenCyberware(treVehicles, cmsCyberware, cmsCyberwareGear, null, y));
                                         foreach (Cyberware objCyberware in objMod.Cyberware)
+                                        {
                                             objCyberware.SetupChildrenCyberwareCollectionChanged(true, treVehicles, cmsCyberware, cmsCyberwareGear);
+                                        }
+
                                         objMod.Weapons.AddTaggedCollectionChanged(treVehicles, (x, y) => objMod.RefreshChildrenWeapons(treVehicles, cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear, () => objMod.Cyberware.Count, y));
                                         foreach (Weapon objWeapon in objMod.Weapons)
+                                        {
                                             objWeapon.SetupChildrenWeaponsCollectionChanged(true, treVehicles, cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear);
+                                        }
                                     }
                                 }
                                 foreach (Weapon objWeapon in objVehicle.Weapons)
+                                {
                                     objWeapon.SetupChildrenWeaponsCollectionChanged(true, treVehicles, cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear);
+                                }
+
                                 objVehicle.Gear.AddTaggedCollectionChanged(treVehicles, (x, y) => objVehicle.RefreshChildrenGears(treVehicles, cmsVehicleGear, () => objVehicle.Mods.Count + objVehicle.Weapons.Count + (objVehicle.WeaponMounts.Count > 0 ? 1 : 0), y));
                                 foreach (Gear objGear in objVehicle.Gear)
+                                {
                                     objGear.SetupChildrenGearsCollectionChanged(true, treVehicles, cmsVehicleGear);
+                                }
+
                                 objVehicle.Locations.AddTaggedCollectionChanged(treVehicles, (x, y) => RefreshLocationsInVehicle(treVehicles, objVehicle, cmsVehicleLocation, () => objVehicle.Mods.Count + objVehicle.Weapons.Count + (objVehicle.WeaponMounts.Count > 0 ? 1 : 0) + objVehicle.Gear.Count(z => z.Location != null), y));
                                 intNewIndex += 1;
                             }
@@ -3585,7 +4021,9 @@ namespace Chummer
             {
                 TreeNode objNode = objVehicle.CreateTreeNode(cmsVehicle, cmsVehicleLocation, cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear, cmsVehicleGear, cmsVehicleWeaponMount, cmsCyberware, cmsCyberwareGear);
                 if (objNode == null)
+                {
                     return;
+                }
 
                 TreeNode nodParent = null;
                 if (objVehicle.Location != null)
@@ -3607,12 +4045,19 @@ namespace Chummer
                 }
 
                 if (intIndex >= 0)
+                {
                     nodParent.Nodes.Insert(intIndex, objNode);
+                }
                 else
+                {
                     nodParent.Nodes.Add(objNode);
+                }
+
                 nodParent.Expand();
                 if (blnSingleAdd)
+                {
                     treVehicles.SelectedNode = objNode;
+                }
             }
         }
 
@@ -3628,7 +4073,9 @@ namespace Chummer
 
                 int intMaxFocusTotal = _objCharacter.MAG.TotalValue * 5;
                 if (_objOptions.MysAdeptSecondMAGAttribute && _objCharacter.IsMysticAdept)
+                {
                     intMaxFocusTotal = Math.Min(intMaxFocusTotal, _objCharacter.MAGAdept.TotalValue * 5);
+                }
 
                 foreach (Gear objGear in _objCharacter.Gear)
                 {
@@ -3639,7 +4086,10 @@ namespace Chummer
                             {
                                 TreeNode objNode = objGear.CreateTreeNode(cmsFocus);
                                 if (objNode == null)
+                                {
                                     continue;
+                                }
+
                                 objNode.Text = objNode.Text.Replace(LanguageManager.GetString("String_Rating", GlobalOptions.Language), LanguageManager.GetString("String_Force", GlobalOptions.Language));
                                 for (int i = _objCharacter.Foci.Count - 1; i >= 0; --i)
                                 {
@@ -3657,7 +4107,9 @@ namespace Chummer
                                                 objNode.Checked = false;
                                             }
                                             else
+                                            {
                                                 objNode.Checked = true;
+                                            }
                                         }
                                     }
                                 }
@@ -3677,10 +4129,15 @@ namespace Chummer
                                             foreach (Gear objFociGear in objStack.Gear)
                                             {
                                                 if (!string.IsNullOrEmpty(objFociGear.Extra))
+                                                {
                                                     ImprovementManager.ForcedValue = objFociGear.Extra;
+                                                }
+
                                                 ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.StackedFocus, objStack.InternalId, objFociGear.Bonus, false, objFociGear.Rating, objFociGear.DisplayNameShort(GlobalOptions.Language));
                                                 if (objFociGear.WirelessOn)
+                                                {
                                                     ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.StackedFocus, objStack.InternalId, objFociGear.WirelessBonus, false, objFociGear.Rating, objFociGear.DisplayNameShort(GlobalOptions.Language));
+                                                }
                                             }
                                         }
 
@@ -3702,11 +4159,15 @@ namespace Chummer
                             bool blnWarned = false;
                             int intMaxFocusTotal = _objCharacter.MAG.TotalValue * 5;
                             if (_objOptions.MysAdeptSecondMAGAttribute && _objCharacter.IsMysticAdept)
+                            {
                                 intMaxFocusTotal = Math.Min(intMaxFocusTotal, _objCharacter.MAGAdept.TotalValue * 5);
+                            }
 
                             HashSet<Gear> setNewGears = new HashSet<Gear>();
                             foreach (Gear objGear in notifyCollectionChangedEventArgs.NewItems)
+                            {
                                 setNewGears.Add(objGear);
+                            }
 
                             int intFociTotal = _objCharacter.Foci.Where(x => !setNewGears.Contains(x.GearObject)).Sum(x => x.Rating);
 
@@ -3719,7 +4180,10 @@ namespace Chummer
                                         {
                                             TreeNode objNode = objGear.CreateTreeNode(cmsFocus);
                                             if (objNode == null)
+                                            {
                                                 continue;
+                                            }
+
                                             objNode.Text = objNode.Text.Replace(LanguageManager.GetString("String_Rating", GlobalOptions.Language), LanguageManager.GetString("String_Force", GlobalOptions.Language));
                                             for (int i = _objCharacter.Foci.Count - 1; i >= 0; --i)
                                             {
@@ -3744,7 +4208,9 @@ namespace Chummer
                                                             }
                                                         }
                                                         else
+                                                        {
                                                             objNode.Checked = true;
+                                                        }
                                                     }
                                                 }
                                             }
@@ -3764,10 +4230,15 @@ namespace Chummer
                                                         foreach (Gear objFociGear in objStack.Gear)
                                                         {
                                                             if (!string.IsNullOrEmpty(objFociGear.Extra))
+                                                            {
                                                                 ImprovementManager.ForcedValue = objFociGear.Extra;
+                                                            }
+
                                                             ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.StackedFocus, objStack.InternalId, objFociGear.Bonus, false, objFociGear.Rating, objFociGear.DisplayNameShort(GlobalOptions.Language));
                                                             if (objFociGear.WirelessOn)
+                                                            {
                                                                 ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.StackedFocus, objStack.InternalId, objFociGear.WirelessBonus, false, objFociGear.Rating, objFociGear.DisplayNameShort(GlobalOptions.Language));
+                                                            }
                                                         }
                                                     }
 
@@ -3868,11 +4339,15 @@ namespace Chummer
                             bool blnWarned = false;
                             int intMaxFocusTotal = _objCharacter.MAG.TotalValue * 5;
                             if (_objOptions.MysAdeptSecondMAGAttribute && _objCharacter.IsMysticAdept)
+                            {
                                 intMaxFocusTotal = Math.Min(intMaxFocusTotal, _objCharacter.MAGAdept.TotalValue * 5);
+                            }
 
                             HashSet<Gear> setNewGears = new HashSet<Gear>();
                             foreach (Gear objGear in notifyCollectionChangedEventArgs.NewItems)
+                            {
                                 setNewGears.Add(objGear);
+                            }
 
                             int intFociTotal = _objCharacter.Foci.Where(x => !setNewGears.Contains(x.GearObject)).Sum(x => x.Rating);
 
@@ -3885,7 +4360,10 @@ namespace Chummer
                                         {
                                             TreeNode objNode = objGear.CreateTreeNode(cmsFocus);
                                             if (objNode == null)
+                                            {
                                                 continue;
+                                            }
+
                                             objNode.Text = objNode.Text.Replace(LanguageManager.GetString("String_Rating", GlobalOptions.Language), LanguageManager.GetString("String_Force", GlobalOptions.Language));
                                             for (int i = _objCharacter.Foci.Count - 1; i >= 0; --i)
                                             {
@@ -3910,7 +4388,9 @@ namespace Chummer
                                                             }
                                                         }
                                                         else
+                                                        {
                                                             objNode.Checked = true;
+                                                        }
                                                     }
                                                 }
                                             }
@@ -3930,10 +4410,15 @@ namespace Chummer
                                                         foreach (Gear objFociGear in objStack.Gear)
                                                         {
                                                             if (!string.IsNullOrEmpty(objFociGear.Extra))
+                                                            {
                                                                 ImprovementManager.ForcedValue = objFociGear.Extra;
+                                                            }
+
                                                             ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.StackedFocus, objStack.InternalId, objFociGear.Bonus, false, objFociGear.Rating, objFociGear.DisplayNameShort(GlobalOptions.Language));
                                                             if (objFociGear.WirelessOn)
+                                                            {
                                                                 ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.StackedFocus, objStack.InternalId, objFociGear.WirelessBonus, false, objFociGear.Rating, objFociGear.DisplayNameShort(GlobalOptions.Language));
+                                                            }
                                                         }
                                                     }
 
@@ -3972,7 +4457,9 @@ namespace Chummer
                     treFoci.SelectedNode = objNode;
                 }
                 else
+                {
                     lstParentNodeChildren.Add(objNode);
+                }
             }
         }
 
@@ -4021,7 +4508,9 @@ namespace Chummer
                                     TreeNode objParent = objNode.Parent;
                                     objNode.Remove();
                                     if (objParent.Nodes.Count == 0)
+                                    {
                                         objParent.Remove();
+                                    }
                                 }
                             }
                         }
@@ -4048,7 +4537,9 @@ namespace Chummer
                             foreach (TreeNode objOldParent in lstOldParents)
                             {
                                 if (objOldParent.Nodes.Count == 0)
+                                {
                                     objOldParent.Remove();
+                                }
                             }
                         }
                         break;
@@ -4064,7 +4555,9 @@ namespace Chummer
             {
                 TreeNode objNode = objMartialArt.CreateTreeNode(cmsMartialArts, cmsTechnique);
                 if (objNode == null)
+                {
                     return;
+                }
 
                 TreeNode objParentNode;
                 if (objMartialArt.IsQuality)
@@ -4112,7 +4605,9 @@ namespace Chummer
                     treMartialArts.SelectedNode = objNode;
                 }
                 else
+                {
                     objParentNode.Nodes.Add(objNode);
+                }
 
                 objParentNode.Expand();
             }
@@ -4121,10 +4616,15 @@ namespace Chummer
         protected void RefreshMartialArtTechniques(TreeView treMartialArts, MartialArt objMartialArt, ContextMenuStrip cmsTechnique, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
         {
             if (notifyCollectionChangedEventArgs == null)
+            {
                 return;
+            }
+
             TreeNode nodMartialArt = treMartialArts.FindNodeByTag(objMartialArt);
             if (nodMartialArt == null)
+            {
                 return;
+            }
 
             switch (notifyCollectionChangedEventArgs.Action)
             {
@@ -4176,7 +4676,9 @@ namespace Chummer
             {
                 TreeNode objNode = objTechnique.CreateTreeNode(cmsTechnique);
                 if (objNode == null)
+                {
                     return;
+                }
 
                 if (blnSingleAdd)
                 {
@@ -4194,7 +4696,9 @@ namespace Chummer
                     treMartialArts.SelectedNode = objNode;
                 }
                 else
+                {
                     nodMartialArt.Nodes.Add(objNode);
+                }
 
                 nodMartialArt.Expand();
             }
@@ -4280,7 +4784,9 @@ namespace Chummer
                                         TreeNode objParent = objNode.Parent;
                                         objNode.Remove();
                                         if (objParent.Tag.ToString() == "Node_SelectedImprovements" && objParent.Nodes.Count == 0)
+                                        {
                                             objParent.Remove();
+                                        }
                                     }
                                     objNode = treLimit.FindNodeByTag(objImprovement);
                                     if (objNode != null)
@@ -4288,7 +4794,9 @@ namespace Chummer
                                         TreeNode objParent = objNode.Parent;
                                         objNode.Remove();
                                         if (objParent.Level == 0 && objParent.Nodes.Count == 0)
+                                        {
                                             objParent.Remove();
+                                        }
                                     }
                                 }
                             }
@@ -4331,7 +4839,9 @@ namespace Chummer
                             foreach (TreeNode objOldParent in lstOldParents)
                             {
                                 if (objOldParent.Level == 0 && objOldParent.Nodes.Count == 0)
+                                {
                                     objOldParent.Remove();
+                                }
                             }
                             break;
                         }
@@ -4400,10 +4910,16 @@ namespace Chummer
 
                         string strName = objImprovement.UniqueName + LanguageManager.GetString("String_Colon", GlobalOptions.Language) + LanguageManager.GetString("String_Space", GlobalOptions.Language);
                         if (objImprovement.Value > 0)
+                        {
                             strName += '+';
+                        }
+
                         strName += objImprovement.Value.ToString();
                         if (!string.IsNullOrEmpty(objImprovement.Condition))
+                        {
                             strName += ',' + LanguageManager.GetString("String_Space", GlobalOptions.Language) + objImprovement.Condition;
+                        }
+
                         if (objParentNode?.Nodes.ContainsKey(strName) == false)
                         {
                             TreeNode objNode = new TreeNode
@@ -4418,11 +4934,17 @@ namespace Chummer
                             if (string.IsNullOrEmpty(objImprovement.ImprovedName))
                             {
                                 if (objImprovement.ImproveType == Improvement.ImprovementType.SocialLimit)
+                                {
                                     objImprovement.ImprovedName = "Social";
+                                }
                                 else if (objImprovement.ImproveType == Improvement.ImprovementType.MentalLimit)
+                                {
                                     objImprovement.ImprovedName = "Mental";
+                                }
                                 else
+                                {
                                     objImprovement.ImprovedName = "Physical";
+                                }
                             }
 
                             TreeNodeCollection lstParentNodeChildren = objParentNode.Nodes;
@@ -4487,7 +5009,9 @@ namespace Chummer
                     treImprovements.SelectedNode = objNode;
                 }
                 else
+                {
                     objParentNode.Nodes.Add(objNode);
+                }
 
                 objParentNode.Expand();
             }
@@ -4535,7 +5059,9 @@ namespace Chummer
                                     TreeNode objParent = objNode.Parent;
                                     objNode.Remove();
                                     if (objParent.Level == 0 && objParent.Nodes.Count == 0)
+                                    {
                                         objParent.Remove();
+                                    }
                                 }
                             }
                             break;
@@ -4558,7 +5084,9 @@ namespace Chummer
                                 }
                                 AddToTree(objLifestyle);
                                 if (objOldParent != null && objOldParent.Level == 0 && objOldParent.Nodes.Count == 0)
+                                {
                                     objOldParent.Remove();
+                                }
                             }
                             break;
                         }
@@ -4569,7 +5097,9 @@ namespace Chummer
             {
                 TreeNode objNode = objLifestyle.CreateTreeNode(cmsBasicLifestyle, cmsAdvancedLifestyle);
                 if (objNode == null)
+                {
                     return;
+                }
 
                 if (objParentNode == null)
                 {
@@ -4598,7 +5128,9 @@ namespace Chummer
                     treLifestyles.SelectedNode = objNode;
                 }
                 else
+                {
                     objParentNode.Nodes.Add(objNode);
+                }
             }
         }
 
@@ -4758,9 +5290,14 @@ namespace Chummer
                                 ContactControl objContactControl = new ContactControl(objContact);
                                 // Attach an EventHandler for the ConnectionRatingChanged, LoyaltyRatingChanged, DeleteContact, FileNameChanged Events and OtherCostChanged
                                 if (_objCharacter.Created)
+                                {
                                     objContactControl.ContactDetailChanged += MakeDirtyWithCharacterUpdate;
+                                }
                                 else
+                                {
                                     objContactControl.ContactDetailChanged += EnemyChanged;
+                                }
+
                                 objContactControl.DeleteContact += DeleteEnemy;
                                 objContactControl.MouseDown += DragContactControl;
 
@@ -4815,9 +5352,14 @@ namespace Chummer
                                             ContactControl objContactControl = new ContactControl(objLoopContact);
                                             // Attach an EventHandler for the ConnectionRatingChanged, LoyaltyRatingChanged, DeleteContact, FileNameChanged Events and OtherCostChanged
                                             if (_objCharacter.Created)
+                                            {
                                                 objContactControl.ContactDetailChanged += MakeDirtyWithCharacterUpdate;
+                                            }
                                             else
+                                            {
                                                 objContactControl.ContactDetailChanged += EnemyChanged;
+                                            }
+
                                             objContactControl.DeleteContact += DeleteEnemy;
                                             //objContactControl.MouseDown += DragContactControl;
 
@@ -4870,9 +5412,14 @@ namespace Chummer
                                                 {
                                                     panEnemies.Controls.RemoveAt(i);
                                                     if (_objCharacter.Created)
+                                                    {
                                                         objContactControl.ContactDetailChanged -= MakeDirtyWithCharacterUpdate;
+                                                    }
                                                     else
+                                                    {
                                                         objContactControl.ContactDetailChanged -= EnemyChanged;
+                                                    }
+
                                                     objContactControl.DeleteContact -= DeleteEnemy;
                                                     objContactControl.Dispose();
                                                 }
@@ -4926,9 +5473,14 @@ namespace Chummer
                                                 {
                                                     panEnemies.Controls.RemoveAt(i);
                                                     if (_objCharacter.Created)
+                                                    {
                                                         objContactControl.ContactDetailChanged -= MakeDirtyWithCharacterUpdate;
+                                                    }
                                                     else
+                                                    {
                                                         objContactControl.ContactDetailChanged -= EnemyChanged;
+                                                    }
+
                                                     objContactControl.DeleteContact -= DeleteEnemy;
                                                     objContactControl.Dispose();
                                                 }
@@ -4977,9 +5529,14 @@ namespace Chummer
                                             ContactControl objContactControl = new ContactControl(objLoopContact);
                                             // Attach an EventHandler for the ConnectionRatingChanged, LoyaltyRatingChanged, DeleteContact, FileNameChanged Events and OtherCostChanged
                                             if (_objCharacter.Created)
+                                            {
                                                 objContactControl.ContactDetailChanged += MakeDirtyWithCharacterUpdate;
+                                            }
                                             else
+                                            {
                                                 objContactControl.ContactDetailChanged += EnemyChanged;
+                                            }
+
                                             objContactControl.DeleteContact += DeleteEnemy;
                                             //objContactControl.MouseDown += DragContactControl;
 
@@ -5021,7 +5578,9 @@ namespace Chummer
         public void MoveTreeNode(TreeNode objNode, int intNewIndex)
         {
             if (objNode == null || !(objNode.Tag is ICanSort objSortable))
+            {
                 return;
+            }
 
             TreeView treOwningTree = objNode.TreeView;
             TreeNode objParent = objNode.Parent;
@@ -5312,7 +5871,9 @@ namespace Chummer
                     {
                         // Do not let the user copy Gear or Cyberware Weapons.
                         if (objCopyWeapon.Category == "Gear" || objCopyWeapon.Cyberware)
+                        {
                             return;
+                        }
 
                         MemoryStream objStream = new MemoryStream();
                         XmlTextWriter objWriter = new XmlTextWriter(objStream, Encoding.UTF8)
@@ -5378,7 +5939,9 @@ namespace Chummer
             if (sender is ContactControl objSender)
             {
                 if (!CharacterObject.ConfirmDelete(LanguageManager.GetString("Message_DeleteContact", GlobalOptions.Language)))
+                {
                     return;
+                }
 
                 CharacterObject.Contacts.Remove(objSender.ContactObject);
 
@@ -5409,7 +5972,9 @@ namespace Chummer
             if (sender is PetControl objSender)
             {
                 if (!CharacterObject.ConfirmDelete(LanguageManager.GetString("Message_DeleteContact", GlobalOptions.Language)))
+                {
                     return;
+                }
 
                 CharacterObject.Contacts.Remove(objSender.ContactObject);
 
@@ -5446,7 +6011,9 @@ namespace Chummer
             foreach (Quality objQuality in CharacterObject.Qualities)
             {
                 if (objQuality.Type == QualityType.Negative && objQuality.ContributeToLimit)
+                {
                     intNegativeQualityBP += objQuality.BP;
+                }
             }
             // Include the amount of free Negative Qualities from Improvements.
             intNegativeQualityBP -= ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.FreeNegativeQualities);
@@ -5526,7 +6093,9 @@ namespace Chummer
             if (sender is ContactControl objSender)
             {
                 if (!CharacterObject.ConfirmDelete(LanguageManager.GetString("Message_DeleteEnemy", GlobalOptions.Language)))
+                {
                     return;
+                }
 
                 CharacterObject.Contacts.Remove(objSender.ContactObject);
 
@@ -5549,7 +6118,9 @@ namespace Chummer
             // Show the Dialog.
             // If the user cancels out, return early.
             if (dlgOpenFileDialog.ShowDialog() == DialogResult.Cancel)
+            {
                 return;
+            }
 
             XmlDocument xmlDoc = new XmlDocument();
             try
@@ -5848,7 +6419,10 @@ namespace Chummer
                 Spirit objSpirit = objSender.SpiritObject;
                 bool blnIsSpirit = objSpirit.EntityType == SpiritType.Spirit;
                 if (!CharacterObject.ConfirmDelete(LanguageManager.GetString(blnIsSpirit ? "Message_DeleteSpirit" : "Message_DeleteSprite", GlobalOptions.Language)))
+                {
                     return;
+                }
+
                 objSpirit.Fettered = false; // Fettered spirits consume MAG.
                 CharacterObject.Spirits.Remove(objSpirit);
 
@@ -5888,7 +6462,9 @@ namespace Chummer
 
                     _objCharacter.Mugshots.Add(imgMugshot);
                     if (_objCharacter.MainMugshotIndex == -1)
+                    {
                         _objCharacter.MainMugshotIndex = _objCharacter.Mugshots.Count - 1;
+                    }
                 }
             }
             return blnSuccess;
@@ -5910,9 +6486,14 @@ namespace Chummer
             Image imgMugshot = _objCharacter.Mugshots[intCurrentMugshotIndexInList];
 
             if (imgMugshot != null && picMugshot.Height >= imgMugshot.Height && picMugshot.Width >= imgMugshot.Width)
+            {
                 picMugshot.SizeMode = PictureBoxSizeMode.CenterImage;
+            }
             else
+            {
                 picMugshot.SizeMode = PictureBoxSizeMode.Zoom;
+            }
+
             picMugshot.Image = imgMugshot;
         }
 
@@ -6000,10 +6581,7 @@ namespace Chummer
             IsDirty = true;
         }
 
-        public void MakeDirty(object sender, EventArgs e)
-        {
-            IsDirty = true;
-        }
+        public void MakeDirty(object sender, EventArgs e) => IsDirty = true;
 
         public bool IsCharacterUpdateRequested
         {
@@ -6030,10 +6608,14 @@ namespace Chummer
                     if (intScrollAmount < 0)
                     {
                         if (intSelectedTabIndex < tabControl.TabCount - 1)
+                        {
                             tabControl.SelectedIndex = intSelectedTabIndex + 1;
+                        }
                     }
                     else if (intSelectedTabIndex > 0)
+                    {
                         tabControl.SelectedIndex = intSelectedTabIndex - 1;
+                    }
                 }
             }
         }
@@ -6044,12 +6626,17 @@ namespace Chummer
         public void UpdateWindowTitle(bool blnCanSkip)
         {
             if (Text.EndsWith('*') == _blnIsDirty && blnCanSkip)
+            {
                 return;
+            }
 
             string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
             string strTitle = _objCharacter.CharacterName + strSpaceCharacter + '-' + strSpaceCharacter + FormMode + strSpaceCharacter + '(' + _objOptions.Name + ')';
             if (_blnIsDirty)
+            {
                 strTitle += '*';
+            }
+
             this.DoThreadSafe(() => Text = strTitle);
         }
 
@@ -6115,7 +6702,9 @@ namespace Chummer
             string strShowFileName = strFile[strFile.Length - 1];
 
             if (string.IsNullOrEmpty(strShowFileName))
+            {
                 strShowFileName = _objCharacter.CharacterName;
+            }
 
             saveFileDialog.FileName = strShowFileName;
 
@@ -6138,10 +6727,7 @@ namespace Chummer
         /// <summary>
         /// Verify that the user wants to save this character as Created.
         /// </summary>
-        public virtual bool ConfirmSaveCreatedCharacter()
-        {
-            return true;
-        }
+        public virtual bool ConfirmSaveCreatedCharacter() => true;
 
         /// <summary>
         /// The frmViewer window being used by the character.
@@ -6174,7 +6760,9 @@ namespace Chummer
             }
             _frmPrintView.RefreshCharacters();
             if (Program.MainForm.PrintMultipleCharactersForm?.CharacterList?.Contains(CharacterObject) == true)
+            {
                 Program.MainForm.PrintMultipleCharactersForm.PrintViewForm?.RefreshCharacters();
+            }
         }
 
         /// <summary>

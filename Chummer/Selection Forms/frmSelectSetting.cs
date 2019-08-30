@@ -73,13 +73,12 @@ namespace Chummer
             // Attempt to make default.xml the default one. If it could not be found in the list, select the first item instead.
             cboSetting.SelectedIndex = cboSetting.FindStringExact("Default Settings");
             if (cboSetting.SelectedIndex == -1)
+            {
                 cboSetting.SelectedIndex = 0;
+            }
         }
 
-        private void cmdCancel_Click(object sender, EventArgs e)
-        {
-            DialogResult = DialogResult.Cancel;
-        }
+        private void cmdCancel_Click(object sender, EventArgs e) => DialogResult = DialogResult.Cancel;
 
         private void cmdOK_Click(object sender, EventArgs e)
         {

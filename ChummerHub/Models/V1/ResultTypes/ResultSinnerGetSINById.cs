@@ -14,18 +14,10 @@ namespace ChummerHub.Models.V1
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'ResultSinnerGetSINById.MySINner'
 
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'ResultSinnerGetSINById.ResultSinnerGetSINById()'
-        public ResultSinnerGetSINById()
-#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'ResultSinnerGetSINById.ResultSinnerGetSINById()'
-        {
-            MySINner = new SINner();
-        }
+        public ResultSinnerGetSINById() => MySINner = new SINner();
 
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'ResultSinnerGetSINById.ResultSinnerGetSINById(SINner)'
-        public ResultSinnerGetSINById(SINner sinner)
-#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'ResultSinnerGetSINById.ResultSinnerGetSINById(SINner)'
-        {
-            MySINner = sinner;
-        }
+        public ResultSinnerGetSINById(SINner sinner) => MySINner = sinner;
 
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'ResultSinnerGetSINById.ResultSinnerGetSINById(Exception)'
         public ResultSinnerGetSINById(Exception e) : base(e)

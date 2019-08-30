@@ -25,16 +25,18 @@ namespace SINners.Models
                 if (_UserRightsObservable == null)
                 {
                     if (UserRights == null)
+                    {
                         UserRights = new List<SINnerUserRight>();
+                    }
+
                     if (UserRights != null)
+                    {
                         _UserRightsObservable = new BindingList<SINnerUserRight>(UserRights);
+                    }
                 }
                 return _UserRightsObservable;
             }
-            set
-            {
-                _UserRightsObservable = value;
-            }
+            set => _UserRightsObservable = value;
         }
 
         public void Save(CheckedListBox clbVisibilityToUsers)
@@ -67,12 +69,16 @@ namespace SINners.Models
                 CanEdit = true,
                 Id = Guid.NewGuid()
             };
-            IEnumerable<SINnerUserRight> found = from a in this.UserRightsObservable where email != null && a != null && a.EMail != null && a.EMail.ToLowerInvariant() == email.ToLowerInvariant() select a;
+            IEnumerable<SINnerUserRight> found = from a in UserRightsObservable where email != null && a != null && a.EMail != null && a.EMail.ToLowerInvariant() == email.ToLowerInvariant() select a;
             if (found.Any())
+            {
                 ur = found.FirstOrDefault();
-            if (!this.UserRightsObservable.Contains(ur))
-                this.UserRightsObservable.Add(ur);
+            }
 
+            if (!UserRightsObservable.Contains(ur))
+            {
+                UserRightsObservable.Add(ur);
+            }
         }
 
         private static bool IsValidEmail(string email)

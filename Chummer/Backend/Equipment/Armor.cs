@@ -39,7 +39,7 @@ namespace Chummer.Backend.Equipment
     [DebuggerDisplay("{DisplayName(GlobalOptions.DefaultLanguage)}")]
     public class Armor : IHasInternalId, IHasName, IHasXmlNode, IHasNotes, ICanSell, IHasChildrenAndCost<Gear>, IHasCustomName, IHasLocation, ICanEquip, IHasSource, IHasRating, ICanSort, IHasWirelessBonus, IHasStolenProperty
     {
-        private Logger Log = NLog.LogManager.GetCurrentClassLogger();
+        private readonly Logger Log = NLog.LogManager.GetCurrentClassLogger();
         private Guid _guiSourceID = Guid.Empty;
         private Guid _guiID;
         private Guid _guiWeaponID = Guid.Empty;
@@ -91,7 +91,9 @@ namespace Chummer.Backend.Equipment
                     {
                         objNewItem.Parent = this;
                         if (!blnDoEncumbranceRefresh && objNewItem.Equipped)
+                        {
                             blnDoEncumbranceRefresh = true;
+                        }
                     }
                     break;
                 case NotifyCollectionChangedAction.Remove:
@@ -99,7 +101,9 @@ namespace Chummer.Backend.Equipment
                     {
                         objOldItem.Parent = null;
                         if (!blnDoEncumbranceRefresh && objOldItem.Equipped)
+                        {
                             blnDoEncumbranceRefresh = true;
+                        }
                     }
                     break;
                 case NotifyCollectionChangedAction.Replace:
@@ -107,13 +111,17 @@ namespace Chummer.Backend.Equipment
                     {
                         objOldItem.Parent = null;
                         if (!blnDoEncumbranceRefresh && objOldItem.Equipped)
+                        {
                             blnDoEncumbranceRefresh = true;
+                        }
                     }
                     foreach (ArmorMod objNewItem in e.NewItems)
                     {
                         objNewItem.Parent = this;
                         if (!blnDoEncumbranceRefresh && objNewItem.Equipped)
+                        {
                             blnDoEncumbranceRefresh = true;
+                        }
                     }
                     break;
                 case NotifyCollectionChangedAction.Reset:
@@ -158,12 +166,18 @@ namespace Chummer.Backend.Equipment
                 Utils.BreakIfDebug();
             }
             else
+            {
                 _objCachedMyXmlNode = null;
+            }
+
             objXmlArmorNode.TryGetStringFieldQuickly("name", ref _strName);
             objXmlArmorNode.TryGetStringFieldQuickly("category", ref _strCategory);
             objXmlArmorNode.TryGetStringFieldQuickly("armor", ref _strArmorValue);
             if (objXmlArmorNode.TryGetStringFieldQuickly("armoroverride", ref _strArmorOverrideValue) && _strArmorOverrideValue == "0")
+            {
                 _strArmorOverrideValue = string.Empty;
+            }
+
             _intRating = intRating;
             objXmlArmorNode.TryGetInt32FieldQuickly("rating", ref _intMaxRating);
             objXmlArmorNode.TryGetStringFieldQuickly("armorcapacity", ref _strArmorCapacity);
@@ -171,7 +185,10 @@ namespace Chummer.Backend.Equipment
             objXmlArmorNode.TryGetStringFieldQuickly("source", ref _strSource);
             objXmlArmorNode.TryGetStringFieldQuickly("page", ref _strPage);
             if (!objXmlArmorNode.TryGetStringFieldQuickly("altnotes", ref _strNotes))
+            {
                 objXmlArmorNode.TryGetStringFieldQuickly("notes", ref _strNotes);
+            }
+
             _nodBonus = objXmlArmorNode["bonus"];
             _nodWirelessBonus = objXmlArmorNode["wirelessbonus"];
             _blnWirelessOn = false;
@@ -187,7 +204,10 @@ namespace Chummer.Backend.Equipment
                 if (intHyphenIndex != -1)
                 {
                     if (intHyphenIndex + 1 < strFirstHalf.Length)
+                    {
                         strSecondHalf = strFirstHalf.Substring(intHyphenIndex + 1);
+                    }
+
                     strFirstHalf = strFirstHalf.Substring(0, intHyphenIndex);
                 }
 
@@ -201,13 +221,18 @@ namespace Chummer.Backend.Equipment
                         decMax = Convert.ToDecimal(strSecondHalf, GlobalOptions.InvariantCultureInfo);
                     }
                     else
+                    {
                         decMin = Convert.ToDecimal(strFirstHalf.FastEscape('+'), GlobalOptions.InvariantCultureInfo);
+                    }
 
                     if (decMin != decimal.MinValue || decMax != decimal.MaxValue)
                     {
                         frmSelectNumber frmPickNumber = new frmSelectNumber(_objCharacter.Options.NuyenDecimals);
                         if (decMax > 1000000)
+                        {
                             decMax = 1000000;
+                        }
+
                         frmPickNumber.Minimum = decMin;
                         frmPickNumber.Maximum = decMax;
                         frmPickNumber.Description = string.Format(LanguageManager.GetString("String_SelectVariableCost", GlobalOptions.Language), DisplayNameShort(GlobalOptions.Language));
@@ -216,10 +241,14 @@ namespace Chummer.Backend.Equipment
                         _strCost = frmPickNumber.SelectedValue.ToString(GlobalOptions.InvariantCultureInfo);
                     }
                     else
+                    {
                         _strCost = strFirstHalf;
+                    }
                 }
                 else
+                {
                     _strCost = strFirstHalf;
+                }
             }
 
             if (!blnSkipSelectForms)
@@ -258,7 +287,9 @@ namespace Chummer.Backend.Equipment
                         frmPickArmorMod.ShowDialog();
 
                         if (frmPickArmorMod.DialogResult == DialogResult.Cancel)
+                        {
                             return;
+                        }
 
                         // Locate the selected piece.
                         XmlNode objXmlMod = objXmlDocument.SelectSingleNode("/chummer/mods/mod[id = \"" + frmPickArmorMod.SelectedArmorMod + "\"]");
@@ -354,7 +385,10 @@ namespace Chummer.Backend.Equipment
                 {
                     Gear objGear = new Gear(_objCharacter);
                     if (!objGear.CreateFromNode(objXmlGearDocument, objXmlVehicleGear, lstChildWeapons, blnSkipSelectForms))
+                    {
                         continue;
+                    }
+
                     foreach (Weapon objWeapon in lstChildWeapons)
                     {
                         objWeapon.ParentID = InternalId;
@@ -429,18 +463,31 @@ namespace Chummer.Backend.Equipment
                 objWriter.WriteEndElement();
             }
             if (_nodBonus != null)
+            {
                 objWriter.WriteRaw(_nodBonus.OuterXml);
+            }
             else
+            {
                 objWriter.WriteElementString("bonus", string.Empty);
+            }
+
             if (_nodWirelessBonus != null)
+            {
                 objWriter.WriteRaw(_nodWirelessBonus.OuterXml);
+            }
             else
+            {
                 objWriter.WriteElementString("wirelessbonus", string.Empty);
+            }
+
             objWriter.WriteElementString("location", Location?.InternalId ?? string.Empty);
             objWriter.WriteElementString("notes", _strNotes);
             objWriter.WriteElementString("discountedcost", _blnDiscountCost.ToString());
             if (_guiWeaponID != Guid.Empty)
+            {
                 objWriter.WriteElementString("weaponguid", _guiWeaponID.ToString("D"));
+            }
+
             objWriter.WriteElementString("sortorder", _intSortOrder.ToString());
             objWriter.WriteEndElement();
             _objCharacter.SourceProcess(_strSource);
@@ -490,14 +537,20 @@ namespace Chummer.Backend.Equipment
             }
 
             if (objNode.TryGetStringFieldQuickly("name", ref _strName))
+            {
                 _objCachedMyXmlNode = null;
+            }
+
             objNode.TryGetStringFieldQuickly("category", ref _strCategory);
             objNode.TryGetStringFieldQuickly("armor", ref _strArmorValue);
             objNode.TryGetStringFieldQuickly("avail", ref _strAvail);
             objNode.TryGetStringFieldQuickly("cost", ref _strCost);
             objNode.TryGetStringFieldQuickly("source", ref _strSource);
             if (objNode.TryGetStringFieldQuickly("armoroverride", ref _strArmorOverrideValue) && _strArmorOverrideValue == "0")
+            {
                 _strArmorOverrideValue = string.Empty;
+            }
+
             objNode.TryGetStringFieldQuickly("armorcapacity", ref _strArmorCapacity);
             objNode.TryGetInt32FieldQuickly("rating", ref _intRating);
             objNode.TryGetInt32FieldQuickly("maxrating", ref _intMaxRating);
@@ -513,30 +566,41 @@ namespace Chummer.Backend.Equipment
             _nodBonus = objNode["bonus"];
             _nodWirelessBonus = objNode["wirelessbonus"];
             if (!objNode.TryGetBoolFieldQuickly("wirelesson", ref _blnWirelessOn))
+            {
                 _blnWirelessOn = false;
+            }
+
             XmlNode xmlChildrenNode = objNode["armormods"];
             if (xmlChildrenNode != null)
             {
                 using (XmlNodeList nodMods = xmlChildrenNode.SelectNodes("armormod"))
+                {
                     if (nodMods != null)
+                    {
                         foreach (XmlNode nodMod in nodMods)
                         {
                             ArmorMod objMod = new ArmorMod(_objCharacter);
                             objMod.Load(nodMod, blnCopy);
                             _lstArmorMods.Add(objMod);
                         }
+                    }
+                }
             }
             xmlChildrenNode = objNode["gears"];
             if (xmlChildrenNode != null)
             {
                 using (XmlNodeList nodGears = xmlChildrenNode.SelectNodes("gear"))
+                {
                     if (nodGears != null)
+                    {
                         foreach (XmlNode nodGear in nodGears)
                         {
                             Gear objGear = new Gear(_objCharacter);
                             objGear.Load(nodGear, blnCopy);
                             _lstGear.Add(objGear);
                         }
+                    }
+                }
             }
 
             if (blnCopy)
@@ -544,7 +608,10 @@ namespace Chummer.Backend.Equipment
                 if (Bonus != null)
                 {
                     if (!string.IsNullOrEmpty(Extra))
+                    {
                         ImprovementManager.ForcedValue = Extra;
+                    }
+
                     ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.Armor, _guiID.ToString("D"), Bonus, false, 1, DisplayNameShort(GlobalOptions.Language));
                     if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
                     {
@@ -609,7 +676,10 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("extra", LanguageManager.TranslateExtra(Extra, strLanguageToPrint));
             objWriter.WriteElementString("location", Location?.DisplayNameShort(GlobalOptions.Language));
             if (_objCharacter.Options.PrintNotes)
+            {
                 objWriter.WriteElementString("notes", Notes);
+            }
+
             objWriter.WriteEndElement();
         }
         #endregion
@@ -629,7 +699,10 @@ namespace Chummer.Backend.Equipment
             set
             {
                 if (_strName != value)
+                {
                     _objCachedMyXmlNode = null;
+                }
+
                 _strName = value;
             }
         }
@@ -667,7 +740,9 @@ namespace Chummer.Backend.Equipment
         public string DisplayCategory(string strLanguage)
         {
             if (strLanguage == GlobalOptions.DefaultLanguage)
+            {
                 return Category;
+            }
 
             return XmlManager.Load("armor.xml", strLanguage).SelectSingleNode("/chummer/categories/category[. = \"" + Category + "\"]/@translate")?.InnerText ?? Category;
         }
@@ -716,13 +791,20 @@ namespace Chummer.Backend.Equipment
                 foreach (ArmorMod objMod in ArmorMods)
                 {
                     if (objMod.Equipped)
+                    {
                         intTotalArmor += objMod.Armor;
+                    }
                 }
 
                 if (_intDamage < 0)
+                {
                     _intDamage = 0;
+                }
+
                 if (_intDamage > intTotalArmor)
+                {
                     _intDamage = intTotalArmor;
+                }
 
                 if (_intDamage != intOldValue)
                 {
@@ -800,17 +882,23 @@ namespace Chummer.Backend.Equipment
                     bool blnSquareBrackets = strArmorCapacity.StartsWith('[');
                     string strCapacity = strArmorCapacity;
                     if (blnSquareBrackets)
+                    {
                         strCapacity = strCapacity.Substring(1, strCapacity.Length - 2);
+                    }
 
                     object objProcess = CommonFunctions.EvaluateInvariantXPath(strCapacity.Replace("Rating", Rating.ToString()), out bool blnIsSuccess);
                     string strReturn = blnIsSuccess ? ((double)objProcess).ToString("#,0.##", GlobalOptions.CultureInfo) : objProcess.ToString();
                     if (blnSquareBrackets)
+                    {
                         strReturn = '[' + strReturn + ']';
+                    }
 
                     return strReturn;
                 }
                 else if (decimal.TryParse(strArmorCapacity, NumberStyles.Any, GlobalOptions.InvariantCultureInfo, out decimal decReturn))
+                {
                     return decReturn.ToString("#,0.##", GlobalOptions.CultureInfo);
+                }
 
                 return strArmorCapacity;
             }
@@ -850,12 +938,18 @@ namespace Chummer.Backend.Equipment
                     decMax = Convert.ToDecimal(strValues[1], GlobalOptions.InvariantCultureInfo);
                 }
                 else
+                {
                     decMin = Convert.ToDecimal(strReturn.FastEscape('+'), GlobalOptions.InvariantCultureInfo);
+                }
 
                 if (decMax == decimal.MaxValue)
+                {
                     strReturn = decMin.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + "¥+";
+                }
                 else
+                {
                     strReturn = decMin.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + " - " + decMax.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
+                }
 
                 decItemCost = decMin;
                 return strReturn;
@@ -879,7 +973,9 @@ namespace Chummer.Backend.Equipment
                 decTotalCost *= 1.0m + decMarkup;
 
                 if (DiscountCost)
+                {
                     decTotalCost *= 0.9m;
+                }
 
                 decItemCost = decTotalCost;
 
@@ -912,7 +1008,9 @@ namespace Chummer.Backend.Equipment
             set
             {
                 if (Guid.TryParse(value, out Guid guiTemp))
+                {
                     _guiWeaponID = guiTemp;
+                }
             }
         }
 
@@ -922,7 +1020,9 @@ namespace Chummer.Backend.Equipment
         public string Page(string strLanguage)
         {
             if (strLanguage == GlobalOptions.DefaultLanguage)
+            {
                 return _strPage;
+            }
 
             return GetNode(strLanguage)?["altpage"]?.InnerText ?? _strPage;
         }
@@ -1003,7 +1103,10 @@ namespace Chummer.Backend.Equipment
             set
             {
                 if (value == _blnWirelessOn)
+                {
                     return;
+                }
+
                 ToggleWirelessBonuses(value);
                 _blnWirelessOn = value;
             }
@@ -1070,7 +1173,9 @@ namespace Chummer.Backend.Equipment
             {
                 decimal decTotalCost = 0;
                 if (Stolen)
+                {
                     decTotalCost += OwnCost;
+                }
 
                 // Go through all of the Mods for this piece of Armor and add the Cost value.
                 decTotalCost += ArmorMods.Where(mod => mod.Stolen).AsParallel().Sum(mod => mod.StolenTotalCost);
@@ -1093,11 +1198,15 @@ namespace Chummer.Backend.Equipment
 
                 // Go through all of the Mods for this piece of Armor and add the Cost value.
                 foreach (ArmorMod objMod in ArmorMods)
+                {
                     decTotalCost += objMod.TotalCost;
+                }
 
                 // Go through all of the Gear for this piece of Armor and add the Cost value.
                 foreach (Gear objGear in Gear)
+                {
                     decTotalCost += objGear.TotalCost;
+                }
 
                 return decTotalCost;
             }
@@ -1131,7 +1240,9 @@ namespace Chummer.Backend.Equipment
                 decimal decTotalCost = blnIsSuccess ? Convert.ToDecimal(objProcess, GlobalOptions.InvariantCultureInfo) : 0;
 
                 if (DiscountCost)
+                {
                     decTotalCost *= 0.9m;
+                }
 
                 return decTotalCost;
             }
@@ -1206,10 +1317,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Total Availability.
         /// </summary>
-        public string TotalAvail(CultureInfo objCulture, string strLanguage)
-        {
-            return TotalAvailTuple().ToString(objCulture, strLanguage);
-        }
+        public string TotalAvail(CultureInfo objCulture, string strLanguage) => TotalAvailTuple().ToString(objCulture, strLanguage);
 
         /// <summary>
         /// Total Availability as a triple.
@@ -1247,7 +1355,9 @@ namespace Chummer.Backend.Equipment
 
                 object objProcess = CommonFunctions.EvaluateInvariantXPath(objAvail.ToString(), out bool blnIsSuccess);
                 if (blnIsSuccess)
+                {
                     intAvail = Convert.ToInt32(objProcess);
+                }
             }
 
             if (blnCheckChildren)
@@ -1259,11 +1369,18 @@ namespace Chummer.Backend.Equipment
                     {
                         AvailabilityValue objLoopAvailTuple = objChild.TotalAvailTuple();
                         if (objLoopAvailTuple.AddToParent)
+                        {
                             intAvail += objLoopAvailTuple.Value;
+                        }
+
                         if (objLoopAvailTuple.Suffix == 'F')
+                        {
                             chrLastAvailChar = 'F';
+                        }
                         else if (chrLastAvailChar != 'F' && objLoopAvailTuple.Suffix == 'R')
+                        {
                             chrLastAvailChar = 'R';
+                        }
                     }
                 }
 
@@ -1274,18 +1391,27 @@ namespace Chummer.Backend.Equipment
                     {
                         AvailabilityValue objLoopAvailTuple = objChild.TotalAvailTuple();
                         if (objLoopAvailTuple.AddToParent)
+                        {
                             intAvail += objLoopAvailTuple.Value;
+                        }
+
                         if (objLoopAvailTuple.Suffix == 'F')
+                        {
                             chrLastAvailChar = 'F';
+                        }
                         else if (chrLastAvailChar != 'F' && objLoopAvailTuple.Suffix == 'R')
+                        {
                             chrLastAvailChar = 'R';
+                        }
                     }
                 }
             }
 
             // Avail cannot go below 0. This typically happens when an item with Avail 0 is given the Second Hand category.
             if (intAvail < 0)
+            {
                 intAvail = 0;
+            }
 
             return new AvailabilityValue(intAvail, chrLastAvailChar, blnModifyParentAvail);
         }
@@ -1301,11 +1427,17 @@ namespace Chummer.Backend.Equipment
 
                 // If an Armor Capacity is specified for the Armor, use that value.
                 if (string.IsNullOrEmpty(strReturn) || strReturn == "0")
+                {
                     strReturn = (0.0m).ToString("#,0.##", GlobalOptions.CultureInfo);
+                }
                 else if (strReturn == "Rating")
+                {
                     strReturn = Rating.ToString();
+                }
                 else if (decimal.TryParse(strReturn, NumberStyles.Any, GlobalOptions.InvariantCultureInfo, out decimal decReturn))
+                {
                     strReturn = decReturn.ToString("#,0.##", GlobalOptions.CultureInfo);
+                }
 
                 foreach (ArmorMod objArmorMod in ArmorMods)
                 {
@@ -1344,7 +1476,9 @@ namespace Chummer.Backend.Equipment
                 // If there is no Capacity (meaning that the Armor Suit Capacity or Maximum Armor Modification rule is turned off depending on the type of Armor), don't bother to calculate the remaining
                 // Capacity since it's disabled and return 0 instead.
                 if (decCapacity == 0)
+                {
                     return 0;
+                }
 
                 // Calculate the remaining Capacity for a Suit of Armor.
                 string strArmorCapacity = TotalArmorCapacity;
@@ -1363,7 +1497,10 @@ namespace Chummer.Backend.Equipment
                             blnSoftweave = objMod.WirelessBonus.SelectSingleNode("softweave") != null;
                         }
                         if (blnSoftweave)
+                        {
                             continue;
+                        }
+
                         string strCapacity = objMod.CalculatedCapacity;
                         int intPos = strCapacity.IndexOf("/[", StringComparison.Ordinal);
                         if (intPos != -1)
@@ -1373,22 +1510,33 @@ namespace Chummer.Backend.Equipment
                         }
 
                         if (strCapacity.StartsWith('['))
+                        {
                             strCapacity = strCapacity.Substring(1, strCapacity.Length - 2);
+                        }
+
                         if (strCapacity == "*")
+                        {
                             strCapacity = "0";
+                        }
+
                         decCapacity -= Convert.ToDecimal(strCapacity, GlobalOptions.CultureInfo);
                     }
 
                     // Run through its Gear and deduct the Armor Capacity costs.
                     if (Gear.Count <= 0)
+                    {
                         return decCapacity;
+                    }
+
                     object decCapacityLock = new object();
                     // Run through its Children and deduct the Capacity costs.
                     Parallel.ForEach(Gear.Where(gear => !gear.IncludedInParent), objChildGear =>
                     {
                         decimal decLoop = objChildGear.PluginArmorCapacity * objChildGear.Quantity;
                         lock (decCapacityLock)
+                        {
                             decCapacity -= decLoop;
+                        }
                     });
                 }
                 // Calculate the remaining Capacity for a standard piece of Armor using the Maximum Armor Modifications rules.
@@ -1398,18 +1546,26 @@ namespace Chummer.Backend.Equipment
                     foreach (ArmorMod objMod in ArmorMods.Where(mod => !mod.IncludedInArmor))
                     {
                         if (objMod.Rating > 0)
+                        {
                             decCapacity -= objMod.Rating;
+                        }
                         else
+                        {
                             decCapacity -= 1;
+                        }
                     }
 
                     // Run through its Gear and deduct the Rating (or 1 if it has no Rating).
                     foreach (Gear objGear in Gear.Where(gear => !gear.IncludedInParent))
                     {
                         if (objGear.Rating > 0)
+                        {
                             decCapacity -= objGear.Rating;
+                        }
                         else
+                        {
                             decCapacity -= 1;
+                        }
                     }
                 }
 
@@ -1440,7 +1596,9 @@ namespace Chummer.Backend.Equipment
         public string DisplayNameShort(string strLanguage)
         {
             if (strLanguage == GlobalOptions.DefaultLanguage)
+            {
                 return Name;
+            }
 
             return GetNode(strLanguage)?["translate"]?.InnerText ?? Name;
         }
@@ -1453,11 +1611,20 @@ namespace Chummer.Backend.Equipment
             string strReturn = DisplayNameShort(strLanguage);
             string strSpaceCharacter = LanguageManager.GetString("String_Space", strLanguage);
             if (!string.IsNullOrEmpty(CustomName))
+            {
                 strReturn += strSpaceCharacter + "(\"" + CustomName + "\")";
+            }
+
             if (Rating > 0)
+            {
                 strReturn += strSpaceCharacter + '(' + LanguageManager.GetString("String_Rating", strLanguage) + strSpaceCharacter + Rating.ToString() + ')';
+            }
+
             if (!string.IsNullOrEmpty(Extra))
+            {
                 strReturn += strSpaceCharacter + '(' + LanguageManager.TranslateExtra(Extra, strLanguage) + ')';
+            }
+
             return strReturn;
         }
 
@@ -1473,15 +1640,15 @@ namespace Chummer.Backend.Equipment
         private XmlNode _objCachedMyXmlNode;
         private string _strCachedXmlNodeLanguage = string.Empty;
 
-        public XmlNode GetNode()
-        {
-            return GetNode(GlobalOptions.Language);
-        }
+        public XmlNode GetNode() => GetNode(GlobalOptions.Language);
 
         public XmlNode GetNode(string strLanguage)
         {
             if (_objCachedMyXmlNode != null && strLanguage == _strCachedXmlNodeLanguage && !GlobalOptions.LiveCustomData)
+            {
                 return _objCachedMyXmlNode;
+            }
+
             _objCachedMyXmlNode = SourceID == Guid.Empty
                 ? XmlManager.Load("armor.xml", strLanguage)
                     .SelectSingleNode($"/chummer/armors/armor[name = \"{Name}\"]")
@@ -1502,10 +1669,14 @@ namespace Chummer.Backend.Equipment
             decimal decReturn = 0.0m;
             // Remove any Improvements created by the Armor and its children.
             foreach (ArmorMod objMod in ArmorMods)
+            {
                 decReturn += objMod.DeleteArmorMod();
+            }
             // Remove any Improvements created by the Armor's Gear.
             foreach (Gear objGear in Gear)
+            {
                 decReturn += objGear.DeleteGear();
+            }
 
             decReturn += ImprovementManager.RemoveImprovements(_objCharacter, Improvement.ImprovementSource.Armor, InternalId);
 
@@ -1545,15 +1716,25 @@ namespace Chummer.Backend.Equipment
                     Weapon objDeleteWeapon = objLoopTuple.Item1;
                     decReturn += objDeleteWeapon.TotalCost + objDeleteWeapon.DeleteWeapon();
                     if (objDeleteWeapon.Parent != null)
+                    {
                         objDeleteWeapon.Parent.Children.Remove(objDeleteWeapon);
+                    }
                     else if (objLoopTuple.Item4 != null)
+                    {
                         objLoopTuple.Item4.Weapons.Remove(objDeleteWeapon);
+                    }
                     else if (objLoopTuple.Item3 != null)
+                    {
                         objLoopTuple.Item3.Weapons.Remove(objDeleteWeapon);
+                    }
                     else if (objLoopTuple.Item2 != null)
+                    {
                         objLoopTuple.Item2.Weapons.Remove(objDeleteWeapon);
+                    }
                     else
+                    {
                         _objCharacter.Weapons.Remove(objDeleteWeapon);
+                    }
                 }
             }
 
@@ -1584,7 +1765,9 @@ namespace Chummer.Backend.Equipment
                 }
 
                 if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue) && string.IsNullOrEmpty(_strExtra))
+                {
                     _strExtra = ImprovementManager.SelectedValue;
+                }
             }
             else
             {
@@ -1626,16 +1809,22 @@ namespace Chummer.Backend.Equipment
             {
                 TreeNode objLoopNode = objMod.CreateTreeNode(cmsArmorMod, cmsArmorGear);
                 if (objLoopNode != null)
+                {
                     lstChildNodes.Add(objLoopNode);
+                }
             }
             foreach (Gear objGear in Gear)
             {
                 TreeNode objLoopNode = objGear.CreateTreeNode(cmsArmorGear);
                 if (objLoopNode != null)
+                {
                     lstChildNodes.Add(objLoopNode);
+                }
             }
             if (lstChildNodes.Count > 0)
+            {
                 objNode.Expand();
+            }
 
             return objNode;
         }
@@ -1661,7 +1850,9 @@ namespace Chummer.Backend.Equipment
             {
                 if (!characterObject.ConfirmDelete(LanguageManager.GetString("Message_DeleteArmor",
                     GlobalOptions.Language)))
+                {
                     return false;
+                }
             }
             DeleteArmor();
             return characterObject.Armor.Remove(this);
@@ -1687,7 +1878,10 @@ namespace Chummer.Backend.Equipment
         public void SetSourceDetail(Control sourceControl)
         {
             if (_objCachedSourceDetail?.Language != GlobalOptions.Language)
+            {
                 _objCachedSourceDetail = null;
+            }
+
             SourceDetail.SetControl(sourceControl);
         }
 

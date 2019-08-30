@@ -102,10 +102,7 @@ namespace Chummer.Annotations
         /// <param name="formatParameterName">
         /// Specifies which parameter of an annotated method should be treated as format-string
         /// </param>
-        public StringFormatMethodAttribute(string formatParameterName)
-        {
-            FormatParameterName = formatParameterName;
-        }
+        public StringFormatMethodAttribute(string formatParameterName) => FormatParameterName = formatParameterName;
 
         public string FormatParameterName
         {
@@ -120,10 +117,7 @@ namespace Chummer.Annotations
     [AttributeUsage(AttributeTargets.Parameter | AttributeTargets.Property | AttributeTargets.Field)]
     public sealed class ValueProviderAttribute : Attribute
     {
-        public ValueProviderAttribute(string name)
-        {
-            Name = name;
-        }
+        public ValueProviderAttribute(string name) => Name = name;
 
         [NotNull]
         public string Name
@@ -190,10 +184,7 @@ namespace Chummer.Annotations
         public NotifyPropertyChangedInvocatorAttribute()
         {
         }
-        public NotifyPropertyChangedInvocatorAttribute(string parameterName)
-        {
-            ParameterName = parameterName;
-        }
+        public NotifyPropertyChangedInvocatorAttribute(string parameterName) => ParameterName = parameterName;
 
         public string ParameterName
         {
@@ -279,10 +270,7 @@ namespace Chummer.Annotations
     public sealed class LocalizationRequiredAttribute : Attribute
     {
         public LocalizationRequiredAttribute() : this(true) { }
-        public LocalizationRequiredAttribute(bool required)
-        {
-            Required = required;
-        }
+        public LocalizationRequiredAttribute(bool required) => Required = required;
 
         public bool Required
         {
@@ -328,10 +316,7 @@ namespace Chummer.Annotations
     [BaseTypeRequired(typeof(Attribute))]
     public sealed class BaseTypeRequiredAttribute : Attribute
     {
-        public BaseTypeRequiredAttribute([NotNull] Type baseType)
-        {
-            BaseType = baseType;
-        }
+        public BaseTypeRequiredAttribute([NotNull] Type baseType) => BaseType = baseType;
 
         [NotNull]
         public Type BaseType
@@ -449,10 +434,7 @@ namespace Chummer.Annotations
         public PublicAPIAttribute()
         {
         }
-        public PublicAPIAttribute([NotNull] string comment)
-        {
-            Comment = comment;
-        }
+        public PublicAPIAttribute([NotNull] string comment) => Comment = comment;
 
         public string Comment
         {
@@ -496,10 +478,7 @@ namespace Chummer.Annotations
         public PathReferenceAttribute()
         {
         }
-        public PathReferenceAttribute([PathReference] string basePath)
-        {
-            BasePath = basePath;
-        }
+        public PathReferenceAttribute([PathReference] string basePath) => BasePath = basePath;
 
         public string BasePath
         {
@@ -601,10 +580,7 @@ namespace Chummer.Annotations
     [AttributeUsage(AttributeTargets.Assembly, AllowMultiple = true)]
     public sealed class AspMvcAreaMasterLocationFormatAttribute : Attribute
     {
-        public AspMvcAreaMasterLocationFormatAttribute(string format)
-        {
-            Format = format;
-        }
+        public AspMvcAreaMasterLocationFormatAttribute(string format) => Format = format;
 
         public string Format
         {
@@ -615,10 +591,7 @@ namespace Chummer.Annotations
     [AttributeUsage(AttributeTargets.Assembly, AllowMultiple = true)]
     public sealed class AspMvcAreaPartialViewLocationFormatAttribute : Attribute
     {
-        public AspMvcAreaPartialViewLocationFormatAttribute(string format)
-        {
-            Format = format;
-        }
+        public AspMvcAreaPartialViewLocationFormatAttribute(string format) => Format = format;
 
         public string Format
         {
@@ -629,10 +602,7 @@ namespace Chummer.Annotations
     [AttributeUsage(AttributeTargets.Assembly, AllowMultiple = true)]
     public sealed class AspMvcAreaViewLocationFormatAttribute : Attribute
     {
-        public AspMvcAreaViewLocationFormatAttribute(string format)
-        {
-            Format = format;
-        }
+        public AspMvcAreaViewLocationFormatAttribute(string format) => Format = format;
 
         public string Format
         {
@@ -643,10 +613,7 @@ namespace Chummer.Annotations
     [AttributeUsage(AttributeTargets.Assembly, AllowMultiple = true)]
     public sealed class AspMvcMasterLocationFormatAttribute : Attribute
     {
-        public AspMvcMasterLocationFormatAttribute(string format)
-        {
-            Format = format;
-        }
+        public AspMvcMasterLocationFormatAttribute(string format) => Format = format;
 
         public string Format
         {
@@ -657,10 +624,7 @@ namespace Chummer.Annotations
     [AttributeUsage(AttributeTargets.Assembly, AllowMultiple = true)]
     public sealed class AspMvcPartialViewLocationFormatAttribute : Attribute
     {
-        public AspMvcPartialViewLocationFormatAttribute(string format)
-        {
-            Format = format;
-        }
+        public AspMvcPartialViewLocationFormatAttribute(string format) => Format = format;
 
         public string Format
         {
@@ -671,10 +635,7 @@ namespace Chummer.Annotations
     [AttributeUsage(AttributeTargets.Assembly, AllowMultiple = true)]
     public sealed class AspMvcViewLocationFormatAttribute : Attribute
     {
-        public AspMvcViewLocationFormatAttribute(string format)
-        {
-            Format = format;
-        }
+        public AspMvcViewLocationFormatAttribute(string format) => Format = format;
 
         public string Format
         {
@@ -694,10 +655,7 @@ namespace Chummer.Annotations
         public AspMvcActionAttribute()
         {
         }
-        public AspMvcActionAttribute(string anonymousProperty)
-        {
-            AnonymousProperty = anonymousProperty;
-        }
+        public AspMvcActionAttribute(string anonymousProperty) => AnonymousProperty = anonymousProperty;
 
         public string AnonymousProperty
         {
@@ -716,10 +674,7 @@ namespace Chummer.Annotations
         public AspMvcAreaAttribute()
         {
         }
-        public AspMvcAreaAttribute(string anonymousProperty)
-        {
-            AnonymousProperty = anonymousProperty;
-        }
+        public AspMvcAreaAttribute(string anonymousProperty) => AnonymousProperty = anonymousProperty;
 
         public string AnonymousProperty
         {
@@ -739,10 +694,7 @@ namespace Chummer.Annotations
         public AspMvcControllerAttribute()
         {
         }
-        public AspMvcControllerAttribute(string anonymousProperty)
-        {
-            AnonymousProperty = anonymousProperty;
-        }
+        public AspMvcControllerAttribute(string anonymousProperty) => AnonymousProperty = anonymousProperty;
 
         public string AnonymousProperty
         {
@@ -850,10 +802,7 @@ namespace Chummer.Annotations
         public HtmlElementAttributesAttribute()
         {
         }
-        public HtmlElementAttributesAttribute(string name)
-        {
-            Name = name;
-        }
+        public HtmlElementAttributesAttribute(string name) => Name = name;
 
         public string Name
         {
@@ -864,10 +813,7 @@ namespace Chummer.Annotations
     [AttributeUsage(AttributeTargets.Parameter | AttributeTargets.Field | AttributeTargets.Property)]
     public sealed class HtmlAttributeValueAttribute : Attribute
     {
-        public HtmlAttributeValueAttribute([NotNull] string name)
-        {
-            Name = name;
-        }
+        public HtmlAttributeValueAttribute([NotNull] string name) => Name = name;
 
         [NotNull]
         public string Name
@@ -892,10 +838,7 @@ namespace Chummer.Annotations
     [AttributeUsage(AttributeTargets.Method)]
     public sealed class CollectionAccessAttribute : Attribute
     {
-        public CollectionAccessAttribute(CollectionAccessType collectionAccessType)
-        {
-            CollectionAccessType = collectionAccessType;
-        }
+        public CollectionAccessAttribute(CollectionAccessType collectionAccessType) => CollectionAccessType = collectionAccessType;
 
         public CollectionAccessType CollectionAccessType
         {
@@ -934,10 +877,7 @@ namespace Chummer.Annotations
     [AttributeUsage(AttributeTargets.Parameter)]
     public sealed class AssertionConditionAttribute : Attribute
     {
-        public AssertionConditionAttribute(AssertionConditionType conditionType)
-        {
-            ConditionType = conditionType;
-        }
+        public AssertionConditionAttribute(AssertionConditionType conditionType) => ConditionType = conditionType;
 
         public AssertionConditionType ConditionType
         {
@@ -1057,10 +997,7 @@ namespace Chummer.Annotations
     [AttributeUsage(AttributeTargets.Class, AllowMultiple = true)]
     public sealed class AspRequiredAttributeAttribute : Attribute
     {
-        public AspRequiredAttributeAttribute([NotNull] string attribute)
-        {
-            Attribute = attribute;
-        }
+        public AspRequiredAttributeAttribute([NotNull] string attribute) => Attribute = attribute;
 
         public string Attribute
         {
@@ -1076,19 +1013,13 @@ namespace Chummer.Annotations
             get; private set;
         }
 
-        public AspTypePropertyAttribute(bool createConstructorReferences)
-        {
-            CreateConstructorReferences = createConstructorReferences;
-        }
+        public AspTypePropertyAttribute(bool createConstructorReferences) => CreateConstructorReferences = createConstructorReferences;
     }
 
     [AttributeUsage(AttributeTargets.Assembly, AllowMultiple = true)]
     public sealed class RazorImportNamespaceAttribute : Attribute
     {
-        public RazorImportNamespaceAttribute(string name)
-        {
-            Name = name;
-        }
+        public RazorImportNamespaceAttribute(string name) => Name = name;
 
         public string Name
         {

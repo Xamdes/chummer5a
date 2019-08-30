@@ -15,11 +15,7 @@ namespace ChummerHub.Areas.Identity.Pages.Account
         private readonly UserManager<ApplicationUser> _userManager;
 
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'ResetPasswordModel.ResetPasswordModel(UserManager<ApplicationUser>)'
-        public ResetPasswordModel(UserManager<ApplicationUser> userManager)
-#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'ResetPasswordModel.ResetPasswordModel(UserManager<ApplicationUser>)'
-        {
-            _userManager = userManager;
-        }
+        public ResetPasswordModel(UserManager<ApplicationUser> userManager) => _userManager = userManager;
 
         [BindProperty]
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'ResetPasswordModel.Input'

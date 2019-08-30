@@ -50,18 +50,28 @@ namespace Chummer.UI.Shared
         private void LimitTabUserControl_Load(object sender, EventArgs e)
         {
             if (_objCharacter != null)
+            {
                 return;
+            }
+
             if (ParentForm != null)
+            {
                 ParentForm.Cursor = Cursors.WaitCursor;
+            }
+
             RealLoad();
             if (ParentForm != null)
+            {
                 ParentForm.Cursor = Cursors.Default;
+            }
         }
 
         public void RealLoad()
         {
             if (ParentForm is CharacterShared frmParent)
+            {
                 _objCharacter = frmParent.CharacterObject;
+            }
             else
             {
                 Utils.BreakIfDebug();
@@ -87,13 +97,17 @@ namespace Chummer.UI.Shared
             frmPickLimitModifier.ShowDialog(this);
 
             if (frmPickLimitModifier.DialogResult == DialogResult.Cancel)
+            {
                 return;
+            }
 
             // Create the new limit modifier.
             LimitModifier objLimitModifier = new LimitModifier(_objCharacter);
             objLimitModifier.Create(frmPickLimitModifier.SelectedName, frmPickLimitModifier.SelectedBonus, frmPickLimitModifier.SelectedLimitType, frmPickLimitModifier.SelectedCondition, true);
             if (objLimitModifier.InternalId.IsEmptyGuid())
+            {
                 return;
+            }
 
             _objCharacter.LimitModifiers.Add(objLimitModifier);
             MakeDirtyWithCharacterUpdate?.Invoke(null, null);
@@ -102,9 +116,15 @@ namespace Chummer.UI.Shared
         private void cmdDeleteLimitModifier_Click(object sender, EventArgs e)
         {
             if (!(treLimit.SelectedNode?.Tag is ICanRemove selectedObject))
+            {
                 return;
+            }
+
             if (!selectedObject.Remove(_objCharacter, _objCharacter.Options.ConfirmDelete))
+            {
                 return;
+            }
+
             MakeDirtyWithCharacterUpdate?.Invoke(null, null);
         }
         private void treLimit_KeyDown(object sender, KeyEventArgs e)
@@ -118,7 +138,10 @@ namespace Chummer.UI.Shared
         private void tssLimitModifierNotes_Click(object sender, EventArgs e)
         {
             if (treLimit.SelectedNode == null)
+            {
                 return;
+            }
+
             if (treLimit.SelectedNode?.Tag is IHasNotes objNotes)
             {
 
@@ -131,7 +154,10 @@ namespace Chummer.UI.Shared
                 {
                     if (objImprovement.ImproveType != Improvement.ImprovementType.LimitModifier ||
                         objImprovement.SourceName != treLimit.SelectedNode?.Tag.ToString())
+                    {
                         continue;
+                    }
+
                     string strOldValue = objImprovement.Notes;
                     frmNotes frmItemNotes = new frmNotes
                     {
@@ -140,10 +166,16 @@ namespace Chummer.UI.Shared
                     frmItemNotes.ShowDialog(this);
 
                     if (frmItemNotes.DialogResult != DialogResult.OK)
+                    {
                         continue;
+                    }
+
                     objImprovement.Notes = frmItemNotes.Notes;
                     if (objImprovement.Notes == strOldValue)
+                    {
                         continue;
+                    }
+
                     MakeDirty?.Invoke(null, null);
 
                     treLimit.SelectedNode.ForeColor = objImprovement.PreferredColor;
@@ -152,10 +184,7 @@ namespace Chummer.UI.Shared
             }
         }
 
-        private void tssLimitModifierEdit_Click(object sender, EventArgs e)
-        {
-            UpdateLimitModifier();
-        }
+        private void tssLimitModifierEdit_Click(object sender, EventArgs e) => UpdateLimitModifier();
         #endregion
         #region Methods
 
@@ -175,10 +204,16 @@ namespace Chummer.UI.Shared
             frmItemNotes.ShowDialog(this);
 
             if (frmItemNotes.DialogResult != DialogResult.OK)
+            {
                 return;
+            }
+
             objNotes.Notes = frmItemNotes.Notes;
             if (objNotes.Notes == strOldValue)
+            {
                 return;
+            }
+
             treNode.ForeColor = objNotes.PreferredColor;
             treNode.ToolTipText = objNotes.Notes.WordWrap(100);
             MakeDirty?.Invoke(null, null);
@@ -229,10 +264,16 @@ namespace Chummer.UI.Shared
                         TreeNode objParentNode = GetLimitModifierParentNode(intTargetLimit);
                         string strName = objImprovement.UniqueName + LanguageManager.GetString("String_Colon", GlobalOptions.Language) + LanguageManager.GetString("String_Space", GlobalOptions.Language);
                         if (objImprovement.Value > 0)
+                        {
                             strName += '+';
+                        }
+
                         strName += objImprovement.Value.ToString();
                         if (!string.IsNullOrEmpty(objImprovement.Condition))
+                        {
                             strName += ',' + LanguageManager.GetString("String_Space", GlobalOptions.Language) + objImprovement.Condition;
+                        }
+
                         if (!objParentNode.Nodes.ContainsKey(strName))
                         {
                             TreeNode objNode = new TreeNode
@@ -247,11 +288,17 @@ namespace Chummer.UI.Shared
                             if (string.IsNullOrEmpty(objImprovement.ImprovedName))
                             {
                                 if (objImprovement.ImproveType == Improvement.ImprovementType.SocialLimit)
+                                {
                                     objImprovement.ImprovedName = "Social";
+                                }
                                 else if (objImprovement.ImproveType == Improvement.ImprovementType.MentalLimit)
+                                {
                                     objImprovement.ImprovedName = "Mental";
+                                }
                                 else
+                                {
                                     objImprovement.ImprovedName = "Physical";
+                                }
                             }
 
                             objParentNode.Nodes.Add(objNode);
@@ -306,7 +353,9 @@ namespace Chummer.UI.Shared
                                     TreeNode objParent = objNode.Parent;
                                     objNode.Remove();
                                     if (objParent.Level == 0 && objParent.Nodes.Count == 0)
+                                    {
                                         objParent.Remove();
+                                    }
                                 }
                             }
                         }
@@ -348,7 +397,9 @@ namespace Chummer.UI.Shared
                             foreach (TreeNode objOldParentNode in lstOldParentNodes)
                             {
                                 if (objOldParentNode.Level == 0 && objOldParentNode.Nodes.Count == 0)
+                                {
                                     objOldParentNode.Remove();
+                                }
                             }
                         }
                         break;
@@ -414,11 +465,17 @@ namespace Chummer.UI.Shared
         protected void UpdateLimitModifier()
         {
             if (treLimit.SelectedNode.Level <= 0)
+            {
                 return;
+            }
+
             TreeNode objSelectedNode = treLimit.SelectedNode;
             string strGuid = (objSelectedNode?.Tag as IHasInternalId)?.InternalId ?? string.Empty;
             if (string.IsNullOrEmpty(strGuid) || strGuid.IsEmptyGuid())
+            {
                 return;
+            }
+
             LimitModifier objLimitModifier = _objCharacter.LimitModifiers.FindById(strGuid);
             //If the LimitModifier couldn't be found (Ie it comes from an Improvement or the user hasn't properly selected a treenode, fail out early.
             if (objLimitModifier == null)
@@ -431,7 +488,9 @@ namespace Chummer.UI.Shared
                 frmPickLimitModifier.ShowDialog(this);
 
                 if (frmPickLimitModifier.DialogResult == DialogResult.Cancel)
+                {
                     return;
+                }
 
                 //Remove the old LimitModifier to ensure we don't double up.
                 _objCharacter.LimitModifiers.Remove(objLimitModifier);
@@ -445,10 +504,7 @@ namespace Chummer.UI.Shared
             }
         }
 
-        private void LimitModifierCollectionChanged(object sender, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
-        {
-            RefreshLimitModifiers(notifyCollectionChangedEventArgs);
-        }
+        private void LimitModifierCollectionChanged(object sender, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs) => RefreshLimitModifiers(notifyCollectionChangedEventArgs);
         #endregion
         #region Properties
 

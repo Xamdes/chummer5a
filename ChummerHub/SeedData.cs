@@ -118,13 +118,19 @@ namespace ChummerHub
             try
             {
                 if (roleManager == null)
+                {
                     roleManager = serviceProvider.GetService<RoleManager<ApplicationRole>>();
+                }
+
                 if (!await roleManager.RoleExistsAsync(role))
                 {
                     IR = await roleManager.CreateAsync(new ApplicationRole(role));
                 }
                 if (userManager == null)
+                {
                     userManager = serviceProvider.GetService<UserManager<ApplicationUser>>();
+                }
+
                 ApplicationUser user = await userManager.FindByIdAsync(uid.ToString());
 
                 IR = await userManager.AddToRoleAsync(user, role);

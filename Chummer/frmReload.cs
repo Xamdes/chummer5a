@@ -44,7 +44,9 @@ namespace Chummer
             {
                 string strName = objGear.DisplayNameShort(GlobalOptions.Language) + " x" + objGear.Quantity.ToString(GlobalOptions.InvariantCultureInfo);
                 if (objGear.Rating > 0)
+                {
                     strName += strSpace + '(' + LanguageManager.GetString("String_Rating", GlobalOptions.Language) + strSpace + objGear.Rating.ToString(GlobalOptions.CultureInfo) + ')';
+                }
 
                 if (objGear.Parent is Gear objParent)
                 {
@@ -52,12 +54,17 @@ namespace Chummer
                     {
                         strName += strSpace + '(' + objParent.DisplayNameShort(GlobalOptions.Language);
                         if (objParent.Location != null)
+                        {
                             strName += strSpace + '@' + strSpace + objParent.Location.DisplayName(GlobalOptions.Language);
+                        }
+
                         strName += ')';
                     }
                 }
                 else if (objGear.Location != null)
+                {
                     strName += strSpace + '(' + objGear.Location.DisplayName(GlobalOptions.Language) + ')';
+                }
 
                 // Retrieve the plugin information if it has any.
                 if (objGear.Children.Count > 0)
@@ -90,18 +97,14 @@ namespace Chummer
 
             // If there's only 1 value in each list, the character doesn't have a choice, so just accept it.
             if (cboAmmo.Items.Count == 1 && cboType.Items.Count == 1)
+            {
                 AcceptForm();
+            }
         }
 
-        private void cmdCancel_Click(object sender, EventArgs e)
-        {
-            DialogResult = DialogResult.Cancel;
-        }
+        private void cmdCancel_Click(object sender, EventArgs e) => DialogResult = DialogResult.Cancel;
 
-        private void cmdOK_Click(object sender, EventArgs e)
-        {
-            AcceptForm();
-        }
+        private void cmdOK_Click(object sender, EventArgs e) => AcceptForm();
         #endregion
 
         #region Properties
@@ -137,10 +140,7 @@ namespace Chummer
         /// <summary>
         /// Accept the selected item and close the form.
         /// </summary>
-        private void AcceptForm()
-        {
-            DialogResult = DialogResult.OK;
-        }
+        private void AcceptForm() => DialogResult = DialogResult.OK;
         #endregion
     }
 }

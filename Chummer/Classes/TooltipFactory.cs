@@ -42,9 +42,6 @@ namespace Chummer
             //UseFading = true
         });
 
-        public static void SetToolTip(this Control c, string caption)
-        {
-            ToolTip.SetToolTip(c, caption.CleanForHTML());
-        }
+        public static void SetToolTip(this Control c, string caption) => ToolTip.SetToolTip(c, caption.CleanForHTML());
     }
 }

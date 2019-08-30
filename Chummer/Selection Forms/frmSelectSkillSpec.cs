@@ -55,15 +55,21 @@ namespace Chummer
             }
             XmlNode xmlParentSkill;
             if (Mode == "Knowledge")
+            {
                 xmlParentSkill = _objXmlDocument.SelectSingleNode("/chummer/knowledgeskills/skill[name = \"" + _objSkill.Name + "\"]") ??
                     _objXmlDocument.SelectSingleNode("/chummer/knowledgeskills/skill[translate = \"" + _objSkill.Name + "\"]");
+            }
             else
+            {
                 xmlParentSkill = _objXmlDocument.SelectSingleNode("/chummer/skills/skill[name = \"" + _objSkill.Name + "\" and (" + _objCharacter.Options.BookXPath() + ")]");
+            }
             // Populate the Skill's Specializations (if any).
             if (xmlParentSkill != null)
             {
                 using (XmlNodeList xmlSpecList = xmlParentSkill.SelectNodes("specs/spec"))
+                {
                     if (xmlSpecList != null)
+                    {
                         foreach (XmlNode objXmlSpecialization in xmlSpecList)
                         {
                             string strInnerText = objXmlSpecialization.InnerText;
@@ -76,13 +82,17 @@ namespace Chummer
                                 //Might need to include skill name or might miss some values?
                                 XmlNodeList objXmlWeaponList = objXmlWeaponDocument.SelectNodes("/chummer/weapons/weapon[(spec = \"" + strInnerText + "\" or spec2 = \"" + strInnerText + "\") and (" + _objCharacter.Options.BookXPath() + ")]");
                                 if (objXmlWeaponList != null)
+                                {
                                     foreach (XmlNode objXmlWeapon in objXmlWeaponList)
                                     {
                                         string strName = objXmlWeapon["name"]?.InnerText;
                                         lstItems.Add(new ListItem(strName, objXmlWeapon["translate"]?.InnerText ?? strName));
                                     }
+                                }
                             }
                         }
+                    }
+                }
             }
             // Populate the lists.
             cboSpec.BeginUpdate();
@@ -92,13 +102,17 @@ namespace Chummer
 
             // If there's only 1 value in the list, the character doesn't have a choice, so just accept it.
             if (cboSpec.Items.Count == 1 && cboSpec.DropDownStyle == ComboBoxStyle.DropDownList && AllowAutoSelect)
+            {
                 AcceptForm();
+            }
 
             if (!string.IsNullOrEmpty(_strForceItem))
             {
                 cboSpec.SelectedIndex = cboSpec.FindStringExact(_strForceItem);
                 if (cboSpec.SelectedIndex != -1)
+                {
                     AcceptForm();
+                }
                 else
                 {
                     cboSpec.DataSource = null;
@@ -116,20 +130,11 @@ namespace Chummer
             cboSpec.EndUpdate();
         }
 
-        private void cmdCancel_Click(object sender, EventArgs e)
-        {
-            DialogResult = DialogResult.Cancel;
-        }
+        private void cmdCancel_Click(object sender, EventArgs e) => DialogResult = DialogResult.Cancel;
 
-        private void cmdOK_Click(object sender, EventArgs e)
-        {
-            AcceptForm();
-        }
+        private void cmdOK_Click(object sender, EventArgs e) => AcceptForm();
 
-        private void cboSpec_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            cboSpec.DropDownStyle = cboSpec.SelectedValue?.ToString() == "Custom" ? ComboBoxStyle.DropDown : ComboBoxStyle.DropDownList;
-        }
+        private void cboSpec_SelectedIndexChanged(object sender, EventArgs e) => cboSpec.DropDownStyle = cboSpec.SelectedValue?.ToString() == "Custom" ? ComboBoxStyle.DropDown : ComboBoxStyle.DropDownList;
         #endregion
 
         #region Properties
@@ -183,7 +188,9 @@ namespace Chummer
         private void AcceptForm()
         {
             if (!string.IsNullOrEmpty(SelectedItem))
+            {
                 DialogResult = DialogResult.OK;
+            }
         }
         #endregion
     }

@@ -62,7 +62,9 @@ namespace Chummer
                 for (j = i; j < modules.Count; j++)
                 {
                     if (modules[j]["stage"]?.InnerText == stageName)
+                    {
                         break;
+                    }
                 }
                 if (j != i && j < modules.Count)
                 {
@@ -82,7 +84,9 @@ namespace Chummer
                 StringBuilder objModuleString = new StringBuilder();
                 Write(objModuleString, objStoryModule["story"]?.InnerText ?? string.Empty, 5, xmlBaseMacrosNode);
                 lock (storyLock)
+                {
                     story[i] = objModuleString.ToString();
+                }
             });
 
             return string.Join(Environment.NewLine + Environment.NewLine, story);
@@ -91,7 +95,9 @@ namespace Chummer
         private void Write(StringBuilder story, string innerText, int levels, XPathNavigator xmlBaseMacrosNode)
         {
             if (levels <= 0)
+            {
                 return;
+            }
 
             int startingLength = story.Length;
 
@@ -110,7 +116,9 @@ namespace Chummer
             {
                 string trim = word.Trim();
                 if (string.IsNullOrEmpty(trim))
+                {
                     continue;
+                }
 
                 if (trim.StartsWith('$'))
                 {
@@ -143,7 +151,10 @@ namespace Chummer
         public string Macro(string innerText, XPathNavigator xmlBaseMacrosNode)
         {
             if (string.IsNullOrEmpty(innerText))
+            {
                 return string.Empty;
+            }
+
             string endString = innerText.ToLower().Substring(1).TrimEnd(',', '.');
             string macroName, macroPool;
             if (endString.Contains('_'))
@@ -231,7 +242,9 @@ namespace Chummer
 
                                 strSelectedNodeName = strNames[strNames.Length > 1 ? GlobalOptions.RandomGenerator.NextModuloBiasRemoved(strNames.Length) : 0];
                                 if (!persistenceDictionary.TryAdd(macroPool, strSelectedNodeName))
+                                {
                                     persistenceDictionary.TryGetValue(macroPool, out strSelectedNodeName);
+                                }
                             }
                         }
                         else
@@ -244,7 +257,9 @@ namespace Chummer
                     {
                         string strSelected = xmlUserMacroFirstChild.SelectSingleNode(strSelectedNodeName)?.Value;
                         if (!string.IsNullOrEmpty(strSelected))
+                        {
                             return strSelected;
+                        }
                     }
 
                     string strDefault = xmlUserMacroFirstChild.SelectSingleNode("default")?.Value;

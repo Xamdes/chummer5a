@@ -20,10 +20,7 @@ namespace SINners.Models
             MyAdminIdentityRole = myGroup.MyAdminIdentityRole;
         }
 
-        public override string ToString()
-        {
-            return GroupDisplayname;
-        }
+        public override string ToString() => GroupDisplayname;
 
         public string GroupDisplayname
         {

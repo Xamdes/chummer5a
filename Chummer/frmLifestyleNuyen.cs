@@ -34,15 +34,9 @@ namespace Chummer
         }
 
         [Obsolete("This constructor is for use by form designers only.", true)]
-        public frmLifestyleNuyen()
-        {
-            InitializeComponent();
-        }
+        public frmLifestyleNuyen() => InitializeComponent();
 
-        private void cmdOK_Click(object sender, EventArgs e)
-        {
-            DialogResult = DialogResult.OK;
-        }
+        private void cmdOK_Click(object sender, EventArgs e) => DialogResult = DialogResult.OK;
 
         private void frmLifestyleNuyen_Load(object sender, EventArgs e)
         {

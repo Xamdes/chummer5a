@@ -132,15 +132,24 @@ namespace ChummerHub.Client.Backend
                 MyParentTag = parenttag
             };
             if (tag.MyParentTag != null)
+            {
                 tag.MyParentTag.SearchTags.Add(tag);
+            }
+
             tag.ParentTagId = parenttag?.Id;
             tag.Id = Guid.NewGuid();
             if (!string.IsNullOrEmpty(attribute.TagName))
+            {
                 tag.TagName = attribute.TagName;
+            }
             else if (prop.Item1 != null)
+            {
                 tag.TagName = prop.Item1.Name;
+            }
             else
+            {
                 tag.TagName = prop.Item3.ToString();
+            }
 
             Type t = prop.Item3.GetType();
             if (!string.IsNullOrEmpty(attribute.TagNameFromProperty))

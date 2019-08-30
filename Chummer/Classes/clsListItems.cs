@@ -53,40 +53,19 @@ namespace Chummer
             get;
         }
 
-        public override bool Equals(object obj)
-        {
-            return Value.Equals(obj);
-        }
+        public override bool Equals(object obj) => Value.Equals(obj);
 
-        public override int GetHashCode()
-        {
-            return Value.GetHashCode();
-        }
+        public override int GetHashCode() => Value.GetHashCode();
 
-        public override string ToString()
-        {
-            return Value.ToString();
-        }
+        public override string ToString() => Value.ToString();
 
-        public static bool operator ==(ListItem x, object y)
-        {
-            return x.Equals(y);
-        }
+        public static bool operator ==(ListItem x, object y) => x.Equals(y);
 
-        public static bool operator !=(ListItem x, object y)
-        {
-            return !x.Equals(y);
-        }
+        public static bool operator !=(ListItem x, object y) => !x.Equals(y);
 
-        public static bool operator ==(object x, ListItem y)
-        {
-            return x?.Equals(y) ?? y == null;
-        }
+        public static bool operator ==(object x, ListItem y) => x?.Equals(y) ?? y == null;
 
-        public static bool operator !=(object x, ListItem y)
-        {
-            return !(x?.Equals(y) ?? y == null);
-        }
+        public static bool operator !=(object x, ListItem y) => !(x?.Equals(y) ?? y == null);
     }
 
     #region Sorting Classes
@@ -100,21 +79,25 @@ namespace Chummer
             if (tx == null)
             {
                 if (ty == null)
+                {
                     return 0;
+                }
                 else
+                {
                     return -1;
+                }
             }
             else if (ty == null)
+            {
                 return 1;
+            }
+
             return string.Compare(tx.Text.FastEscape('[', ']'), ty.Text.FastEscape('[', ']'), false, GlobalOptions.CultureInfo);
         }
 
         public class TextComparer : IComparer
         {
-            public int Compare(object x, object y)
-            {
-                return CompareText(x as TreeNode, y as TreeNode);
-            }
+            public int Compare(object x, object y) => CompareText(x as TreeNode, y as TreeNode);
         }
     }
 
@@ -129,12 +112,18 @@ namespace Chummer
             if (lx == null || !DateTime.TryParse(lx.Text, GlobalOptions.CultureInfo, System.Globalization.DateTimeStyles.None, out DateTime datX))
             {
                 if (ly == null || !DateTime.TryParse(ly.Text, GlobalOptions.CultureInfo, System.Globalization.DateTimeStyles.None, out datY))
+                {
                     return 0;
+                }
                 else
+                {
                     return -1;
+                }
             }
             else if (ly == null || !DateTime.TryParse(ly.Text, GlobalOptions.CultureInfo, System.Globalization.DateTimeStyles.None, out datY))
+            {
                 return 1;
+            }
 
             return DateTime.Compare(datY, datX);
         }
@@ -145,10 +134,7 @@ namespace Chummer
         /// <summary>
         /// Sort ListItems by Name in alphabetical order.
         /// </summary>
-        public static int CompareNames(ListItem objX, ListItem objY)
-        {
-            return string.Compare(objX.Name, objY.Name, false, GlobalOptions.CultureInfo);
-        }
+        public static int CompareNames(ListItem objX, ListItem objY) => string.Compare(objX.Name, objY.Name, false, GlobalOptions.CultureInfo);
     }
 
     /// <summary>
@@ -162,7 +148,9 @@ namespace Chummer
         public int Compare(object x, object y)
         {
             if (_objOrderOfSort == SortOrder.None)
+            {
                 return 0;
+            }
 
             int intCompareResult;
 
@@ -181,14 +169,21 @@ namespace Chummer
                 string strY = listviewY?.SubItems[_intColumnToSort].Text.FastEscape('¥');
                 if (decimal.TryParse(strX, System.Globalization.NumberStyles.Any, GlobalOptions.CultureInfo, out decimal decX) &&
                     decimal.TryParse(strY, System.Globalization.NumberStyles.Any, GlobalOptions.CultureInfo, out decimal decY))
+                {
                     intCompareResult = decimal.Compare(decX, decY);
+                }
                 else
+                {
                     intCompareResult = string.Compare(strX, strY, true, GlobalOptions.CultureInfo);
+                }
             }
 
             // Calculate correct return value based on object comparison
             if (_objOrderOfSort == SortOrder.Ascending)
+            {
                 return intCompareResult;
+            }
+
             return (-intCompareResult);
         }
 
@@ -222,7 +217,9 @@ namespace Chummer
         public int Compare(object x, object y)
         {
             if (_objOrderOfSort == SortOrder.None)
+            {
                 return 0;
+            }
 
             int intCompareResult;
 
@@ -242,21 +239,29 @@ namespace Chummer
             if (decimal.TryParse(strNumberX, System.Globalization.NumberStyles.Any, GlobalOptions.CultureInfo, out decimal decX))
             {
                 if (decimal.TryParse(strNumberY, System.Globalization.NumberStyles.Any, GlobalOptions.CultureInfo, out decimal decY))
-
+                {
                     intCompareResult = decimal.Compare(decX, decY);
+                }
                 else
+                {
                     intCompareResult = -1;
+                }
             }
             else if (decimal.TryParse(strNumberY, System.Globalization.NumberStyles.Any, GlobalOptions.CultureInfo, out decimal _))
             {
                 intCompareResult = 1;
             }
             else
+            {
                 intCompareResult = string.Compare(strX, strY, true, GlobalOptions.CultureInfo);
+            }
 
             // Calculate correct return value based on object comparison
             if (_objOrderOfSort == SortOrder.Ascending)
+            {
                 return intCompareResult;
+            }
+
             return (-intCompareResult);
         }
 

@@ -15,10 +15,7 @@ namespace WpfApplication1
         private List<string> _attAbbrevs = new List<string>();
         private List<string> _attValues = new List<string>();
         private readonly List<string> _attList = new List<string> { "bod", "agi", "rea", "str", "cha", "int", "log", "wil", "ini", "edg", "mag", "res", "dep", "ess" };
-        public MainWindow()
-        {
-            InitializeComponent();
-        }
+        public MainWindow() => InitializeComponent();
 
 
         private void ConvertString(bool critter = true)
@@ -29,7 +26,10 @@ namespace WpfApplication1
             }
             string[] lines = txtRaw.Text.Split(new[] { Environment.NewLine }, StringSplitOptions.None);
             if (lines.Length <= 1)
+            {
                 return;
+            }
+
             XmlDocument doc = new XmlDocument();
             // write the root chummer node.
 
@@ -327,14 +327,8 @@ namespace WpfApplication1
             return ret;
         }
 
-        private void CreateSpirit(object sender, RoutedEventArgs e)
-        {
-            ConvertString(false);
-        }
+        private void CreateSpirit(object sender, RoutedEventArgs e) => ConvertString(false);
 
-        private void CreateCritter(object sender, RoutedEventArgs e)
-        {
-            ConvertString();
-        }
+        private void CreateCritter(object sender, RoutedEventArgs e) => ConvertString();
     }
 }

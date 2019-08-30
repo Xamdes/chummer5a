@@ -123,30 +123,30 @@ namespace SINners.Models
         /// </summary>
         public virtual void Validate()
         {
-            if (this.TagName != null)
+            if (TagName != null)
             {
-                if (this.TagName.Length > 64)
+                if (TagName.Length > 64)
                 {
                     throw new ValidationException(ValidationRules.MaxLength, "TagName", 64);
                 }
             }
-            if (this.TagValue != null)
+            if (TagValue != null)
             {
-                if (this.TagValue.Length > 64)
+                if (TagValue.Length > 64)
                 {
                     throw new ValidationException(ValidationRules.MaxLength, "TagValue", 64);
                 }
             }
-            if (this.TagComment != null)
+            if (TagComment != null)
             {
-                if (this.TagComment.Length > 64)
+                if (TagComment.Length > 64)
                 {
                     throw new ValidationException(ValidationRules.MaxLength, "TagComment", 64);
                 }
             }
-            if (this.Tags != null)
+            if (Tags != null)
             {
-                foreach (Tag element in this.Tags)
+                foreach (Tag element in Tags)
                 {
                     if (element != null)
                     {

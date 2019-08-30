@@ -160,9 +160,6 @@ namespace Chummer.UI.Table
             base.OnPaint(e);
         }
 
-        public void Translate()
-        {
-            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
-        }
+        public void Translate() => LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
     }
 }

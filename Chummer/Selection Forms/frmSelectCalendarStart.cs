@@ -43,15 +43,9 @@ namespace Chummer
             nudWeek.Value = objWeek.MonthWeek;
         }
 
-        private void cmdOK_Click(object sender, EventArgs e)
-        {
-            AcceptForm();
-        }
+        private void cmdOK_Click(object sender, EventArgs e) => AcceptForm();
 
-        private void cmdCancel_Click(object sender, EventArgs e)
-        {
-            DialogResult = DialogResult.Cancel;
-        }
+        private void cmdCancel_Click(object sender, EventArgs e) => DialogResult = DialogResult.Cancel;
 
         private void nudMonth_ValueChanged(object sender, EventArgs e)
         {
@@ -85,11 +79,19 @@ namespace Chummer
             _intSelectedWeek = (intMonth - 1) * 4 + intWeek;
             // Correct the number of weeks since every third month has 5 weeks instead of 4.
             if (intMonth > 3)
+            {
                 _intSelectedWeek++;
+            }
+
             if (intMonth > 6)
+            {
                 _intSelectedWeek++;
+            }
+
             if (intMonth > 9)
+            {
                 _intSelectedWeek++;
+            }
 
             DialogResult = DialogResult.OK;
         }

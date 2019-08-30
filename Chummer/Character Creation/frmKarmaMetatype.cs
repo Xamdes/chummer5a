@@ -92,7 +92,9 @@ namespace Chummer
             // Attempt to select the default Metahuman Category. If it could not be found, select the first item in the list instead.
             cboCategory.SelectedValue = _objCharacter.MetatypeCategory;
             if (cboCategory.SelectedIndex == -1 && cboCategory.Items.Count > 0)
+            {
                 cboCategory.SelectedIndex = 0;
+            }
 
             cboCategory.EndUpdate();
 
@@ -136,25 +138,23 @@ namespace Chummer
         private void lstMetatypes_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (_blnLoading)
+            {
                 return;
+            }
 
             PopulateMetavariants();
         }
 
-        private void lstMetatypes_DoubleClick(object sender, EventArgs e)
-        {
-            MetatypeSelected();
-        }
+        private void lstMetatypes_DoubleClick(object sender, EventArgs e) => MetatypeSelected();
 
-        private void cmdOK_Click(object sender, EventArgs e)
-        {
-            MetatypeSelected();
-        }
+        private void cmdOK_Click(object sender, EventArgs e) => MetatypeSelected();
 
         private void cboMetavariant_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (_blnLoading)
+            {
                 return;
+            }
 
             RefreshSelectedMetavariant();
         }
@@ -168,14 +168,14 @@ namespace Chummer
         private void cboCategory_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (_blnLoading)
+            {
                 return;
+            }
+
             PopulateMetatypes();
         }
 
-        private void chkPossessionBased_CheckedChanged(object sender, EventArgs e)
-        {
-            cboPossessionMethod.Enabled = chkPossessionBased.Checked;
-        }
+        private void chkPossessionBased_CheckedChanged(object sender, EventArgs e) => cboPossessionMethod.Enabled = chkPossessionBased.Checked;
         #endregion
 
         #region Custom Methods
@@ -193,7 +193,9 @@ namespace Chummer
 
                 // If this is a Shapeshifter, a Metavariant must be selected. Default to Human if None is selected.
                 if (strSelectedMetatypeCategory == "Shapeshifter" && strSelectedMetavariant == "None")
+                {
                     strSelectedMetavariant = "Human";
+                }
 
                 XmlNode objXmlMetatype = _xmlMetatypeDocumentMetatypesNode.SelectSingleNode("metatype[name = \"" + strSelectedMetatype + "\"]");
                 if (objXmlMetatype == null)
@@ -205,7 +207,9 @@ namespace Chummer
                 XmlNode objXmlMetavariant = objXmlMetatype.SelectSingleNode("metavariants/metavariant[name = \"" + strSelectedMetavariant + "\"]");
                 int intForce = 0;
                 if (nudForce.Visible)
+                {
                     intForce = decimal.ToInt32(nudForce.Value);
+                }
 
                 // Set Metatype information.
                 int intMinModifier = 0;
@@ -225,17 +229,23 @@ namespace Chummer
 
                 string strMovement = objXmlMetatype["movement"]?.InnerText;
                 if (!string.IsNullOrEmpty(strMovement))
+                {
                     _objCharacter.Movement = strMovement;
+                }
 
                 // Determine if the Metatype has any bonuses.
                 XmlNode xmlBonusNode = charNode.SelectSingleNode("bonus");
                 if (xmlBonusNode != null)
+                {
                     ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.Metatype, strSelectedMetatype, xmlBonusNode, false, 1, strSelectedMetatype);
+                }
 
                 List<Weapon> lstWeapons = new List<Weapon>();
                 // Create the Qualities that come with the Metatype.
                 using (XmlNodeList xmlQualityList = charNode.SelectNodes("qualities/*/quality"))
+                {
                     if (xmlQualityList != null)
+                    {
                         foreach (XmlNode objXmlQualityItem in xmlQualityList)
                         {
                             XmlNode objXmlQuality = _xmlQualityDocumentQualitiesNode.SelectSingleNode("quality[name = \"" + objXmlQualityItem.InnerText + "\"]");
@@ -246,6 +256,8 @@ namespace Chummer
                             objQuality.ContributeToLimit = false;
                             _objCharacter.Qualities.Add(objQuality);
                         }
+                    }
+                }
 
                 //Load any critter powers the character has.
                 foreach (XmlNode objXmlPower in charNode.SelectNodes("powers/power"))
@@ -357,7 +369,9 @@ namespace Chummer
 
                     HashSet<string> lstPossessionMethods = new HashSet<string>();
                     foreach (ListItem objPossessionMethodItem in cboPossessionMethod.Items)
+                    {
                         lstPossessionMethods.Add(objPossessionMethodItem.Value.ToString());
+                    }
 
                     // Remove the Critter's Materialization Power if they have it. Add the Possession or Inhabitation Power if the Possession-based Tradition checkbox is checked.
                     if (chkPossessionBased.Checked)
@@ -365,7 +379,9 @@ namespace Chummer
                         string strSelectedPossessionMethod = cboPossessionMethod.SelectedValue?.ToString();
                         CritterPower objMaterializationPower = _objCharacter.CritterPowers.FirstOrDefault(x => x.Name == "Materialization");
                         if (objMaterializationPower != null)
+                        {
                             _objCharacter.CritterPowers.Remove(objMaterializationPower);
+                        }
 
                         if (_objCharacter.CritterPowers.All(x => x.Name != strSelectedPossessionMethod))
                         {
@@ -456,7 +472,9 @@ namespace Chummer
                 {
                     XmlNode xmlComplexFormData = xmlComplexFormDocument.SelectSingleNode("/chummer/complexforms/complexform[name = \"" + xmlComplexForm.InnerText + "\"]");
                     if (xmlComplexFormData == null)
+                    {
                         continue;
+                    }
 
                     // Check for SelectText.
                     string strExtra = xmlComplexForm.Attributes?["select"]?.InnerText ?? string.Empty;
@@ -470,14 +488,20 @@ namespace Chummer
                         frmPickText.ShowDialog();
                         // Make sure the dialogue window was not canceled.
                         if (frmPickText.DialogResult == DialogResult.Cancel)
+                        {
                             continue;
+                        }
+
                         strExtra = frmPickText.SelectedValue;
                     }
 
                     ComplexForm objComplexform = new ComplexForm(_objCharacter);
                     objComplexform.Create(xmlComplexFormData, strExtra);
                     if (objComplexform.InternalId.IsEmptyGuid())
+                    {
                         continue;
+                    }
+
                     objComplexform.Grade = -1;
 
                     _objCharacter.ComplexForms.Add(objComplexform);
@@ -492,7 +516,9 @@ namespace Chummer
                 {
                     XmlNode xmlAIProgramData = xmlAIProgramDocument.SelectSingleNode("/chummer/programs/program[name = \"" + xmlAIProgram.InnerText + "\"]");
                     if (xmlAIProgramData == null)
+                    {
                         continue;
+                    }
 
                     // Check for SelectText.
                     string strExtra = xmlAIProgram.Attributes?["select"]?.InnerText ?? string.Empty;
@@ -506,14 +532,19 @@ namespace Chummer
                         frmPickText.ShowDialog();
                         // Make sure the dialogue window was not canceled.
                         if (frmPickText.DialogResult == DialogResult.Cancel)
+                        {
                             continue;
+                        }
+
                         strExtra = frmPickText.SelectedValue;
                     }
 
                     AIProgram objAIProgram = new AIProgram(_objCharacter);
                     objAIProgram.Create(xmlAIProgram, strExtra, false);
                     if (objAIProgram.InternalId.IsEmptyGuid())
+                    {
                         continue;
+                    }
 
                     _objCharacter.AIPrograms.Add(objAIProgram);
 
@@ -527,21 +558,31 @@ namespace Chummer
                 {
                     XmlNode xmlGearData = xmlGearDocument.SelectSingleNode("/chummer/gears/gear[name = " + xmlGear["name"].InnerText.CleanXPath() + " and category = " + xmlGear["category"].InnerText.CleanXPath() + "]");
                     if (xmlGearData == null)
+                    {
                         continue;
+                    }
 
                     int intRating = 1;
                     if (xmlGear["rating"] != null)
+                    {
                         intRating = Convert.ToInt32(xmlGear["rating"].InnerText);
+                    }
+
                     decimal decQty = 1.0m;
                     if (xmlGear["quantity"] != null)
+                    {
                         decQty = Convert.ToDecimal(xmlGear["quantity"].InnerText, GlobalOptions.InvariantCultureInfo);
+                    }
+
                     string strForceValue = xmlGear.Attributes?["select"]?.InnerText ?? string.Empty;
 
                     Gear objGear = new Gear(_objCharacter);
                     objGear.Create(xmlGearData, intRating, lstWeapons, strForceValue);
 
                     if (objGear.InternalId.IsEmptyGuid())
+                    {
                         continue;
+                    }
 
                     objGear.Quantity = decQty;
 
@@ -554,7 +595,9 @@ namespace Chummer
                     objGear.Cost = "0";
                     // Create any Weapons that came with this Gear.
                     foreach (Weapon objWeapon in lstWeapons)
+                    {
                         _objCharacter.Weapons.Add(objWeapon);
+                    }
 
                     objGear.ParentID = Guid.NewGuid().ToString();
 
@@ -566,7 +609,9 @@ namespace Chummer
 
                 // Add any created Weapons to the character.
                 foreach (Weapon objWeapon in lstWeapons)
+                {
                     _objCharacter.Weapons.Add(objWeapon);
+                }
 
                 // Sprites can never have Physical Attributes
                 if (_objCharacter.DEPEnabled || strSelectedMetatype.EndsWith("Sprite"))
@@ -771,7 +816,9 @@ namespace Chummer
             string strSelectedMetatype = lstMetatypes.SelectedValue?.ToString();
             XPathNavigator objXmlMetatype = null;
             if (!string.IsNullOrEmpty(strSelectedMetatype))
+            {
                 objXmlMetatype = _xmlBaseMetatypeDataNode.SelectSingleNode("metatypes/metatype[name = \"" + strSelectedMetatype + "\"]");
+            }
             // Don't attempt to do anything if nothing is selected.
             if (objXmlMetatype != null)
             {
@@ -785,7 +832,9 @@ namespace Chummer
                 {
                     string strName = objXmlMetavariant.SelectSingleNode("name")?.Value;
                     if (!string.IsNullOrEmpty(strName))
+                    {
                         lstMetavariants.Add(new ListItem(strName, objXmlMetavariant.SelectSingleNode("translate")?.Value ?? strName));
+                    }
                 }
 
                 bool blnOldLoading = _blnLoading;
@@ -800,12 +849,19 @@ namespace Chummer
                 if (!string.IsNullOrEmpty(strOldSelectedValue))
                 {
                     if (cboMetavariant.SelectedValue?.ToString() == strOldSelectedValue)
+                    {
                         cboMetavariant_SelectedIndexChanged(null, null);
+                    }
                     else
+                    {
                         cboMetavariant.SelectedValue = strOldSelectedValue;
+                    }
                 }
                 if (cboMetavariant.SelectedIndex == -1 && lstMetavariants.Count > 0)
+                {
                     cboMetavariant.SelectedIndex = 0;
+                }
+
                 cboMetavariant.EndUpdate();
 
                 // If the Metatype has Force enabled, show the Force NUD.
@@ -889,7 +945,9 @@ namespace Chummer
                 {
                     string strName = objXmlMetatype.SelectSingleNode("name")?.Value;
                     if (!string.IsNullOrEmpty(strName))
+                    {
                         lstMetatypeItems.Add(new ListItem(strName, objXmlMetatype.SelectSingleNode("translate")?.Value ?? strName));
+                    }
                 }
 
                 lstMetatypeItems.Sort(CompareListItems.CompareNames);
@@ -906,12 +964,18 @@ namespace Chummer
                 if (!string.IsNullOrEmpty(strOldSelected))
                 {
                     if (lstMetatypes.SelectedValue?.ToString() == strOldSelected)
+                    {
                         lstMetatypes_SelectedIndexChanged(this, EventArgs.Empty);
+                    }
                     else
+                    {
                         lstMetatypes.SelectedValue = strOldSelected;
+                    }
                 }
                 if (lstMetatypes.SelectedIndex == -1 && lstMetatypeItems.Count > 0)
+                {
                     lstMetatypes.SelectedIndex = 0;
+                }
 
                 lstMetatypes.EndUpdate();
 

@@ -45,9 +45,14 @@ namespace Chummer
             cboLimit.DisplayMember = "Name";
             cboLimit.DataSource = lstLimitItems;
             if (lstLimitItems.Count >= 1)
+            {
                 cboLimit.SelectedIndex = 0;
+            }
             else
+            {
                 cmdOK.Enabled = false;
+            }
+
             cboLimit.EndUpdate();
         }
 
@@ -70,10 +75,7 @@ namespace Chummer
             }
         }
 
-        private void cmdCancel_Click(object sender, EventArgs e)
-        {
-            DialogResult = DialogResult.Cancel;
-        }
+        private void cmdCancel_Click(object sender, EventArgs e) => DialogResult = DialogResult.Cancel;
         #endregion
 
         #region Properties

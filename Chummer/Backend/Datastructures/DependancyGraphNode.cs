@@ -116,9 +116,14 @@ namespace Chummer
             if (obj is DependancyGraphNode<T> objOtherNode)
             {
                 if (Root != null)
+                {
                     return Root == objOtherNode.Root && (MyObject == null && objOtherNode.MyObject == null || MyObject?.Equals(objOtherNode.MyObject) == true);
+                }
+
                 if (objOtherNode.Root != null)
+                {
                     return false;
+                }
             }
 
             // ReSharper disable once BaseObjectEqualsIsObjectEquals
@@ -128,15 +133,14 @@ namespace Chummer
         public override int GetHashCode()
         {
             if (Root != null)
+            {
                 return MyObject?.GetHashCode() ?? 0;
+            }
 
             // ReSharper disable once BaseObjectGetHashCodeCallInGetHashCode
             return base.GetHashCode();
         }
 
-        public override string ToString()
-        {
-            return MyObject?.ToString() ?? string.Empty;
-        }
+        public override string ToString() => MyObject?.ToString() ?? string.Empty;
     }
 }

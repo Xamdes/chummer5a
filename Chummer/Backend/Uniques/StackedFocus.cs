@@ -60,7 +60,10 @@ namespace Chummer
             objWriter.WriteElementString("bonded", _blnBonded.ToString());
             objWriter.WriteStartElement("gears");
             foreach (Gear objGear in _lstGear)
+            {
                 objGear.Save(objWriter);
+            }
+
             objWriter.WriteEndElement();
             objWriter.WriteEndElement();
         }
@@ -75,13 +78,17 @@ namespace Chummer
             objNode.TryGetField("gearid", Guid.TryParse, out _guiGearId);
             _blnBonded = objNode["bonded"]?.InnerText == bool.TrueString;
             using (XmlNodeList nodGearList = objNode.SelectNodes("gears/gear"))
+            {
                 if (nodGearList != null)
+                {
                     foreach (XmlNode nodGear in nodGearList)
                     {
                         Gear objGear = new Gear(_objCharacter);
                         objGear.Load(nodGear);
                         _lstGear.Add(objGear);
                     }
+                }
+            }
         }
         #endregion
 
@@ -100,7 +107,9 @@ namespace Chummer
             set
             {
                 if (Guid.TryParse(value, out Guid guiTemp))
+                {
                     _guiGearId = guiTemp;
+                }
             }
         }
 
@@ -122,7 +131,9 @@ namespace Chummer
             {
                 int intReturn = 0;
                 foreach (Gear objGear in Gear)
+                {
                     intReturn += objGear.Rating;
+                }
 
                 return intReturn;
             }
@@ -143,10 +154,16 @@ namespace Chummer
                     string strFocusExtra = objFocus.Extra;
                     int intPosition = strFocusName.IndexOf('(');
                     if (intPosition > -1)
+                    {
                         strFocusName = strFocusName.Substring(0, intPosition - 1);
+                    }
+
                     intPosition = strFocusName.IndexOf(',');
                     if (intPosition > -1)
+                    {
                         strFocusName = strFocusName.Substring(0, intPosition);
+                    }
+
                     int intKarmaMultiplier;
                     int intExtraKarmaCost = 0;
                     switch (strFocusName)
@@ -206,9 +223,13 @@ namespace Chummer
                     foreach (Improvement objLoopImprovement in _objCharacter.Improvements.Where(x => x.ImprovedName == strFocusName && (string.IsNullOrEmpty(x.Target) || strFocusExtra.Contains(x.Target)) && x.Enabled))
                     {
                         if (objLoopImprovement.ImproveType == Improvement.ImprovementType.FocusBindingKarmaCost)
+                        {
                             intExtraKarmaCost += objLoopImprovement.Value;
+                        }
                         else if (objLoopImprovement.ImproveType == Improvement.ImprovementType.FocusBindingKarmaMultiplier)
+                        {
                             intKarmaMultiplier += objLoopImprovement.Value;
+                        }
                     }
                     intCost += (objFocus.Rating * intKarmaMultiplier) + intExtraKarmaCost;
                 }
@@ -230,7 +251,9 @@ namespace Chummer
 
             // Remove the trailing comma.
             if (strbldReturn.Length > 0)
+            {
                 strbldReturn.Length -= 2;
+            }
 
             return strbldReturn.ToString();
         }

@@ -83,7 +83,10 @@ namespace Chummer
 
                 string strTooltip = LanguageManager.GetString("Tip_Spirit_EditNotes", GlobalOptions.Language);
                 if (!string.IsNullOrEmpty(_objSpirit.Notes))
+                {
                     strTooltip += Environment.NewLine + Environment.NewLine + _objSpirit.Notes;
+                }
+
                 imgNotes.SetToolTip(strTooltip.WordWrap(100));
             }
             else
@@ -95,7 +98,10 @@ namespace Chummer
 
                 string strTooltip = LanguageManager.GetString("Tip_Sprite_EditNotes", GlobalOptions.Language);
                 if (!string.IsNullOrEmpty(_objSpirit.Notes))
+                {
                     strTooltip += Environment.NewLine + Environment.NewLine + _objSpirit.Notes;
+                }
+
                 imgNotes.SetToolTip(strTooltip.WordWrap(100));
             }
 
@@ -119,7 +125,9 @@ namespace Chummer
             // Raise the ContactDetailChanged Event when the Checkbox's Checked status changes.
             // The entire SpiritControl is passed as an argument so the handling event can evaluate its contents.
             if (!_blnLoading)
+            {
                 ContactDetailChanged?.Invoke(this, e);
+            }
         }
 
         private void nudServices_ValueChanged(object sender, EventArgs e)
@@ -127,22 +135,24 @@ namespace Chummer
             // Raise the ContactDetailChanged Event when the NumericUpDown's Value changes.
             // The entire SpiritControl is passed as an argument so the handling event can evaluate its contents.
             if (!_blnLoading)
+            {
                 ContactDetailChanged?.Invoke(this, e);
+            }
         }
 
-        private void cmdDelete_Click(object sender, EventArgs e)
-        {
+        private void cmdDelete_Click(object sender, EventArgs e) =>
             // Raise the DeleteSpirit Event when the user has confirmed their desire to delete the Spirit.
             // The entire SpiritControl is passed as an argument so the handling event can evaluate its contents.
             DeleteSpirit?.Invoke(this, e);
-        }
 
         private void nudForce_ValueChanged(object sender, EventArgs e)
         {
             // Raise the ContactDetailChanged Event when the NumericUpDown's Value changes.
             // The entire SpiritControl is passed as an argument so the handling event can evaluate its contents.
             if (!_blnLoading)
+            {
                 ContactDetailChanged?.Invoke(this, e);
+            }
         }
 
         private void chkBound_CheckedChanged(object sender, EventArgs e)
@@ -150,19 +160,25 @@ namespace Chummer
             // Raise the ContactDetailChanged Event when the Checkbox's Checked status changes.
             // The entire SpiritControl is passed as an argument so the handling event can evaluate its contents.
             if (!_blnLoading)
+            {
                 ContactDetailChanged?.Invoke(this, e);
+            }
         }
 
         private void cboSpiritName_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (!_blnLoading)
+            {
                 ContactDetailChanged?.Invoke(this, e);
+            }
         }
 
         private void txtCritterName_TextChanged(object sender, EventArgs e)
         {
             if (!_blnLoading)
+            {
                 ContactDetailChanged?.Invoke(this, e);
+            }
         }
 
         private async void tsContactOpen_Click(object sender, EventArgs e)
@@ -188,11 +204,17 @@ namespace Chummer
                     bool blnError = false;
                     // If the file doesn't exist, use the relative path if one is available.
                     if (string.IsNullOrEmpty(_objSpirit.RelativeFileName))
+                    {
                         blnError = true;
+                    }
                     else if (!File.Exists(Path.GetFullPath(_objSpirit.RelativeFileName)))
+                    {
                         blnError = true;
+                    }
                     else
+                    {
                         blnUseRelative = true;
+                    }
 
                     if (blnError)
                     {
@@ -291,7 +313,10 @@ namespace Chummer
                 string strTooltip = LanguageManager.GetString(_objSpirit.EntityType == SpiritType.Spirit ? "Tip_Spirit_EditNotes" : "Tip_Sprite_EditNotes", GlobalOptions.Language);
 
                 if (!string.IsNullOrEmpty(_objSpirit.Notes))
+                {
                     strTooltip += Environment.NewLine + Environment.NewLine + _objSpirit.Notes;
+                }
+
                 imgNotes.SetToolTip(strTooltip.WordWrap(100));
 
                 ContactDetailChanged?.Invoke(this, e);
@@ -381,12 +406,16 @@ namespace Chummer
                     if (lstLimitCategories.Count == 0)
                     {
                         using (XmlNodeList xmlSpiritList = objXmlDocument.SelectNodes("/chummer/spirits/spirit"))
+                        {
                             if (xmlSpiritList != null)
+                            {
                                 foreach (XmlNode objXmlCritterNode in xmlSpiritList)
                                 {
                                     string strSpiritName = objXmlCritterNode["name"]?.InnerText;
                                     lstCritters.Add(new ListItem(strSpiritName, objXmlCritterNode["translate"]?.InnerText ?? strSpiritName));
                                 }
+                            }
+                        }
                     }
                     else
                     {
@@ -400,7 +429,9 @@ namespace Chummer
                 else
                 {
                     using (XmlNodeList xmlSpiritList = objTradition.GetNode()?.SelectSingleNode("spirits")?.ChildNodes)
+                    {
                         if (xmlSpiritList != null)
+                        {
                             foreach (XmlNode objXmlSpirit in xmlSpiritList)
                             {
                                 string strSpiritName = objXmlSpirit.InnerText;
@@ -410,6 +441,8 @@ namespace Chummer
                                     lstCritters.Add(new ListItem(strSpiritName, objXmlCritterNode?["translate"]?.InnerText ?? strSpiritName));
                                 }
                             }
+                        }
+                    }
                 }
             }
 
@@ -471,12 +504,16 @@ namespace Chummer
             };
 
             if (!string.IsNullOrEmpty(txtCritterName.Text))
+            {
                 objCharacter.Name = txtCritterName.Text;
+            }
 
             // Ask the user to select a filename for the new character.
             string strForce = LanguageManager.GetString("String_Force", GlobalOptions.Language);
             if (_objSpirit.EntityType == SpiritType.Sprite)
+            {
                 strForce = LanguageManager.GetString("String_Rating", GlobalOptions.Language);
+            }
 
             string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
             SaveFileDialog saveFileDialog = new SaveFileDialog
@@ -559,13 +596,17 @@ namespace Chummer
             objCharacter.MetatypeBP = 0;
 
             if (objXmlMetatype["movement"] != null)
+            {
                 objCharacter.Movement = objXmlMetatype["movement"].InnerText;
+            }
             // Load the Qualities file.
             XmlDocument objXmlQualityDocument = XmlManager.Load("qualities.xml");
 
             // Determine if the Metatype has any bonuses.
             if (objXmlMetatype.InnerXml.Contains("bonus"))
+            {
                 ImprovementManager.CreateImprovements(objCharacter, Improvement.ImprovementSource.Metatype, strCritterName, objXmlMetatype.SelectSingleNode("bonus"), false, 1, strCritterName);
+            }
 
             // Create the Qualities that come with the Metatype.
             foreach (XmlNode objXmlQualityItem in objXmlMetatype.SelectNodes("qualities/*/quality"))
@@ -580,7 +621,9 @@ namespace Chummer
 
                 // Add any created Weapons to the character.
                 foreach (Weapon objWeapon in lstWeapons)
+                {
                     objCharacter.Weapons.Add(objWeapon);
+                }
             }
 
             // Add any Critter Powers the Metatype/Critter should have.
@@ -629,7 +672,10 @@ namespace Chummer
             {
                 int intRating = 0;
                 if (objXmlGear.Attributes["rating"] != null)
+                {
                     intRating = ExpressionToInt(objXmlGear.Attributes["rating"].InnerText, decimal.ToInt32(nudForce.Value), 0);
+                }
+
                 string strForceValue = objXmlGear.Attributes?["select"]?.InnerText ?? string.Empty;
                 XmlNode objXmlGearItem = objXmlGearDocument.SelectSingleNode("/chummer/gears/gear[name = " + objXmlGear.InnerText.CleanXPath() + "]");
                 Gear objGear = new Gear(objCharacter);
@@ -650,7 +696,9 @@ namespace Chummer
                 objWeapon.ParentID = Guid.NewGuid().ToString("D"); // Unarmed Attack can never be removed
                 objCharacter.Weapons.Add(objWeapon);
                 foreach (Weapon objLoopWeapon in lstWeapons)
+                {
                     objCharacter.Weapons.Add(objLoopWeapon);
+                }
             }
 
             objCharacter.Alias = strCritterName;
@@ -691,7 +739,9 @@ namespace Chummer
             {
                 object objProcess = CommonFunctions.EvaluateInvariantXPath(strIn.Replace("/", " div ").Replace("F", strForce).Replace("1D6", strForce).Replace("2D6", strForce), out bool blnIsSuccess);
                 if (blnIsSuccess)
+                {
                     intValue = Convert.ToInt32(Math.Ceiling((double)objProcess));
+                }
             }
             catch (OverflowException) { } // Result is text and not a double
             catch (InvalidCastException) { } // Result is text and not a double
@@ -699,10 +749,15 @@ namespace Chummer
             if (intForce > 0)
             {
                 if (intValue < 1)
+                {
                     return 1;
+                }
             }
             else if (intValue < 0)
+            {
                 return 0;
+            }
+
             return intValue;
         }
 
@@ -713,10 +768,7 @@ namespace Chummer
         /// <param name="intForce">Force value to use.</param>
         /// <param name="intOffset">Dice offset.</param>
         /// <returns></returns>
-        public static string ExpressionToString(string strIn, int intForce, int intOffset)
-        {
-            return ExpressionToInt(strIn, intForce, intOffset).ToString();
-        }
+        public static string ExpressionToString(string strIn, int intForce, int intOffset) => ExpressionToInt(strIn, intForce, intOffset).ToString();
         #endregion
     }
 }

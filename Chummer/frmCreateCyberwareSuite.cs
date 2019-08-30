@@ -40,7 +40,9 @@ namespace Chummer
             _objCharacter = objCharacter;
 
             if (_objSource == Improvement.ImprovementSource.Cyberware)
+            {
                 _strType = "cyberware";
+            }
             else
             {
                 _strType = "bioware";
@@ -126,9 +128,15 @@ namespace Chummer
                 // <cyberwares>
                 objWriter.WriteStartElement(_strType + "s");
                 using (XmlNodeList xmlCyberwareList = objXmlCurrentDocument.SelectNodes("/chummer/" + _strType + "s"))
+                {
                     if (xmlCyberwareList?.Count > 0)
+                    {
                         foreach (XmlNode xmlCyberware in xmlCyberwareList)
+                        {
                             xmlCyberware.WriteContentTo(objWriter);
+                        }
+                    }
+                }
                 // </cyberwares>
                 objWriter.WriteEndElement();
             }
@@ -140,9 +148,15 @@ namespace Chummer
             if (!blnNewFile)
             {
                 using (XmlNodeList xmlCyberwareList = objXmlCurrentDocument.SelectNodes("/chummer/suites"))
+                {
                     if (xmlCyberwareList?.Count > 0)
+                    {
                         foreach (XmlNode xmlCyberware in xmlCyberwareList)
+                        {
                             xmlCyberware.WriteContentTo(objWriter);
+                        }
+                    }
+                }
             }
 
             string strGrade = string.Empty;
@@ -176,7 +190,9 @@ namespace Chummer
                     objWriter.WriteStartElement(_strType);
                     objWriter.WriteElementString("name", objCyberware.Name);
                     if (objCyberware.Rating > 0)
+                    {
                         objWriter.WriteElementString("rating", objCyberware.Rating.ToString());
+                    }
                     // Write out child items.
                     if (objCyberware.Children.Count > 0)
                     {
@@ -190,7 +206,9 @@ namespace Chummer
                                 objWriter.WriteStartElement(_strType);
                                 objWriter.WriteElementString("name", objChild.Name);
                                 if (objChild.Rating > 0)
+                                {
                                     objWriter.WriteElementString("rating", objChild.Rating.ToString());
+                                }
                                 // </cyberware>
                                 objWriter.WriteEndElement();
                             }
@@ -218,10 +236,7 @@ namespace Chummer
             DialogResult = DialogResult.OK;
         }
 
-        private void cmdCancel_Click(object sender, EventArgs e)
-        {
-            DialogResult = DialogResult.Cancel;
-        }
+        private void cmdCancel_Click(object sender, EventArgs e) => DialogResult = DialogResult.Cancel;
 
         private void frmCreateCyberwareSuite_Load(object sender, EventArgs e)
         {

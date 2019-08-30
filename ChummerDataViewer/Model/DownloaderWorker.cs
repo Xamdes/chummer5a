@@ -30,6 +30,7 @@ namespace ChummerDataViewer.Model
             try
             {
                 using (WebClient client = new WebClient())
+                {
                     while (true)
                     {
                         if (_queue.TryTake(out DownloadTask task))
@@ -46,6 +47,7 @@ namespace ChummerDataViewer.Model
                             resetEvent.WaitOne(15000);  //in case i fuck something up
                         }
                     }
+                }
             }
 #if DEBUG
             catch (StackOverflowException ex)
@@ -86,19 +88,16 @@ namespace ChummerDataViewer.Model
             return buffer;
         }
 
-        private void WriteAndForget(byte[] buffer, string destinationPath, Guid guid)
-        {
-            ThreadPool.QueueUserWorkItem(a =>
-            {
-                Directory.CreateDirectory(Path.GetDirectoryName(destinationPath) ?? string.Empty);
-                File.WriteAllBytes(destinationPath, buffer);
-                OnStatusChanged(new StatusChangedEventArgs("Saving " + destinationPath + Queue(), new
-                {
-                    destinationPath,
-                    guid
-                }));
-            });
-        }
+        private void WriteAndForget(byte[] buffer, string destinationPath, Guid guid) => ThreadPool.QueueUserWorkItem(a =>
+                                                                                       {
+                                                                                           Directory.CreateDirectory(Path.GetDirectoryName(destinationPath) ?? string.Empty);
+                                                                                           File.WriteAllBytes(destinationPath, buffer);
+                                                                                           OnStatusChanged(new StatusChangedEventArgs("Saving " + destinationPath + Queue(), new
+                                                                                           {
+                                                                                               destinationPath,
+                                                                                               guid
+                                                                                           }));
+                                                                                       });
 
         private static byte[] GetKey(string key)
         {
@@ -121,10 +120,7 @@ namespace ChummerDataViewer.Model
 
         }
 
-        private void OnStatusChanged(StatusChangedEventArgs args)
-        {
-            StatusChanged?.Invoke(this, args);
-        }
+        private void OnStatusChanged(StatusChangedEventArgs args) => StatusChanged?.Invoke(this, args);
 
         public void Enqueue(Guid guid, Uri url, string key, string destinationPath)
         {
@@ -178,10 +174,7 @@ namespace ChummerDataViewer.Model
             }
         }
 
-        public void Dispose()
-        {
-            Dispose(true);
-        }
+        public void Dispose() => Dispose(true);
         #endregion
     }
 }

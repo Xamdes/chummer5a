@@ -18,21 +18,15 @@ namespace ChummerHub.Client.UI
 {
     public partial class ucSINnersBasic : UserControl
     {
-        private Logger Log = NLog.LogManager.GetCurrentClassLogger();
+        private readonly Logger Log = NLog.LogManager.GetCurrentClassLogger();
         public ucSINnersUserControl myUC
         {
             get; private set;
         }
 
-        public ucSINnersBasic()
-        {
-            SINnersBasicConstructor(null);
-        }
+        public ucSINnersBasic() => SINnersBasicConstructor(null);
 
-        public ucSINnersBasic(ucSINnersUserControl parent)
-        {
-            SINnersBasicConstructor(parent);
-        }
+        public ucSINnersBasic(ucSINnersUserControl parent) => SINnersBasicConstructor(parent);
 
         private bool _inConstructor = false;
 
@@ -42,19 +36,22 @@ namespace ChummerHub.Client.UI
             InitializeComponent();
 
 
-            this.TagValueArchetype.DataSource = ContactControl.ContactArchetypes;
-            this.Name = "SINnersBasic";
-            this.bGroupSearch.Enabled = false;
-            this.AutoSize = true;
+            TagValueArchetype.DataSource = ContactControl.ContactArchetypes;
+            Name = "SINnersBasic";
+            bGroupSearch.Enabled = false;
+            AutoSize = true;
             myUC = parent;
             myUC.MyCE = parent.MyCE;
             if (myUC.MyCE?.MySINnerFile?.Id != null)
-                this.tbID.Text = myUC.MyCE?.MySINnerFile?.Id?.ToString();
+            {
+                tbID.Text = myUC.MyCE?.MySINnerFile?.Id?.ToString();
+            }
+
             string tip =
                 "Assigning this SINner a new Id enables you to save multiple versions of this chummer on SINnersHub." +
                 Environment.NewLine;
             tip += "";
-            this.bGenerateNewId.SetToolTip(tip);
+            bGenerateNewId.SetToolTip(tip);
             CheckSINnerStatus().ContinueWith(a =>
             {
                 if (!a.Result)
@@ -67,7 +64,10 @@ namespace ChummerHub.Client.UI
             foreach (object cb in gpTags.Controls)
             {
                 if ((cb is Control cont))
+                {
                     cont.Click += OnGroupBoxTagsClick;
+                }
+
                 if ((cb is CheckBox cccb))
                 {
                     cccb.CheckedChanged += OnGroupBoxTagsClick;
@@ -75,9 +75,14 @@ namespace ChummerHub.Client.UI
                 }
 
                 if ((cb is ComboBox ccb))
+                {
                     ccb.TextChanged += OnGroupBoxTagsClick;
+                }
+
                 if ((cb is TextBox ctb))
+                {
                     ctb.TextChanged += OnGroupBoxTagsClick;
+                }
             }
 
             _inConstructor = false;
@@ -93,7 +98,7 @@ namespace ChummerHub.Client.UI
                     PluginHandler.MainForm.DoThreadSafe(() =>
                     {
 
-                        this.bUpload.Text = "SINless Character/Error";
+                        bUpload.Text = "SINless Character/Error";
 
                     });
                     return false;
@@ -102,40 +107,40 @@ namespace ChummerHub.Client.UI
                 using (new CursorWait(true, this))
                 {
                     SINnersClient client = StaticUtils.GetClient();
-                    var response = await client.GetSINnerGroupFromSINerByIdWithHttpMessagesAsync(myUC.MyCE.MySINnerFile.Id.Value);
+                    HttpOperationResponse<ResultSinnerGetSINnerGroupFromSINerById> response = await client.GetSINnerGroupFromSINerByIdWithHttpMessagesAsync(myUC.MyCE.MySINnerFile.Id.Value);
                     PluginHandler.MainForm.DoThreadSafe(() =>
                     {
                         if (response.Response.StatusCode == HttpStatusCode.OK)
                         {
                             myUC.MyCE.MySINnerFile.MyGroup = response.Body.MySINnerGroup;
-                            this.bUpload.Text = "Remove from SINners";
-                            this.bGroupSearch.Enabled = true;
-                            this.lUploadStatus.Text = "online";
-                            this.bUpload.Enabled = true;
+                            bUpload.Text = "Remove from SINners";
+                            bGroupSearch.Enabled = true;
+                            lUploadStatus.Text = "online";
+                            bUpload.Enabled = true;
                         }
                         else if (response.Response.StatusCode == HttpStatusCode.NotFound)
                         {
                             myUC.MyCE.MySINnerFile.MyGroup = null;
-                            this.lUploadStatus.Text = "not online";
-                            this.bGroupSearch.Enabled = false;
-                            this.bGroupSearch.SetToolTip(
+                            lUploadStatus.Text = "not online";
+                            bGroupSearch.Enabled = false;
+                            bGroupSearch.SetToolTip(
                                 "SINner needs to be uploaded first, before he/she can join a group.");
-                            this.bUpload.Enabled = true;
-                            this.bUpload.Text = "Upload";
+                            bUpload.Enabled = true;
+                            bUpload.Text = "Upload";
                         }
                         else if (response.Response.StatusCode == HttpStatusCode.NoContent)
                         {
                             myUC.MyCE.MySINnerFile.MyGroup = null;
-                            this.lUploadStatus.Text = "Statuscode: " + response.Response.StatusCode;
-                            this.bGroupSearch.Enabled = true;
-                            this.bGroupSearch.SetToolTip(
+                            lUploadStatus.Text = "Statuscode: " + response.Response.StatusCode;
+                            bGroupSearch.Enabled = true;
+                            bGroupSearch.SetToolTip(
                                 "SINner does not belong to a group.");
-                            this.bUpload.Text = "Remove from SINners";
-                            this.lUploadStatus.Text = "online";
-                            this.bUpload.Enabled = true;
+                            bUpload.Text = "Remove from SINners";
+                            lUploadStatus.Text = "online";
+                            bUpload.Enabled = true;
                         }
-                        this.cbTagCustom.Enabled = false;
-                        this.TagValueCustomName.Enabled = false;
+                        cbTagCustom.Enabled = false;
+                        TagValueCustomName.Enabled = false;
                     });
                     PluginHandler.MainForm.DoThreadSafe(() => { UpdateTags(); });
                 }
@@ -145,7 +150,7 @@ namespace ChummerHub.Client.UI
                 Log.Error(ex);
                 PluginHandler.MainForm.DoThreadSafe(() =>
                 {
-                    this.bUpload.Text = "unknown Status";
+                    bUpload.Text = "unknown Status";
                 });
                 return false;
             }
@@ -159,11 +164,13 @@ namespace ChummerHub.Client.UI
                                                select a;
             if (archetypeseq.Any())
             {
-                this.cbTagCustom.Enabled = true;
-                this.TagValueCustomName.Enabled = true;
+                cbTagCustom.Enabled = true;
+                TagValueCustomName.Enabled = true;
             }
             if (myUC?.MyCE?.MySINnerFile?.MyGroup != null)
-                this.lGourpForSinner.Text = myUC.MyCE.MySINnerFile.MyGroup.Groupname;
+            {
+                lGourpForSinner.Text = myUC.MyCE.MySINnerFile.MyGroup.Groupname;
+            }
 
             List<Control> gpControlSeq = (from a in GetAllControls(gpTags, new List<Control>())
                                           where a.Name.Contains("cbTag")
@@ -176,20 +183,29 @@ namespace ChummerHub.Client.UI
             foreach (Control cb in gpControlSeq)
             {
                 if (cb is CheckBox cbTag)
+                {
                     cbTag.CheckState = CheckState.Unchecked;
+                }
             }
 
             foreach (Tag tag in myUC.MyCE.MySINnerFile.SiNnerMetaData.Tags.ToList())
             {
                 if (tag == null)
+                {
                     continue;
+                }
                 //search for a CheckBox that is named like the tag
                 string checkBoxKey = "cbTag" + tag.TagName;
                 List<Control> tagsCB = (from a in gpControlSeq where a.Name == checkBoxKey select a).ToList();
                 if (!tagsCB.Any())
+                {
                     continue;
+                }
+
                 if (!(tagsCB.FirstOrDefault() is CheckBox cbTag))
+                {
                     throw new ArgumentNullException("Control " + checkBoxKey + " is NOT a Checkbox!");
+                }
 
                 if (bool.TryParse(tag.TagValue, out bool value))
                 {
@@ -217,24 +233,27 @@ namespace ChummerHub.Client.UI
                     if (tag.TagValue != null)
                     {
                         if (!comboTagValue.Items.Contains(tag.TagValue))
+                        {
                             comboTagValue.Items.Add(tag.TagValue);
+                        }
+
                         comboTagValue.SelectedItem = tag.TagValue;
                     }
                 }
                 else if (tagValueControlSeq.FirstOrDefault() is NumericUpDown upDownTagValue)
                 {
                     if (decimal.TryParse(tag.TagValue, out decimal val))
+                    {
                         upDownTagValue.Value = val;
+                    }
                 }
             }
         }
 
-        private void OnGroupBoxTagsClick(object sender, object eventargs)
-        {
+        private void OnGroupBoxTagsClick(object sender, object eventargs) =>
             // Call the base class
             //base.OnClick(eventargs);
             SaveTagsToSinner();
-        }
 
         private List<Control> GetAllControls(Control container, List<Control> list)
         {
@@ -242,7 +261,9 @@ namespace ChummerHub.Client.UI
             {
                 list.Add(c);
                 if (c.Controls.Count > 0)
+                {
                     list = GetAllControls(c, list);
+                }
             }
 
             return list;
@@ -251,9 +272,15 @@ namespace ChummerHub.Client.UI
         private void SaveTagsToSinner()
         {
             if (_inConstructor)
+            {
                 return;
+            }
+
             if (myUC == null)
+            {
                 return;
+            }
+
             List<Control> gpControlSeq = (from a in GetAllControls(gpTags, new List<Control>())
                                           where a.Name.Contains("cbTag")
                                           select a).ToList();
@@ -267,7 +294,9 @@ namespace ChummerHub.Client.UI
             foreach (Control cb in gpControlSeq)
             {
                 if (!(cb is CheckBox cbTag))
+                {
                     continue;
+                }
 
                 string tagName = cbTag.Name.Substring("cbTag".Length);
                 Tag tag = null;
@@ -285,11 +314,19 @@ namespace ChummerHub.Client.UI
                     tag = myUC.MyCE.MySINnerFile.SiNnerMetaData.Tags.FirstOrDefault(a => a != null && a.TagName == tagName);
                 }
                 if (tag == null)
+                {
                     continue;
+                }
+
                 if (myUC.MyCE.MySINnerFile.SiNnerMetaData.Tags.Contains(tag))
+                {
                     myUC.MyCE.MySINnerFile.SiNnerMetaData.Tags.Remove(tag);
+                }
+
                 if (cbTag.Checked == false)
+                {
                     continue;
+                }
                 else if (cbTag.CheckState == CheckState.Checked)
                 {
                     tag.TagValue = (true).ToString();
@@ -300,7 +337,10 @@ namespace ChummerHub.Client.UI
                 List<Control> tagValueControlSeq =
                     (from a in gpControlValueSeq where a.Name == tagValueControlKey select a).ToList();
                 if (!tagValueControlSeq.Any())
+                {
                     continue;
+                }
+
                 if (tagValueControlSeq.FirstOrDefault() is TextBox tbTagValue)
                 {
                     tag.TagValue = tbTagValue.Text;
@@ -326,12 +366,12 @@ namespace ChummerHub.Client.UI
                 {
                     if (bUpload.Text.Contains("Upload"))
                     {
-                        this.lUploadStatus.Text = "uploading";
+                        lUploadStatus.Text = "uploading";
                         await myUC.MyCE.Upload();
                     }
                     else
                     {
-                        this.lUploadStatus.Text = "removing";
+                        lUploadStatus.Text = "removing";
                         await myUC.RemoveSINnerAsync();
                     }
 
@@ -365,52 +405,49 @@ namespace ChummerHub.Client.UI
             frmSINnerVisibility visfrm = new frmSINnerVisibility();
             using (new CursorWait(true, this))
             {
-                if (!this.myUC.MyCE.MySINnerFile.SiNnerMetaData.Visibility.UserRights.Any())
+                if (!myUC.MyCE.MySINnerFile.SiNnerMetaData.Visibility.UserRights.Any())
                 {
                     SINnersClient client = Backend.StaticUtils.GetClient();
                     HttpOperationResponse<ResultSinnerGetSINnerVisibilityById> res =
                         await client.GetSINnerVisibilityByIdWithHttpMessagesAsync(
-                            this.myUC.MyCE.MySINnerFile.Id.Value);
-                    var obj = await Backend.Utils.HandleError(res, res.Body);
+                            myUC.MyCE.MySINnerFile.Id.Value);
+                    object obj = await Backend.Utils.HandleError(res, res.Body);
                     if (res?.Body?.CallSuccess == true)
                     {
-                        this.myUC.MyCE.MySINnerFile.SiNnerMetaData.Visibility.UserRights = res.Body.UserRights;
+                        myUC.MyCE.MySINnerFile.SiNnerMetaData.Visibility.UserRights = res.Body.UserRights;
                     }
                 }
             }
 
-            visfrm.MyVisibility = this.myUC.MyCE.MySINnerFile.SiNnerMetaData.Visibility;
+            visfrm.MyVisibility = myUC.MyCE.MySINnerFile.SiNnerMetaData.Visibility;
             DialogResult result = visfrm.ShowDialog(this);
             if (result == DialogResult.OK)
             {
-                this.myUC.MyCE.MySINnerFile.SiNnerMetaData.Visibility = visfrm.MyVisibility;
+                myUC.MyCE.MySINnerFile.SiNnerMetaData.Visibility = visfrm.MyVisibility;
             }
 
         }
 
         private void BGenerateNewId_Click(object sender, EventArgs e)
         {
-            Guid? oldId = this.myUC.MyCE.MySINnerFile.Id;
-            this.myUC.MyCE.MySINnerFile.Id = Guid.NewGuid();
-            this.myUC.MyCE.MySINnerFile.SiNnerMetaData.Id = Guid.NewGuid();
-            this.myUC.MyCE.MySINnerFile.SiNnerMetaData.Visibility.Id = Guid.NewGuid();
-            foreach (SINnerUserRight user in this.myUC.MyCE.MySINnerFile.SiNnerMetaData.Visibility.UserRights)
+            Guid? oldId = myUC.MyCE.MySINnerFile.Id;
+            myUC.MyCE.MySINnerFile.Id = Guid.NewGuid();
+            myUC.MyCE.MySINnerFile.SiNnerMetaData.Id = Guid.NewGuid();
+            myUC.MyCE.MySINnerFile.SiNnerMetaData.Visibility.Id = Guid.NewGuid();
+            foreach (SINnerUserRight user in myUC.MyCE.MySINnerFile.SiNnerMetaData.Visibility.UserRights)
             {
                 user.Id = Guid.NewGuid();
             }
-            this.myUC.MyCE.PopulateTags();
+            myUC.MyCE.PopulateTags();
             //this.myUC.MyCE.MySINnerFile.MyExtendedAttributes.Id = Guid.NewGuid();
             if (oldId != null)
             {
-                this.myUC.CharacterObject.FileName = this.myUC.CharacterObject.FileName.Replace(oldId.ToString(), this.myUC.MyCE.MySINnerFile.Id.ToString());
+                myUC.CharacterObject.FileName = myUC.CharacterObject.FileName.Replace(oldId.ToString(), myUC.MyCE.MySINnerFile.Id.ToString());
             }
-            this.myUC.CharacterObject.Save(this.myUC.MyCE.MySINnerFile.Id + ".chum5", false, true);
-            this.tbID.Text = this.myUC.MyCE.MySINnerFile.Id.ToString();
+            myUC.CharacterObject.Save(myUC.MyCE.MySINnerFile.Id + ".chum5", false, true);
+            tbID.Text = myUC.MyCE.MySINnerFile.Id.ToString();
         }
 
-        private void TlpTags_MouseLeave(object sender, EventArgs e)
-        {
-            this.SaveTagsToSinner();
-        }
+        private void TlpTags_MouseLeave(object sender, EventArgs e) => SaveTagsToSinner();
     }
 }

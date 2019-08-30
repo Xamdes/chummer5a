@@ -33,7 +33,7 @@ namespace Chummer
     [DebuggerDisplay("{DisplayName(GlobalOptions.DefaultLanguage)}")]
     public class Metamagic : IHasInternalId, IHasName, IHasXmlNode, IHasNotes, ICanRemove, IHasSource
     {
-        private Logger Log = NLog.LogManager.GetCurrentClassLogger();
+        private readonly Logger Log = NLog.LogManager.GetCurrentClassLogger();
 
         private Guid _guiID;
         private Guid _guiSourceID;
@@ -68,13 +68,19 @@ namespace Chummer
                 Utils.BreakIfDebug();
             }
             if (objXmlMetamagicNode.TryGetStringFieldQuickly("name", ref _strName))
+            {
                 _objCachedMyXmlNode = null;
+            }
+
             objXmlMetamagicNode.TryGetStringFieldQuickly("source", ref _strSource);
             objXmlMetamagicNode.TryGetStringFieldQuickly("page", ref _strPage);
             _eImprovementSource = objSource;
             objXmlMetamagicNode.TryGetInt32FieldQuickly("grade", ref _intGrade);
             if (!objXmlMetamagicNode.TryGetStringFieldQuickly("altnotes", ref _strNotes))
+            {
                 objXmlMetamagicNode.TryGetStringFieldQuickly("notes", ref _strNotes);
+            }
+
             _nodBonus = objXmlMetamagicNode["bonus"];
             if (_nodBonus != null)
             {
@@ -127,15 +133,22 @@ namespace Chummer
             objWriter.WriteElementString("page", _strPage);
             objWriter.WriteElementString("grade", _intGrade.ToString(GlobalOptions.InvariantCultureInfo));
             if (_nodBonus != null)
+            {
                 objWriter.WriteRaw(_nodBonus.OuterXml);
+            }
             else
+            {
                 objWriter.WriteElementString("bonus", string.Empty);
+            }
+
             objWriter.WriteElementString("improvementsource", _eImprovementSource.ToString());
             objWriter.WriteElementString("notes", _strNotes);
             objWriter.WriteEndElement();
 
             if (Grade >= 0)
+            {
                 _objCharacter.SourceProcess(_strSource);
+            }
         }
 
         /// <summary>
@@ -155,7 +168,10 @@ namespace Chummer
             }
 
             if (objNode.TryGetStringFieldQuickly("name", ref _strName))
+            {
                 _objCachedMyXmlNode = null;
+            }
+
             objNode.TryGetStringFieldQuickly("source", ref _strSource);
             objNode.TryGetStringFieldQuickly("page", ref _strPage);
             objNode.TryGetBoolFieldQuickly("paidwithkarma", ref _blnPaidWithKarma);
@@ -163,7 +179,9 @@ namespace Chummer
 
             _nodBonus = objNode["bonus"];
             if (objNode["improvementsource"] != null)
+            {
                 SourceType = Improvement.ConvertToImprovementSource(objNode["improvementsource"].InnerText);
+            }
 
             objNode.TryGetStringFieldQuickly("notes", ref _strNotes);
         }
@@ -185,7 +203,10 @@ namespace Chummer
             objWriter.WriteElementString("grade", Grade.ToString(objCulture));
             objWriter.WriteElementString("improvementsource", _eImprovementSource.ToString());
             if (_objCharacter.Options.PrintNotes)
+            {
                 objWriter.WriteElementString("notes", Notes);
+            }
+
             objWriter.WriteEndElement();
         }
         #endregion
@@ -255,7 +276,9 @@ namespace Chummer
         {
             // Get the translated name if applicable.
             if (strLanguage == GlobalOptions.DefaultLanguage)
+            {
                 return Name;
+            }
 
             return GetNode(strLanguage)?["translate"]?.InnerText ?? Name;
         }
@@ -295,7 +318,9 @@ namespace Chummer
         {
             // Get the translated name if applicable.
             if (strLanguage == GlobalOptions.DefaultLanguage)
+            {
                 return _strPage;
+            }
 
             return GetNode(strLanguage)?["altpage"]?.InnerText ?? _strPage;
         }
@@ -321,10 +346,7 @@ namespace Chummer
         private XmlNode _objCachedMyXmlNode;
         private string _strCachedXmlNodeLanguage = string.Empty;
 
-        public XmlNode GetNode()
-        {
-            return GetNode(GlobalOptions.Language);
-        }
+        public XmlNode GetNode() => GetNode(GlobalOptions.Language);
 
         public XmlNode GetNode(string strLanguage)
         {
@@ -353,11 +375,16 @@ namespace Chummer
         public TreeNode CreateTreeNode(ContextMenuStrip cmsMetamagic, bool blnAddCategory = false)
         {
             if (Grade == -1 && !string.IsNullOrEmpty(Source) && !_objCharacter.Options.BookEnabled(Source))
+            {
                 return null;
+            }
 
             string strText = DisplayName(GlobalOptions.Language);
             if (blnAddCategory)
+            {
                 strText = LanguageManager.GetString(SourceType == Improvement.ImprovementSource.Metamagic ? "Label_Metamagic" : "Label_Echo", GlobalOptions.Language) + LanguageManager.GetString("String_Space", GlobalOptions.Language) + strText;
+            }
+
             TreeNode objNode = new TreeNode
             {
                 Name = InternalId,
@@ -392,18 +419,30 @@ namespace Chummer
         public bool Remove(Character characterObject, bool blnConfirmDelete = true)
         {
             if (Grade <= 0)
+            {
                 return false;
+            }
+
             if (blnConfirmDelete)
             {
                 string strMessage;
                 if (characterObject.MAGEnabled)
+                {
                     strMessage = LanguageManager.GetString("Message_DeleteMetamagic", GlobalOptions.Language);
+                }
                 else if (characterObject.RESEnabled)
+                {
                     strMessage = LanguageManager.GetString("Message_DeleteEcho", GlobalOptions.Language);
+                }
                 else
+                {
                     return false;
+                }
+
                 if (!characterObject.ConfirmDelete(strMessage))
+                {
                     return false;
+                }
             }
 
             characterObject.Metamagics.Remove(this);
@@ -414,7 +453,10 @@ namespace Chummer
         public void SetSourceDetail(Control sourceControl)
         {
             if (_objCachedSourceDetail?.Language != GlobalOptions.Language)
+            {
                 _objCachedSourceDetail = null;
+            }
+
             SourceDetail.SetControl(sourceControl);
         }
     }

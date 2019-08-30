@@ -34,10 +34,7 @@ namespace Chummer.UI.Table
             Layout += (sender, evt) => DoLayout();
         }
 
-        private void OnLoad(object sender, EventArgs eventArgs)
-        {
-            Update(Index, Selected);
-        }
+        private void OnLoad(object sender, EventArgs eventArgs) => Update(Index, Selected);
 
         protected virtual void DoLayout()
         {

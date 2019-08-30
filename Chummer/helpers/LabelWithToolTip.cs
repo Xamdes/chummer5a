@@ -66,7 +66,9 @@ namespace Chummer
             if (disposing)
             {
                 if (_tt != null && _tt != ToolTipFactory.ToolTip)
+                {
                     _tt.Dispose();
+                }
             }
             base.Dispose(disposing);
         }

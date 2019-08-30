@@ -54,7 +54,10 @@ namespace ChummerHub
             try
             {
                 if (_preventOverflow)
+                {
                     return;
+                }
+
                 _preventOverflow = true;
                 string msg = e.Exception.ToString() + Environment.NewLine + Environment.NewLine;
 

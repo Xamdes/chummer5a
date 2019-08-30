@@ -60,7 +60,7 @@ namespace Chummer
     public sealed class Character : INotifyMultiplePropertyChanged, IHasMugshots, IHasName
     {
         private static readonly TelemetryClient TelemetryClient = new TelemetryClient();
-        private Logger Log = NLog.LogManager.GetCurrentClassLogger();
+        private readonly Logger Log = NLog.LogManager.GetCurrentClassLogger();
         private XmlNode _oldSkillsBackup;
         private XmlNode _oldSkillGroupBackup;
 
@@ -879,7 +879,9 @@ namespace Chummer
         private void PowersOnBeforeRemove(object sender, RemovingOldEventArgs e)
         {
             if (Powers[e.OldIndex].AdeptWayDiscountEnabled)
+            {
                 OnPropertyChanged(nameof(AnyPowerAdeptWayDiscountEnabled));
+            }
         }
 
         private void PowersOnListChanged(object sender, ListChangedEventArgs e)
@@ -897,7 +899,9 @@ namespace Chummer
                     {
                         setChangedProperties.Add(nameof(PowerPointsUsed));
                         if (Powers[e.NewIndex].AdeptWayDiscountEnabled)
+                        {
                             setChangedProperties.Add(nameof(AnyPowerAdeptWayDiscountEnabled));
+                        }
                     }
                     break;
                 case ListChangedType.ItemDeleted:
@@ -913,9 +917,13 @@ namespace Chummer
                         }
 
                         if (e.PropertyDescriptor.Name == nameof(Power.AdeptWayDiscountEnabled))
+                        {
                             setChangedProperties.Add(nameof(AnyPowerAdeptWayDiscountEnabled));
+                        }
                         else if (e.PropertyDescriptor.Name == nameof(Power.PowerPoints))
+                        {
                             setChangedProperties.Add(nameof(PowerPointsUsed));
+                        }
                     }
                     break;
             }
@@ -923,10 +931,7 @@ namespace Chummer
             OnMultiplePropertyChanged(setChangedProperties.ToArray());
         }
 
-        private void MentorSpiritsOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
-        {
-            OnPropertyChanged(nameof(MentorSpirits));
-        }
+        private void MentorSpiritsOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e) => OnPropertyChanged(nameof(MentorSpirits));
 
         // TODO: Make AdeptWayDiscountEnabled check less hacky
         // Right now, this is OK-ish because adept way discount requirement nodes only check for qualities, but users might mix things up with custom content
@@ -999,7 +1004,9 @@ namespace Chummer
             }
 
             if (setPropertiesToRefresh.Count > 0)
+            {
                 OnMultiplePropertyChanged(setPropertiesToRefresh.ToArray());
+            }
         }
 
         private void ArmorOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
@@ -1176,7 +1183,10 @@ namespace Chummer
         public bool Save(string strFileName = "", bool addToMRU = true, bool callOnSaveCallBack = true)
         {
             if (IsSaving)
+            {
                 return false;
+            }
+
             if (string.IsNullOrWhiteSpace(strFileName))
             {
                 strFileName = _strFileName;
@@ -1295,12 +1305,19 @@ namespace Chummer
 
             // <ignorerules />
             if (_blnIgnoreRules)
+            {
                 objWriter.WriteElementString("ignorerules", _blnIgnoreRules.ToString());
+            }
             // <iscritter />
             if (_blnIsCritter)
+            {
                 objWriter.WriteElementString("iscritter", _blnIsCritter.ToString());
+            }
+
             if (_blnPossessed)
+            {
                 objWriter.WriteElementString("possessed", _blnPossessed.ToString());
+            }
             // <karma />
             objWriter.WriteElementString("karma", _intKarma.ToString());
             // <special />
@@ -1854,13 +1871,18 @@ namespace Chummer
 
             objWriter.Close();
             if (addToMRU)
-                GlobalOptions.MostRecentlyUsedCharacters.Insert(0, this.FileName);
+            {
+                GlobalOptions.MostRecentlyUsedCharacters.Insert(0, FileName);
+            }
 
             IsSaving = false;
             _dateFileLastWriteTime = File.GetLastWriteTimeUtc(strFileName);
 
             if (callOnSaveCallBack == true && OnSaveCompleted != null)
+            {
                 OnSaveCompleted(this, this);
+            }
+
             return blnErrorFree;
         }
 
@@ -1877,14 +1899,17 @@ namespace Chummer
         public async Task<bool> Load(frmLoading frmLoadingForm = null, bool showWarnings = true)
         {
             if (!File.Exists(_strFileName))
+            {
                 return false;
+            }
+
             using (CustomActivity loadActivity = Timekeeper.StartSyncron("clsCharacter.Load", null, CustomActivity.OperationType.DependencyOperation, _strFileName))
             {
                 try
                 {
                     using (CustomActivity AIOptionsActivity = Timekeeper.StartSyncron("upload_AI_options", loadActivity))
                     {
-                        UploadObjectAsMetric.UploadObject(TelemetryClient, this.Options);
+                        UploadObjectAsMetric.UploadObject(TelemetryClient, Options);
                     }
                     XmlDocument objXmlDocument = new XmlDocument();
                     XmlNode objXmlCharacter;
@@ -1898,7 +1923,10 @@ namespace Chummer
                         frmLoadingForm?.PerformStep("XML");
 
                         if (!File.Exists(_strFileName))
+                        {
                             return false;
+                        }
+
                         using (StreamReader sr = new StreamReader(_strFileName, Encoding.UTF8, true))
                         {
                             try
@@ -1936,7 +1964,9 @@ namespace Chummer
                             objXmlDocument.GetFastNavigator().SelectSingleNode("/character");
 
                         if (objXmlCharacter == null || xmlCharacterNavigator == null)
+                        {
                             return false;
+                        }
 
                         IsLoading = true;
 
@@ -2086,7 +2116,9 @@ if (!Utils.IsUnitTest){
                         {
                             // fix to work around a mistake made when saving decimal values in previous versions.
                             if (_decEssenceAtSpecialStart > ESS.MetatypeMaximum)
+                            {
                                 _decEssenceAtSpecialStart /= 10;
+                            }
                         }
 
                         xmlCharacterNavigator.TryGetStringFieldQuickly("createdversion", ref _strVersionCreated);
@@ -2132,27 +2164,38 @@ if (!Utils.IsUnitTest){
                         xmlCharacterNavigator.TryGetStringFieldQuickly("playername", ref _strPlayerName);
                         xmlCharacterNavigator.TryGetStringFieldQuickly("gamenotes", ref _strGameNotes);
                         if (!xmlCharacterNavigator.TryGetStringFieldQuickly("primaryarm", ref _strPrimaryArm))
+                        {
                             _strPrimaryArm = "Right";
+                        }
 
                         if (!xmlCharacterNavigator.TryGetStringFieldQuickly("gameplayoption", ref _strGameplayOption))
                         {
                             if (xmlCharacterNavigator.TryGetInt32FieldQuickly("buildkarma", ref _intBuildKarma) &&
                                 _intBuildKarma == 35)
+                            {
                                 _strGameplayOption = "Prime Runner";
+                            }
                             else
+                            {
                                 _strGameplayOption = "Standard";
+                            }
                         }
 
                         xmlCharacterNavigator.TryGetField("buildmethod", Enum.TryParse, out _objBuildMethod);
                         if (!xmlCharacterNavigator.TryGetDecFieldQuickly("maxnuyen", ref _decMaxNuyen) ||
                             _decMaxNuyen == 0)
+                        {
                             _decMaxNuyen = 25;
+                        }
+
                         xmlCharacterNavigator.TryGetInt32FieldQuickly("contactmultiplier", ref _intContactMultiplier);
                         xmlCharacterNavigator.TryGetInt32FieldQuickly("sumtoten", ref _intSumtoTen);
                         xmlCharacterNavigator.TryGetInt32FieldQuickly("buildkarma", ref _intBuildKarma);
                         if (!xmlCharacterNavigator.TryGetInt32FieldQuickly("maxkarma", ref _intMaxKarma) ||
                             _intMaxKarma == 0)
+                        {
                             _intMaxKarma = _intBuildKarma;
+                        }
 
                         //Maximum number of Karma that can be spent/gained on Qualities.
                         xmlCharacterNavigator.TryGetInt32FieldQuickly("gameplayoptionqualitylimit",
@@ -2224,24 +2267,35 @@ if (!Utils.IsUnitTest){
                         if (xmlTempNode != null)
                         {
                             foreach (XPathNavigator xmlNode in xmlTempNode.Select("grade"))
+                            {
                                 BannedWareGrades.Add(xmlNode.Value);
+                            }
                         }
                         else
                         {
                             XmlNodeList xmlBannedGradesList = xmlGameplayOption?.SelectNodes("bannedwaregrades/grade");
                             if (xmlBannedGradesList?.Count > 0)
+                            {
                                 foreach (XmlNode xmlNode in xmlBannedGradesList)
+                                {
                                     BannedWareGrades.Add(xmlNode.InnerText);
+                                }
+                            }
                         }
 
                         string strSkill1 = string.Empty;
                         string strSkill2 = string.Empty;
                         if (xmlCharacterNavigator.TryGetStringFieldQuickly("priorityskill1", ref strSkill1) &&
                             !string.IsNullOrEmpty(strSkill1))
+                        {
                             _lstPrioritySkills.Add(strSkill1);
+                        }
+
                         if (xmlCharacterNavigator.TryGetStringFieldQuickly("priorityskill2", ref strSkill2) &&
                             !string.IsNullOrEmpty(strSkill2))
+                        {
                             _lstPrioritySkills.Add(strSkill2);
+                        }
 
                         xmlCharacterNavigator.TryGetBoolFieldQuickly("iscritter", ref _blnIsCritter);
                         xmlCharacterNavigator.TryGetBoolFieldQuickly("possessed", ref _blnPossessed);
@@ -2289,7 +2343,10 @@ if (!Utils.IsUnitTest){
                         xmlCharacterNavigator.TryGetBoolFieldQuickly("depenabled", ref _blnDEPEnabled);
                         // Legacy shim
                         if (!_blnCreated && !_blnMAGEnabled && !_blnRESEnabled && !_blnDEPEnabled)
+                        {
                             _decEssenceAtSpecialStart = decimal.MinValue;
+                        }
+
                         xmlCharacterNavigator.TryGetBoolFieldQuickly("groupmember", ref _blnGroupMember);
                         xmlCharacterNavigator.TryGetStringFieldQuickly("groupname", ref _strGroupName);
                         xmlCharacterNavigator.TryGetStringFieldQuickly("groupnotes", ref _strGroupNotes);
@@ -2324,12 +2381,16 @@ if (!Utils.IsUnitTest){
                             string strImprovementSource = objXmlImprovement["improvementsource"]?.InnerText;
                             // Do not load condition monitor improvements from older versions of Chummer
                             if (strImprovementSource == "ConditionMonitor")
+                            {
                                 continue;
+                            }
 
                             // Do not load essence loss improvements if this character does not have any attributes affected by essence loss
                             if (_decEssenceAtSpecialStart == decimal.MinValue &&
                                 (strImprovementSource == "EssenceLoss" || strImprovementSource == "EssenceLossChargen"))
+                            {
                                 continue;
+                            }
 
                             string strLoopSourceName = objXmlImprovement["sourcename"]?.InnerText;
                             if (!string.IsNullOrEmpty(strLoopSourceName) && strLoopSourceName.IsGuid() &&
@@ -2417,11 +2478,16 @@ if (!Utils.IsUnitTest){
                                     objQuality.Load(objXmlQuality);
                                     // Corrects an issue arising from older versions of CorrectedUnleveledQuality()
                                     if (_lstQualities.Any(x => x.InternalId == objQuality.InternalId))
+                                    {
                                         objQuality.SetGUID(Guid.NewGuid());
+                                    }
+
                                     _lstQualities.Add(objQuality);
                                     if (objQuality.GetNode()?.SelectSingleNode("bonus/addgear/name")?.InnerText ==
                                         "Living Persona")
+                                    {
                                         objLivingPersonaQuality = objQuality;
+                                    }
                                     // Legacy shim
                                     if (LastSavedVersion <= new Version("5.195.1") &&
                                         (objQuality.Name == "The Artisan's Way" ||
@@ -2574,7 +2640,9 @@ if (!Utils.IsUnitTest){
 
                         // If old Qualities are in use, they need to be converted before loading can continue.
                         if (blnHasOldQualities)
+                        {
                             ConvertOldQualities(objXmlNodeList);
+                        }
                         //Timekeeper.Finish("load_char_quality");
                     }
 
@@ -2606,7 +2674,9 @@ if (!Utils.IsUnitTest){
                                 if (xmlTraditionDataNode != null)
                                 {
                                     if (!_objTradition.Create(xmlTraditionDataNode, true))
+                                    {
                                         _objTradition.ResetTradition();
+                                    }
                                 }
                                 else
                                 {
@@ -2615,7 +2685,9 @@ if (!Utils.IsUnitTest){
                                     if (xmlTraditionDataNode != null)
                                     {
                                         if (!_objTradition.Create(xmlTraditionDataNode, true))
+                                        {
                                             _objTradition.ResetTradition();
+                                        }
                                     }
                                     else
                                     {
@@ -2623,7 +2695,9 @@ if (!Utils.IsUnitTest){
                                         if (xmlTraditionDataNode != null)
                                         {
                                             if (!_objTradition.Create(xmlTraditionDataNode, true))
+                                            {
                                                 _objTradition.ResetTradition();
+                                            }
                                         }
                                     }
                                 }
@@ -2658,7 +2732,9 @@ if (!Utils.IsUnitTest){
                                     if (xmlTraditionDataNode != null)
                                     {
                                         if (!_objTradition.Create(xmlTraditionDataNode))
+                                        {
                                             _objTradition.ResetTradition();
+                                        }
                                     }
                                     else
                                     {
@@ -2668,7 +2744,9 @@ if (!Utils.IsUnitTest){
                                         if (xmlTraditionDataNode != null)
                                         {
                                             if (!_objTradition.Create(xmlTraditionDataNode))
+                                            {
                                                 _objTradition.ResetTradition();
+                                            }
                                         }
                                     }
                                 }
@@ -2896,14 +2974,19 @@ if (!Utils.IsUnitTest){
                                     objCyberware.PairBonus = objNode["pairbonus"];
                                     if (!string.IsNullOrEmpty(objCyberware.Forced) && objCyberware.Forced != "Right" &&
                                         objCyberware.Forced != "Left")
+                                    {
                                         ImprovementManager.ForcedValue = objCyberware.Forced;
+                                    }
+
                                     if (objCyberware.Bonus != null)
                                     {
                                         ImprovementManager.CreateImprovements(this, objCyberware.SourceType,
                                             objCyberware.InternalId, objCyberware.Bonus, false, objCyberware.Rating,
                                             objCyberware.DisplayNameShort(GlobalOptions.Language));
                                         if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
+                                        {
                                             objCyberware.Extra = ImprovementManager.SelectedValue;
+                                        }
                                     }
 
                                     if (objCyberware.WirelessOn && objCyberware.WirelessBonus != null)
@@ -2914,20 +2997,28 @@ if (!Utils.IsUnitTest){
                                             objCyberware.DisplayNameShort(GlobalOptions.Language));
                                         if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue) &&
                                             string.IsNullOrEmpty(objCyberware.Extra))
+                                        {
                                             objCyberware.Extra = ImprovementManager.SelectedValue;
+                                        }
                                     }
 
                                     if (!objCyberware.IsModularCurrentlyEquipped)
+                                    {
                                         objCyberware.ChangeModularEquip(false);
+                                    }
                                     else if (objCyberware.PairBonus != null)
                                     {
                                         Cyberware objMatchingCyberware = dicPairableCyberwares.Keys.FirstOrDefault(x =>
                                             x.Name == objCyberware.Name && x.Extra == objCyberware.Extra);
                                         if (objMatchingCyberware != null)
+                                        {
                                             dicPairableCyberwares[objMatchingCyberware] =
                                                 dicPairableCyberwares[objMatchingCyberware] + 1;
+                                        }
                                         else
+                                        {
                                             dicPairableCyberwares.Add(objCyberware, 1);
+                                        }
                                     }
                                 }
                                 else
@@ -2961,14 +3052,19 @@ if (!Utils.IsUnitTest){
                                         if (!string.IsNullOrEmpty(objCyberware.Forced) &&
                                             objCyberware.Forced != "Right" &&
                                             objCyberware.Forced != "Left")
+                                        {
                                             ImprovementManager.ForcedValue = objCyberware.Forced;
+                                        }
+
                                         if (objCyberware.Bonus != null)
                                         {
                                             ImprovementManager.CreateImprovements(this, objCyberware.SourceType,
                                                 objCyberware.InternalId, objCyberware.Bonus, false, objCyberware.Rating,
                                                 objCyberware.DisplayNameShort(GlobalOptions.Language));
                                             if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
+                                            {
                                                 objCyberware.Extra = ImprovementManager.SelectedValue;
+                                            }
                                         }
 
                                         if (objCyberware.WirelessOn && objCyberware.WirelessBonus != null)
@@ -2979,21 +3075,29 @@ if (!Utils.IsUnitTest){
                                                 objCyberware.DisplayNameShort(GlobalOptions.Language));
                                             if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue) &&
                                                 string.IsNullOrEmpty(objCyberware.Extra))
+                                            {
                                                 objCyberware.Extra = ImprovementManager.SelectedValue;
+                                            }
                                         }
 
                                         if (!objCyberware.IsModularCurrentlyEquipped)
+                                        {
                                             objCyberware.ChangeModularEquip(false);
+                                        }
                                         else if (objCyberware.PairBonus != null)
                                         {
                                             Cyberware objMatchingCyberware = dicPairableCyberwares.Keys.FirstOrDefault(
                                                 x =>
                                                     x.Name == objCyberware.Name && x.Extra == objCyberware.Extra);
                                             if (objMatchingCyberware != null)
+                                            {
                                                 dicPairableCyberwares[objMatchingCyberware] =
                                                     dicPairableCyberwares[objMatchingCyberware] + 1;
+                                            }
                                             else
+                                            {
                                                 dicPairableCyberwares.Add(objCyberware, 1);
+                                            }
                                         }
                                     }
                                     else
@@ -3021,9 +3125,13 @@ if (!Utils.IsUnitTest){
                                 foreach (Cyberware objPairableCyberware in lstPairableCyberwares)
                                 {
                                     if (objPairableCyberware.Location != objCyberware.Location)
+                                    {
                                         intNotMatchLocationCount += 1;
+                                    }
                                     else
+                                    {
                                         intMatchLocationCount += 1;
+                                    }
                                 }
 
                                 // Set the count to the total number of cyberwares in matching pairs, which would mean 2x the number of whichever location contains the fewest members (since every single one of theirs would have a pair)
@@ -3039,19 +3147,26 @@ if (!Utils.IsUnitTest){
                                         if (!string.IsNullOrEmpty(objCyberware.Forced) &&
                                             objCyberware.Forced != "Right" &&
                                             objCyberware.Forced != "Left")
+                                        {
                                             ImprovementManager.ForcedValue = objCyberware.Forced;
+                                        }
+
                                         ImprovementManager.CreateImprovements(this, objLoopCyberware.SourceType,
                                             objLoopCyberware.InternalId + "Pair", objLoopCyberware.PairBonus, false,
                                             objLoopCyberware.Rating,
                                             objLoopCyberware.DisplayNameShort(GlobalOptions.Language));
                                         if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue) &&
                                             string.IsNullOrEmpty(objCyberware.Extra))
+                                        {
                                             objCyberware.Extra = ImprovementManager.SelectedValue;
+                                        }
                                     }
 
                                     intCyberwaresCount -= 1;
                                     if (intCyberwaresCount <= 0)
+                                    {
                                         break;
+                                    }
                                 }
                             }
                         }
@@ -3092,8 +3207,10 @@ if (!Utils.IsUnitTest){
                             }
 
                             if (!string.IsNullOrEmpty(strGuid))
+                            {
                                 lstPowerOrder.Add(new ListItem(strGuid,
                                     strPowerName + (xmlPower["extra"]?.InnerText ?? string.Empty)));
+                            }
                             else
                             {
                                 Power objPower = new Power(this);
@@ -3528,7 +3645,10 @@ if (!Utils.IsUnitTest){
 
                                     objQuality.Create(objXmlDwarfQuality, QualitySource.Metatype, lstWeapons);
                                     foreach (Weapon objWeapon in lstWeapons)
+                                    {
                                         _lstWeapons.Add(objWeapon);
+                                    }
+
                                     _lstQualities.Add(objQuality);
                                 }
                             }
@@ -3652,11 +3772,15 @@ if (!Utils.IsUnitTest){
                         {
                             int intMAGTotalValue = MAG.TotalValue;
                             if (MysticAdeptPowerPoints > intMAGTotalValue)
+                            {
                                 MysticAdeptPowerPoints = intMAGTotalValue;
+                            }
                         }
 
                         if (!InitiationEnabled || !AddInitiationsAllowed)
+                        {
                             ClearInitiations();
+                        }
                         //Timekeeper.Finish("load_char_improvementrefreshers");
                     }
 
@@ -3722,7 +3846,9 @@ if (!Utils.IsUnitTest){
                         objMetatypeNode.SelectSingleNode("metavariants/metavariant[name = \"" + Metavariant + "\"]");
 
                     if (objMetatypeNode != null)
+                    {
                         strMetavariant = objMetatypeNode["translate"]?.InnerText ?? Metavariant;
+                    }
                 }
             }
 
@@ -4192,19 +4318,30 @@ if (!Utils.IsUnitTest){
             {
                 string strName = GetObjectName(objImprovement, strLanguageToPrint);
                 if (strName == objImprovement.SourceName)
+                {
                     strName = objImprovement.UniqueName;
+                }
+
                 strName += LanguageManager.GetString("String_Colon", strLanguageToPrint) + LanguageManager.GetString("String_Space", strLanguageToPrint);
                 if (objImprovement.Value > 0)
+                {
                     strName += '+';
+                }
+
                 strName += objImprovement.Value.ToString(objCulture);
 
                 if (!string.IsNullOrEmpty(objImprovement.Condition))
+                {
                     strName += ',' + LanguageManager.GetString("String_Space", strLanguageToPrint) + objImprovement.Condition;
+                }
 
                 objWriter.WriteStartElement("limitmodifier");
                 objWriter.WriteElementString("name", strName);
                 if (Options.PrintNotes)
+                {
                     objWriter.WriteElementString("notes", objImprovement.Notes);
+                }
+
                 objWriter.WriteEndElement();
             }
 
@@ -4226,19 +4363,30 @@ if (!Utils.IsUnitTest){
             {
                 string strName = GetObjectName(objImprovement, strLanguageToPrint);
                 if (strName == objImprovement.SourceName)
+                {
                     strName = objImprovement.UniqueName;
+                }
+
                 strName += LanguageManager.GetString("String_Colon", strLanguageToPrint) + LanguageManager.GetString("String_Space", strLanguageToPrint);
                 if (objImprovement.Value > 0)
+                {
                     strName += '+';
+                }
+
                 strName += objImprovement.Value.ToString(objCulture);
 
                 if (!string.IsNullOrEmpty(objImprovement.Condition))
+                {
                     strName += ',' + LanguageManager.GetString("String_Space", strLanguageToPrint) + objImprovement.Condition;
+                }
 
                 objWriter.WriteStartElement("limitmodifier");
                 objWriter.WriteElementString("name", strName);
                 if (Options.PrintNotes)
+                {
                     objWriter.WriteElementString("notes", objImprovement.Notes);
+                }
+
                 objWriter.WriteEndElement();
             }
 
@@ -4260,19 +4408,30 @@ if (!Utils.IsUnitTest){
             {
                 string strName = GetObjectName(objImprovement, strLanguageToPrint);
                 if (strName == objImprovement.SourceName)
+                {
                     strName = objImprovement.UniqueName;
+                }
+
                 strName += LanguageManager.GetString("String_Colon", strLanguageToPrint) + LanguageManager.GetString("String_Space", strLanguageToPrint);
                 if (objImprovement.Value > 0)
+                {
                     strName += '+';
+                }
+
                 strName += objImprovement.Value.ToString(objCulture);
 
                 if (!string.IsNullOrEmpty(objImprovement.Condition))
+                {
                     strName += ',' + LanguageManager.GetString("String_Space", strLanguageToPrint) + objImprovement.Condition;
+                }
 
                 objWriter.WriteStartElement("limitmodifier");
                 objWriter.WriteElementString("name", strName);
                 if (Options.PrintNotes)
+                {
                     objWriter.WriteElementString("notes", objImprovement.Notes);
+                }
+
                 objWriter.WriteEndElement();
             }
 
@@ -4537,7 +4696,9 @@ if (!Utils.IsUnitTest){
             objWriter.WriteStartElement("calendar");
             //Calendar.Sort();
             foreach (CalendarWeek objWeek in Calendar)
+            {
                 objWeek.Print(objWriter, objCulture, Options.PrintNotes);
+            }
             // </expenses>
             objWriter.WriteEndElement();
 
@@ -4547,7 +4708,9 @@ if (!Utils.IsUnitTest){
                 // <expenses>
                 objWriter.WriteStartElement("expenses");
                 foreach (ExpenseLogEntry objExpense in ExpenseEntries.Reverse())
+                {
                     objExpense.Print(objWriter, objCulture, strLanguageToPrint);
+                }
                 // </expenses>
                 objWriter.WriteEndElement();
             }
@@ -4749,8 +4912,11 @@ if (!Utils.IsUnitTest){
                     {
                         string strWareReturn = objReturnCyberware.DisplayNameShort(strLanguage);
                         if (objReturnCyberware.Parent != null)
+                        {
                             strWareReturn += strSpaceCharacter + '(' +
                                              objReturnCyberware.Parent.DisplayNameShort(strLanguage) + ')';
+                        }
+
                         if (wireless)
                         {
                             strWareReturn += strSpaceCharacter + LanguageManager.GetString("String_Wireless");
@@ -4768,16 +4934,21 @@ if (!Utils.IsUnitTest){
                             {
                                 string strWareReturn = objReturnCyberware.DisplayNameShort(strLanguage);
                                 if (objReturnCyberware.Parent != null)
+                                {
                                     strWareReturn += strSpaceCharacter + '(' +
                                                      objVehicle.DisplayNameShort(strLanguage) + ',' +
                                                      strSpaceCharacter + objVehicleMod.DisplayNameShort(strLanguage) +
                                                      ',' + strSpaceCharacter +
                                                      objReturnCyberware.Parent.DisplayNameShort(strLanguage) + ')';
+                                }
                                 else
+                                {
                                     strWareReturn += strSpaceCharacter + '(' +
                                                      objVehicle.DisplayNameShort(strLanguage) + ',' +
                                                      strSpaceCharacter + objVehicleMod.DisplayNameShort(strLanguage) +
                                                      ')';
+                                }
+
                                 if (wireless)
                                 {
                                     strWareReturn += LanguageManager.GetString("String_Wireless");
@@ -4795,7 +4966,10 @@ if (!Utils.IsUnitTest){
                     {
                         string strGearReturn = objReturnGear.DisplayNameShort(strLanguage);
                         if (objReturnGear.Parent != null && objReturnGear.Parent is Gear parent)
+                        {
                             strGearReturn += LanguageManager.GetString("String_Space", strLanguage) + '(' + parent.DisplayNameShort(strLanguage) + ')';
+                        }
+
                         if (wireless)
                         {
                             strGearReturn += LanguageManager.GetString("String_Wireless");
@@ -4814,14 +4988,19 @@ if (!Utils.IsUnitTest){
                             {
                                 string strGearReturn = objReturnGear.DisplayNameShort(strLanguage);
                                 if (objReturnGear.Parent != null && objReturnGear.Parent is Gear parent)
+                                {
                                     strGearReturn += strSpaceCharacter + '(' + objWeapon.DisplayNameShort(strLanguage) +
                                                      ',' + strSpaceCharacter +
                                                      objAccessory.DisplayNameShort(strLanguage) + ',' +
                                                      strSpaceCharacter + parent.DisplayNameShort(strLanguage) + ')';
+                                }
                                 else
+                                {
                                     strGearReturn += strSpaceCharacter + '(' + objWeapon.DisplayNameShort(strLanguage) +
                                                      ',' + strSpaceCharacter +
                                                      objAccessory.DisplayNameShort(strLanguage) + ')';
+                                }
+
                                 if (wireless)
                                 {
                                     strGearReturn += LanguageManager.GetString("String_Wireless");
@@ -4839,10 +5018,15 @@ if (!Utils.IsUnitTest){
                         {
                             string strGearReturn = objReturnGear.DisplayNameShort(strLanguage);
                             if (objReturnGear.Parent != null && objReturnGear.Parent is Gear parent)
+                            {
                                 strGearReturn += strSpaceCharacter + '(' + objArmor.DisplayNameShort(strLanguage) +
                                                  ',' + strSpaceCharacter + parent.DisplayNameShort(strLanguage) + ')';
+                            }
                             else
+                            {
                                 strGearReturn += strSpaceCharacter + '(' + objArmor.DisplayNameShort(strLanguage) + ')';
+                            }
+
                             if (wireless)
                             {
                                 strGearReturn += LanguageManager.GetString("String_Wireless");
@@ -4859,11 +5043,16 @@ if (!Utils.IsUnitTest){
                         {
                             string strGearReturn = objReturnGear.DisplayNameShort(strLanguage);
                             if (objReturnGear.Parent != null && objReturnGear.Parent is Gear parent)
+                            {
                                 strGearReturn += strSpaceCharacter + '(' + objCyberware.DisplayNameShort(strLanguage) +
                                                  ',' + strSpaceCharacter + parent.DisplayNameShort(strLanguage) + ')';
+                            }
                             else
+                            {
                                 strGearReturn += strSpaceCharacter + '(' + objCyberware.DisplayNameShort(strLanguage) +
                                                  ')';
+                            }
+
                             if (wireless)
                             {
                                 strGearReturn += LanguageManager.GetString("String_Wireless");
@@ -4880,11 +5069,16 @@ if (!Utils.IsUnitTest){
                         {
                             string strGearReturn = objReturnGear.DisplayNameShort(strLanguage);
                             if (objReturnGear.Parent != null && objReturnGear.Parent is Gear parent)
+                            {
                                 strGearReturn += strSpaceCharacter + '(' + objVehicle.DisplayNameShort(strLanguage) +
                                                  ',' + strSpaceCharacter + parent.DisplayNameShort(strLanguage) + ')';
+                            }
                             else
+                            {
                                 strGearReturn += strSpaceCharacter + '(' + objVehicle.DisplayNameShort(strLanguage) +
                                                  ')';
+                            }
+
                             if (wireless)
                             {
                                 strGearReturn += LanguageManager.GetString("String_Wireless");
@@ -4903,18 +5097,23 @@ if (!Utils.IsUnitTest){
                                 {
                                     string strGearReturn = objReturnGear.DisplayNameShort(strLanguage);
                                     if (objReturnGear.Parent != null && objReturnGear.Parent is Gear parent)
+                                    {
                                         strGearReturn += strSpaceCharacter + '(' +
                                                          objVehicle.DisplayNameShort(strLanguage) + ',' +
                                                          strSpaceCharacter + objWeapon.DisplayNameShort(strLanguage) +
                                                          ',' + strSpaceCharacter +
                                                          objAccessory.DisplayNameShort(strLanguage) + ',' +
                                                          strSpaceCharacter + parent.DisplayNameShort(strLanguage) + ')';
+                                    }
                                     else
+                                    {
                                         strGearReturn += strSpaceCharacter + '(' +
                                                          objVehicle.DisplayNameShort(strLanguage) + ',' +
                                                          strSpaceCharacter + objWeapon.DisplayNameShort(strLanguage) +
                                                          ',' + strSpaceCharacter +
                                                          objAccessory.DisplayNameShort(strLanguage) + ')';
+                                    }
+
                                     if (wireless)
                                     {
                                         strGearReturn += LanguageManager.GetString("String_Wireless");
@@ -4937,6 +5136,7 @@ if (!Utils.IsUnitTest){
                                     {
                                         string strGearReturn = objReturnGear.DisplayNameShort(strLanguage);
                                         if (objReturnGear.Parent != null && objReturnGear.Parent is Gear parent)
+                                        {
                                             strGearReturn += strSpaceCharacter + '(' +
                                                              objVehicle.DisplayNameShort(strLanguage) + ',' +
                                                              strSpaceCharacter +
@@ -4947,7 +5147,9 @@ if (!Utils.IsUnitTest){
                                                              objAccessory.DisplayNameShort(strLanguage) + ',' +
                                                              strSpaceCharacter + parent.DisplayNameShort(strLanguage) +
                                                              ')';
+                                        }
                                         else
+                                        {
                                             strGearReturn += strSpaceCharacter + '(' +
                                                              objVehicle.DisplayNameShort(strLanguage) + ',' +
                                                              strSpaceCharacter +
@@ -4956,6 +5158,8 @@ if (!Utils.IsUnitTest){
                                                              objWeapon.DisplayNameShort(strLanguage) + ',' +
                                                              strSpaceCharacter +
                                                              objAccessory.DisplayNameShort(strLanguage) + ')';
+                                        }
+
                                         if (wireless)
                                         {
                                             strGearReturn += LanguageManager.GetString("String_Wireless");
@@ -4974,6 +5178,7 @@ if (!Utils.IsUnitTest){
                                 {
                                     string strGearReturn = objReturnGear.DisplayNameShort(strLanguage);
                                     if (objReturnGear.Parent != null && objReturnGear.Parent is Gear parent)
+                                    {
                                         strGearReturn += strSpaceCharacter + '(' +
                                                          objVehicle.DisplayNameShort(strLanguage) + ',' +
                                                          strSpaceCharacter +
@@ -4981,13 +5186,17 @@ if (!Utils.IsUnitTest){
                                                          strSpaceCharacter +
                                                          objCyberware.DisplayNameShort(strLanguage) + ',' +
                                                          strSpaceCharacter + parent.DisplayNameShort(strLanguage) + ')';
+                                    }
                                     else
+                                    {
                                         strGearReturn += strSpaceCharacter + '(' +
                                                          objVehicle.DisplayNameShort(strLanguage) + ',' +
                                                          strSpaceCharacter +
                                                          objVehicleMod.DisplayNameShort(strLanguage) + ',' +
                                                          strSpaceCharacter +
                                                          objCyberware.DisplayNameShort(strLanguage) + ')';
+                                    }
+
                                     if (wireless)
                                     {
                                         strGearReturn += LanguageManager.GetString("String_Wireless");
@@ -5166,17 +5375,24 @@ if (!Utils.IsUnitTest){
                     return LanguageManager.GetString("String_Tradition", strLanguage);
                 default:
                     if (objImprovement.ImproveType == Improvement.ImprovementType.ArmorEncumbrancePenalty)
+                    {
                         return LanguageManager.GetString("String_ArmorEncumbrance", strLanguage);
+                    }
                     // If this comes from a custom Improvement, use the name the player gave it instead of showing a GUID.
                     if (!string.IsNullOrEmpty(objImprovement.CustomName))
+                    {
                         return objImprovement.CustomName;
+                    }
+
                     string strReturn = objImprovement.SourceName;
                     if (string.IsNullOrEmpty(strReturn) || strReturn.IsGuid())
                     {
                         string strTemp = LanguageManager.GetString("String_" + objImprovement.ImproveSource.ToString(),
                             strLanguage, false);
                         if (!string.IsNullOrEmpty(strTemp))
+                        {
                             strReturn = strTemp;
+                        }
                     }
 
                     return strReturn;
@@ -5214,18 +5430,24 @@ if (!Utils.IsUnitTest){
                 strXPath = "/chummer/grades/grade[(" + strFilter.ToString() + ")]";
             }
             else
+            {
                 strXPath = "/chummer/grades/grade";
+            }
 
             using (XmlNodeList xmlGradeList = XmlManager
                 .Load(objSource == Improvement.ImprovementSource.Bioware ? "bioware.xml" : objSource == Improvement.ImprovementSource.Drug ? "drugcomponents.xml" : "cyberware.xml")
                 .SelectNodes(strXPath))
+            {
                 if (xmlGradeList != null)
+                {
                     foreach (XmlNode objNode in xmlGradeList)
                     {
                         Grade objGrade = new Grade(objSource);
                         objGrade.Load(objNode);
                         lstGrades.Add(objGrade);
                     }
+                }
+            }
 
             return lstGrades;
         }
@@ -5246,16 +5468,20 @@ if (!Utils.IsUnitTest){
                 foreach (CritterPower objPower in CritterPowers)
                 {
                     if (objPower.CountTowardsLimit)
+                    {
                         decPowerPoints += objPower.PowerPoints;
+                    }
                 }
 
                 int intPowerPoints = EDG.TotalValue + ImprovementManager.ValueOf(this, Improvement.ImprovementType.FreeSpiritPowerPoints);
 
                 // If the house rule to base Power Points on the character's MAG value instead, use the character's MAG.
                 if (Options.FreeSpiritPowerPointsMAG)
+                {
                     intPowerPoints = MAG.TotalValue +
                                      ImprovementManager.ValueOf(this,
                                          Improvement.ImprovementType.FreeSpiritPowerPoints);
+                }
 
                 strReturn = intPowerPoints.ToString(GlobalOptions.CultureInfo) + strSpace + '(' + (intPowerPoints - decPowerPoints).ToString(GlobalOptions.CultureInfo)
                             + strSpace + LanguageManager.GetString("String_Remaining", GlobalOptions.Language) + ')';
@@ -5284,7 +5510,9 @@ if (!Utils.IsUnitTest){
                 foreach (CritterPower objPower in CritterPowers)
                 {
                     if (objPower.Category != "Weakness" && objPower.CountTowardsLimit)
+                    {
                         intUsed += 1;
+                    }
                 }
 
                 strReturn = intPowerPoints.ToString(GlobalOptions.CultureInfo) + strSpace + '(' + (intPowerPoints - intUsed).ToString(GlobalOptions.CultureInfo)
@@ -5305,7 +5533,9 @@ if (!Utils.IsUnitTest){
             foreach (CritterPower objPower in CritterPowers)
             {
                 if (objPower.CountTowardsLimit)
+                {
                     intUsedPowerPoints += 1;
+                }
             }
 
             int intPowerPoints = EDG.TotalValue + ImprovementManager.ValueOf(this, Improvement.ImprovementType.FreeSpiritPowerPoints);
@@ -5472,8 +5702,10 @@ if (!Utils.IsUnitTest){
                                                       Options.KarmaAttribute;
                             }
                             else
+                            {
                                 intAttributesValue += ((intLoopAttribValue + 1) * intLoopAttribValue / 2 - 1) *
                                                       Options.KarmaAttribute;
+                            }
                         }
                     }
                 }
@@ -5548,10 +5780,14 @@ if (!Utils.IsUnitTest){
                             intTemp += Options.KarmaNewActiveSkill;
                             intTemp += ((intLoopRating + 1) * intLoopRating / 2 - 1) * Options.KarmaImproveActiveSkill;
                             if (BuildMethod == CharacterBuildMethod.LifeModule)
+                            {
                                 intTemp += objLoopActiveSkill.Specializations.Count(x => x.Free) *
                                            Options.KarmaSpecialization;
+                            }
                             else if (!objLoopActiveSkill.BuyWithKarma)
+                            {
                                 intTemp += objLoopActiveSkill.Specializations.Count * Options.KarmaSpecialization;
+                            }
                         }
                     }
                 }
@@ -5617,11 +5853,15 @@ if (!Utils.IsUnitTest){
                     intKnowledgePointsValue += ((intLoopRating + 1) * intLoopRating / 2 - 1) *
                                                Options.KarmaImproveKnowledgeSkill;
                     if (BuildMethod == CharacterBuildMethod.LifeModule)
+                    {
                         intKnowledgePointsValue += objLoopKnowledgeSkill.Specializations.Count(x => x.Free) *
                                                    Options.KarmaKnowledgeSpecialization;
+                    }
                     else if (!objLoopKnowledgeSkill.BuyWithKarma)
+                    {
                         intKnowledgePointsValue += objLoopKnowledgeSkill.Specializations.Count *
                                                    Options.KarmaKnowledgeSpecialization;
+                    }
                 }
             }
 
@@ -5661,11 +5901,15 @@ if (!Utils.IsUnitTest){
                 {
                     if (objImprovement.ImproveType == Improvement.ImprovementType.BlackMarketDiscount &&
                         objImprovement.Enabled)
+                    {
                         setNames.Add(objImprovement.ImprovedName);
+                    }
                 }
 
                 using (XmlNodeList xmlCategoryList = xmlCategoryDocument.SelectNodes("/chummer/categories/category"))
+                {
                     if (xmlCategoryList != null)
+                    {
                         // For each category node, split the comma-separated blackmarket attribute (if present on the node), then add each category where any of those items matches a Black Market Pipeline improvement.
                         foreach (XmlNode xmlCategoryNode in xmlCategoryList)
                         {
@@ -5676,6 +5920,8 @@ if (!Utils.IsUnitTest){
                                 setBlackMarketMaps.Add(xmlCategoryNode.InnerText);
                             }
                         }
+                    }
+                }
             }
 
             return setBlackMarketMaps;
@@ -5696,7 +5942,9 @@ if (!Utils.IsUnitTest){
                 {
                     if (objImprovement.ImproveType == Improvement.ImprovementType.BlackMarketDiscount &&
                         objImprovement.Enabled)
+                    {
                         setNames.Add(objImprovement.ImprovedName);
+                    }
                 }
 
                 // For each category node, split the comma-separated blackmarket attribute (if present on the node), then add each category where any of those items matches a Black Market Pipeline improvement.
@@ -5721,12 +5969,9 @@ if (!Utils.IsUnitTest){
         /// <summary>
         /// Verify that the user wants to delete an item.
         /// </summary>
-        public bool ConfirmDelete(string strMessage)
-        {
-            return !Options.ConfirmDelete ||
+        public bool ConfirmDelete(string strMessage) => !Options.ConfirmDelete ||
                    Program.MainForm.ShowMessageBox(strMessage, LanguageManager.GetString("MessageTitle_Delete", GlobalOptions.Language),
                        MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes;
-        }
 
         /// <summary>
         /// Verify that the user wants to spend their Karma and did not accidentally click the button.
@@ -5737,9 +5982,13 @@ if (!Utils.IsUnitTest){
                 Program.MainForm.ShowMessageBox(strMessage,
                     LanguageManager.GetString("MessageTitle_ConfirmKarmaExpense", GlobalOptions.Language),
                     MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
+            {
                 return false;
+            }
             else
+            {
                 return true;
+            }
         }
 
         #region Move TreeNodes
@@ -5755,8 +6004,13 @@ if (!Utils.IsUnitTest){
             for (TreeNode objCheckNode = objDestination;
                 objCheckNode != null && objCheckNode.Level >= objDestination.Level;
                 objCheckNode = objCheckNode.Parent)
+            {
                 if (objCheckNode == objGearNode)
+                {
                     return;
+                }
+            }
+
             if (!(objGearNode.Tag is Gear objGear))
             {
                 return;
@@ -5779,13 +6033,19 @@ if (!Utils.IsUnitTest){
             }
 
             if (!blnAllowMove)
+            {
                 return;
+            }
 
             // Remove the Gear from the character.
             if (objGear.Parent is IHasChildren<Gear> parent)
+            {
                 parent.Children.Remove(objGear);
+            }
             else
+            {
                 Gear.Remove(objGear);
+            }
 
             if (objDestination.Tag is Location objLocation)
             {
@@ -5814,7 +6074,9 @@ if (!Utils.IsUnitTest){
             {
                 TreeNode objNewParent = objDestination;
                 while (objNewParent.Level > 0 && !(objNewParent.Tag is Location))
+                {
                     objNewParent = objNewParent.Parent;
+                }
 
                 if (objNewParent.Tag is Location objLocation)
                 {
@@ -5843,15 +6105,23 @@ if (!Utils.IsUnitTest){
             {
                 TreeNode objNewParent = objDestination;
                 while (objNewParent.Level > 0)
+                {
                     objNewParent = objNewParent.Parent;
+                }
+
                 intNewIndex = objNewParent.Index;
             }
 
             if (intNewIndex == 0)
+            {
                 return;
+            }
 
             if (!(nodOldNode.Tag is Location objLocation))
+            {
                 return;
+            }
+
             GearLocations.Move(GearLocations.IndexOf(objLocation), intNewIndex);
         }
 
@@ -5867,15 +6137,22 @@ if (!Utils.IsUnitTest){
             {
                 TreeNode objNewParent = objDestination;
                 while (objNewParent.Level > 0)
+                {
                     objNewParent = objNewParent.Parent;
+                }
+
                 intNewIndex = objNewParent.Index;
             }
 
             if (intNewIndex == 0)
+            {
                 return;
+            }
 
             if (nodLifestyleNode.Tag is Lifestyle objLifestyle)
+            {
                 Lifestyles.Move(Lifestyles.IndexOf(objLifestyle), intNewIndex);
+            }
         }
 
         /// <summary>
@@ -5890,7 +6167,9 @@ if (!Utils.IsUnitTest){
             {
                 TreeNode objNewParent = objDestination;
                 while (objNewParent.Level > 0 && !(objNewParent.Tag is Location))
+                {
                     objNewParent = objNewParent.Parent;
+                }
 
                 if (objNewParent.Tag is Location objLocation)
                 {
@@ -5919,15 +6198,23 @@ if (!Utils.IsUnitTest){
             {
                 TreeNode objNewParent = objDestination;
                 while (objNewParent.Level > 0)
+                {
                     objNewParent = objNewParent.Parent;
+                }
+
                 intNewIndex = objNewParent.Index;
             }
 
             if (intNewIndex == 0)
+            {
                 return;
+            }
 
             if (!(nodOldNode.Tag is Location objLocation))
+            {
                 return;
+            }
+
             ArmorLocations.Move(ArmorLocations.IndexOf(objLocation), intNewIndex);
         }
 
@@ -5943,7 +6230,9 @@ if (!Utils.IsUnitTest){
             {
                 TreeNode objNewParent = objDestination;
                 while (objNewParent.Level > 0 && !(objNewParent.Tag is Location))
+                {
                     objNewParent = objNewParent.Parent;
+                }
 
                 if (objNewParent.Tag is Location objLocation)
                 {
@@ -5972,15 +6261,23 @@ if (!Utils.IsUnitTest){
             {
                 TreeNode objNewParent = objDestination;
                 while (objNewParent.Level > 0)
+                {
                     objNewParent = objNewParent.Parent;
+                }
+
                 intNewIndex = objNewParent.Index;
             }
 
             if (intNewIndex == 0)
+            {
                 return;
+            }
 
             if (!(nodOldNode.Tag is Location objLocation))
+            {
                 return;
+            }
+
             WeaponLocations.Move(WeaponLocations.IndexOf(objLocation), intNewIndex);
         }
 
@@ -5996,7 +6293,9 @@ if (!Utils.IsUnitTest){
             {
                 TreeNode objNewParent = objDestination;
                 while (objNewParent.Level > 0 && !(objNewParent.Tag is Location))
+                {
                     objNewParent = objNewParent.Parent;
+                }
 
                 if (objNewParent.Tag is Location objLocation)
                 {
@@ -6024,29 +6323,46 @@ if (!Utils.IsUnitTest){
             for (TreeNode objCheckNode = nodDestination;
                 objCheckNode != null && objCheckNode.Level >= nodDestination.Level;
                 objCheckNode = objCheckNode.Parent)
+            {
                 if (objCheckNode == nodGearNode)
+                {
                     return;
+                }
+            }
+
             if (!(nodGearNode.Tag is IHasInternalId nodeId))
+            {
                 return;
+            }
             // Locate the currently selected piece of Gear.
             //TODO: Better interface for determining what the parent of a bit of gear is.
             Gear objGear = Vehicles.FindVehicleGear(nodeId.InternalId, out Vehicle objOldVehicle,
                 out WeaponAccessory objOldWeaponAccessory, out Cyberware objOldCyberware);
 
             if (objGear == null)
+            {
                 return;
+            }
 
             if (nodDestination.Tag is Gear objDestinationGear)
             {
                 // Remove the Gear from the Vehicle.
                 if (objGear.Parent is IHasChildren<Gear> parent)
+                {
                     parent.Children.Remove(objGear);
+                }
                 else if (objOldCyberware != null)
+                {
                     objOldCyberware.Gear.Remove(objGear);
+                }
                 else if (objOldWeaponAccessory != null)
+                {
                     objOldWeaponAccessory.Gear.Remove(objGear);
+                }
                 else
+                {
                     objOldVehicle.Gear.Remove(objGear);
+                }
 
                 // Add the Gear to its new parent.
                 objGear.Location = null;
@@ -6066,13 +6382,21 @@ if (!Utils.IsUnitTest){
                 {
                     // Remove the Gear from the Vehicle.
                     if (objGear.Parent is IHasChildren<Gear> parent)
+                    {
                         parent.Children.Remove(objGear);
+                    }
                     else if (objOldCyberware != null)
+                    {
                         objOldCyberware.Gear.Remove(objGear);
+                    }
                     else if (objOldWeaponAccessory != null)
+                    {
                         objOldWeaponAccessory.Gear.Remove(objGear);
+                    }
                     else
+                    {
                         objOldVehicle.Gear.Remove(objGear);
+                    }
 
                     // Add the Gear to the Vehicle and set its Location.
                     objGear.Location = objLocation;
@@ -6092,7 +6416,9 @@ if (!Utils.IsUnitTest){
             {
                 TreeNode objNewParent = objDestination;
                 while (objNewParent.Level > 0)
+                {
                     objNewParent = objNewParent.Parent;
+                }
 
                 objImprovement.CustomGroup = objNewParent.Tag.ToString() == "Node_SelectedImprovements"
                     ? string.Empty
@@ -6113,12 +6439,17 @@ if (!Utils.IsUnitTest){
             {
                 TreeNode objNewParent = objDestination;
                 while (objNewParent.Level > 0)
+                {
                     objNewParent = objNewParent.Parent;
+                }
+
                 intNewIndex = objNewParent.Index;
             }
 
             if (intNewIndex == 0)
+            {
                 return;
+            }
 
             string strLocation = nodOldNode.Tag.ToString();
             ImprovementGroups.Move(ImprovementGroups.IndexOf(strLocation), intNewIndex);
@@ -6147,7 +6478,9 @@ if (!Utils.IsUnitTest){
                         {
                             if (blnKeepAdeptEligible && objToRemove.Category == "Rituals" &&
                                 !objToRemove.Descriptors.Contains("Spell"))
+                            {
                                 continue;
+                            }
                             // Remove the Improvements created by the Spell.
                             ImprovementManager.RemoveImprovements(this, Improvement.ImprovementSource.Spell,
                                 objToRemove.InternalId);
@@ -6408,7 +6741,9 @@ if (!Utils.IsUnitTest){
             get
             {
                 if (MainMugshotIndex >= Mugshots.Count || MainMugshotIndex < 0)
+                {
                     return null;
+                }
 
                 return Mugshots[MainMugshotIndex];
             }
@@ -6442,7 +6777,9 @@ if (!Utils.IsUnitTest){
             set
             {
                 if (value >= _lstMugshots.Count || value < -1)
+                {
                     value = -1;
+                }
 
                 if (_intMainMugshotIndex != value)
                 {
@@ -6551,7 +6888,10 @@ if (!Utils.IsUnitTest){
                 for (int i = 0; i < Mugshots.Count; ++i)
                 {
                     if (i == MainMugshotIndex)
+                    {
                         continue;
+                    }
+
                     Image imgMugshot = Mugshots[i];
                     objWriter.WriteStartElement("mugshot");
 
@@ -6784,7 +7124,10 @@ if (!Utils.IsUnitTest){
             get
             {
                 if (!string.IsNullOrEmpty(_strCachedCharacterGrammaticGender))
+                {
                     return _strCachedCharacterGrammaticGender;
+                }
+
                 switch (LanguageManager.ReverseTranslateExtra(Sex, GlobalOptions.Language).ToLower())
                 {
                     case "m":
@@ -7042,9 +7385,15 @@ if (!Utils.IsUnitTest){
             get
             {
                 if (!string.IsNullOrWhiteSpace(Alias))
+                {
                     return Alias;
+                }
+
                 if (!string.IsNullOrWhiteSpace(Name))
+                {
                     return Name;
+                }
+
                 return LanguageManager.GetString("String_UnnamedCharacter", GlobalOptions.Language);
             }
         }
@@ -7123,7 +7472,9 @@ if (!Utils.IsUnitTest){
             get
             {
                 if (HomeNode is Vehicle objVehicle)
+                {
                     return objVehicle.PhysicalCMFilled;
+                }
 
                 return _intPhysicalCMFilled;
             }
@@ -7388,7 +7739,9 @@ if (!Utils.IsUnitTest){
             get
             {
                 if (_intCachedCareerKarma != int.MinValue)
+                {
                     return _intCachedCareerKarma;
+                }
 
                 int intKarma = 0;
 
@@ -7396,7 +7749,9 @@ if (!Utils.IsUnitTest){
                 {
                     // Since we're only interested in the amount they have earned, only count values that are greater than 0 and are not refunds.
                     if (objEntry.Type == ExpenseType.Karma && objEntry.Amount > 0 && !objEntry.Refund)
+                    {
                         intKarma += decimal.ToInt32(objEntry.Amount);
+                    }
                 }
 
                 return _intCachedCareerKarma = intKarma;
@@ -7415,7 +7770,9 @@ if (!Utils.IsUnitTest){
             get
             {
                 if (_decCachedCareerNuyen != decimal.MinValue)
+                {
                     return _decCachedCareerNuyen;
+                }
 
                 decimal decNuyen = 0;
 
@@ -7423,7 +7780,9 @@ if (!Utils.IsUnitTest){
                 {
                     // Since we're only interested in the amount they have earned, only count values that are greater than 0 and are not refunds.
                     if (objEntry.Type == ExpenseType.Nuyen && objEntry.Amount > 0 && !objEntry.Refund)
+                    {
                         decNuyen += objEntry.Amount;
+                    }
                 }
 
                 return _decCachedCareerNuyen = decNuyen;
@@ -7507,14 +7866,21 @@ if (!Utils.IsUnitTest){
                                                    (objLoopImprovement.Condition == "create") != Created))
                 {
                     if (objLoopImprovement.ImproveType == Improvement.ImprovementType.NewSpellKarmaCost)
+                    {
                         intReturn += objLoopImprovement.Value;
+                    }
+
                     if (objLoopImprovement.ImproveType == Improvement.ImprovementType.NewSpellKarmaCostMultiplier)
+                    {
                         decMultiplier *= objLoopImprovement.Value / 100.0m;
+                    }
                 }
             }
 
             if (decMultiplier != 1.0m)
+            {
                 intReturn = decimal.ToInt32(decimal.Ceiling(intReturn * decMultiplier));
+            }
 
             return Math.Max(intReturn, 0);
         }
@@ -7533,15 +7899,22 @@ if (!Utils.IsUnitTest){
                                                        (objLoopImprovement.Condition == "create") != Created))
                     {
                         if (objLoopImprovement.ImproveType == Improvement.ImprovementType.NewComplexFormKarmaCost)
+                        {
                             intReturn += objLoopImprovement.Value;
+                        }
+
                         if (objLoopImprovement.ImproveType ==
                             Improvement.ImprovementType.NewComplexFormKarmaCostMultiplier)
+                        {
                             decMultiplier *= objLoopImprovement.Value / 100.0m;
+                        }
                     }
                 }
 
                 if (decMultiplier != 1.0m)
+                {
                     intReturn = decimal.ToInt32(decimal.Ceiling(intReturn * decMultiplier));
+                }
 
                 return Math.Max(intReturn, 0);
             }
@@ -7561,15 +7934,22 @@ if (!Utils.IsUnitTest){
                                                        (objLoopImprovement.Condition == "create") != Created))
                     {
                         if (objLoopImprovement.ImproveType == Improvement.ImprovementType.NewAIProgramKarmaCost)
+                        {
                             intReturn += objLoopImprovement.Value;
+                        }
+
                         if (objLoopImprovement.ImproveType ==
                             Improvement.ImprovementType.NewAIProgramKarmaCostMultiplier)
+                        {
                             decMultiplier *= objLoopImprovement.Value / 100.0m;
+                        }
                     }
                 }
 
                 if (decMultiplier != 1.0m)
+                {
                     intReturn = decimal.ToInt32(decimal.Ceiling(intReturn * decMultiplier));
+                }
 
                 return Math.Max(intReturn, 0);
             }
@@ -7589,15 +7969,22 @@ if (!Utils.IsUnitTest){
                                                        (objLoopImprovement.Condition == "create") != Created))
                     {
                         if (objLoopImprovement.ImproveType == Improvement.ImprovementType.NewAIAdvancedProgramKarmaCost)
+                        {
                             intReturn += objLoopImprovement.Value;
+                        }
+
                         if (objLoopImprovement.ImproveType ==
                             Improvement.ImprovementType.NewAIAdvancedProgramKarmaCostMultiplier)
+                        {
                             decMultiplier *= objLoopImprovement.Value / 100.0m;
+                        }
                     }
                 }
 
                 if (decMultiplier != 1.0m)
+                {
                     intReturn = decimal.ToInt32(decimal.Ceiling(intReturn * decMultiplier));
+                }
 
                 return Math.Max(intReturn, 0);
             }
@@ -7634,7 +8021,10 @@ if (!Utils.IsUnitTest){
         public CharacterAttrib GetAttribute(string strAttribute, bool blnExplicit = false)
         {
             if (strAttribute == "MAGAdept" && (!IsMysticAdept || !Options.MysAdeptSecondMAGAttribute) && !blnExplicit)
+            {
                 strAttribute = "MAG";
+            }
+
             return AttributeSection.GetAttributeByName(strAttribute);
         }
 
@@ -7702,9 +8092,13 @@ if (!Utils.IsUnitTest){
             get
             {
                 if (Options.MysAdeptSecondMAGAttribute && IsMysticAdept)
+                {
                     return AttributeSection.GetAttributeByName("MAGAdept");
+                }
                 else
+                {
                     return MAG;
+                }
             }
         }
 
@@ -7797,21 +8191,29 @@ if (!Utils.IsUnitTest){
                                     if (decLoopEssencePenalty != 0)
                                     {
                                         if (dicImprovementEssencePenalties.ContainsKey(objImprovement.SourceName))
+                                        {
                                             dicImprovementEssencePenalties[objImprovement.SourceName] =
                                                 dicImprovementEssencePenalties[objImprovement.SourceName] +
                                                 decLoopEssencePenalty;
+                                        }
                                         else
+                                        {
                                             dicImprovementEssencePenalties.Add(objImprovement.SourceName,
                                                 decLoopEssencePenalty);
+                                        }
                                     }
                                 }
                             }
 
                             if (dicImprovementEssencePenalties.Count > 0)
+                            {
                                 EssenceAtSpecialStart =
                                     ESS.MetatypeMaximum + dicImprovementEssencePenalties.Values.Min();
+                            }
                             else
+                            {
                                 EssenceAtSpecialStart = ESS.MetatypeMaximum;
+                            }
                         }
                     }
                     else
@@ -7830,16 +8232,24 @@ if (!Utils.IsUnitTest){
                                 if (xmlTraditionDataNode != null)
                                 {
                                     if (!MagicTradition.Create(xmlTraditionDataNode, true))
+                                    {
                                         MagicTradition.ResetTradition();
+                                    }
                                 }
                                 else
+                                {
                                     MagicTradition.ResetTradition();
+                                }
                             }
                             else
+                            {
                                 MagicTradition.ResetTradition();
+                            }
                         }
                         if (!Created && !RESEnabled && !DEPEnabled)
+                        {
                             EssenceAtSpecialStart = decimal.MinValue;
+                        }
                     }
 
                     OnPropertyChanged();
@@ -7898,7 +8308,10 @@ if (!Utils.IsUnitTest){
             get
             {
                 if (_decCachedPowerPointsUsed != decimal.MinValue)
+                {
                     return _decCachedPowerPointsUsed;
+                }
+
                 return _decCachedPowerPointsUsed = Powers.AsParallel().Sum(objPower => objPower.PowerPoints);
             }
         }
@@ -7922,14 +8335,8 @@ if (!Utils.IsUnitTest){
         [HubTag("Tradition", "", "MagicTradition", false)]
         public Tradition MagicTradition
         {
-            get
-            {
-                return _objTradition;
-            }
-            set
-            {
-                _objTradition = value;
-            }
+            get => _objTradition;
+            set => _objTradition = value;
         }
 
 
@@ -8004,21 +8411,29 @@ if (!Utils.IsUnitTest){
                                     if (decLoopEssencePenalty != 0)
                                     {
                                         if (dicImprovementEssencePenalties.ContainsKey(objImprovement.SourceName))
+                                        {
                                             dicImprovementEssencePenalties[objImprovement.SourceName] =
                                                 dicImprovementEssencePenalties[objImprovement.SourceName] +
                                                 decLoopEssencePenalty;
+                                        }
                                         else
+                                        {
                                             dicImprovementEssencePenalties.Add(objImprovement.SourceName,
                                                 decLoopEssencePenalty);
+                                        }
                                     }
                                 }
                             }
 
                             if (dicImprovementEssencePenalties.Count > 0)
+                            {
                                 EssenceAtSpecialStart =
                                     ESS.MetatypeMaximum + dicImprovementEssencePenalties.Values.Min();
+                            }
                             else
+                            {
                                 EssenceAtSpecialStart = ESS.MetatypeMaximum;
+                            }
                         }
 
                         XmlNode xmlTraditionListDataNode = XmlManager.Load("streams.xml").SelectSingleNode("/chummer/traditions");
@@ -8028,7 +8443,9 @@ if (!Utils.IsUnitTest){
                             if (xmlTraditionDataNode != null)
                             {
                                 if (!MagicTradition.Create(xmlTraditionDataNode, true))
+                                {
                                     MagicTradition.ResetTradition();
+                                }
                             }
                             else
                             {
@@ -8036,7 +8453,9 @@ if (!Utils.IsUnitTest){
                                 if (xmlTraditionDataNode != null)
                                 {
                                     if (!MagicTradition.Create(xmlTraditionDataNode, true))
+                                    {
                                         MagicTradition.ResetTradition();
+                                    }
                                 }
                             }
                         }
@@ -8057,16 +8476,24 @@ if (!Utils.IsUnitTest){
                                 if (xmlTraditionDataNode != null)
                                 {
                                     if (!MagicTradition.Create(xmlTraditionDataNode))
+                                    {
                                         MagicTradition.ResetTradition();
+                                    }
                                 }
                                 else
+                                {
                                     MagicTradition.ResetTradition();
+                                }
                             }
                             else
+                            {
                                 MagicTradition.ResetTradition();
+                            }
                         }
                         if (!Created && !DEPEnabled && !MAGEnabled)
+                        {
                             EssenceAtSpecialStart = decimal.MinValue;
+                        }
                     }
 
                     ImprovementManager.ClearCachedValue(this, Improvement.ImprovementType.MatrixInitiativeDice);
@@ -8129,25 +8556,35 @@ if (!Utils.IsUnitTest){
                                     if (decLoopEssencePenalty != 0)
                                     {
                                         if (dicImprovementEssencePenalties.ContainsKey(objImprovement.SourceName))
+                                        {
                                             dicImprovementEssencePenalties[objImprovement.SourceName] =
                                                 dicImprovementEssencePenalties[objImprovement.SourceName] +
                                                 decLoopEssencePenalty;
+                                        }
                                         else
+                                        {
                                             dicImprovementEssencePenalties.Add(objImprovement.SourceName,
                                                 decLoopEssencePenalty);
+                                        }
                                     }
                                 }
                             }
 
                             if (dicImprovementEssencePenalties.Count > 0)
+                            {
                                 EssenceAtSpecialStart =
                                     ESS.MetatypeMaximum + dicImprovementEssencePenalties.Values.Min();
+                            }
                             else
+                            {
                                 EssenceAtSpecialStart = ESS.MetatypeMaximum;
+                            }
                         }
                     }
                     else if (!Created && !RESEnabled && !MAGEnabled)
+                    {
                         EssenceAtSpecialStart = decimal.MinValue;
+                    }
 
                     OnPropertyChanged();
                 }
@@ -8241,10 +8678,7 @@ if (!Utils.IsUnitTest){
 
         private decimal _decCachedEssence = decimal.MinValue;
 
-        public void ResetCachedEssence()
-        {
-            _decCachedEssence = decimal.MinValue;
-        }
+        public void ResetCachedEssence() => _decCachedEssence = decimal.MinValue;
 
         /// <summary>
         /// Character's Essence.
@@ -8253,13 +8687,18 @@ if (!Utils.IsUnitTest){
         public decimal Essence(bool blnForMAGPenalty = false)
         {
             if (!blnForMAGPenalty && _decCachedEssence != decimal.MinValue)
+            {
                 return _decCachedEssence;
+            }
             // If the character has a fixed Essence Improvement, permanently fix their Essence at its value.
             if (_lstImprovements.Any(objImprovement =>
                 objImprovement.ImproveType == Improvement.ImprovementType.CyborgEssence && objImprovement.Enabled))
             {
                 if (blnForMAGPenalty)
+                {
                     return 0.1m;
+                }
+
                 return _decCachedEssence = 0.1m;
             }
 
@@ -8268,8 +8707,10 @@ if (!Utils.IsUnitTest){
             decESS += Convert.ToDecimal(
                           ImprovementManager.ValueOf(this, Improvement.ImprovementType.EssencePenaltyT100)) / 100.0m;
             if (blnForMAGPenalty)
+            {
                 decESS += Convert.ToDecimal(ImprovementManager.ValueOf(this,
                               Improvement.ImprovementType.EssencePenaltyMAGOnlyT100)) / 100.0m;
+            }
 
             // Run through all of the pieces of Cyberware and include their Essence cost.
             decESS -= Cyberware.AsParallel().Sum(objCyberware => objCyberware.CalculatedESS());
@@ -8278,7 +8719,10 @@ if (!Utils.IsUnitTest){
             //ESS.Base = Convert.ToInt32(decESS); -- Disabled becauses this messes up Character Validity, and it really shouldn't be what "Base" of an attribute is supposed to be (it's supposed to be extra levels gained)
 
             if (blnForMAGPenalty)
+            {
                 return decESS;
+            }
+
             return _decCachedEssence = decESS;
         }
 
@@ -8292,7 +8736,9 @@ if (!Utils.IsUnitTest){
             get
             {
                 if (_decCachedCyberwareEssence != decimal.MinValue)
+                {
                     return _decCachedCyberwareEssence;
+                }
                 // Run through all of the pieces of Cyberware and include their Essence cost. Cyberware and Bioware costs are calculated separately.
                 return _decCachedCyberwareEssence = Cyberware
                     .Where(objCyberware => !objCyberware.SourceID.Equals(Backend.Equipment.Cyberware.EssenceHoleGUID) &&
@@ -8312,7 +8758,9 @@ if (!Utils.IsUnitTest){
             get
             {
                 if (_decCachedBiowareEssence != decimal.MinValue)
+                {
                     return _decCachedBiowareEssence;
+                }
                 // Run through all of the pieces of Cyberware and include their Essence cost. Cyberware and Bioware costs are calculated separately.
                 return _decCachedBiowareEssence = Cyberware
                     .Where(objCyberware => !objCyberware.SourceID.Equals(Backend.Equipment.Cyberware.EssenceHoleGUID) &&
@@ -8332,7 +8780,9 @@ if (!Utils.IsUnitTest){
             get
             {
                 if (_decCachedEssenceHole != decimal.MinValue)
+                {
                     return _decCachedEssenceHole;
+                }
                 // Find the total Essence Cost of all Essence Hole objects.
                 return _decCachedEssenceHole = Cyberware
                     .Where(objCyberware => objCyberware.SourceID.Equals(Backend.Equipment.Cyberware.EssenceHoleGUID) ||
@@ -8387,11 +8837,15 @@ if (!Utils.IsUnitTest){
                 }
 
                 if (objHole?.Rating == 0 && Cyberware.Contains(objHole))
+                {
                     Cyberware.Remove(objHole);
+                }
             }
 
             if (objAntiHole?.Rating == 0 && Cyberware.Contains(objAntiHole))
+            {
                 Cyberware.Remove(objAntiHole);
+            }
         }
         /// <summary>
         /// Decrease or create an Essence Hole, if required.
@@ -8443,11 +8897,15 @@ if (!Utils.IsUnitTest){
                 }
 
                 if (objAntiHole?.Rating == 0 && Cyberware.Contains(objAntiHole))
+                {
                     Cyberware.Remove(objAntiHole);
+                }
             }
 
             if (objHole?.Rating == 0 && Cyberware.Contains(objHole))
+            {
                 Cyberware.Remove(objHole);
+            }
         }
 
         private decimal _decCachedPrototypeTranshumanEssenceUsed = decimal.MinValue;
@@ -8460,7 +8918,9 @@ if (!Utils.IsUnitTest){
             get
             {
                 if (_decCachedPrototypeTranshumanEssenceUsed != decimal.MinValue)
+                {
                     return _decCachedPrototypeTranshumanEssenceUsed;
+                }
                 // Find the total Essence Cost of all Prototype Transhuman 'ware.
                 return _decCachedPrototypeTranshumanEssenceUsed = Cyberware
                     .Where(objCyberware => objCyberware.PrototypeTranshuman).AsParallel()
@@ -8499,12 +8959,9 @@ if (!Utils.IsUnitTest){
             InitiativeValue.ToString(GlobalOptions.CultureInfo),
             InitiativeDice.ToString(GlobalOptions.CultureInfo));
 
-        public string GetInitiative(CultureInfo objCulture, string strLanguage)
-        {
-            return string.Format(LanguageManager.GetString("String_Initiative", strLanguage),
+        public string GetInitiative(CultureInfo objCulture, string strLanguage) => string.Format(LanguageManager.GetString("String_Initiative", strLanguage),
                 InitiativeValue.ToString(objCulture),
                 InitiativeDice.ToString(objCulture));
-        }
 
         public string InitiativeToolTip
         {
@@ -8549,7 +9006,10 @@ if (!Utils.IsUnitTest){
                 int intINI = (INT.TotalValue + REA.TotalValue) + WoundModifier;
                 intINI += ImprovementManager.ValueOf(this, Improvement.ImprovementType.Initiative);
                 if (intINI < 0)
+                {
                     intINI = 0;
+                }
+
                 return intINI;
             }
         }
@@ -8565,25 +9025,28 @@ if (!Utils.IsUnitTest){
                 AstralInitiativeValue.ToString(GlobalOptions.CultureInfo),
                 AstralInitiativeDice.ToString(GlobalOptions.CultureInfo));
 
-        public string GetAstralInitiative(CultureInfo objCulture, string strLanguageToPrint)
-        {
-            return string.Format(LanguageManager.GetString("String_Initiative", strLanguageToPrint),
+        public string GetAstralInitiative(CultureInfo objCulture, string strLanguageToPrint) => string.Format(LanguageManager.GetString("String_Initiative", strLanguageToPrint),
                 AstralInitiativeValue.ToString(objCulture),
                 AstralInitiativeDice.ToString(objCulture));
-        }
 
         public string AstralInitiativeToolTip
         {
             get
             {
                 if (!MAGEnabled)
+                {
                     return string.Empty;
+                }
+
                 int intINTAttributeModifiers = INT.AttributeModifiers;
                 string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
                 string strInit = INT.DisplayAbbrev + strSpaceCharacter + '(' + INT.Value.ToString(GlobalOptions.CultureInfo) + ')' +
                                  strSpaceCharacter + '×' + strSpaceCharacter + 2.ToString(GlobalOptions.CultureInfo);
                 if (intINTAttributeModifiers != 0 || WoundModifier != 0)
+                {
                     strInit += LanguageManager.GetString("Tip_Modifiers", GlobalOptions.Language) + strSpaceCharacter + '(' + (intINTAttributeModifiers + WoundModifier).ToString(GlobalOptions.CultureInfo) + ')';
+                }
+
                 return string.Format(LanguageManager.GetString("String_Initiative", GlobalOptions.Language), strInit, AstralInitiativeDice.ToString());
             }
         }
@@ -8611,12 +9074,9 @@ if (!Utils.IsUnitTest){
             MatrixInitiativeValue.ToString(),
             MatrixInitiativeDice.ToString());
 
-        public string GetMatrixInitiative(CultureInfo objCulture, string strLanguageToPrint)
-        {
-            return string.Format(LanguageManager.GetString("String_Initiative", strLanguageToPrint),
+        public string GetMatrixInitiative(CultureInfo objCulture, string strLanguageToPrint) => string.Format(LanguageManager.GetString("String_Initiative", strLanguageToPrint),
                 MatrixInitiativeValue.ToString(objCulture),
                 MatrixInitiativeDice.ToString(objCulture));
-        }
 
         public string MatrixInitiativeToolTip
         {
@@ -8638,7 +9098,9 @@ if (!Utils.IsUnitTest){
                         {
                             int intHomeNodePilot = objHomeNodeVehicle.Pilot;
                             if (intHomeNodePilot > intHomeNodeDP)
+                            {
                                 intHomeNodeDP = intHomeNodePilot;
+                            }
                         }
 
                         strInit += strSpaceCharacter + '+' + strSpaceCharacter + LanguageManager.GetString("String_DataProcessing") + strSpaceCharacter + '(' + intHomeNodeDP.ToString(GlobalOptions.CultureInfo) + ')';
@@ -8684,7 +9146,9 @@ if (!Utils.IsUnitTest){
                         {
                             int intHomeNodePilot = objHomeNodeVehicle.Pilot;
                             if (intHomeNodePilot > intHomeNodeDP)
+                            {
                                 intHomeNodeDP = intHomeNodePilot;
+                            }
                         }
 
                         intINI += intHomeNodeDP;
@@ -8707,9 +9171,13 @@ if (!Utils.IsUnitTest){
                 int intReturn;
                 // A.I.s always have 4 Matrix Initiative Dice.
                 if (IsAI)
+                {
                     intReturn = 4 + ImprovementManager.ValueOf(this, Improvement.ImprovementType.MatrixInitiativeDice);
+                }
                 else
+                {
                     intReturn = InitiativeDice;
+                }
 
                 // Add in any additional Matrix Initiative Pass bonuses.
                 intReturn += ImprovementManager.ValueOf(this, Improvement.ImprovementType.MatrixInitiativeDiceAdd);
@@ -9134,7 +9602,10 @@ if (!Utils.IsUnitTest){
         {
             if (IsAI || Improvements.Any(x =>
                     x.Enabled && x.ImproveType == Improvement.ImprovementType.ToxinContactImmune))
+            {
                 return LanguageManager.GetString("String_Immune", strLanguage);
+            }
+
             return (BOD.TotalValue + WIL.TotalValue +
                     ImprovementManager.ValueOf(this, Improvement.ImprovementType.ToxinContactResist))
                 .ToString(objCulture);
@@ -9147,7 +9618,10 @@ if (!Utils.IsUnitTest){
         {
             if (IsAI || Improvements.Any(x =>
                     x.Enabled && x.ImproveType == Improvement.ImprovementType.ToxinIngestionImmune))
+            {
                 return LanguageManager.GetString("String_Immune", strLanguage);
+            }
+
             return (BOD.TotalValue + WIL.TotalValue +
                     ImprovementManager.ValueOf(this, Improvement.ImprovementType.ToxinIngestionResist))
                 .ToString(objCulture);
@@ -9160,7 +9634,10 @@ if (!Utils.IsUnitTest){
         {
             if (IsAI || Improvements.Any(x =>
                     x.Enabled && x.ImproveType == Improvement.ImprovementType.ToxinInhalationImmune))
+            {
                 return LanguageManager.GetString("String_Immune", strLanguage);
+            }
+
             return (BOD.TotalValue + WIL.TotalValue +
                     ImprovementManager.ValueOf(this, Improvement.ImprovementType.ToxinInhalationResist))
                 .ToString(objCulture);
@@ -9173,7 +9650,10 @@ if (!Utils.IsUnitTest){
         {
             if (IsAI || Improvements.Any(x =>
                     x.Enabled && x.ImproveType == Improvement.ImprovementType.ToxinInjectionImmune))
+            {
                 return LanguageManager.GetString("String_Immune", strLanguage);
+            }
+
             return (BOD.TotalValue + WIL.TotalValue +
                     ImprovementManager.ValueOf(this, Improvement.ImprovementType.ToxinInjectionResist))
                 .ToString(objCulture);
@@ -9186,7 +9666,10 @@ if (!Utils.IsUnitTest){
         {
             if (IsAI || Improvements.Any(x =>
                     x.Enabled && x.ImproveType == Improvement.ImprovementType.PathogenContactImmune))
+            {
                 return LanguageManager.GetString("String_Immune", strLanguage);
+            }
+
             return (BOD.TotalValue + WIL.TotalValue +
                     ImprovementManager.ValueOf(this, Improvement.ImprovementType.PathogenContactResist))
                 .ToString(objCulture);
@@ -9199,7 +9682,10 @@ if (!Utils.IsUnitTest){
         {
             if (IsAI || Improvements.Any(x =>
                     x.Enabled && x.ImproveType == Improvement.ImprovementType.PathogenIngestionImmune))
+            {
                 return LanguageManager.GetString("String_Immune", strLanguage);
+            }
+
             return (BOD.TotalValue + WIL.TotalValue +
                     ImprovementManager.ValueOf(this, Improvement.ImprovementType.PathogenIngestionResist))
                 .ToString(objCulture);
@@ -9212,7 +9698,10 @@ if (!Utils.IsUnitTest){
         {
             if (IsAI || Improvements.Any(x =>
                     x.Enabled && x.ImproveType == Improvement.ImprovementType.PathogenInhalationImmune))
+            {
                 return LanguageManager.GetString("String_Immune", strLanguage);
+            }
+
             return (BOD.TotalValue + WIL.TotalValue +
                     ImprovementManager.ValueOf(this, Improvement.ImprovementType.PathogenInhalationResist))
                 .ToString(objCulture);
@@ -9225,7 +9714,10 @@ if (!Utils.IsUnitTest){
         {
             if (IsAI || Improvements.Any(x =>
                     x.Enabled && x.ImproveType == Improvement.ImprovementType.PathogenInjectionImmune))
+            {
                 return LanguageManager.GetString("String_Immune", strLanguage);
+            }
+
             return (BOD.TotalValue + WIL.TotalValue +
                     ImprovementManager.ValueOf(this, Improvement.ImprovementType.PathogenInjectionResist))
                 .ToString(objCulture);
@@ -9270,12 +9762,18 @@ if (!Utils.IsUnitTest){
             {
                 // Matrix damage for A.I.s is not naturally repaired
                 if (IsAI)
+                {
                     return 0;
+                }
+
                 int intReturn = BOD.TotalValue + WIL.TotalValue +
                                 ImprovementManager.ValueOf(this, Improvement.ImprovementType.StunCMRecovery);
                 if (Improvements.Any(x =>
                     x.Enabled && x.ImproveType == Improvement.ImprovementType.AddESStoStunCMRecovery))
+                {
                     intReturn += decimal.ToInt32(decimal.Floor(Essence()));
+                }
+
                 return intReturn;
             }
         }
@@ -9290,7 +9788,9 @@ if (!Utils.IsUnitTest){
                 if (IsAI)
                 {
                     if (HomeNode is Vehicle)
+                    {
                         return 0;
+                    }
 
                     // A.I.s can restore Core damage via Software + Depth [Data Processing] (1 day) Extended Test
                     int intDEPTotal = DEP.TotalValue;
@@ -9300,7 +9800,10 @@ if (!Utils.IsUnitTest){
                         ImprovementManager.ValueOf(this, Improvement.ImprovementType.PhysicalCMRecovery);
                     if (Improvements.Any(x =>
                         x.Enabled && x.ImproveType == Improvement.ImprovementType.AddESStoPhysicalCMRecovery))
+                    {
                         intAIReturn += decimal.ToInt32(decimal.Floor(Essence()));
+                    }
+
                     return intAIReturn;
                 }
 
@@ -9308,7 +9811,10 @@ if (!Utils.IsUnitTest){
                                 ImprovementManager.ValueOf(this, Improvement.ImprovementType.PhysicalCMRecovery);
                 if (Improvements.Any(x =>
                     x.Enabled && x.ImproveType == Improvement.ImprovementType.AddESStoPhysicalCMRecovery))
+                {
                     intReturn += decimal.ToInt32(decimal.Floor(Essence()));
+                }
+
                 return intReturn;
             }
         }
@@ -9372,9 +9878,11 @@ if (!Utils.IsUnitTest){
                 foreach (Improvement objImprovement in _lstImprovements)
                 {
                     if (objImprovement.ImproveType == Improvement.ImprovementType.StreetCred && objImprovement.Enabled)
+                    {
                         objReturn.Append(strSpaceCharacter + '+' + strSpaceCharacter +
                                          GetObjectName(objImprovement, GlobalOptions.Language) + strSpaceCharacter +
                                          '(' + objImprovement.Value.ToString(GlobalOptions.CultureInfo) + ')');
+                    }
                 }
 
                 objReturn.Append(strSpaceCharacter + '+' + strSpaceCharacter + '[' +
@@ -9388,9 +9896,11 @@ if (!Utils.IsUnitTest){
                                  .ToString(GlobalOptions.CultureInfo) + ')');
 
                 if (BurntStreetCred != 0)
+                {
                     objReturn.Append(strSpaceCharacter + '-' + strSpaceCharacter +
                                      LanguageManager.GetString("String_BurntStreetCred", GlobalOptions.Language) +
                                      strSpaceCharacter + '(' + BurntStreetCred + ')');
+                }
 
                 return objReturn.ToString();
             }
@@ -9444,9 +9954,11 @@ if (!Utils.IsUnitTest){
                 foreach (Improvement objImprovement in _lstImprovements)
                 {
                     if (objImprovement.ImproveType == Improvement.ImprovementType.Notoriety && objImprovement.Enabled)
+                    {
                         objReturn.Append(strSpaceCharacter + '+' + strSpaceCharacter +
                                          GetObjectName(objImprovement, GlobalOptions.Language) + strSpaceCharacter +
                                          '(' + objImprovement.Value.ToString(GlobalOptions.CultureInfo) + ')');
+                    }
                 }
 
                 /*
@@ -9456,10 +9968,12 @@ if (!Utils.IsUnitTest){
                     */
 
                 if (BurntStreetCred > 0)
+                {
                     objReturn.Append(strSpaceCharacter + '-' + strSpaceCharacter +
                                      LanguageManager.GetString("String_BurntStreetCred", GlobalOptions.Language) +
                                      strSpaceCharacter + '(' +
                                      (BurntStreetCred / 2).ToString(GlobalOptions.CultureInfo) + ')');
+                }
 
                 string strReturn = objReturn.ToString();
 
@@ -9494,7 +10008,10 @@ if (!Utils.IsUnitTest){
             {
                 int intReturn = PublicAwareness + CalculatedPublicAwareness;
                 if (Erased && intReturn >= 1)
+                {
                     return 1;
+                }
+
                 return intReturn;
             }
         }
@@ -9529,9 +10046,11 @@ if (!Utils.IsUnitTest){
                 {
                     if (objImprovement.ImproveType == Improvement.ImprovementType.PublicAwareness &&
                         objImprovement.Enabled)
+                    {
                         objReturn.Append(strSpaceCharacter + '+' + strSpaceCharacter +
                                          GetObjectName(objImprovement, GlobalOptions.Language) + strSpaceCharacter +
                                          '(' + objImprovement.Value.ToString(GlobalOptions.CultureInfo) + ')');
+                    }
                 }
 
                 if (_objOptions.UseCalculatedPublicAwareness)
@@ -9787,7 +10306,9 @@ if (!Utils.IsUnitTest){
                 string strHighest = string.Empty;
 
                 if (Armor.Count == 0)
+                {
                     return 0;
+                }
                 // Run through the list of Armor currently worn and retrieve the highest total Armor rating.
                 foreach (Armor objArmor in Armor.Where(objArmor =>
                     !objArmor.ArmorValue.StartsWith('+') && objArmor.Equipped))
@@ -9803,7 +10324,9 @@ if (!Utils.IsUnitTest){
                         {
                             if (a.ArmorMods.Any(objMod =>
                                 objMod.Name == "Custom Fit (Stack)" && objMod.Extra == strArmorName))
+                            {
                                 intCustomStackBonus += Convert.ToInt32(a.ArmorOverrideValue);
+                            }
                         }
                     }
 
@@ -9824,9 +10347,13 @@ if (!Utils.IsUnitTest){
                     objArmor.Name != strHighest && objArmor.Category == "Clothing" && objArmor.Equipped))
                 {
                     if (objArmor.ArmorValue.StartsWith('+'))
+                    {
                         intClothing += objArmor.TotalArmor;
+                    }
                     else
+                    {
                         intClothing += objArmor.TotalOverrideArmor;
+                    }
                 }
 
                 if (intClothing > intHighest)
@@ -9857,9 +10384,13 @@ if (!Utils.IsUnitTest){
                     if (blnDoAdd)
                     {
                         if (objArmor.ArmorValue.StartsWith('+'))
+                        {
                             intStacking += objArmor.TotalArmor;
+                        }
                         else
+                        {
                             intStacking += objArmor.TotalOverrideArmor;
+                        }
                     }
                 }
 
@@ -9942,10 +10473,12 @@ if (!Utils.IsUnitTest){
                                                              INT.TotalValue.ToString(GlobalOptions.CultureInfo) + ')');
 
                 if (CurrentCounterspellingDice != 0)
+                {
                     objToolTip.Append(strSpaceCharacter + '+' + strSpaceCharacter +
                                       LanguageManager.GetString("Label_CounterspellingDice", GlobalOptions.Language) +
                                       strSpaceCharacter + '(' +
                                       CurrentCounterspellingDice.ToString(GlobalOptions.CultureInfo) + ')');
+                }
 
                 int intModifiers = TotalBonusDodgeRating;
 
@@ -9965,7 +10498,9 @@ if (!Utils.IsUnitTest){
                                 objToolTip.Append(LanguageManager.GetString("String_Colon"));
                             }
                             else
+                            {
                                 objToolTip.Append(',');
+                            }
 
                             objToolTip.Append(strSpaceCharacter +
                                               GetObjectName(objLoopImprovement, GlobalOptions.Language));
@@ -10013,10 +10548,12 @@ if (!Utils.IsUnitTest){
                                   '(' + TotalArmorRating.ToString(GlobalOptions.CultureInfo) + ')');
 
                 if (CurrentCounterspellingDice != 0)
+                {
                     objToolTip.Append(strSpaceCharacter + '+' + strSpaceCharacter +
                                       LanguageManager.GetString("Label_CounterspellingDice", GlobalOptions.Language) +
                                       strSpaceCharacter + '(' +
                                       CurrentCounterspellingDice.ToString(GlobalOptions.CultureInfo) + ')');
+                }
 
                 int intModifiers = SpellResistance;
 
@@ -10036,7 +10573,9 @@ if (!Utils.IsUnitTest){
                                 objToolTip.Append(LanguageManager.GetString("String_Colon"));
                             }
                             else
+                            {
                                 objToolTip.Append(',');
+                            }
 
                             objToolTip.Append(strSpaceCharacter +
                                               GetObjectName(objLoopImprovement, GlobalOptions.Language));
@@ -10067,10 +10606,12 @@ if (!Utils.IsUnitTest){
                                                              WIL.TotalValue.ToString(GlobalOptions.CultureInfo) + ')');
 
                 if (CurrentCounterspellingDice != 0)
+                {
                     objToolTip.Append(strSpaceCharacter + '+' + strSpaceCharacter +
                                       LanguageManager.GetString("Label_CounterspellingDice", GlobalOptions.Language) +
                                       strSpaceCharacter + '(' +
                                       CurrentCounterspellingDice.ToString(GlobalOptions.CultureInfo) + ')');
+                }
 
                 int intModifiers = SpellResistance + ImprovementManager.ValueOf(this, Improvement.ImprovementType.DirectManaSpellResist);
 
@@ -10090,7 +10631,9 @@ if (!Utils.IsUnitTest){
                                 objToolTip.Append(LanguageManager.GetString("String_Colon"));
                             }
                             else
+                            {
                                 objToolTip.Append(',');
+                            }
 
                             objToolTip.Append(strSpaceCharacter +
                                               GetObjectName(objLoopImprovement, GlobalOptions.Language));
@@ -10133,10 +10676,12 @@ if (!Utils.IsUnitTest){
                 }
 
                 if (CurrentCounterspellingDice != 0)
+                {
                     objToolTip.Append(strSpaceCharacter + '+' + strSpaceCharacter +
                                       LanguageManager.GetString("Label_CounterspellingDice", GlobalOptions.Language) +
                                       strSpaceCharacter + '(' +
                                       CurrentCounterspellingDice.ToString(GlobalOptions.CultureInfo) + ')');
+                }
 
                 int intModifiers = SpellResistance + ImprovementManager.ValueOf(this, Improvement.ImprovementType.DirectPhysicalSpellResist);
 
@@ -10156,7 +10701,9 @@ if (!Utils.IsUnitTest){
                                 objToolTip.Append(LanguageManager.GetString("String_Colon"));
                             }
                             else
+                            {
                                 objToolTip.Append(',');
+                            }
 
                             objToolTip.Append(strSpaceCharacter +
                                               GetObjectName(objLoopImprovement, GlobalOptions.Language));
@@ -10192,10 +10739,12 @@ if (!Utils.IsUnitTest){
                                                              WIL.TotalValue.ToString(GlobalOptions.CultureInfo) + ')');
 
                 if (CurrentCounterspellingDice != 0)
+                {
                     objToolTip.Append(strSpaceCharacter + '+' + strSpaceCharacter +
                                       LanguageManager.GetString("Label_CounterspellingDice", GlobalOptions.Language) +
                                       strSpaceCharacter + '(' +
                                       CurrentCounterspellingDice.ToString(GlobalOptions.CultureInfo) + ')');
+                }
 
                 int intModifiers = SpellResistance +
                                    ImprovementManager.ValueOf(this, Improvement.ImprovementType.DetectionSpellResist);
@@ -10217,7 +10766,9 @@ if (!Utils.IsUnitTest){
                                 objToolTip.Append(LanguageManager.GetString("String_Colon"));
                             }
                             else
+                            {
                                 objToolTip.Append(',');
+                            }
 
                             objToolTip.Append(strSpaceCharacter +
                                               GetObjectName(objLoopImprovement, GlobalOptions.Language));
@@ -10251,10 +10802,12 @@ if (!Utils.IsUnitTest){
                                                              WIL.TotalValue.ToString(GlobalOptions.CultureInfo) + ')');
 
                 if (CurrentCounterspellingDice != 0)
+                {
                     objToolTip.Append(strSpaceCharacter + '+' + strSpaceCharacter +
                                       LanguageManager.GetString("Label_CounterspellingDice", GlobalOptions.Language) +
                                       strSpaceCharacter + '(' +
                                       CurrentCounterspellingDice.ToString(GlobalOptions.CultureInfo) + ')');
+                }
 
                 int intModifiers = SpellResistance + ImprovementManager.ValueOf(this, Improvement.ImprovementType.DecreaseBODResist);
 
@@ -10274,7 +10827,9 @@ if (!Utils.IsUnitTest){
                                 objToolTip.Append(LanguageManager.GetString("String_Colon"));
                             }
                             else
+                            {
                                 objToolTip.Append(',');
+                            }
 
                             objToolTip.Append(strSpaceCharacter +
                                               GetObjectName(objLoopImprovement, GlobalOptions.Language));
@@ -10308,10 +10863,12 @@ if (!Utils.IsUnitTest){
                                                              WIL.TotalValue.ToString(GlobalOptions.CultureInfo) + ')');
 
                 if (CurrentCounterspellingDice != 0)
+                {
                     objToolTip.Append(strSpaceCharacter + '+' + strSpaceCharacter +
                                       LanguageManager.GetString("Label_CounterspellingDice", GlobalOptions.Language) +
                                       strSpaceCharacter + '(' +
                                       CurrentCounterspellingDice.ToString(GlobalOptions.CultureInfo) + ')');
+                }
 
                 int intModifiers = SpellResistance + ImprovementManager.ValueOf(this, Improvement.ImprovementType.DecreaseAGIResist);
 
@@ -10331,7 +10888,9 @@ if (!Utils.IsUnitTest){
                                 objToolTip.Append(LanguageManager.GetString("String_Colon"));
                             }
                             else
+                            {
                                 objToolTip.Append(',');
+                            }
 
                             objToolTip.Append(strSpaceCharacter +
                                               GetObjectName(objLoopImprovement, GlobalOptions.Language));
@@ -10365,10 +10924,12 @@ if (!Utils.IsUnitTest){
                                                              WIL.TotalValue.ToString(GlobalOptions.CultureInfo) + ')');
 
                 if (CurrentCounterspellingDice != 0)
+                {
                     objToolTip.Append(strSpaceCharacter + '+' + strSpaceCharacter +
                                       LanguageManager.GetString("Label_CounterspellingDice", GlobalOptions.Language) +
                                       strSpaceCharacter + '(' +
                                       CurrentCounterspellingDice.ToString(GlobalOptions.CultureInfo) + ')');
+                }
 
                 int intModifiers = SpellResistance + ImprovementManager.ValueOf(this, Improvement.ImprovementType.DecreaseREAResist);
 
@@ -10388,7 +10949,9 @@ if (!Utils.IsUnitTest){
                                 objToolTip.Append(LanguageManager.GetString("String_Colon"));
                             }
                             else
+                            {
                                 objToolTip.Append(',');
+                            }
 
                             objToolTip.Append(strSpaceCharacter +
                                               GetObjectName(objLoopImprovement, GlobalOptions.Language));
@@ -10422,10 +10985,12 @@ if (!Utils.IsUnitTest){
                                                              WIL.TotalValue.ToString(GlobalOptions.CultureInfo) + ')');
 
                 if (CurrentCounterspellingDice != 0)
+                {
                     objToolTip.Append(strSpaceCharacter + '+' + strSpaceCharacter +
                                       LanguageManager.GetString("Label_CounterspellingDice", GlobalOptions.Language) +
                                       strSpaceCharacter + '(' +
                                       CurrentCounterspellingDice.ToString(GlobalOptions.CultureInfo) + ')');
+                }
 
                 int intModifiers = SpellResistance + ImprovementManager.ValueOf(this, Improvement.ImprovementType.DecreaseSTRResist);
 
@@ -10445,7 +11010,9 @@ if (!Utils.IsUnitTest){
                                 objToolTip.Append(LanguageManager.GetString("String_Colon"));
                             }
                             else
+                            {
                                 objToolTip.Append(',');
+                            }
 
                             objToolTip.Append(strSpaceCharacter +
                                               GetObjectName(objLoopImprovement, GlobalOptions.Language));
@@ -10479,10 +11046,12 @@ if (!Utils.IsUnitTest){
                                                              WIL.TotalValue.ToString(GlobalOptions.CultureInfo) + ')');
 
                 if (CurrentCounterspellingDice != 0)
+                {
                     objToolTip.Append(strSpaceCharacter + '+' + strSpaceCharacter +
                                       LanguageManager.GetString("Label_CounterspellingDice", GlobalOptions.Language) +
                                       strSpaceCharacter + '(' +
                                       CurrentCounterspellingDice.ToString(GlobalOptions.CultureInfo) + ')');
+                }
 
                 int intModifiers = SpellResistance + ImprovementManager.ValueOf(this, Improvement.ImprovementType.DecreaseCHAResist);
 
@@ -10502,7 +11071,9 @@ if (!Utils.IsUnitTest){
                                 objToolTip.Append(LanguageManager.GetString("String_Colon"));
                             }
                             else
+                            {
                                 objToolTip.Append(',');
+                            }
 
                             objToolTip.Append(strSpaceCharacter +
                                               GetObjectName(objLoopImprovement, GlobalOptions.Language));
@@ -10536,10 +11107,12 @@ if (!Utils.IsUnitTest){
                                                              WIL.TotalValue.ToString(GlobalOptions.CultureInfo) + ')');
 
                 if (CurrentCounterspellingDice != 0)
+                {
                     objToolTip.Append(strSpaceCharacter + '+' + strSpaceCharacter +
                                       LanguageManager.GetString("Label_CounterspellingDice", GlobalOptions.Language) +
                                       strSpaceCharacter + '(' +
                                       CurrentCounterspellingDice.ToString(GlobalOptions.CultureInfo) + ')');
+                }
 
                 int intModifiers = SpellResistance + ImprovementManager.ValueOf(this, Improvement.ImprovementType.DecreaseINTResist);
 
@@ -10559,7 +11132,9 @@ if (!Utils.IsUnitTest){
                                 objToolTip.Append(LanguageManager.GetString("String_Colon"));
                             }
                             else
+                            {
                                 objToolTip.Append(',');
+                            }
 
                             objToolTip.Append(strSpaceCharacter +
                                               GetObjectName(objLoopImprovement, GlobalOptions.Language));
@@ -10593,10 +11168,12 @@ if (!Utils.IsUnitTest){
                                                              WIL.TotalValue.ToString(GlobalOptions.CultureInfo) + ')');
 
                 if (CurrentCounterspellingDice != 0)
+                {
                     objToolTip.Append(strSpaceCharacter + '+' + strSpaceCharacter +
                                       LanguageManager.GetString("Label_CounterspellingDice", GlobalOptions.Language) +
                                       strSpaceCharacter + '(' +
                                       CurrentCounterspellingDice.ToString(GlobalOptions.CultureInfo) + ')');
+                }
 
                 int intModifiers = SpellResistance + ImprovementManager.ValueOf(this, Improvement.ImprovementType.DecreaseLOGResist);
 
@@ -10616,7 +11193,9 @@ if (!Utils.IsUnitTest){
                                 objToolTip.Append(LanguageManager.GetString("String_Colon"));
                             }
                             else
+                            {
                                 objToolTip.Append(',');
+                            }
 
                             objToolTip.Append(strSpaceCharacter +
                                               GetObjectName(objLoopImprovement, GlobalOptions.Language));
@@ -10650,10 +11229,12 @@ if (!Utils.IsUnitTest){
                                                              WIL.TotalValue.ToString(GlobalOptions.CultureInfo) + ')');
 
                 if (CurrentCounterspellingDice != 0)
+                {
                     objToolTip.Append(strSpaceCharacter + '+' + strSpaceCharacter +
                                       LanguageManager.GetString("Label_CounterspellingDice", GlobalOptions.Language) +
                                       strSpaceCharacter + '(' +
                                       CurrentCounterspellingDice.ToString(GlobalOptions.CultureInfo) + ')');
+                }
 
                 int intModifiers = SpellResistance + ImprovementManager.ValueOf(this, Improvement.ImprovementType.DecreaseWILResist);
 
@@ -10673,7 +11254,9 @@ if (!Utils.IsUnitTest){
                                 objToolTip.Append(LanguageManager.GetString("String_Colon"));
                             }
                             else
+                            {
                                 objToolTip.Append(',');
+                            }
 
                             objToolTip.Append(strSpaceCharacter +
                                               GetObjectName(objLoopImprovement, GlobalOptions.Language));
@@ -10716,10 +11299,12 @@ if (!Utils.IsUnitTest){
                                                              WIL.TotalValue.ToString(GlobalOptions.CultureInfo) + ')');
 
                 if (CurrentCounterspellingDice != 0)
+                {
                     objToolTip.Append(strSpaceCharacter + '+' + strSpaceCharacter +
                                       LanguageManager.GetString("Label_CounterspellingDice", GlobalOptions.Language) +
                                       strSpaceCharacter + '(' +
                                       CurrentCounterspellingDice.ToString(GlobalOptions.CultureInfo) + ')');
+                }
 
                 int intModifiers = SpellResistance +
                                    ImprovementManager.ValueOf(this, Improvement.ImprovementType.ManaIllusionResist);
@@ -10741,7 +11326,9 @@ if (!Utils.IsUnitTest){
                                 objToolTip.Append(LanguageManager.GetString("String_Colon"));
                             }
                             else
+                            {
                                 objToolTip.Append(',');
+                            }
 
                             objToolTip.Append(strSpaceCharacter +
                                               GetObjectName(objLoopImprovement, GlobalOptions.Language));
@@ -10777,10 +11364,12 @@ if (!Utils.IsUnitTest){
                                                              INT.TotalValue.ToString(GlobalOptions.CultureInfo) + ')');
 
                 if (CurrentCounterspellingDice != 0)
+                {
                     objToolTip.Append(strSpaceCharacter + '+' + strSpaceCharacter +
                                       LanguageManager.GetString("Label_CounterspellingDice", GlobalOptions.Language) +
                                       strSpaceCharacter + '(' +
                                       CurrentCounterspellingDice.ToString(GlobalOptions.CultureInfo) + ')');
+                }
 
                 int intModifiers = SpellResistance +
                                    ImprovementManager.ValueOf(this, Improvement.ImprovementType.PhysicalIllusionResist);
@@ -10802,7 +11391,9 @@ if (!Utils.IsUnitTest){
                                 objToolTip.Append(LanguageManager.GetString("String_Colon"));
                             }
                             else
+                            {
                                 objToolTip.Append(',');
+                            }
 
                             objToolTip.Append(strSpaceCharacter +
                                               GetObjectName(objLoopImprovement, GlobalOptions.Language));
@@ -10838,10 +11429,12 @@ if (!Utils.IsUnitTest){
                                                              WIL.TotalValue.ToString(GlobalOptions.CultureInfo) + ')');
 
                 if (CurrentCounterspellingDice != 0)
+                {
                     objToolTip.Append(strSpaceCharacter + '+' + strSpaceCharacter +
                                       LanguageManager.GetString("Label_CounterspellingDice", GlobalOptions.Language) +
                                       strSpaceCharacter + '(' +
                                       CurrentCounterspellingDice.ToString(GlobalOptions.CultureInfo) + ')');
+                }
 
                 int intModifiers = SpellResistance +
                                    ImprovementManager.ValueOf(this,
@@ -10864,7 +11457,9 @@ if (!Utils.IsUnitTest){
                                 objToolTip.Append(LanguageManager.GetString("String_Colon"));
                             }
                             else
+                            {
                                 objToolTip.Append(',');
+                            }
 
                             objToolTip.Append(strSpaceCharacter +
                                               GetObjectName(objLoopImprovement, GlobalOptions.Language));
@@ -10918,10 +11513,12 @@ if (!Utils.IsUnitTest){
                                                              intStrength.ToString(GlobalOptions.CultureInfo) + ')');
 
                 if (CurrentCounterspellingDice != 0)
+                {
                     objToolTip.Append(strSpaceCharacter + '+' + strSpaceCharacter +
                                       LanguageManager.GetString("Label_CounterspellingDice", GlobalOptions.Language) +
                                       strSpaceCharacter + '(' +
                                       CurrentCounterspellingDice.ToString(GlobalOptions.CultureInfo) + ')');
+                }
 
                 int intModifiers = SpellResistance +
                                    ImprovementManager.ValueOf(this,
@@ -10944,7 +11541,9 @@ if (!Utils.IsUnitTest){
                                 objToolTip.Append(LanguageManager.GetString("String_Colon"));
                             }
                             else
+                            {
                                 objToolTip.Append(',');
+                            }
 
                             objToolTip.Append(strSpaceCharacter +
                                               GetObjectName(objLoopImprovement, GlobalOptions.Language));
@@ -11050,7 +11649,9 @@ if (!Utils.IsUnitTest){
                         {
                             if (a.ArmorMods.Any(objMod =>
                                 objMod.Name == "Custom Fit (Stack)" && objMod.Extra == strArmorName))
+                            {
                                 intLoopTotal += Convert.ToInt32(a.ArmorOverrideValue);
+                            }
                         }
                     }
 
@@ -11068,9 +11669,13 @@ if (!Utils.IsUnitTest){
                     objArmor.Name != strHighest && objArmor.Category == "Clothing" && objArmor.Equipped))
                 {
                     if (objArmor.ArmorValue.StartsWith('+'))
+                    {
                         intClothing += objArmor.TotalArmor;
+                    }
                     else
+                    {
                         intClothing += objArmor.TotalOverrideArmor;
+                    }
                 }
 
                 if (intClothing > intHighest)
@@ -11098,20 +11703,29 @@ if (!Utils.IsUnitTest){
                     if (blnDoAdd)
                     {
                         if (objArmor.ArmorValue.StartsWith('+'))
+                        {
                             intTotalA += objArmor.TotalArmor;
+                        }
                         else
+                        {
                             intTotalA += objArmor.TotalOverrideArmor;
+                        }
                     }
                 }
 
                 // Highest armor was overwritten by Clothing '+' values, so factor those '+' values into encumbrance
                 if (string.IsNullOrEmpty(strHighest))
+                {
                     intTotalA += intClothing;
+                }
 
                 // calculate armor encumberance
                 int intSTRTotalValue = STR.TotalValue;
                 if (intTotalA > intSTRTotalValue + 1)
+                {
                     return (intSTRTotalValue - intTotalA) / 2; // a negative number is expected
+                }
+
                 return 0;
             }
         }
@@ -11179,7 +11793,9 @@ if (!Utils.IsUnitTest){
 
                         intBonus = objVehicleHomeNode.Mods.Sum(objMod => objMod.ConditionMonitor);
                         if (intBonus != 0)
+                        {
                             strCM += strSpaceCharacter + '+' + strSpaceCharacter + strModifiers + strSpaceCharacter + '(' + intBonus.ToString(GlobalOptions.CultureInfo) + ')';
+                        }
                     }
                     else
                     {
@@ -11189,7 +11805,9 @@ if (!Utils.IsUnitTest){
 
                         intBonus = ImprovementManager.ValueOf(this, Improvement.ImprovementType.PhysicalCM);
                         if (intBonus != 0)
+                        {
                             strCM += strSpaceCharacter + '+' + strSpaceCharacter + strModifiers + strSpaceCharacter + '(' + intBonus.ToString(GlobalOptions.CultureInfo) + ')';
+                        }
                     }
                 }
                 else
@@ -11200,7 +11818,9 @@ if (!Utils.IsUnitTest){
 
                     intBonus = ImprovementManager.ValueOf(this, Improvement.ImprovementType.PhysicalCM);
                     if (intBonus != 0)
+                    {
                         strCM += strSpaceCharacter + '+' + strSpaceCharacter + strModifiers + strSpaceCharacter + '(' + intBonus.ToString(GlobalOptions.CultureInfo) + ')';
+                    }
                 }
 
                 return strCM;
@@ -11267,7 +11887,9 @@ if (!Utils.IsUnitTest){
 
                         intBonus = HomeNode.TotalBonusMatrixBoxes;
                         if (intBonus != 0)
+                        {
                             strCM += strSpaceCharacter + '+' + strSpaceCharacter + strModifiers + strSpaceCharacter + '(' + intBonus.ToString(GlobalOptions.CultureInfo) + ')';
+                        }
                     }
                 }
                 else
@@ -11278,7 +11900,9 @@ if (!Utils.IsUnitTest){
 
                     intBonus = ImprovementManager.ValueOf(this, Improvement.ImprovementType.StunCM);
                     if (intBonus != 0)
+                    {
                         strCM += strSpaceCharacter + '+' + strSpaceCharacter + strModifiers + strSpaceCharacter + '(' + intBonus.ToString(GlobalOptions.CultureInfo) + ')';
+                    }
                 }
 
                 return strCM;
@@ -11313,12 +11937,17 @@ if (!Utils.IsUnitTest){
                 if (Improvements.Any(objImprovement =>
                     objImprovement.ImproveType == Improvement.ImprovementType.IgnoreCMPenaltyPhysical &&
                     objImprovement.Enabled))
+                {
                     return int.MaxValue;
+                }
+
                 if (IsAI || Improvements.Any(objImprovement =>
                         objImprovement.ImproveType == Improvement.ImprovementType.IgnoreCMPenaltyStun &&
                         objImprovement.Enabled))
+                {
                     return ImprovementManager.ValueOf(this, Improvement.ImprovementType.CMThresholdOffset) +
                            ImprovementManager.ValueOf(this, Improvement.ImprovementType.CMSharedThresholdOffset);
+                }
 
                 int intCMThresholdOffset =
                     ImprovementManager.ValueOf(this, Improvement.ImprovementType.CMThresholdOffset);
@@ -11340,16 +11969,24 @@ if (!Utils.IsUnitTest){
             {
                 // A.I.s don't get wound penalties from Matrix damage
                 if (IsAI)
+                {
                     return int.MaxValue;
+                }
+
                 if (Improvements.Any(objImprovement =>
                     objImprovement.ImproveType == Improvement.ImprovementType.IgnoreCMPenaltyStun &&
                     objImprovement.Enabled))
+                {
                     return int.MaxValue;
+                }
+
                 if (Improvements.Any(objImprovement =>
                     objImprovement.ImproveType == Improvement.ImprovementType.IgnoreCMPenaltyPhysical &&
                     objImprovement.Enabled))
+                {
                     return ImprovementManager.ValueOf(this, Improvement.ImprovementType.CMThresholdOffset) +
                            ImprovementManager.ValueOf(this, Improvement.ImprovementType.CMSharedThresholdOffset);
+                }
 
                 int intCMThresholdOffset =
                     ImprovementManager.ValueOf(this, Improvement.ImprovementType.CMThresholdOffset);
@@ -11732,7 +12369,9 @@ if (!Utils.IsUnitTest){
                     {
                         int intHomeNodePilot = objHomeNodeVehicle.Pilot;
                         if (intHomeNodePilot > intHomeNodeDP)
+                        {
                             intHomeNodeDP = intHomeNodePilot;
+                        }
                     }
 
                     intLimit = (CHA.TotalValue + intHomeNodeDP + WIL.TotalValue +
@@ -11813,7 +12452,9 @@ if (!Utils.IsUnitTest){
             get
             {
                 if (MentorSpirits.Count == 0)
+                {
                     return string.Empty;
+                }
 
                 MentorSpirit objMentorSpirit = MentorSpirits[0];
                 string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
@@ -11877,7 +12518,9 @@ if (!Utils.IsUnitTest){
                     _strMetatypeCategory = value;
                     OnPropertyChanged();
                     if (blnDoCyberzombieRefresh)
+                    {
                         RefreshEssenceLossImprovements();
+                    }
                 }
             }
         }
@@ -11892,7 +12535,10 @@ if (!Utils.IsUnitTest){
             int intReturn =
                 1 + ImprovementManager.ValueOf(this, Improvement.ImprovementType.AddLimb, false, strLimbSlot);
             if (strLimbSlot == "arm" || strLimbSlot == "leg")
+            {
                 intReturn += 1;
+            }
+
             return intReturn;
         }
 
@@ -12149,7 +12795,9 @@ if (!Utils.IsUnitTest){
             }
 
             if (intTmp != int.MinValue)
+            {
                 return intTmp;
+            }
 
             string[] strReturn = CurrentWalkingRateString.Split('/');
 
@@ -12157,15 +12805,24 @@ if (!Utils.IsUnitTest){
             {
                 case "Fly":
                     if (strReturn.Length > 2)
+                    {
                         int.TryParse(strReturn[2], out intTmp);
+                    }
+
                     break;
                 case "Swim":
                     if (strReturn.Length > 1)
+                    {
                         int.TryParse(strReturn[1], out intTmp);
+                    }
+
                     break;
                 case "Ground":
                     if (strReturn.Length > 0)
+                    {
                         int.TryParse(strReturn[0], out intTmp);
+                    }
+
                     break;
             }
 
@@ -12186,7 +12843,9 @@ if (!Utils.IsUnitTest){
             }
 
             if (intTmp != int.MinValue)
+            {
                 return intTmp;
+            }
 
             string[] strReturn = CurrentRunningRateString.Split('/');
 
@@ -12194,15 +12853,24 @@ if (!Utils.IsUnitTest){
             {
                 case "Fly":
                     if (strReturn.Length > 2)
+                    {
                         int.TryParse(strReturn[2], out intTmp);
+                    }
+
                     break;
                 case "Swim":
                     if (strReturn.Length > 1)
+                    {
                         int.TryParse(strReturn[1], out intTmp);
+                    }
+
                     break;
                 case "Ground":
                     if (strReturn.Length > 0)
+                    {
                         int.TryParse(strReturn[0], out intTmp);
+                    }
+
                     break;
             }
 
@@ -12223,7 +12891,9 @@ if (!Utils.IsUnitTest){
             }
 
             if (decTmp != decimal.MinValue)
+            {
                 return decTmp;
+            }
 
             string[] strReturn = CurrentSprintingRateString.Split('/');
 
@@ -12231,18 +12901,27 @@ if (!Utils.IsUnitTest){
             {
                 case "Fly":
                     if (strReturn.Length > 2)
+                    {
                         decimal.TryParse(strReturn[2], NumberStyles.Any, GlobalOptions.InvariantCultureInfo,
                             out decTmp);
+                    }
+
                     break;
                 case "Swim":
                     if (strReturn.Length > 1)
+                    {
                         decimal.TryParse(strReturn[1], NumberStyles.Any, GlobalOptions.InvariantCultureInfo,
                             out decTmp);
+                    }
+
                     break;
                 case "Ground":
                     if (strReturn.Length > 0)
+                    {
                         decimal.TryParse(strReturn[0], NumberStyles.Any, GlobalOptions.InvariantCultureInfo,
                             out decTmp);
+                    }
+
                     break;
             }
 
@@ -12294,7 +12973,10 @@ if (!Utils.IsUnitTest){
             }
 
             if (objCulture == null)
+            {
                 objCulture = GlobalOptions.CultureInfo;
+            }
+
             string strReturn;
             if (strMovementType == "Swim")
             {
@@ -12355,15 +13037,25 @@ if (!Utils.IsUnitTest){
             string strSwimMovement = GetSwim(objCulture, strLanguage);
             string strFlyMovement = GetFly(objCulture, strLanguage);
             if (!string.IsNullOrEmpty(strGroundMovement) && strGroundMovement != "0")
+            {
                 strReturn += strGroundMovement + ", ";
+            }
+
             if (!string.IsNullOrEmpty(strSwimMovement) && strSwimMovement != "0")
+            {
                 strReturn += LanguageManager.GetString("Label_OtherSwim", strLanguage) + ' ' + strSwimMovement + ", ";
+            }
+
             if (!string.IsNullOrEmpty(strFlyMovement) && strFlyMovement != "0")
+            {
                 strReturn += LanguageManager.GetString("Label_OtherFly", strLanguage) + ' ' + strFlyMovement + ", ";
+            }
 
             // Remove the trailing ", ".
             if (!string.IsNullOrEmpty(strReturn))
+            {
                 strReturn = strReturn.Substring(0, strReturn.Length - 2);
+            }
 
             return strReturn;
         }
@@ -12392,7 +13084,10 @@ if (!Utils.IsUnitTest){
             get
             {
                 if (MetatypeCategory.EndsWith("Sprites") && !IsFreeSprite)
+                {
                     return true;
+                }
+
                 return false;
             }
         }
@@ -12405,7 +13100,10 @@ if (!Utils.IsUnitTest){
             get
             {
                 if (MetatypeCategory == "Free Sprite")
+                {
                     return true;
+                }
+
                 return false;
             }
         }
@@ -12594,10 +13292,12 @@ if (!Utils.IsUnitTest){
             get
             {
                 if (_intCachedBlackMarketDiscount < 0)
+                {
                     _intCachedBlackMarketDiscount = Improvements.Any(x =>
                         x.ImproveType == Improvement.ImprovementType.BlackMarketDiscount && x.Enabled)
                         ? 1
                         : 0;
+                }
 
                 return _intCachedBlackMarketDiscount > 0;
             }
@@ -12622,13 +13322,22 @@ if (!Utils.IsUnitTest){
                     if (value <= 0)
                     {
                         if (_decPrototypeTranshuman > 0)
+                        {
                             foreach (Cyberware objCyberware in Cyberware)
+                            {
                                 if (objCyberware.PrototypeTranshuman)
+                                {
                                     objCyberware.PrototypeTranshuman = false;
+                                }
+                            }
+                        }
+
                         _decPrototypeTranshuman = 0;
                     }
                     else
+                    {
                         _decPrototypeTranshuman = value;
+                    }
 
                     OnPropertyChanged();
                 }
@@ -12647,10 +13356,12 @@ if (!Utils.IsUnitTest){
             get
             {
                 if (_intCachedFriendsInHighPlaces < 0)
+                {
                     _intCachedFriendsInHighPlaces = Improvements.Any(x =>
                         x.ImproveType == Improvement.ImprovementType.FriendsInHighPlaces && x.Enabled)
                         ? 1
                         : 0;
+                }
 
                 return _intCachedFriendsInHighPlaces > 0;
             }
@@ -12666,8 +13377,10 @@ if (!Utils.IsUnitTest){
             get
             {
                 if (_intCachedExCon < 0)
+                {
                     _intCachedExCon =
                         Improvements.Any(x => x.ImproveType == Improvement.ImprovementType.ExCon && x.Enabled) ? 1 : 0;
+                }
 
                 return _intCachedExCon > 0;
             }
@@ -12683,7 +13396,9 @@ if (!Utils.IsUnitTest){
             get
             {
                 if (_intCachedTrustFund != int.MinValue)
+                {
                     return _intCachedTrustFund;
+                }
 
                 return _intCachedTrustFund = Improvements
                     .Where(x => x.ImproveType == Improvement.ImprovementType.TrustFund && x.Enabled).DefaultIfEmpty()
@@ -12722,10 +13437,12 @@ if (!Utils.IsUnitTest){
             get
             {
                 if (_intCachedOverclocker < 0)
+                {
                     _intCachedOverclocker =
                         Improvements.Any(x => x.ImproveType == Improvement.ImprovementType.Overclocker && x.Enabled)
                             ? 1
                             : 0;
+                }
 
                 return _intCachedOverclocker > 0;
             }
@@ -12741,10 +13458,12 @@ if (!Utils.IsUnitTest){
             get
             {
                 if (_intCachedMadeMan < 0)
+                {
                     _intCachedMadeMan =
                         Improvements.Any(x => x.ImproveType == Improvement.ImprovementType.MadeMan && x.Enabled)
                             ? 1
                             : 0;
+                }
 
                 return _intCachedMadeMan > 0;
             }
@@ -12760,8 +13479,10 @@ if (!Utils.IsUnitTest){
             get
             {
                 if (_intCachedFame < 0)
+                {
                     _intCachedFame =
                         Improvements.Any(x => x.ImproveType == Improvement.ImprovementType.Fame && x.Enabled) ? 1 : 0;
+                }
 
                 return _intCachedFame > 0;
             }
@@ -12777,8 +13498,10 @@ if (!Utils.IsUnitTest){
             get
             {
                 if (_intCachedErased < 0)
+                {
                     _intCachedErased =
                         Improvements.Any(x => x.ImproveType == Improvement.ImprovementType.Erased && x.Enabled) ? 1 : 0;
+                }
 
                 return _intCachedErased > 0;
             }
@@ -12794,10 +13517,13 @@ if (!Utils.IsUnitTest){
             get
             {
                 if (_intCachedAllowSpriteFettering < 0)
+                {
                     _intCachedAllowSpriteFettering =
                         Improvements.Any(x => x.ImproveType == Improvement.ImprovementType.AllowSpriteFettering && x.Enabled)
                             ? 1
                             : 0;
+                }
+
                 return _intCachedAllowSpriteFettering > 0;
             }
         }
@@ -12876,19 +13602,29 @@ if (!Utils.IsUnitTest){
             int intPool = SkillsSection.GetActiveSkill("Negotiation")?.Pool ?? 0;
             // Determine the interval based on the item's price.
             if (decCost <= 100.0m)
+            {
                 strInterval = "6" + strSpaceCharacter +
                               LanguageManager.GetString("String_Hours", GlobalOptions.Language);
+            }
             else if (decCost <= 1000.0m)
+            {
                 strInterval = "1" + strSpaceCharacter + LanguageManager.GetString("String_Day", GlobalOptions.Language);
+            }
             else if (decCost <= 10000.0m)
+            {
                 strInterval = "2" + strSpaceCharacter +
                               LanguageManager.GetString("String_Days", GlobalOptions.Language);
+            }
             else if (decCost <= 100000.0m)
+            {
                 strInterval = "1" + strSpaceCharacter +
                               LanguageManager.GetString("String_Week", GlobalOptions.Language);
+            }
             else
+            {
                 strInterval = "1" + strSpaceCharacter +
                               LanguageManager.GetString("String_Month", GlobalOptions.Language);
+            }
 
             return intPool.ToString(GlobalOptions.CultureInfo) + strSpaceCharacter + '(' +
                    intAvailValue.ToString(GlobalOptions.CultureInfo) + ',' + strSpaceCharacter + strInterval + ')';
@@ -12897,25 +13633,13 @@ if (!Utils.IsUnitTest){
         /// <summary>
         /// Whether or not Adapsin is enabled.
         /// </summary>
-        public bool AdapsinEnabled
-        {
-            get
-            {
-                return Improvements.Any(objImprovement =>
-                    objImprovement.ImproveType == Improvement.ImprovementType.Adapsin && objImprovement.Enabled);
-            }
-        }
+        public bool AdapsinEnabled => Improvements.Any(objImprovement =>
+                                                        objImprovement.ImproveType == Improvement.ImprovementType.Adapsin && objImprovement.Enabled);
 
         /// <summary>
         /// Whether or not Burnout's Way is enabled.
         /// </summary>
-        public bool BurnoutEnabled
-        {
-            get
-            {
-                return Improvements.Any(x => x.ImproveType == Improvement.ImprovementType.BurnoutsWay && x.Enabled);
-            }
-        }
+        public bool BurnoutEnabled => Improvements.Any(x => x.ImproveType == Improvement.ImprovementType.BurnoutsWay && x.Enabled);
 
         #endregion
 
@@ -12988,7 +13712,9 @@ if (!Utils.IsUnitTest){
                     // Positive Qualities.
                     using (XmlNodeList xmlMetatypeQualityList =
                         objXmlMetatype.SelectNodes("qualities/positive/quality"))
+                    {
                         if (xmlMetatypeQualityList != null)
+                        {
                             foreach (XmlNode objXmlMetatypeQuality in xmlMetatypeQualityList)
                             {
                                 bool blnFound = false;
@@ -13017,11 +13743,15 @@ if (!Utils.IsUnitTest){
                                     _lstQualities.Add(objQuality);
                                 }
                             }
+                        }
+                    }
 
                     // Negative Qualities.
                     using (XmlNodeList xmlMetatypeQualityList =
                         objXmlMetatype.SelectNodes("qualities/negative/quality"))
+                    {
                         if (xmlMetatypeQualityList != null)
+                        {
                             foreach (XmlNode objXmlMetatypeQuality in xmlMetatypeQualityList)
                             {
                                 bool blnFound = false;
@@ -13050,6 +13780,8 @@ if (!Utils.IsUnitTest){
                                     _lstQualities.Add(objQuality);
                                 }
                             }
+                        }
+                    }
 
                     // Do it all over again for Metavariants.
                     if (!string.IsNullOrEmpty(_strMetavariant))
@@ -13063,7 +13795,9 @@ if (!Utils.IsUnitTest){
                             // Positive Qualities.
                             using (XmlNodeList xmlMetatypeQualityList =
                                 objXmlMetatype.SelectNodes("qualities/positive/quality"))
+                            {
                                 if (xmlMetatypeQualityList != null)
+                                {
                                     foreach (XmlNode objXmlMetatypeQuality in xmlMetatypeQualityList)
                                     {
                                         bool blnFound = false;
@@ -13092,11 +13826,15 @@ if (!Utils.IsUnitTest){
                                             _lstQualities.Add(objQuality);
                                         }
                                     }
+                                }
+                            }
 
                             // Negative Qualities.
                             using (XmlNodeList xmlMetatypeQualityList =
                                 objXmlMetatype.SelectNodes("qualities/negative/quality"))
+                            {
                                 if (xmlMetatypeQualityList != null)
+                                {
                                     foreach (XmlNode objXmlMetatypeQuality in xmlMetatypeQualityList)
                                     {
                                         bool blnFound = false;
@@ -13125,6 +13863,8 @@ if (!Utils.IsUnitTest){
                                             _lstQualities.Add(objQuality);
                                         }
                                     }
+                                }
+                            }
                         }
                     }
                 }
@@ -13139,7 +13879,10 @@ if (!Utils.IsUnitTest){
         {
             int intPos = strQuality.IndexOf('[');
             if (intPos != -1)
+            {
                 strQuality = strQuality.Substring(0, intPos - 1);
+            }
+
             return strQuality;
         }
 
@@ -13597,7 +14340,9 @@ if (!Utils.IsUnitTest){
                         Quality.ConvertToQualitySource(xmlOldQuality["qualitysource"]?.InnerText);
                     objQuality.Create(xmlNewQuality, objQualitySource, _lstWeapons, xmlOldQuality["extra"]?.InnerText);
                     if (xmlOldQuality["bp"] != null && int.TryParse(xmlOldQuality["bp"].InnerText, out int intOldBP))
+                    {
                         objQuality.BP = intOldBP / intRanks;
+                    }
 
                     _lstQualities.Add(objQuality);
                 }
@@ -13631,7 +14376,10 @@ if (!Utils.IsUnitTest){
             get
             {
                 if (_intInitPasses == int.MinValue)
+                {
                     _intInitPasses = Convert.ToInt32(InitiativeDice);
+                }
+
                 return _intInitPasses;
             }
             set
@@ -13760,7 +14508,9 @@ if (!Utils.IsUnitTest){
             get
             {
                 if (_intCachedRedlinerBonus == int.MinValue)
+                {
                     RefreshRedlinerImprovements();
+                }
 
                 return _intCachedRedlinerBonus;
             }
@@ -13858,7 +14608,9 @@ if (!Utils.IsUnitTest){
         {
             // Don't hammer away with this method while this character is loading. Instead, it will be run once after everything has been loaded in.
             if (IsLoading)
+            {
                 return;
+            }
             // Only worry about essence loss attribute modifiers if this character actually has any attributes that would be affected by essence loss
             // (which means EssenceAtSpecialStart is not set to decimal.MinValue)
             if (EssenceAtSpecialStart != decimal.MinValue)
@@ -13901,8 +14653,10 @@ if (!Utils.IsUnitTest){
                             Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, 0, -intMagMaxReduction);
                         // If this is a Mystic Adept using special Mystic Adept PP rules (i.e. no second MAG attribute), Mystic Adepts lose PPs even if they have fewer PPs than their MAG
                         if (UseMysticAdeptPPs)
+                        {
                             ImprovementManager.CreateImprovement(this, string.Empty, eEssenceLossSource, string.Empty,
                                 Improvement.ImprovementType.AdeptPowerPoints, string.Empty, -intMagMaxReduction);
+                        }
                     }
                 }
                 // RAW Career mode: complicated. Similar to RAW Create mode, but with the extra possibility of burning current karma levels and/or PPs instead of pure minima reduction,
@@ -14039,13 +14793,18 @@ if (!Utils.IsUnitTest){
 
                         // Create Improvements
                         if (intRESMinimumReduction != 0 || intRESMaximumReduction != 0)
+                        {
                             ImprovementManager.CreateImprovement(this, "RES", Improvement.ImprovementSource.EssenceLoss,
                                 string.Empty, Improvement.ImprovementType.Attribute, string.Empty, 0, 1,
                                 -intRESMinimumReduction, -intRESMaximumReduction);
+                        }
+
                         if (intDEPMinimumReduction != 0 || intDEPMaximumReduction != 0)
+                        {
                             ImprovementManager.CreateImprovement(this, "DEP", Improvement.ImprovementSource.EssenceLoss,
                                 string.Empty, Improvement.ImprovementType.Attribute, string.Empty, 0, 1,
                                 -intDEPMinimumReduction, -intDEPMaximumReduction);
+                        }
                     }
 
                     if (intMagMaxReduction > 0 || intMagMinReduction > 0 || intMAGMaximumReduction != 0 ||
@@ -14095,9 +14854,11 @@ if (!Utils.IsUnitTest){
                                     ImprovementManager.ValueOf(this, Improvement.ImprovementType.AdeptPowerPoints));
                                 // Source needs to be EssenceLossChargen so that it doesn't get wiped in career mode.
                                 if (intPPBurn != 0)
+                                {
                                     ImprovementManager.CreateImprovement(this, string.Empty,
                                         Improvement.ImprovementSource.EssenceLossChargen, string.Empty,
                                         Improvement.ImprovementType.AdeptPowerPoints, string.Empty, -intPPBurn);
+                                }
                             }
                         }
                         // If the new MAG reduction is less than our old one, the character doesn't actually get any new values back
@@ -14138,14 +14899,19 @@ if (!Utils.IsUnitTest){
 
                         // Create Improvements
                         if (intMAGMinimumReduction != 0 || intMAGMaximumReduction != 0)
+                        {
                             ImprovementManager.CreateImprovement(this, "MAG", Improvement.ImprovementSource.EssenceLoss,
                                 string.Empty, Improvement.ImprovementType.Attribute, string.Empty, 0, 1,
                                 -intMAGMinimumReduction, -intMAGMaximumReduction);
+                        }
+
                         if (intMAGAdeptMinimumReduction != 0 || intMAGAdeptMaximumReduction != 0)
+                        {
                             ImprovementManager.CreateImprovement(this, "MAGAdept",
                                 Improvement.ImprovementSource.EssenceLoss, string.Empty,
                                 Improvement.ImprovementType.Attribute, string.Empty, 0, 1, -intMAGAdeptMinimumReduction,
                                 -intMAGAdeptMaximumReduction);
+                        }
                     }
                 }
                 // RAW Create mode: Reduce maxima based on max ESS - current ESS, reduce minima based on their essence from the most optimal way in which they could have gotten access to special attributes
@@ -14233,7 +14999,9 @@ if (!Utils.IsUnitTest){
                                 }
 
                                 if (!MagicianEnabled && !AdeptEnabled)
+                                {
                                     MAGEnabled = false;
+                                }
                             }
                             else if (intMagMaxReduction >= MAG.TotalMaximum)
                             {
@@ -14280,7 +15048,9 @@ if (!Utils.IsUnitTest){
                                 }
 
                                 if (!MagicianEnabled && !AdeptEnabled)
+                                {
                                     MAGEnabled = false;
+                                }
                             }
                             else if (MAG.TotalMaximum < 1)
                             {
@@ -14374,7 +15144,9 @@ if (!Utils.IsUnitTest){
             else if (e.PropertyName == nameof(CharacterAttrib.MetatypeMaximum))
             {
                 if (DEPEnabled)
+                {
                     OnPropertyChanged(nameof(IsAI));
+                }
             }
         }
 
@@ -14415,23 +15187,29 @@ if (!Utils.IsUnitTest){
             if (e.PropertyName == nameof(CharacterAttrib.TotalValue))
             {
                 if (_objOptions.UseTotalValueForFreeContacts)
+                {
                     OnMultiplePropertyChanged(nameof(ContactPoints),
                         nameof(LimitSocial),
                         nameof(Composure),
                         nameof(JudgeIntentions),
                         nameof(JudgeIntentionsResist),
                         nameof(SpellDefenseDecreaseCHA));
+                }
                 else
+                {
                     OnMultiplePropertyChanged(nameof(LimitSocial),
                         nameof(Composure),
                         nameof(JudgeIntentions),
                         nameof(JudgeIntentionsResist),
                         nameof(SpellDefenseDecreaseCHA));
+                }
             }
             else if (e.PropertyName == nameof(CharacterAttrib.Value))
             {
                 if (!_objOptions.UseTotalValueForFreeContacts)
+                {
                     OnPropertyChanged(nameof(ContactPoints));
+                }
             }
         }
 
@@ -14509,48 +15287,68 @@ if (!Utils.IsUnitTest){
                 {
                     int intMAGTotalValue = MAG.TotalValue;
                     if (MysticAdeptPowerPoints > intMAGTotalValue)
+                    {
                         MysticAdeptPowerPoints = intMAGTotalValue;
+                    }
                 }
 
                 HashSet<string> setPropertiesChanged = new HashSet<string>();
                 if (Options.SpiritForceBasedOnTotalMAG)
+                {
                     setPropertiesChanged.Add(nameof(MaxSpiritForce));
+                }
+
                 if (MysAdeptAllowPPCareer)
+                {
                     setPropertiesChanged.Add(nameof(CanAffordCareerPP));
+                }
+
                 if (!UseMysticAdeptPPs && MAG == MAGAdept)
+                {
                     setPropertiesChanged.Add(nameof(PowerPointsTotal));
+                }
 
                 OnMultiplePropertyChanged(setPropertiesChanged.ToArray());
             }
             else if (e.PropertyName == nameof(CharacterAttrib.Value))
             {
                 if (!Options.SpiritForceBasedOnTotalMAG)
+                {
                     OnPropertyChanged(nameof(MaxSpiritForce));
+                }
             }
         }
 
         public void RefreshMAGAdeptDependentProperties(object sender, PropertyChangedEventArgs e)
         {
             if (MAG == MAGAdept)
+            {
                 return;
+            }
 
             if (e.PropertyName == nameof(CharacterAttrib.TotalValue))
             {
                 if (!UseMysticAdeptPPs)
+                {
                     OnPropertyChanged(nameof(PowerPointsTotal));
+                }
             }
         }
 
         public void RefreshRESDependentProperties(object sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(CharacterAttrib.TotalValue))
+            {
                 OnPropertyChanged(nameof(MaxSpriteLevel));
+            }
         }
 
         public void RefreshDEPDependentProperties(object sender, PropertyChangedEventArgs e)
         {
             if (IsAI && e.PropertyName == nameof(CharacterAttrib.TotalValue))
+            {
                 EDG.OnPropertyChanged(nameof(CharacterAttrib.MetatypeMaximum));
+            }
         }
 
         public void RefreshESSDependentProperties(object sender, PropertyChangedEventArgs e)
@@ -14566,7 +15364,9 @@ if (!Utils.IsUnitTest){
         {
             // Don't hammer away with this method while this character is loading. Instead, it will be run once after everything has been loaded in.
             if (IsLoading)
+            {
                 return;
+            }
             // Remove any Improvements from Armor Encumbrance.
             ImprovementManager.RemoveImprovements(this, Improvement.ImprovementSource.ArmorEncumbrance);
             if (!Options.NoArmorEncumbrance)
@@ -14590,7 +15390,10 @@ if (!Utils.IsUnitTest){
         {
             // Don't hammer away with this method while this character is loading. Instead, it will be run once after everything has been loaded in.
             if (IsLoading)
+            {
                 return;
+            }
+
             int intPhysicalCMFilled = Math.Min(PhysicalCMFilled, PhysicalCM);
             int intStunCMFilled = Math.Min(StunCMFilled, StunCM);
             int intCMThreshold = CMThreshold;
@@ -14647,10 +15450,7 @@ if (!Utils.IsUnitTest){
         private readonly DependancyGraph<string> CharacterDependencyGraph;
 
         [NotifyPropertyChangedInvocator]
-        public void OnPropertyChanged([CallerMemberName] string strPropertyName = null)
-        {
-            OnMultiplePropertyChanged(strPropertyName);
-        }
+        public void OnPropertyChanged([CallerMemberName] string strPropertyName = null) => OnMultiplePropertyChanged(strPropertyName);
 
         public void OnMultiplePropertyChanged(params string[] lstPropertyNames)
         {
@@ -14658,17 +15458,23 @@ if (!Utils.IsUnitTest){
             foreach (string strPropertyName in lstPropertyNames)
             {
                 if (lstNamesOfChangedProperties == null)
+                {
                     lstNamesOfChangedProperties = CharacterDependencyGraph.GetWithAllDependants(strPropertyName);
+                }
                 else
                 {
                     foreach (string strLoopChangedProperty in CharacterDependencyGraph.GetWithAllDependants(
                         strPropertyName))
+                    {
                         lstNamesOfChangedProperties.Add(strLoopChangedProperty);
+                    }
                 }
             }
 
             if ((lstNamesOfChangedProperties?.Count > 0) != true)
+            {
                 return;
+            }
 
             if (lstNamesOfChangedProperties.Contains(nameof(CharacterGrammaticGender)))
             {
@@ -14812,7 +15618,9 @@ if (!Utils.IsUnitTest){
                     foreach (Spirit objSpirit in Spirits)
                     {
                         if (objSpirit.EntityType != SpiritType.Spirit)
+                        {
                             objSpirit.Force = MaxSpriteLevel;
+                        }
                     }
                 }
 
@@ -14821,7 +15629,9 @@ if (!Utils.IsUnitTest){
                     foreach (Spirit objSpirit in Spirits)
                     {
                         if (objSpirit.EntityType == SpiritType.Spirit)
+                        {
                             objSpirit.Force = MaxSpiritForce;
+                        }
                     }
                 }
             }
@@ -14832,7 +15642,10 @@ if (!Utils.IsUnitTest){
             }
 
             if (Program.MainForm == null)
+            {
                 return;
+            }
+
             foreach (Character objLoopOpenCharacter in Program.MainForm.OpenCharacters)
             {
                 if (objLoopOpenCharacter != this && objLoopOpenCharacter.LinkedCharacters.Contains(this))
@@ -14865,7 +15678,9 @@ if (!Utils.IsUnitTest){
         public async Task<bool> LoadFromHeroLabFile(string strPorFile, string strCharacterId, string strSettingsName)
         {
             if (!File.Exists(strPorFile))
+            {
                 return false;
+            }
 
             Dictionary<string, Bitmap> dicImages = new Dictionary<string, Bitmap>();
             XmlDocument xmlStatBlockDocument = null;
@@ -14911,7 +15726,9 @@ if (!Utils.IsUnitTest){
                                                     if (xmlSourceDoc.SelectSingleNode(
                                                             "/document/public/character[@name = " +
                                                             strCharacterId.CleanXPath() + "]") != null)
+                                                    {
                                                         xmlStatBlockDocument = xmlSourceDoc;
+                                                    }
                                                 }
                                                 else
                                                 {
@@ -14951,9 +15768,13 @@ if (!Utils.IsUnitTest){
                                         (new Bitmap(entry.Open(), true)).ConvertPixelFormat(System.Drawing.Imaging
                                             .PixelFormat.Format32bppPArgb);
                                     if (dicImages.ContainsKey(strKey))
+                                    {
                                         dicImages[strKey] = imgMugshot;
+                                    }
                                     else
+                                    {
                                         dicImages.Add(strKey, imgMugshot);
+                                    }
                                 }
                             }
 
@@ -15078,14 +15899,19 @@ if (!Utils.IsUnitTest){
 
                         // Load the character's settings file.
                         if (!_objOptions.Load(_strSettingsFileName))
+                        {
                             return false;
+                        }
 
                         // Metatype information.
                         string strRaceString = xmlStatBlockBaseNode.SelectSingleNode("race/@name")?.InnerText;
                         if (!string.IsNullOrEmpty(strRaceString))
                         {
                             if (strRaceString == "Metasapient")
+                            {
                                 strRaceString = "A.I.";
+                            }
+
                             foreach (XmlNode xmlMetatype in XmlManager.Load("metatypes.xml")
                                 .SelectNodes("/chummer/metatypes/metatype"))
                             {
@@ -15180,11 +16006,15 @@ if (!Utils.IsUnitTest){
                             "images/image/@filename"))
                         {
                             if (dicImages.TryGetValue(xmlImageFileNameNode.InnerText, out Bitmap objOutput))
+                            {
                                 _lstMugshots.Add(objOutput);
+                            }
                         }
 
                         if (_lstMugshots.Count > 0)
+                        {
                             _intMainMugshotIndex = 0;
+                        }
 
                         string strSettingsSummary =
                             xmlStatBlockBaseNode.SelectSingleNode("settings/@summary")?.InnerText;
@@ -15199,7 +16029,9 @@ if (!Utils.IsUnitTest){
                                 _strGameplayOption = strSettingsSummary.Substring(intCharCreationSystemsIndex + 28,
                                     strSettingsSummary.IndexOf(';') - 28 - intCharCreationSystemsIndex).Trim();
                                 if (_strGameplayOption == "Established Runners")
+                                {
                                     _strGameplayOption = "Standard";
+                                }
                             }
                         }
 
@@ -15262,9 +16094,13 @@ if (!Utils.IsUnitTest){
                                 _strPriorityMetatype == _strPriorityResources ||
                                 _strPriorityMetatype == _strPrioritySpecial ||
                                 _strPriorityResources == _strPrioritySkills)
+                            {
                                 _objBuildMethod = CharacterBuildMethod.SumtoTen;
+                            }
                             else
+                            {
                                 _objBuildMethod = CharacterBuildMethod.Priority;
+                            }
                         }
 
                         XmlDocument xmlDocumentGameplayOptions = XmlManager.Load("gameplayoptions.xml");
@@ -15285,17 +16121,24 @@ if (!Utils.IsUnitTest){
                                 frmPickBP.ShowDialog();
 
                                 if (frmPickBP.DialogResult != DialogResult.OK)
+                                {
                                     return false;
+                                }
                             }
                             else
                             {
                                 BannedWareGrades.Clear();
                                 foreach (XmlNode xmlNode in xmlGameplayOption.SelectNodes("bannedwaregrades/grade"))
+                                {
                                     BannedWareGrades.Add(xmlNode.InnerText);
+                                }
 
                                 if (!Options.FreeContactsMultiplierEnabled)
+                                {
                                     _intContactMultiplier =
                                         Convert.ToInt32(xmlGameplayOption["contactmultiplier"].InnerText);
+                                }
+
                                 _intGameplayOptionQualityLimit =
                                     _intMaxKarma = Convert.ToInt32(xmlGameplayOption["karma"].InnerText);
                                 _decNuyenMaximumBP = _decMaxNuyen = Convert.ToDecimal(
@@ -15309,7 +16152,10 @@ if (!Utils.IsUnitTest){
                             _objBuildMethod == CharacterBuildMethod.SumtoTen)
                         {
                             if (strRaceString == "A.I.")
+                            {
                                 _strPriorityTalent = "AI";
+                            }
+
                             XmlNode xmlPriorityTalentPick =
                                 xmlLeadsBaseNode.SelectSingleNode(
                                     "container/pick[starts-with(@thing, \"qu\") and @source = \"heritage\"]");
@@ -15360,7 +16206,9 @@ if (!Utils.IsUnitTest){
                             frmPriorityMetatype frmSelectMetatype = new frmPriorityMetatype(this);
                             frmSelectMetatype.ShowDialog();
                             if (frmSelectMetatype.DialogResult == DialogResult.Cancel)
+                            {
                                 return false;
+                            }
                         }
                         else
                         {
@@ -15368,7 +16216,9 @@ if (!Utils.IsUnitTest){
                             frmSelectMetatype.ShowDialog();
 
                             if (frmSelectMetatype.DialogResult == DialogResult.Cancel)
+                            {
                                 return false;
+                            }
                         }
 
                         XmlNode xmlKarmaNode = xmlStatBlockBaseNode.SelectSingleNode("karma");
@@ -15428,7 +16278,9 @@ if (!Utils.IsUnitTest){
                                 {
                                     int intCullIndex = strQualityName.LastIndexOf('(', intDicepoolLabelIndex);
                                     if (intCullIndex != -1)
+                                    {
                                         strQualityName = strQualityName.Substring(0, intCullIndex).Trim();
+                                    }
                                 }
 
                                 int intQuantity = 1;
@@ -15457,7 +16309,9 @@ if (!Utils.IsUnitTest){
                                             xmlQualitiesDocument.SelectSingleNode(
                                                 "/chummer/qualities/quality[name = \"" + strName + "\"]");
                                         if (xmlQualityDataNode != null)
+                                        {
                                             strForcedValue = astrOriginalNameSplit[1].Trim();
+                                        }
                                     }
                                 }
 
@@ -15471,7 +16325,9 @@ if (!Utils.IsUnitTest){
                                             xmlQualitiesDocument.SelectSingleNode(
                                                 "/chummer/qualities/quality[name = \"" + strName + "\"]");
                                         if (xmlQualityDataNode != null)
+                                        {
                                             strForcedValue = astrOriginalNameSplit[1].Trim();
+                                        }
                                     }
                                 }
 
@@ -15501,7 +16357,9 @@ if (!Utils.IsUnitTest){
                                 {
                                     int intCullIndex = strQualityName.LastIndexOf('(', intDicepoolLabelIndex);
                                     if (intCullIndex != -1)
+                                    {
                                         strQualityName = strQualityName.Substring(0, intCullIndex).Trim();
+                                    }
                                 }
 
                                 switch (strQualityName)
@@ -15549,7 +16407,9 @@ if (!Utils.IsUnitTest){
                                             xmlQualitiesDocument.SelectSingleNode(
                                                 "/chummer/qualities/quality[name = \"" + strName + "\"]");
                                         if (xmlQualityDataNode != null)
+                                        {
                                             strForcedValue = astrOriginalNameSplit[1].Trim();
+                                        }
                                     }
                                 }
 
@@ -15563,7 +16423,9 @@ if (!Utils.IsUnitTest){
                                             xmlQualitiesDocument.SelectSingleNode(
                                                 "/chummer/qualities/quality[name = \"" + strName + "\"]");
                                         if (xmlQualityDataNode != null)
+                                        {
                                             strForcedValue = astrOriginalNameSplit[1].Trim();
+                                        }
                                     }
                                 }
 
@@ -15608,12 +16470,17 @@ if (!Utils.IsUnitTest){
                             xmlLeadsBaseNode.SelectSingleNode(
                                 "usagepool[@id = \"DmgNet\" and @pickindex=\"5\"]/@quantity");
                         if (xmlPhysicalCMFilledNode != null)
+                        {
                             int.TryParse(xmlPhysicalCMFilledNode.InnerText, out _intPhysicalCMFilled);
+                        }
+
                         XmlNode xmlStunCMFilledNode =
                             xmlLeadsBaseNode.SelectSingleNode(
                                 "usagepool[@id = \"DmgNet\" and @pickindex=\"6\"]/@quantity");
                         if (xmlStunCMFilledNode != null)
+                        {
                             int.TryParse(xmlStunCMFilledNode.InnerText, out _intStunCMFilled);
+                        }
                         //Timekeeper.Finish("load_char_misc2");
                     }
 
@@ -15849,7 +16716,9 @@ if (!Utils.IsUnitTest){
                                                             if (objPlugin.ImportHeroLabGear(xmlPluginToAdd,
                                                                 xmlArmorModData,
                                                                 lstWeapons))
+                                                            {
                                                                 objArmorMod.Gear.Add(objPlugin);
+                                                            }
                                                         }
 
                                                         foreach (XmlNode xmlPluginToAdd in xmlArmorModToImport
@@ -15885,7 +16754,9 @@ if (!Utils.IsUnitTest){
                                                     Gear objPlugin = new Gear(this);
                                                     if (objPlugin.ImportHeroLabGear(xmlArmorModToImport, xmlArmorData,
                                                         lstWeapons))
+                                                    {
                                                         objArmor.Gear.Add(objPlugin);
+                                                    }
                                                 }
                                             }
                                         }
@@ -15912,7 +16783,9 @@ if (!Utils.IsUnitTest){
                                                             Gear objPlugin = new Gear(this);
                                                             if (objPlugin.ImportHeroLabGear(xmlPluginToAdd,
                                                                 objArmorMod.GetNode(), lstWeapons))
+                                                            {
                                                                 objArmorMod.Gear.Add(objPlugin);
+                                                            }
                                                         }
 
                                                         foreach (XmlNode xmlPluginToAdd in xmlArmorModToImport
@@ -15979,7 +16852,9 @@ if (!Utils.IsUnitTest){
                         {
                             Weapon objWeapon = new Weapon(this);
                             if (objWeapon.ImportHeroLabWeapon(xmlWeaponToImport, lstWeapons))
+                            {
                                 _lstWeapons.Add(objWeapon);
+                            }
                         }
 
                         foreach (XmlNode xmlPluginToAdd in xmlStatBlockBaseNode.SelectNodes(
@@ -16012,7 +16887,9 @@ if (!Utils.IsUnitTest){
                             Cyberware objCyberware = new Cyberware(this);
                             if (objCyberware.ImportHeroLabCyberware(xmlCyberwareToImport, null, lstWeapons,
                                 lstVehicles))
+                            {
                                 _lstCyberware.Add(objCyberware);
+                            }
                         }
 
                         foreach (XmlNode xmlPluginToAdd in xmlStatBlockBaseNode.SelectNodes(
@@ -16040,7 +16917,9 @@ if (!Utils.IsUnitTest){
                             Cyberware objCyberware = new Cyberware(this);
                             if (objCyberware.ImportHeroLabCyberware(xmlCyberwareToImport, null, lstWeapons,
                                 lstVehicles))
+                            {
                                 _lstCyberware.Add(objCyberware);
+                            }
                         }
 
                         foreach (XmlNode xmlPluginToAdd in xmlStatBlockBaseNode.SelectNodes(
@@ -16077,7 +16956,10 @@ if (!Utils.IsUnitTest){
                             {
                                 bool blnIsLimited = strSpellName.EndsWith(" (limited)");
                                 if (blnIsLimited)
+                                {
                                     strSpellName = strSpellName.TrimEndOnce(" (limited)");
+                                }
+
                                 string strForcedValue = string.Empty;
                                 switch (strSpellName)
                                 {
@@ -16159,11 +17041,17 @@ if (!Utils.IsUnitTest){
                                 {
                                     strForcedValue = strSpellName.TrimStartOnce("Clean ").TrimEndOnce(", Extended");
                                     if (xmlHeroLabSpell.Attributes["type"]?.InnerText == "Physical")
+                                    {
                                         strSpellName = "Detect [Object]";
+                                    }
                                     else if (strSpellName.EndsWith(", Extended"))
+                                    {
                                         strSpellName = "Detect [Life Form], Extended";
+                                    }
                                     else
+                                    {
                                         strSpellName = "Detect [Life Form]";
+                                    }
                                 }
                                 else if (strSpellName.StartsWith("Corrode "))
                                 {
@@ -16357,8 +17245,10 @@ if (!Utils.IsUnitTest){
                                         strForcedValue = astrOriginalNameSplit[1].Trim();
                                         int intForcedValueParenthesesStart = strForcedValue.IndexOf('(');
                                         if (intForcedValueParenthesesStart != -1)
+                                        {
                                             strForcedValue =
                                                 strForcedValue.Substring(0, intForcedValueParenthesesStart);
+                                        }
                                     }
 
                                     if (xmlPowerData == null)
@@ -16378,7 +17268,9 @@ if (!Utils.IsUnitTest){
                                                 if (!int.TryParse(
                                                     strSecondPart.Substring(0, intSecondPartParenthesesEnd),
                                                     out intRating))
+                                                {
                                                     intRating = 1;
+                                                }
                                             }
 
                                             astrOriginalNameSplit = strSecondPart.Split(':');
@@ -16387,8 +17279,10 @@ if (!Utils.IsUnitTest){
                                                 strForcedValue = astrOriginalNameSplit[1].Trim();
                                                 int intForcedValueParenthesesStart = strForcedValue.IndexOf('(');
                                                 if (intForcedValueParenthesesStart != -1)
+                                                {
                                                     strForcedValue =
                                                         strForcedValue.Substring(0, intForcedValueParenthesesStart);
+                                                }
                                             }
                                         }
                                     }
@@ -16553,7 +17447,10 @@ if (!Utils.IsUnitTest){
                             string strIdentityName = xmlHeroLabIdentity.Attributes["name"]?.InnerText;
                             int intIdentityNameParenthesesStart = strIdentityName.IndexOf('(');
                             if (intIdentityNameParenthesesStart != -1)
+                            {
                                 strIdentityName = strIdentityName.Substring(0, intIdentityNameParenthesesStart);
+                            }
+
                             XmlNode xmlHeroLabFakeSINNode =
                                 xmlHeroLabIdentity.SelectSingleNode("license[@name = \"Fake SIN\"]");
                             if (xmlHeroLabFakeSINNode != null)
@@ -16614,7 +17511,9 @@ if (!Utils.IsUnitTest){
                         {
                             Gear objGear = new Gear(this);
                             if (objGear.ImportHeroLabGear(xmlGearToImport, null, lstWeapons))
+                            {
                                 _lstGear.Add(objGear);
+                            }
                         }
 
                         foreach (XmlNode xmlPluginToAdd in xmlStatBlockBaseNode.SelectNodes(
@@ -16834,11 +17733,15 @@ if (!Utils.IsUnitTest){
                         {
                             int intMAGTotalValue = MAG.TotalValue;
                             if (MysticAdeptPowerPoints > intMAGTotalValue)
+                            {
                                 MysticAdeptPowerPoints = intMAGTotalValue;
+                            }
                         }
 
                         if (!InitiationEnabled || !AddInitiationsAllowed)
+                        {
                             ClearInitiations();
+                        }
                         //Timekeeper.Finish("load_char_improvementrefreshers");
                     }
 

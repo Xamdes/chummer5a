@@ -41,14 +41,7 @@ namespace ChummerHub
 
         private static DriveHandler _gdrive = null;
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'Startup.GDrive'
-        public static DriveHandler GDrive
-#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'Startup.GDrive'
-        {
-            get
-            {
-                return _gdrive;
-            }
-        }
+        public static DriveHandler GDrive => _gdrive;
 
         /// <summary>
         /// This leads to the master-azure-db to create/edit/delete users
@@ -75,7 +68,9 @@ namespace ChummerHub
             _logger = logger;
             Configuration = configuration;
             if (_gdrive == null)
+            {
                 _gdrive = new DriveHandler(logger, configuration);
+            }
         }
 
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'Startup.Configuration'

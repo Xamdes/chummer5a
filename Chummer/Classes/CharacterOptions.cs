@@ -192,7 +192,9 @@ namespace Chummer
             _character = character;
 
             if (Utils.IsRunningInVisualStudio)
+            {
                 return;
+            }
 
             // Create the settings directory if it does not exist.
             string settingsDirectoryPath = Path.Combine(Utils.GetStartupPath, "settings");
@@ -502,7 +504,9 @@ namespace Chummer
             // <books>
             objWriter.WriteStartElement("books");
             foreach (string strBook in _lstBooks)
+            {
                 objWriter.WriteElementString("book", strBook);
+            }
             // </books>
             objWriter.WriteEndElement();
 
@@ -510,7 +514,9 @@ namespace Chummer
             // <customdatadirectorynames>
             objWriter.WriteStartElement("customdatadirectorynames");
             foreach (string strDirectoryName in _lstCustomDataDirectoryNames)
+            {
                 objWriter.WriteElementString("directoryname", strDirectoryName);
+            }
             // </customdatadirectorynames>
             objWriter.WriteEndElement();
             // <hascustomdirectories>
@@ -820,17 +826,30 @@ namespace Chummer
             // Load Books.
             _lstBooks.Clear();
             using (XmlNodeList xmlBookList = objXmlDocument.SelectNodes("/settings/books/book"))
+            {
                 if (xmlBookList != null)
+                {
                     foreach (XmlNode objXmlBook in xmlBookList)
+                    {
                         _lstBooks.Add(objXmlBook.InnerText);
+                    }
+                }
+            }
+
             RecalculateBookXPath();
 
             // Load Custom Data Directory names.
             _lstCustomDataDirectoryNames.Clear();
             using (XmlNodeList xmlDirectoryList = objXmlDocument.SelectNodes("/settings/customdatadirectorynames/directoryname"))
+            {
                 if (xmlDirectoryList != null)
+                {
                     foreach (XmlNode objXmlDirectoryName in xmlDirectoryList)
+                    {
                         _lstCustomDataDirectoryNames.Add(objXmlDirectoryName.InnerText);
+                    }
+                }
+            }
 
             // Load default build settings.
             objXmlNode = objXmlDocument.SelectSingleNode("//settings/defaultbuild");
@@ -852,7 +871,9 @@ namespace Chummer
         public void LoadFromRegistry()
         {
             if (GlobalOptions.ChummerRegistryKey == null)
+            {
                 return;
+            }
             // Confirm delete.
             GlobalOptions.LoadBoolFromRegistry(ref _blnConfirmDelete, "confirmdelete", string.Empty, true);
 
@@ -968,10 +989,7 @@ namespace Chummer
         /// Determine whether or not a given book is in use.
         /// </summary>
         /// <param name="strCode">Book code to search for.</param>
-        public bool BookEnabled(string strCode)
-        {
-            return _lstBooks.Contains(strCode);
-        }
+        public bool BookEnabled(string strCode) => _lstBooks.Contains(strCode);
 
         /// <summary>
         /// XPath query used to filter items based on the user's selected source books.
@@ -1014,7 +1032,9 @@ namespace Chummer
                 _strBookXPath = strBookXPath.ToString();
             }
             else
+            {
                 _strBookXPath = string.Empty;
+            }
         }
 
         /// <summary>
@@ -1209,7 +1229,10 @@ namespace Chummer
             get
             {
                 if (_character?.GameplayOption == "Prime Runner")
+                {
                     return _intFreeContactsMultiplier * 2;  //HACK. Should really read from gameplayoptions
+                }
+
                 return _intFreeContactsMultiplier;
             }
             set
@@ -1495,13 +1518,20 @@ namespace Chummer
             get
             {
                 if (_intCachedNuyenDecimals >= 0)
+                {
                     return _intCachedNuyenDecimals;
+                }
+
                 string strNuyenFormat = NuyenFormat;
                 int intDecimalPlaces = strNuyenFormat.IndexOf('.');
                 if (intDecimalPlaces == -1)
+                {
                     intDecimalPlaces = 0;
+                }
                 else
+                {
                     intDecimalPlaces = strNuyenFormat.Length - intDecimalPlaces - 1;
+                }
 
                 return _intCachedNuyenDecimals = intDecimalPlaces;
             }
@@ -1512,12 +1542,16 @@ namespace Chummer
                 if (intNewNuyenDecimals < intCurrentNuyenDecimals)
                 {
                     if (intNewNuyenDecimals > 0)
+                    {
                         NuyenFormat = NuyenFormat.Substring(0, NuyenFormat.Length - (intNewNuyenDecimals - intCurrentNuyenDecimals));
+                    }
                     else
                     {
                         int intDecimalPlaces = NuyenFormat.IndexOf('.');
                         if (intDecimalPlaces != -1)
+                        {
                             NuyenFormat = NuyenFormat.Substring(0, intDecimalPlaces);
+                        }
                     }
                 }
                 else if (intNewNuyenDecimals > intCurrentNuyenDecimals)
@@ -1573,13 +1607,20 @@ namespace Chummer
             get
             {
                 if (_intCachedEssenceDecimals >= 0)
+                {
                     return _intCachedEssenceDecimals;
+                }
+
                 string strEssenceFormat = EssenceFormat;
                 int intDecimalPlaces = strEssenceFormat.IndexOf('.');
                 if (intDecimalPlaces == -1)
+                {
                     intDecimalPlaces = 0;
+                }
                 else
+                {
                     intDecimalPlaces = strEssenceFormat.Length - intDecimalPlaces - 1;
+                }
 
                 return _intCachedEssenceDecimals = intDecimalPlaces;
             }
@@ -1590,12 +1631,16 @@ namespace Chummer
                 if (intNewEssenceDecimals < intCurrentEssenceDecimals)
                 {
                     if (intNewEssenceDecimals > 0)
+                    {
                         EssenceFormat = EssenceFormat.Substring(0, EssenceFormat.Length - (intNewEssenceDecimals - intCurrentEssenceDecimals));
+                    }
                     else
                     {
                         int intDecimalPlaces = EssenceFormat.IndexOf('.');
                         if (intDecimalPlaces != -1)
+                        {
                             EssenceFormat = EssenceFormat.Substring(0, intDecimalPlaces);
+                        }
                     }
                 }
                 else if (intNewEssenceDecimals > intCurrentEssenceDecimals)

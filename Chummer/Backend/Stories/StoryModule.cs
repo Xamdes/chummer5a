@@ -54,18 +54,24 @@ namespace Chummer
             if (xmlTextsNode != null)
             {
                 using (XmlNodeList xmlChildrenList = xmlStoryModuleDataNode.SelectNodes("*"))
+                {
                     if (xmlChildrenList != null)
                     {
                         foreach (XmlNode xmlText in xmlChildrenList)
                         {
                             _dicEnglishTexts.Add(xmlText.Name, xmlText.Value);
                             if (xmlText.SelectSingleNode("@default")?.Value == bool.TrueString)
+                            {
                                 _strDefaultTextKey = xmlText.Name;
+                            }
                         }
 
                         if (string.IsNullOrEmpty(_strDefaultTextKey))
+                        {
                             _strDefaultTextKey = _dicEnglishTexts.Keys.FirstOrDefault();
+                        }
                     }
+                }
             }
         }
 
@@ -81,11 +87,15 @@ namespace Chummer
                 {
                     _dicEnglishTexts.Add(xmlText.Name, xmlText.Value);
                     if (xmlText.SelectSingleNode("@default")?.Value == bool.TrueString)
+                    {
                         _strDefaultTextKey = xmlText.Name;
+                    }
                 }
 
                 if (string.IsNullOrEmpty(_strDefaultTextKey))
+                {
                     _strDefaultTextKey = _dicEnglishTexts.Keys.FirstOrDefault();
+                }
             }
         }
 
@@ -117,7 +127,10 @@ namespace Chummer
             set
             {
                 if (_guiSourceID == value)
+                {
                     return;
+                }
+
                 _guiSourceID = value;
                 _objCachedMyXmlNode = null;
             }
@@ -133,7 +146,9 @@ namespace Chummer
         public string DisplayNameMethod(string strLanguage)
         {
             if (strLanguage == GlobalOptions.DefaultLanguage)
+            {
                 return Name;
+            }
 
             return GetNode(strLanguage)?["translate"]?.InnerText ?? Name;
         }
@@ -156,15 +171,9 @@ namespace Chummer
                    (_dicEnglishTexts.TryGetValue(strKey, out strReturn) ? strReturn : '<' + strKey + '>');
         }
 
-        public void TestRunToGeneratePersistents(string strLanguage)
-        {
-            ResolveMacros(DisplayText(DefaultKey, strLanguage), strLanguage, true);
-        }
+        public void TestRunToGeneratePersistents(string strLanguage) => ResolveMacros(DisplayText(DefaultKey, strLanguage), strLanguage, true);
 
-        public string PrintModule(string strLanguage)
-        {
-            return ResolveMacros(DisplayText(DefaultKey, strLanguage), strLanguage).NormalizeWhiteSpace();
-        }
+        public string PrintModule(string strLanguage) => ResolveMacros(DisplayText(DefaultKey, strLanguage), strLanguage).NormalizeWhiteSpace();
 
         public string ResolveMacros(string strInput, string strLanguage, bool blnGeneratePersistents = false)
         {
@@ -189,7 +198,9 @@ namespace Chummer
                         {
                             char chrLoopChar = strReturn[i];
                             if (chrLoopChar == '{')
+                            {
                                 intBracketCount += 1;
+                            }
                             else if (chrLoopChar == '}')
                             {
                                 if (intBracketCount == 1)
@@ -223,12 +234,17 @@ namespace Chummer
 
             // Quit out early if we only have one item and it doesn't need processing
             if (lstSubstrings.Count == 0)
+            {
                 return string.Empty;
+            }
+
             if (lstSubstrings.Count == 1)
             {
                 Tuple<string, bool> objFirstItem = lstSubstrings[0];
                 if (!objFirstItem.Item2)
+                {
                     return objFirstItem.Item1;
+                }
             }
 
             string[] lstOutputStrings = new string[lstSubstrings.Count];
@@ -240,12 +256,16 @@ namespace Chummer
                 {
                     string strOutput = ProcessSingleMacro(objLoopItem.Item1, strLanguage, blnGeneratePersistents);
                     lock (objProcessingLock)
+                    {
                         lstOutputStrings[i] = strOutput;
+                    }
                 }
                 else
                 {
                     lock (objProcessingLock)
+                    {
                         lstOutputStrings[i] = objLoopItem.Item1;
+                    }
                 }
             });
 
@@ -352,7 +372,10 @@ namespace Chummer
                     {
                         object objProcess = CommonFunctions.EvaluateInvariantXPath(strArguments, out bool blnIsSuccess);
                         if (blnIsSuccess)
+                        {
                             return objProcess.ToString();
+                        }
+
                         return LanguageManager.GetString("String_Unknown", strLanguage);
                     }
                 case "$Index":
@@ -391,9 +414,14 @@ namespace Chummer
                         {
                             string strMainOutput = strArguments.Substring(0, intArgumentPipeIndex);
                             if (!string.IsNullOrEmpty(strMainOutput) && strMainOutput != LanguageManager.GetString("String_Error", strLanguage) && strMainOutput != LanguageManager.GetString("String_Unknown", strLanguage))
+                            {
                                 return strMainOutput;
+                            }
+
                             if (intArgumentPipeIndex + 1 < strArguments.Length)
+                            {
                                 return strArguments.Substring(intArgumentPipeIndex + 1);
+                            }
                         }
                         return string.Empty;
                     }
@@ -402,28 +430,35 @@ namespace Chummer
             if (blnGeneratePersistents)
             {
                 if (ParentStory.PersistentModules.TryGetValue(strFunction, out StoryModule objInnerModule))
+                {
                     return ResolveMacros(objInnerModule.DisplayText(strArguments, strLanguage), strLanguage);
+                }
+
                 StoryModule objPersistentStoryModule = ParentStory.GeneratePersistentModule(strFunction);
                 if (objPersistentStoryModule != null)
+                {
                     return ResolveMacros(objPersistentStoryModule.DisplayText(strArguments, strLanguage), strLanguage);
+                }
             }
             else if (ParentStory.PersistentModules.TryGetValue(strFunction, out StoryModule objInnerModule))
+            {
                 return ResolveMacros(objInnerModule.DisplayText(strArguments, strLanguage), strLanguage);
+            }
 
             return LanguageManager.GetString("String_Error", strLanguage);
         }
 
         public string InternalId => _guiInternalId == Guid.Empty ? string.Empty : _guiInternalId.ToString("D");
 
-        public XmlNode GetNode()
-        {
-            return GetNode(GlobalOptions.Language);
-        }
+        public XmlNode GetNode() => GetNode(GlobalOptions.Language);
 
         public XmlNode GetNode(string strLanguage)
         {
             if (_objCachedMyXmlNode != null && strLanguage == _strCachedXmlNodeLanguage && !GlobalOptions.LiveCustomData)
+            {
                 return _objCachedMyXmlNode;
+            }
+
             _objCachedMyXmlNode = XmlManager.Load("stories.xml", strLanguage).SelectSingleNode($"/chummer/stories/story[id = \"{SourceIDString}\" or id = \"{SourceIDString.ToUpperInvariant()}\"]");
             _strCachedXmlNodeLanguage = strLanguage;
             return _objCachedMyXmlNode;

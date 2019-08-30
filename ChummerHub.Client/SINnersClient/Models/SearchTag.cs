@@ -143,9 +143,9 @@ namespace SINners.Models
         /// </summary>
         public virtual void Validate()
         {
-            if (this.SearchTags != null)
+            if (SearchTags != null)
             {
-                foreach (SearchTag element in this.SearchTags)
+                foreach (SearchTag element in SearchTags)
                 {
                     if (element != null)
                     {
@@ -153,30 +153,30 @@ namespace SINners.Models
                     }
                 }
             }
-            if (this.TagName != null)
+            if (TagName != null)
             {
-                if (this.TagName.Length > 64)
+                if (TagName.Length > 64)
                 {
                     throw new ValidationException(ValidationRules.MaxLength, "TagName", 64);
                 }
             }
-            if (this.TagValue != null)
+            if (TagValue != null)
             {
-                if (this.TagValue.Length > 64)
+                if (TagValue.Length > 64)
                 {
                     throw new ValidationException(ValidationRules.MaxLength, "TagValue", 64);
                 }
             }
-            if (this.TagComment != null)
+            if (TagComment != null)
             {
-                if (this.TagComment.Length > 64)
+                if (TagComment.Length > 64)
                 {
                     throw new ValidationException(ValidationRules.MaxLength, "TagComment", 64);
                 }
             }
-            if (this.Tags != null)
+            if (Tags != null)
             {
-                foreach (Tag element1 in this.Tags)
+                foreach (Tag element1 in Tags)
                 {
                     if (element1 != null)
                     {

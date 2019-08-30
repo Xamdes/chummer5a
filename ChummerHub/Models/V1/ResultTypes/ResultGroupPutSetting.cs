@@ -19,11 +19,7 @@ namespace ChummerHub.Models.V1
         }
 
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'ResultGroupPutSetting.ResultGroupPutSetting(SINnerGroup)'
-        public ResultGroupPutSetting(SINnerGroup group)
-#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'ResultGroupPutSetting.ResultGroupPutSetting(SINnerGroup)'
-        {
-            MyGroup = group;
-        }
+        public ResultGroupPutSetting(SINnerGroup group) => MyGroup = group;
 
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'ResultGroupPutSetting.ResultGroupPutSetting(Exception)'
         public ResultGroupPutSetting(Exception e) : base(e)

@@ -87,11 +87,7 @@ namespace ChummerHub.Areas.Identity.Pages.Account
         }
 
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'RegisterModel.OnGet(string)'
-        public void OnGet(string returnUrl = null)
-#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'RegisterModel.OnGet(string)'
-        {
-            ReturnUrl = returnUrl;
-        }
+        public void OnGet(string returnUrl = null) => ReturnUrl = returnUrl;
 
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'RegisterModel.OnPostAsync(string)'
         public async Task<IActionResult> OnPostAsync(string returnUrl = null)

@@ -64,24 +64,29 @@ namespace Chummer
             _chrSuffix = strAvailExpr[strAvailExpr.Length - 1];
             _blnAddToParent = strAvailExpr.StartsWith('+') || strAvailExpr.StartsWith('-');
             if (_chrSuffix == 'F' || _chrSuffix == 'R')
+            {
                 strAvailExpr = strAvailExpr.Substring(0, strAvailExpr.Length - 1);
+            }
+
             object objProcess = CommonFunctions.EvaluateInvariantXPath(strAvailExpr.Replace("Rating", intRating.ToString(GlobalOptions.InvariantCultureInfo)), out bool blnIsSuccess);
             _intValue = blnIsSuccess ? Convert.ToInt32(objProcess) : 0;
             _intValue += intBonus;
             if (_intValue < 0)
+            {
                 _intValue = 0;
+            }
         }
 
-        public override string ToString()
-        {
-            return ToString(GlobalOptions.CultureInfo, GlobalOptions.Language);
-        }
+        public override string ToString() => ToString(GlobalOptions.CultureInfo, GlobalOptions.Language);
 
         public string ToString(CultureInfo objCulture, string strLanguage)
         {
             string strBaseAvail = _intValue.ToString(objCulture);
             if (_blnAddToParent && _intValue >= 0)
+            {
                 strBaseAvail = '+' + strBaseAvail;
+            }
+
             switch (_chrSuffix)
             {
                 case 'F':
@@ -92,10 +97,7 @@ namespace Chummer
             return strBaseAvail;
         }
 
-        public int CompareTo(object obj)
-        {
-            return CompareTo((AvailabilityValue)obj);
-        }
+        public int CompareTo(object obj) => CompareTo((AvailabilityValue)obj);
 
         public int CompareTo(AvailabilityValue objOther)
         {

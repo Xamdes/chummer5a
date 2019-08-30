@@ -33,10 +33,7 @@ namespace Chummer
             nudNumber.DecimalPlaces = intDecimalPlaces;
         }
 
-        private void frmSelectNumber_Shown(object sender, EventArgs e)
-        {
-            nudNumber.Focus();
-        }
+        private void frmSelectNumber_Shown(object sender, EventArgs e) => nudNumber.Focus();
 
         private void cmdOK_Click(object sender, EventArgs e)
         {
@@ -44,10 +41,7 @@ namespace Chummer
             DialogResult = DialogResult.OK;
         }
 
-        private void cmdCancel_Click(object sender, EventArgs e)
-        {
-            DialogResult = DialogResult.Cancel;
-        }
+        private void cmdCancel_Click(object sender, EventArgs e) => DialogResult = DialogResult.Cancel;
         #endregion
 
         #region Properties
@@ -93,7 +87,9 @@ namespace Chummer
             {
                 cmdCancel.Enabled = value;
                 if (!value)
+                {
                     ControlBox = false;
+                }
             }
         }
         #endregion

@@ -53,8 +53,10 @@ namespace Chummer
             // Populate the Improvement Type list.
             XmlNodeList objXmlImprovementList = _objDocument.SelectNodes("/chummer/improvements/improvement");
             if (objXmlImprovementList != null)
+            {
                 lstTypes.AddRange(from XmlNode objXmlImprovement in objXmlImprovementList
                                   select new ListItem(objXmlImprovement["id"]?.InnerText, Name = objXmlImprovement["translate"]?.InnerText ?? objXmlImprovement["name"]?.InnerText));
+            }
 
             lstTypes.Sort(CompareListItems.CompareNames);
             cboImprovemetType.BeginUpdate();
@@ -68,9 +70,15 @@ namespace Chummer
                 cboImprovemetType.SelectedValue = _objEditImprovement.CustomId;
                 txtName.Text = _objEditImprovement.CustomName;
                 if (nudMax.Visible)
+                {
                     nudMax.Value = _objEditImprovement.Maximum;
+                }
+
                 if (nudMin.Visible)
+                {
                     nudMin.Value = _objEditImprovement.Minimum;
+                }
+
                 if (nudVal.Visible)
                 {
                     // specificattribute stores the Value in Augmented instead.
@@ -88,15 +96,9 @@ namespace Chummer
             cboImprovemetType.EndUpdate();
         }
 
-        private void cmdOK_Click(object sender, EventArgs e)
-        {
-            AcceptForm();
-        }
+        private void cmdOK_Click(object sender, EventArgs e) => AcceptForm();
 
-        private void cmdCancel_Click(object sender, EventArgs e)
-        {
-            DialogResult = DialogResult.Cancel;
-        }
+        private void cmdCancel_Click(object sender, EventArgs e) => DialogResult = DialogResult.Cancel;
 
         private void cboImprovemetType_SelectedIndexChanged(object sender, EventArgs e)
         {
@@ -124,9 +126,13 @@ namespace Chummer
             _strSelect = string.Empty;
 
             if (objFetchNode == null)
+            {
                 return;
+            }
+
             XmlNodeList xmlNodeList = objFetchNode.SelectNodes("fields/field");
             if (xmlNodeList != null)
+            {
                 foreach (XmlNode objNode in xmlNodeList)
                 {
                     switch (objNode.InnerText)
@@ -164,6 +170,7 @@ namespace Chummer
                             break;
                     }
                 }
+            }
 
             // Display the help information.
             txtHelp.Text = objFetchNode["altpage"]?.InnerText ?? objFetchNode["page"]?.InnerText;
@@ -177,11 +184,15 @@ namespace Chummer
                 case "SelectActionDicePool":
                     List<ListItem> lstActions = new List<ListItem>();
                     using (XmlNodeList xmlActionList = XmlManager.Load("actions.xml").SelectNodes("/chummer/actions/action"))
+                    {
                         if (xmlActionList != null)
+                        {
                             foreach (XmlNode xmlAction in xmlActionList)
                             {
                                 lstActions.Add(new ListItem(xmlAction["name"].InnerText, xmlAction["translate"]?.InnerText ?? xmlAction["name"]?.InnerText));
                             }
+                        }
+                    }
 
                     frmSelectItem select = new frmSelectItem
                     {
@@ -207,12 +218,20 @@ namespace Chummer
                             lstAbbrevs.Remove("MAGAdept");
                         }
                         else if (!_objCharacter.IsMysticAdept || !_objCharacter.Options.MysAdeptSecondMAGAttribute)
+                        {
                             lstAbbrevs.Remove("MAGAdept");
+                        }
 
                         if (!_objCharacter.RESEnabled)
+                        {
                             lstAbbrevs.Remove("RES");
+                        }
+
                         if (!_objCharacter.DEPEnabled)
+                        {
                             lstAbbrevs.Remove("DEP");
+                        }
+
                         frmSelectAttribute frmPickAttribute = new frmSelectAttribute(lstAbbrevs.ToArray())
                         {
                             Description = LanguageManager.GetString("Title_SelectAttribute", GlobalOptions.Language)
@@ -338,7 +357,9 @@ namespace Chummer
                                 {
                                     string strName = xmlSkill["name"]?.InnerText;
                                     if (!string.IsNullOrEmpty(strName))
+                                    {
                                         lstDropdownItems.Add(new ListItem(strName, xmlSkill["translate"]?.InnerText ?? strName));
+                                    }
                                 }
                             }
                         }
@@ -391,11 +412,15 @@ namespace Chummer
                 case "SelectSpell":
                     List<ListItem> lstSpells = new List<ListItem>();
                     using (XmlNodeList xmlSpellList = XmlManager.Load("spells.xml").SelectNodes("/chummer/spells/spell"))
+                    {
                         if (xmlSpellList != null)
+                        {
                             foreach (XmlNode xmlSpell in xmlSpellList)
                             {
                                 lstSpells.Add(new ListItem(xmlSpell["name"].InnerText, xmlSpell["translate"]?.InnerText ?? xmlSpell["name"]?.InnerText));
                             }
+                        }
+                    }
 
                     frmSelectItem selectSpell = new frmSelectItem
                     {
@@ -482,7 +507,10 @@ namespace Chummer
             XmlNode objFetchNode = _objDocument.SelectSingleNode("/chummer/improvements/improvement[id = \"" + cboImprovemetType.SelectedValue + "\"]");
             string strInternal = objFetchNode?["internal"]?.InnerText;
             if (string.IsNullOrEmpty(strInternal))
+            {
                 return;
+            }
+
             objWriter.WriteStartDocument();
             // <bonus>
             objWriter.WriteStartElement("bonus");
@@ -491,7 +519,9 @@ namespace Chummer
 
             string strRating = string.Empty;
             if (chkApplyToRating.Checked)
+            {
                 strRating = "<applytorating>True</applytorating>";
+            }
 
             // Retrieve the XML data from the document and replace the values as necessary.
             // ReSharper disable once PossibleNullReferenceException

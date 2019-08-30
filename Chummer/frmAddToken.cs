@@ -49,7 +49,9 @@ namespace Chummer
             };
 
             if (openFileDialog.ShowDialog(this) == DialogResult.OK)
+            {
                 await LoadCharacter(openFileDialog.FileName);
+            }
         }
 
         /// <summary>
@@ -74,7 +76,10 @@ namespace Chummer
                 nudInit.Value = objCharacter.InitiativeDice;
                 txtName.Text = objCharacter.Name;
                 if (int.TryParse(objCharacter.Initiative.Split(' ')[0], out int intTemp))
+                {
                     nudInitStart.Value = intTemp;
+                }
+
                 _character = objCharacter;
                 Cursor = Cursors.Default;
                 return true;
@@ -87,10 +92,7 @@ namespace Chummer
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void btnCancel_Click(object sender, EventArgs e)
-        {
-            Close();
-        }
+        private void btnCancel_Click(object sender, EventArgs e) => Close();
 
         /// <summary>
         /// passes the character back to the dashboard init user control
@@ -127,7 +129,9 @@ namespace Chummer
                 _character.InitRoll = intInitRoll + _character.InitialInit;
             }
             else
+            {
                 _character.InitRoll = int.MinValue;
+            }
 
             parentControl.AddToken(_character);
             Close();

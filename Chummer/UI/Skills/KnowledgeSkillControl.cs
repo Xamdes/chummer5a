@@ -136,7 +136,9 @@ namespace Chummer.UI.Skills
             {
                 DataBindings.Add("Enabled", skill, nameof(KnowledgeSkill.Enabled), false, DataSourceUpdateMode.OnPropertyChanged);
                 if (!skill.CharacterObject.Created)
+                {
                     cboType.Enabled = string.IsNullOrEmpty(_skill.Type);
+                }
             }
             if (!skill.AllowUpgrade)
             {
@@ -177,23 +179,33 @@ namespace Chummer.UI.Skills
                         cboSpec.ValueMember = nameof(ListItem.Value);
                         cboSpec.MaxDropDownItems = Math.Max(1, _skill.CGLSpecializations.Count);
                         if (string.IsNullOrEmpty(strOldSpec))
+                        {
                             cboSpec.SelectedIndex = -1;
+                        }
                         else
                         {
                             cboSpec.SelectedValue = strOldSpec;
                             if (cboSpec.SelectedIndex == -1)
+                            {
                                 cboSpec.Text = strOldSpec;
+                            }
                         }
 
                         cboSpec.ResumeLayout();
                     }
 
                     if (all)
+                    {
                         goto case nameof(KnowledgeSkill.Type);
+                    }
+
                     break;
                 case nameof(KnowledgeSkill.Type):
                     if (!cboSkill.Enabled)
+                    {
                         cboType.Enabled = string.IsNullOrEmpty(_skill.Type);
+                    }
+
                     break;
             }
         }
@@ -212,12 +224,17 @@ namespace Chummer.UI.Skills
             int upgradeKarmaCost = _skill.UpgradeKarmaCost;
 
             if (upgradeKarmaCost == -1)
+            {
                 return; //TODO: more descriptive
+            }
+
             string confirmstring = string.Format(LanguageManager.GetString("Message_ConfirmKarmaExpense", GlobalOptions.Language),
                 _skill.DisplayNameMethod(GlobalOptions.Language), _skill.Rating + 1, upgradeKarmaCost, cboType.GetItemText(cboType.SelectedItem));
 
             if (!_skill.CharacterObject.ConfirmKarmaExpense(confirmstring))
+            {
                 return;
+            }
 
             cboType.Enabled = false;
 
@@ -239,20 +256,29 @@ namespace Chummer.UI.Skills
                     if (objLoopImprovement.ImprovedName == _skill.SkillCategory)
                     {
                         if (objLoopImprovement.ImproveType == Improvement.ImprovementType.SkillCategorySpecializationKarmaCost)
+                        {
                             intExtraSpecCost += objLoopImprovement.Value;
+                        }
                         else if (objLoopImprovement.ImproveType == Improvement.ImprovementType.SkillCategorySpecializationKarmaCostMultiplier)
+                        {
                             decSpecCostMultiplier *= objLoopImprovement.Value / 100.0m;
+                        }
                     }
                 }
             }
             if (decSpecCostMultiplier != 1.0m)
+            {
                 price = decimal.ToInt32(decimal.Ceiling(price * decSpecCostMultiplier));
+            }
+
             price += intExtraSpecCost; //Spec
 
             string confirmstring = string.Format(LanguageManager.GetString("Message_ConfirmKarmaExpenseSkillSpecialization", GlobalOptions.Language), price.ToString());
 
             if (!_skill.CharacterObject.ConfirmKarmaExpense(confirmstring))
+            {
                 return;
+            }
 
             frmSelectSpec selectForm = new frmSelectSpec(_skill)
             {
@@ -261,18 +287,19 @@ namespace Chummer.UI.Skills
             selectForm.ShowDialog();
 
             if (selectForm.DialogResult != DialogResult.OK)
+            {
                 return;
+            }
 
             _skill.AddSpecialization(selectForm.SelectedItem);
 
             if (ParentForm is CharacterShared frmParent)
+            {
                 frmParent.IsCharacterUpdateRequested = true;
+            }
         }
 
-        public void MoveControls(int i)
-        {
-            lblName.Width = i;
-        }
+        public void MoveControls(int i) => lblName.Width = i;
 
         /// <summary>
         /// I'm not super pleased with how this works, but it's functional so w/e.
@@ -288,7 +315,10 @@ namespace Chummer.UI.Skills
             set
             {
                 if (value == ActiveButton)
+                {
                     return;
+                }
+
                 ActiveButton?.ToolTipObject.Hide(this);
                 _activeButton = value;
                 if (_activeButton?.Visible == true)
@@ -303,22 +333,21 @@ namespace Chummer.UI.Skills
             foreach (Control c in Controls)
             {
                 if (!(c is ButtonWithToolTip))
+                {
                     continue;
+                }
+
                 if (c.Bounds.Contains(pt))
+                {
                     return c;
+                }
             }
             return null;
         }
 
-        private void OnMouseMove(object sender, MouseEventArgs e)
-        {
-            ActiveButton = FindToolTipControl(e.Location) as ButtonWithToolTip;
-        }
+        private void OnMouseMove(object sender, MouseEventArgs e) => ActiveButton = FindToolTipControl(e.Location) as ButtonWithToolTip;
 
-        private void OnMouseLeave(object sender, EventArgs e)
-        {
-            ActiveButton = null;
-        }
+        private void OnMouseLeave(object sender, EventArgs e) => ActiveButton = null;
         #endregion
     }
 }

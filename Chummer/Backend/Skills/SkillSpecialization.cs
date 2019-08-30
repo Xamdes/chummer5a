@@ -61,7 +61,9 @@ namespace Chummer.Backend.Skills
         public static SkillSpecialization Load(XmlNode xmlNode, Skill objParent)
         {
             if (!xmlNode.TryGetField("guid", Guid.TryParse, out Guid guiTemp))
+            {
                 guiTemp = Guid.NewGuid();
+            }
 
             return new SkillSpecialization(xmlNode["name"]?.InnerText, xmlNode["free"]?.InnerText == bool.TrueString, objParent)
             {
@@ -96,7 +98,9 @@ namespace Chummer.Backend.Skills
         public string DisplayName(string strLanguage)
         {
             if (strLanguage == GlobalOptions.DefaultLanguage)
+            {
                 return Name;
+            }
 
             return GetNode(strLanguage)?.Attributes?["translate"]?.InnerText ?? Name;
         }
@@ -104,10 +108,7 @@ namespace Chummer.Backend.Skills
         private XmlNode _objCachedMyXmlNode;
         private string _strCachedXmlNodeLanguage = string.Empty;
 
-        public XmlNode GetNode()
-        {
-            return GetNode(GlobalOptions.Language);
-        }
+        public XmlNode GetNode() => GetNode(GlobalOptions.Language);
 
         public XmlNode GetNode(string strLanguage)
         {

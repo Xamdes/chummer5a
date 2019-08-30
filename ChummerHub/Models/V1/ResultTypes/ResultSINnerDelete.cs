@@ -19,17 +19,9 @@ namespace ChummerHub.Models.V1
         }
 
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'ResultSinnerDelete.ResultSinnerDelete(bool)'
-        public ResultSinnerDelete(bool deleted)
-#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'ResultSinnerDelete.ResultSinnerDelete(bool)'
-        {
-            Deleted = deleted;
-        }
+        public ResultSinnerDelete(bool deleted) => Deleted = deleted;
 
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'ResultSinnerDelete.ResultSinnerDelete()'
-        public ResultSinnerDelete()
-#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'ResultSinnerDelete.ResultSinnerDelete()'
-        {
-            Deleted = false;
-        }
+        public ResultSinnerDelete() => Deleted = false;
     }
 }

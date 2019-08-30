@@ -30,7 +30,10 @@ namespace Chummer
         {
             System.Drawing.Image objReturn;
             if (string.IsNullOrEmpty(strCode))
+            {
                 strCode = "";
+            }
+
             switch (strCode.ToLowerInvariant())
             {
                 case "ad":

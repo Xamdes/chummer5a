@@ -24,10 +24,7 @@ namespace Chummer
 {
     public partial class frmAbout : Form
     {
-        public frmAbout()
-        {
-            InitializeComponent();
-        }
+        public frmAbout() => InitializeComponent();
 
         #region Assembly Attribute Accessors
         public static string AssemblyTitle
@@ -108,24 +105,39 @@ namespace Chummer
             string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
             string strReturn = LanguageManager.GetString("Label_About", GlobalOptions.Language, false);
             if (string.IsNullOrEmpty(strReturn))
+            {
                 strReturn = "About";
+            }
+
             Text = strReturn + strSpaceCharacter + AssemblyTitle;
             labelProductName.Text = AssemblyProduct;
             strReturn = LanguageManager.GetString("String_Version", GlobalOptions.Language, false);
             if (string.IsNullOrEmpty(strReturn))
+            {
                 strReturn = "Version";
+            }
+
             labelVersion.Text = strReturn + strSpaceCharacter + AssemblyVersion;
             strReturn = LanguageManager.GetString("About_Copyright_Text", GlobalOptions.Language, false);
             if (string.IsNullOrEmpty(strReturn))
+            {
                 strReturn = AssemblyCopyright;
+            }
+
             labelCopyright.Text = strReturn;
             strReturn = LanguageManager.GetString("About_Company_Text", GlobalOptions.Language, false);
             if (string.IsNullOrEmpty(strReturn))
+            {
                 strReturn = AssemblyCompany;
+            }
+
             labelCompanyName.Text = strReturn;
             strReturn = LanguageManager.GetString("About_Description_Text", GlobalOptions.Language, false);
             if (string.IsNullOrEmpty(strReturn))
+            {
                 strReturn = AssemblyDescription;
+            }
+
             textBoxDescription.Text = strReturn;
             textBoxContributors.Text += Environment.NewLine + Environment.NewLine + string.Join(Environment.NewLine, Properties.Contributors.Usernames) + Environment.NewLine + "/u/Iridios";
             txtDisclaimer.Text = LanguageManager.GetString("About_Label_Disclaimer_Text", GlobalOptions.Language);
@@ -134,7 +146,9 @@ namespace Chummer
         private void txt_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Escape)
+            {
                 DialogResult = DialogResult.OK;
+            }
 
             if (e.Control && e.KeyCode == Keys.A)
             {

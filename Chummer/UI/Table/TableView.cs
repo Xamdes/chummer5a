@@ -33,10 +33,7 @@ namespace Chummer.UI.Table
 
             private readonly TableView<T> _table;
 
-            public TableLayoutEngine(TableView<T> table)
-            {
-                _table = table;
-            }
+            public TableLayoutEngine(TableView<T> table) => _table = table;
 
             public override bool Layout(object objContainer, LayoutEventArgs layoutEventArgs)
             {
@@ -189,7 +186,7 @@ namespace Chummer.UI.Table
         private readonly List<TableRow> _lstRowCells = new List<TableRow>();
         private SortOrder _eSortType = SortOrder.None;
         private object _objSortPausedSender;
-        private int _intSelectedIndex = -1;
+        private readonly int _intSelectedIndex = -1;
 
         public TableView()
         {
@@ -221,10 +218,7 @@ namespace Chummer.UI.Table
             ResumeLayout(true);
         }
 
-        public void PauseSort(object objSender)
-        {
-            _objSortPausedSender = objSender;
-        }
+        public void PauseSort(object objSender) => _objSortPausedSender = objSender;
 
         public void ResumeSort(object objSender)
         {
@@ -243,7 +237,10 @@ namespace Chummer.UI.Table
         private void Sort(bool blnPerformLayout = true)
         {
             if (_objSortPausedSender != null)
+            {
                 return;
+            }
+
             if (_eSortType == SortOrder.None || _sortColumn == null)
             {
                 // sort by index
@@ -406,7 +403,10 @@ namespace Chummer.UI.Table
         private void DoFilter(bool performLayout = true)
         {
             if (_lstItems == null)
+            {
                 return;
+            }
+
             SuspendLayout();
 
             for (int i = 0; i < _lstItems.Count; i++)
@@ -659,10 +659,7 @@ namespace Chummer.UI.Table
             get; set;
         }
 
-        private TableRow CreateRow()
-        {
-            return RowFactory == null ? new TableRow() : RowFactory();
-        }
+        private TableRow CreateRow() => RowFactory == null ? new TableRow() : RowFactory();
 
         public TableColumnCollection<T> Columns => _columns;
 

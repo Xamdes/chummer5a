@@ -50,19 +50,25 @@ namespace Chummer
             using (XmlNodeList objXmlCategoryList = !string.IsNullOrEmpty(_strForceCategory)
                 ? _objXmlDocument.SelectNodes("/chummer/categories/category[. = \"" + _strForceCategory + "\"]")
                 : _objXmlDocument.SelectNodes("/chummer/categories/category"))
+            {
                 if (objXmlCategoryList != null)
+                {
                     foreach (XmlNode objXmlCategory in objXmlCategoryList)
                     {
                         if (WeaponType != null && _strForceCategory != "Exotic Ranged Weapons")
                         {
                             string strType = objXmlCategory.Attributes?["type"]?.Value;
                             if (string.IsNullOrEmpty(strType) || strType != WeaponType)
+                            {
                                 continue;
+                            }
                         }
 
                         string strInnerText = objXmlCategory.InnerText;
                         lstCategory.Add(new ListItem(strInnerText, objXmlCategory.Attributes?["translate"]?.InnerText ?? strInnerText));
                     }
+                }
+            }
 
             // Add the Cyberware Category.
             if (/*string.IsNullOrEmpty(_strForceCategory) ||*/ _strForceCategory == "Cyberware")
@@ -76,11 +82,16 @@ namespace Chummer
 
             // Select the first Skill in the list.
             if (cboCategory.Items.Count > 0)
+            {
                 cboCategory.SelectedIndex = 0;
+            }
+
             cboCategory.EndUpdate();
 
             if (cboCategory.Items.Count == 1)
+            {
                 cmdOK_Click(sender, e);
+            }
         }
 
         private void cmdOK_Click(object sender, EventArgs e)
@@ -113,14 +124,13 @@ namespace Chummer
             {
                 _strForceCategory = value;
                 if (value == "Cyberware")
+                {
                     _strForceCategory = "Cyberweapon";
+                }
             }
         }
         #endregion
 
-        private void cmdCancel_Click(object sender, EventArgs e)
-        {
-            DialogResult = DialogResult.Cancel;
-        }
+        private void cmdCancel_Click(object sender, EventArgs e) => DialogResult = DialogResult.Cancel;
     }
 }

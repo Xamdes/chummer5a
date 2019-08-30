@@ -27,7 +27,7 @@ namespace Chummer
 {
     public static class ImageExtensions
     {
-        private static Logger Log = NLog.LogManager.GetCurrentClassLogger();
+        private static readonly Logger Log = NLog.LogManager.GetCurrentClassLogger();
         /// <summary>
         /// Converts a Base64 String into an Image.
         /// </summary>
@@ -64,10 +64,7 @@ namespace Chummer
         /// <param name="objFormat">Pixel format in which the Bitmap is returned.</param>
         /// <returns>Image from the Base64 string.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static Bitmap ToImage(this string strBase64String, PixelFormat objFormat)
-        {
-            return (new Bitmap(strBase64String.ToImage())).ConvertPixelFormat(objFormat);
-        }
+        public static Bitmap ToImage(this string strBase64String, PixelFormat objFormat) => (new Bitmap(strBase64String.ToImage())).ConvertPixelFormat(objFormat);
 
         /// <summary>
         /// Converts an Image into a Base64 string.
@@ -103,7 +100,9 @@ namespace Chummer
         public static Bitmap ConvertPixelFormat(this Bitmap imgToConvert, PixelFormat eNewFormat)
         {
             if (imgToConvert.PixelFormat == eNewFormat)
+            {
                 return imgToConvert;
+            }
 
             Bitmap imgReturn = new Bitmap(imgToConvert.Width, imgToConvert.Height, eNewFormat);
             using (Graphics gr = Graphics.FromImage(imgReturn))

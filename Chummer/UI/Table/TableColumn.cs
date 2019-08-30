@@ -42,10 +42,7 @@ namespace Chummer.UI.Table
         private Comparison<T> _itemSorter;
         private readonly HashSet<string> _setDependencies = new HashSet<string>();
 
-        public TableColumn(Func<TableCell> cellFactory)
-        {
-            _cellFactory = cellFactory ?? throw new ArgumentNullException(nameof(cellFactory));
-        }
+        public TableColumn(Func<TableCell> cellFactory) => _cellFactory = cellFactory ?? throw new ArgumentNullException(nameof(cellFactory));
 
         public static TableColumn<U> CreateColumn<U, V>()
             where U : INotifyPropertyChanged

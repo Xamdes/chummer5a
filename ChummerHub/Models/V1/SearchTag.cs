@@ -52,10 +52,6 @@ namespace ChummerHub.Models.V1
         }
 
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'SearchTag.SearchTag()'
-        public SearchTag()
-#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'SearchTag.SearchTag()'
-        {
-            SearchTags = new List<SearchTag>();
-        }
+        public SearchTag() => SearchTags = new List<SearchTag>();
     }
 }

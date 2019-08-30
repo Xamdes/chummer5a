@@ -75,11 +75,7 @@ namespace ChummerHub.Areas.Identity.Pages.Account
         }
 
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'ExternalLoginModel.OnGetAsync()'
-        public IActionResult OnGetAsync()
-#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'ExternalLoginModel.OnGetAsync()'
-        {
-            return RedirectToPage("./Login");
-        }
+        public IActionResult OnGetAsync() => RedirectToPage("./Login");
 
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'ExternalLoginModel.OnPost(string, string)'
         public IActionResult OnPost(string provider, string returnUrl = null)

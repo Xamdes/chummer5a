@@ -57,7 +57,9 @@ namespace ChummerHub.Models
                     return "GroupSetting_" + meAsSINnerGroupSetting.Id.ToString() + ".chumGroupz";
                 }
                 else
-                    return this.Id + ".unknown";
+                {
+                    return Id + ".unknown";
+                }
             }
         }
 
@@ -72,11 +74,7 @@ namespace ChummerHub.Models
 
 
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'SINnerUploadAble.SINnerUploadAble()'
-        public SINnerUploadAble()
-#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'SINnerUploadAble.SINnerUploadAble()'
-        {
-            this.DownloadUrl = "";
-        }
+        public SINnerUploadAble() => DownloadUrl = "";
 
     }
 }

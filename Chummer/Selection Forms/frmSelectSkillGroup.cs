@@ -47,7 +47,9 @@ namespace Chummer
             {
                 // Build the list of Skill Groups found in the Skills file.
                 using (XmlNodeList objXmlSkillList = _objXmlDocument.SelectNodes("/chummer/skillgroups/name"))
+                {
                     if (objXmlSkillList != null)
+                    {
                         foreach (XmlNode objXmlSkill in objXmlSkillList)
                         {
                             if (!string.IsNullOrEmpty(_strExcludeCategory))
@@ -55,18 +57,24 @@ namespace Chummer
                                 string[] strExcludes = _strExcludeCategory.Split(',');
                                 string strExclude = string.Empty;
                                 for (int i = 0; i <= strExcludes.Length - 1; i++)
+                                {
                                     strExclude += "category != \"" + strExcludes[i].Trim() + "\" and ";
+                                }
                                 // Remove the trailing " and ";
                                 strExclude = strExclude.Substring(0, strExclude.Length - 5);
 
                                 XmlNodeList objXmlNodeList = _objXmlDocument.SelectNodes("/chummer/skills/skill[" + strExclude + " and skillgroup = \"" + objXmlSkill.InnerText + "\"]");
                                 if (objXmlNodeList == null || objXmlNodeList.Count == 0)
+                                {
                                     continue;
+                                }
                             }
 
                             string strInnerText = objXmlSkill.InnerText;
                             lstGroups.Add(new ListItem(strInnerText, objXmlSkill.Attributes?["translate"]?.InnerText ?? strInnerText));
                         }
+                    }
+                }
             }
             else
             {
@@ -83,7 +91,9 @@ namespace Chummer
             cboSkillGroup.SelectedIndex = 0;
 
             if (cboSkillGroup.Items.Count == 1)
+            {
                 cmdOK_Click(sender, e);
+            }
         }
 
         private void cmdOK_Click(object sender, EventArgs e)
@@ -92,10 +102,7 @@ namespace Chummer
             DialogResult = DialogResult.OK;
         }
 
-        private void cmdCancel_Click(object sender, EventArgs e)
-        {
-            DialogResult = DialogResult.Cancel;
-        }
+        private void cmdCancel_Click(object sender, EventArgs e) => DialogResult = DialogResult.Cancel;
         #endregion
 
         #region Properties

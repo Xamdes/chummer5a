@@ -14,18 +14,10 @@ namespace ChummerHub.Models.V1
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'ResultGroupGetSearchGroups.MySearchGroupResult'
 
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'ResultGroupGetSearchGroups.ResultGroupGetSearchGroups()'
-        public ResultGroupGetSearchGroups()
-#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'ResultGroupGetSearchGroups.ResultGroupGetSearchGroups()'
-        {
-            MySearchGroupResult = new SINSearchGroupResult();
-        }
+        public ResultGroupGetSearchGroups() => MySearchGroupResult = new SINSearchGroupResult();
 
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'ResultGroupGetSearchGroups.ResultGroupGetSearchGroups(SINSearchGroupResult)'
-        public ResultGroupGetSearchGroups(SINSearchGroupResult ssg)
-#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'ResultGroupGetSearchGroups.ResultGroupGetSearchGroups(SINSearchGroupResult)'
-        {
-            MySearchGroupResult = ssg;
-        }
+        public ResultGroupGetSearchGroups(SINSearchGroupResult ssg) => MySearchGroupResult = ssg;
 
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'ResultGroupGetSearchGroups.ResultGroupGetSearchGroups(Exception)'
         public ResultGroupGetSearchGroups(Exception e) : base(e)

@@ -69,21 +69,23 @@ namespace Chummer
         private void txtContactName_TextChanged(object sender, EventArgs e)
         {
             if (!_blnLoading)
+            {
                 ContactDetailChanged?.Invoke(this, new TextEventArgs("Name"));
+            }
         }
 
         private void cboMetatype_TextChanged(object sender, EventArgs e)
         {
             if (!_blnLoading)
+            {
                 ContactDetailChanged?.Invoke(this, new TextEventArgs("Metatype"));
+            }
         }
 
-        private void cmdDelete_Click(object sender, EventArgs e)
-        {
+        private void cmdDelete_Click(object sender, EventArgs e) =>
             // Raise the DeleteContact Event when the user has confirmed their desire to delete the Contact.
             // The entire ContactControl is passed as an argument so the handling event can evaluate its contents.
             DeleteContact?.Invoke(this, e);
-        }
 
         private void imgLink_Click(object sender, EventArgs e)
         {
@@ -126,11 +128,17 @@ namespace Chummer
                     bool blnError = false;
                     // If the file doesn't exist, use the relative path if one is available.
                     if (string.IsNullOrEmpty(_objContact.RelativeFileName))
+                    {
                         blnError = true;
+                    }
                     else if (!File.Exists(Path.GetFullPath(_objContact.RelativeFileName)))
+                    {
                         blnError = true;
+                    }
                     else
+                    {
                         blnUseRelative = true;
+                    }
 
                     if (blnError)
                     {
@@ -198,7 +206,10 @@ namespace Chummer
 
                 string strTooltip = LanguageManager.GetString("Tip_Contact_EditNotes", GlobalOptions.Language);
                 if (!string.IsNullOrEmpty(_objContact.Notes))
+                {
                     strTooltip += Environment.NewLine + Environment.NewLine + _objContact.Notes;
+                }
+
                 imgNotes.SetToolTip(strTooltip.WordWrap(100));
                 ContactDetailChanged?.Invoke(this, new TextEventArgs("Notes"));
             }
@@ -222,7 +233,9 @@ namespace Chummer
             };
             string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
             using (XmlNodeList xmlMetatypesList = XmlManager.Load("critters.xml").SelectNodes("/chummer/metatypes/metatype"))
+            {
                 if (xmlMetatypesList != null)
+                {
                     foreach (XmlNode xmlMetatypeNode in xmlMetatypesList)
                     {
                         string strName = xmlMetatypeNode["name"]?.InnerText;
@@ -230,13 +243,19 @@ namespace Chummer
                         lstMetatypes.Add(new ListItem(strName, strMetatypeDisplay));
                         XmlNodeList xmlMetavariantsList = xmlMetatypeNode.SelectNodes("metavariants/metavariant");
                         if (xmlMetavariantsList != null)
+                        {
                             foreach (XmlNode objXmlMetavariantNode in xmlMetavariantsList)
                             {
                                 string strMetavariantName = objXmlMetavariantNode["name"]?.InnerText;
                                 if (lstMetatypes.All(x => x.Value.ToString() != strMetavariantName))
+                                {
                                     lstMetatypes.Add(new ListItem(strMetavariantName, strMetatypeDisplay + strSpaceCharacter + '(' + (objXmlMetavariantNode["translate"]?.InnerText ?? strMetavariantName) + ')'));
+                                }
                             }
+                        }
                     }
+                }
+            }
 
             lstMetatypes.Sort(CompareListItems.CompareNames);
 

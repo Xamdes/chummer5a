@@ -15,11 +15,7 @@ namespace ChummerHub.Areas.Identity.Pages.Account
         private readonly UserManager<ApplicationUser> _userManager;
 
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'ConfirmEmailModel.ConfirmEmailModel(UserManager<ApplicationUser>)'
-        public ConfirmEmailModel(UserManager<ApplicationUser> userManager)
-#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'ConfirmEmailModel.ConfirmEmailModel(UserManager<ApplicationUser>)'
-        {
-            _userManager = userManager;
-        }
+        public ConfirmEmailModel(UserManager<ApplicationUser> userManager) => _userManager = userManager;
 
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'ConfirmEmailModel.OnGetAsync(string, string)'
         public async Task<IActionResult> OnGetAsync(string userId, string code)

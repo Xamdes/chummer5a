@@ -32,7 +32,9 @@ namespace ChummerHub.Models.V1
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'ResultBase.ResultBase(Exception)'
         {
             if (e is HubException exception)
+            {
                 MyException = exception;
+            }
             else
             {
                 MyException = new HubException(e.Message, e);
@@ -43,11 +45,7 @@ namespace ChummerHub.Models.V1
         }
 
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'ResultBase.ResultBase()'
-        public ResultBase()
-#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'ResultBase.ResultBase()'
-        {
-            CallSuccess = true;
-        }
+        public ResultBase() => CallSuccess = true;
 
     }
 }

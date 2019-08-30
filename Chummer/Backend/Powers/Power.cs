@@ -120,13 +120,23 @@ namespace Chummer
             objWriter.WriteElementString("source", _strSource);
             objWriter.WriteElementString("page", _strPage);
             if (Bonus != null)
+            {
                 objWriter.WriteRaw("<bonus>" + Bonus.InnerXml + "</bonus>");
+            }
             else
+            {
                 objWriter.WriteElementString("bonus", string.Empty);
+            }
+
             if (_nodAdeptWayRequirements != null)
+            {
                 objWriter.WriteRaw("<adeptwayrequires>" + _nodAdeptWayRequirements.InnerXml + "</adeptwayrequires>");
+            }
             else
+            {
                 objWriter.WriteElementString("adeptwayrequires", string.Empty);
+            }
+
             objWriter.WriteStartElement("enhancements");
             foreach (Enhancement objEnhancement in Enhancements)
             {
@@ -149,7 +159,10 @@ namespace Chummer
             objNode.TryGetBoolFieldQuickly("levels", ref _blnLevelsEnabled);
             _intRating = intRating;
             if (!objNode.TryGetStringFieldQuickly("altnotes", ref _strNotes))
+            {
                 objNode.TryGetStringFieldQuickly("notes", ref _strNotes);
+            }
+
             if (!objNode.TryGetInt32FieldQuickly("maxlevel", ref _intMaxLevels))
             {
                 objNode.TryGetInt32FieldQuickly("maxlevels", ref _intMaxLevels);
@@ -164,7 +177,10 @@ namespace Chummer
             objNode.TryGetStringFieldQuickly("page", ref _strPage);
             Bonus = objNode["bonus"];
             if (objBonusNodeOverride != null)
+            {
                 Bonus = objBonusNodeOverride;
+            }
+
             _nodAdeptWayRequirements = objNode["adeptwayrequires"];
             XmlNode nodEnhancements = objNode["enhancements"];
             if (nodEnhancements != null)
@@ -228,7 +244,10 @@ namespace Chummer
                     string strPowerName = Name;
                     int intPos = strPowerName.IndexOf('(');
                     if (intPos != -1)
+                    {
                         strPowerName = strPowerName.Substring(0, intPos - 1);
+                    }
+
                     XmlDocument objXmlDocument = XmlManager.Load("powers.xml");
                     XmlNode xmlPower = objXmlDocument.SelectSingleNode("/chummer/powers/power[starts-with(./name,\"" + strPowerName + "\")]");
                     if (xmlPower.TryGetField("id", Guid.TryParse, out _guiSourceID))
@@ -247,7 +266,10 @@ namespace Chummer
                 string strPowerName = Name;
                 int intPos = strPowerName.IndexOf('(');
                 if (intPos != -1)
+                {
                     strPowerName = strPowerName.Substring(0, intPos - 1);
+                }
+
                 _strAdeptWayDiscount = XmlManager.Load("powers.xml").SelectSingleNode("/chummer/powers/power[starts-with(./name,\"" + strPowerName + "\")]/adeptway")?.InnerText ?? string.Empty;
             }
             objNode.TryGetInt32FieldQuickly("rating", ref _intRating);
@@ -329,7 +351,10 @@ namespace Chummer
             objWriter.WriteElementString("source", CommonFunctions.LanguageBookShort(Source, strLanguageToPrint));
             objWriter.WriteElementString("page", Page(strLanguageToPrint));
             if (CharacterObject.Options.PrintNotes)
+            {
                 objWriter.WriteElementString("notes", Notes);
+            }
+
             objWriter.WriteStartElement("enhancements");
             foreach (Enhancement objEnhancement in Enhancements)
             {
@@ -361,9 +386,15 @@ namespace Chummer
                 if (_objMAGAttribute != value)
                 {
                     if (_objMAGAttribute != null)
+                    {
                         _objMAGAttribute.PropertyChanged -= OnLinkedAttributeChanged;
+                    }
+
                     if (value != null)
+                    {
                         value.PropertyChanged += OnLinkedAttributeChanged;
+                    }
+
                     _objMAGAttribute = value;
                 }
             }
@@ -379,9 +410,15 @@ namespace Chummer
                 if (_objBoostedSkill != value)
                 {
                     if (_objBoostedSkill != null)
+                    {
                         _objBoostedSkill.PropertyChanged -= OnBoostedSkillChanged;
+                    }
+
                     if (value != null)
+                    {
                         value.PropertyChanged += OnBoostedSkillChanged;
+                    }
+
                     _objBoostedSkill = value;
                 }
             }
@@ -564,7 +601,10 @@ namespace Chummer
             {
                 //TODO: This isn't super safe, but it's more reliable than checking it at load as improvement effects like Essence Loss take effect after powers are loaded. Might need another solution.
                 if (_intRating <= TotalMaximumLevels)
+                {
                     return _intRating;
+                }
+
                 _intRating = TotalMaximumLevels;
                 return _intRating;
             }
@@ -599,7 +639,9 @@ namespace Chummer
             get
             {
                 if (_intCachedFreeLevels != int.MinValue)
+                {
                     return _intCachedFreeLevels;
+                }
 
                 decimal decExtraCost = FreePoints;
                 // Rating does not include free levels from improvements, and those free levels can be used to buy the first level of a power so that Qi Foci, so need to check for those first
@@ -638,7 +680,9 @@ namespace Chummer
             get
             {
                 if (_decCachedPowerPoints != decimal.MinValue)
+                {
                     return _decCachedPowerPoints;
+                }
 
                 if (Rating == 0 || !LevelsEnabled && FreeLevels > 0)
                 {
@@ -666,7 +710,10 @@ namespace Chummer
             get
             {
                 if (string.IsNullOrEmpty(_strCachedPowerPoints))
+                {
                     _strCachedPowerPoints = PowerPoints.ToString(GlobalOptions.CultureInfo);
+                }
+
                 return _strCachedPowerPoints;
             }
         }
@@ -709,7 +756,9 @@ namespace Chummer
         {
             // Get the translated name if applicable.
             if (strLanguage == GlobalOptions.DefaultLanguage)
+            {
                 return _strPage;
+            }
 
             return GetNode(strLanguage)?["altpage"]?.InnerText ?? _strPage;
         }
@@ -747,7 +796,10 @@ namespace Chummer
             set
             {
                 if (_intMaxLevels == value)
+                {
                     return;
+                }
+
                 _intMaxLevels = value;
                 OnPropertyChanged();
             }
@@ -862,7 +914,10 @@ namespace Chummer
             get
             {
                 if (!LevelsEnabled)
+                {
                     return 1;
+                }
+
                 int intReturn = MaxLevels;
                 if (intReturn == 0)
                 {
@@ -911,7 +966,9 @@ namespace Chummer
         public void RefreshDiscountedAdeptWay(bool blnAdeptWayDiscountEnabled)
         {
             if (DiscountedAdeptWay && !blnAdeptWayDiscountEnabled)
+            {
                 DiscountedAdeptWay = false;
+            }
         }
 
         private static readonly DependancyGraph<string> PowerDependencyGraph =
@@ -957,10 +1014,7 @@ namespace Chummer
         public event PropertyChangedEventHandler PropertyChanged;
 
         [NotifyPropertyChangedInvocator]
-        public void OnPropertyChanged([CallerMemberName] string strPropertyName = null)
-        {
-            OnMultiplePropertyChanged(strPropertyName);
-        }
+        public void OnPropertyChanged([CallerMemberName] string strPropertyName = null) => OnMultiplePropertyChanged(strPropertyName);
 
         public void OnMultiplePropertyChanged(params string[] lstPropertyNames)
         {
@@ -968,23 +1022,37 @@ namespace Chummer
             foreach (string strPropertyName in lstPropertyNames)
             {
                 if (lstNamesOfChangedProperties == null)
+                {
                     lstNamesOfChangedProperties = PowerDependencyGraph.GetWithAllDependants(strPropertyName);
+                }
                 else
                 {
                     foreach (string strLoopChangedProperty in PowerDependencyGraph.GetWithAllDependants(strPropertyName))
+                    {
                         lstNamesOfChangedProperties.Add(strLoopChangedProperty);
+                    }
                 }
             }
 
             if ((lstNamesOfChangedProperties?.Count > 0) != true)
+            {
                 return;
+            }
 
             if (lstNamesOfChangedProperties.Contains(nameof(DisplayPoints)))
+            {
                 _strCachedPowerPoints = string.Empty;
+            }
+
             if (lstNamesOfChangedProperties.Contains(nameof(FreeLevels)))
+            {
                 _intCachedFreeLevels = int.MinValue;
+            }
+
             if (lstNamesOfChangedProperties.Contains(nameof(PowerPoints)))
+            {
                 _decCachedPowerPoints = decimal.MinValue;
+            }
 
             // If the Bonus contains "Rating", remove the existing Improvements and create new ones.
             if (lstNamesOfChangedProperties.Contains(nameof(TotalRating)))
@@ -1015,7 +1083,9 @@ namespace Chummer
         protected void OnLinkedAttributeChanged(object sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(CharacterAttrib.TotalValue))
+            {
                 OnPropertyChanged(nameof(TotalMaximumLevels));
+            }
         }
 
         protected void OnBoostedSkillChanged(object sender, PropertyChangedEventArgs e)
@@ -1048,10 +1118,7 @@ namespace Chummer
         private XmlNode _objCachedMyXmlNode;
         private string _strCachedXmlNodeLanguage = string.Empty;
 
-        public XmlNode GetNode()
-        {
-            return GetNode(GlobalOptions.Language);
-        }
+        public XmlNode GetNode() => GetNode(GlobalOptions.Language);
 
         public XmlNode GetNode(string strLanguage)
         {
@@ -1089,7 +1156,10 @@ namespace Chummer
         public void SetSourceDetail(Control sourceControl)
         {
             if (_objCachedSourceDetail?.Language != GlobalOptions.Language)
+            {
                 _objCachedSourceDetail = null;
+            }
+
             SourceDetail.SetControl(sourceControl);
         }
     }

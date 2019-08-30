@@ -36,10 +36,7 @@ namespace Chummer.UI.Table
             _lblText.Click += CommonFunctions.OpenPDFFromControl;
         }
 
-        private void OnLoad(object sender, EventArgs eventArgs)
-        {
-            MinimumSize = _lblText.Size;
-        }
+        private void OnLoad(object sender, EventArgs eventArgs) => MinimumSize = _lblText.Size;
 
         protected internal override void UpdateValue(object newValue)
         {

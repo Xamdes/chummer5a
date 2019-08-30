@@ -37,10 +37,7 @@ namespace Chummer.UI.Table
             ResumeLayout(false);
         }
 
-        private void OnLoad(object sender, EventArgs eventArgs)
-        {
-            MinimumSize = _button.Size;
-        }
+        private void OnLoad(object sender, EventArgs eventArgs) => MinimumSize = _button.Size;
 
         protected internal override void UpdateValue(object newValue)
         {

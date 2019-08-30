@@ -137,34 +137,34 @@ namespace SINners.Models
         /// </summary>
         public virtual void Validate()
         {
-            if (this.EditionNumber != null)
+            if (EditionNumber != null)
             {
-                if (this.EditionNumber.Length > 2)
+                if (EditionNumber.Length > 2)
                 {
                     throw new ValidationException(ValidationRules.MaxLength, "EditionNumber", 2);
                 }
             }
-            if (this.MyHash != null)
+            if (MyHash != null)
             {
-                if (this.MyHash.Length > 8)
+                if (MyHash.Length > 8)
                 {
                     throw new ValidationException(ValidationRules.MaxLength, "MyHash", 8);
                 }
             }
-            if (this.Language != null)
+            if (Language != null)
             {
-                if (this.Language.Length > 6)
+                if (Language.Length > 6)
                 {
                     throw new ValidationException(ValidationRules.MaxLength, "Language", 6);
                 }
             }
-            if (this.MyGroup != null)
+            if (MyGroup != null)
             {
-                this.MyGroup.Validate();
+                MyGroup.Validate();
             }
-            if (this.Alias != null)
+            if (Alias != null)
             {
-                if (this.Alias.Length > 64)
+                if (Alias.Length > 64)
                 {
                     throw new ValidationException(ValidationRules.MaxLength, "Alias", 64);
                 }

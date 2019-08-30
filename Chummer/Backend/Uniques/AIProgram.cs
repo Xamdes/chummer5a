@@ -32,7 +32,7 @@ namespace Chummer
     [DebuggerDisplay("{DisplayNameShort(GlobalOptions.DefaultLanguage)}")]
     public class AIProgram : IHasInternalId, IHasName, IHasXmlNode, IHasNotes, ICanRemove, IHasSource
     {
-        private static Logger Log = NLog.LogManager.GetCurrentClassLogger();
+        private static readonly Logger Log = NLog.LogManager.GetCurrentClassLogger();
         private Guid _guiID;
         private Guid _guiSourceID;
         private string _strName = string.Empty;
@@ -65,18 +65,26 @@ namespace Chummer
                 Utils.BreakIfDebug();
             }
             if (objXmlProgramNode.TryGetStringFieldQuickly("name", ref _strName))
+            {
                 _objCachedMyXmlNode = null;
+            }
+
             _strRequiresProgram = LanguageManager.GetString("String_None", GlobalOptions.Language);
             _boolCanDelete = boolCanDelete;
             objXmlProgramNode.TryGetStringFieldQuickly("require", ref _strRequiresProgram);
             objXmlProgramNode.TryGetStringFieldQuickly("source", ref _strSource);
             objXmlProgramNode.TryGetStringFieldQuickly("page", ref _strPage);
             if (!objXmlProgramNode.TryGetStringFieldQuickly("altnotes", ref _strNotes))
+            {
                 objXmlProgramNode.TryGetStringFieldQuickly("notes", ref _strNotes);
+            }
+
             _strExtra = strExtra;
             string strCategory = string.Empty;
             if (objXmlProgramNode.TryGetStringFieldQuickly("category", ref strCategory))
+            {
                 _boolIsAdvancedProgram = strCategory == "Advanced Programs";
+            }
         }
 
         private SourceString _objCachedSourceDetail;
@@ -120,7 +128,10 @@ namespace Chummer
             }
 
             if (objNode.TryGetStringFieldQuickly("name", ref _strName))
+            {
                 _objCachedMyXmlNode = null;
+            }
+
             objNode.TryGetStringFieldQuickly("requiresprogram", ref _strRequiresProgram);
             objNode.TryGetStringFieldQuickly("source", ref _strSource);
             objNode.TryGetStringFieldQuickly("page", ref _strPage);
@@ -141,13 +152,21 @@ namespace Chummer
             objWriter.WriteElementString("fullname", DisplayName);
             objWriter.WriteElementString("name_english", Name);
             if (string.IsNullOrEmpty(_strRequiresProgram) || _strRequiresProgram == LanguageManager.GetString("String_None", strLanguageToPrint))
+            {
                 objWriter.WriteElementString("requiresprogram", LanguageManager.GetString("String_None", strLanguageToPrint));
+            }
             else
+            {
                 objWriter.WriteElementString("requiresprogram", DisplayRequiresProgram(strLanguageToPrint));
+            }
+
             objWriter.WriteElementString("source", CommonFunctions.LanguageBookShort(Source, strLanguageToPrint));
             objWriter.WriteElementString("page", Page(strLanguageToPrint));
             if (_objCharacter.Options.PrintNotes)
+            {
                 objWriter.WriteElementString("notes", Notes);
+            }
+
             objWriter.WriteEndElement();
         }
         #endregion
@@ -179,7 +198,10 @@ namespace Chummer
             set
             {
                 if (_strName != value)
+                {
                     _objCachedMyXmlNode = null;
+                }
+
                 _strName = value;
             }
         }
@@ -201,13 +223,18 @@ namespace Chummer
             string strReturn = Name;
             // Get the translated name if applicable.
             if (strLanguage != GlobalOptions.DefaultLanguage)
+            {
                 strReturn = GetNode(strLanguage)?["translate"]?.InnerText ?? Name;
+            }
 
             if (!string.IsNullOrEmpty(Extra))
             {
                 string strExtra = Extra;
                 if (strLanguage != GlobalOptions.DefaultLanguage)
+                {
                     strExtra = LanguageManager.TranslateExtra(Extra, strLanguage);
+                }
+
                 strReturn += LanguageManager.GetString("String_Space", strLanguage) + '(' + strExtra + ')';
             }
             return strReturn;
@@ -233,9 +260,14 @@ namespace Chummer
         public string DisplayRequiresProgram(string strLanguage)
         {
             if (string.IsNullOrEmpty(RequiresProgram))
+            {
                 return LanguageManager.GetString("String_None", strLanguage);
+            }
+
             if (strLanguage == GlobalOptions.Language)
+            {
                 return RequiresProgram;
+            }
 
             return XmlManager.Load("programs.xml", strLanguage).SelectSingleNode("/chummer/programs/program[name = \"" + RequiresProgram + "\"]/translate")?.InnerText ?? RequiresProgram;
         }
@@ -265,7 +297,9 @@ namespace Chummer
         {
             // Get the translated name if applicable.
             if (strLanguage == GlobalOptions.DefaultLanguage)
+            {
                 return _strPage;
+            }
 
             return GetNode(strLanguage)?["altpage"]?.InnerText ?? _strPage;
         }
@@ -287,10 +321,7 @@ namespace Chummer
         private XmlNode _objCachedMyXmlNode;
         private string _strCachedXmlNodeLanguage = string.Empty;
 
-        public XmlNode GetNode()
-        {
-            return GetNode(GlobalOptions.Language);
-        }
+        public XmlNode GetNode() => GetNode(GlobalOptions.Language);
 
         public XmlNode GetNode(string strLanguage)
         {
@@ -311,7 +342,9 @@ namespace Chummer
         public TreeNode CreateTreeNode(ContextMenuStrip cmsAIProgram)
         {
             if (!CanDelete && !string.IsNullOrEmpty(Source) && !_objCharacter.Options.BookEnabled(Source))
+            {
                 return null;
+            }
 
             TreeNode objNode = new TreeNode
             {
@@ -346,12 +379,17 @@ namespace Chummer
         public bool Remove(Character characterObject, bool blnConfirmDelete = true)
         {
             if (!CanDelete)
+            {
                 return false;
+            }
+
             if (blnConfirmDelete)
             {
                 if (!characterObject.ConfirmDelete(LanguageManager.GetString("Message_DeleteAIProgram",
                     GlobalOptions.Language)))
+                {
                     return false;
+                }
             }
 
             ImprovementManager.RemoveImprovements(characterObject, Improvement.ImprovementSource.AIProgram,
@@ -363,7 +401,10 @@ namespace Chummer
         public void SetSourceDetail(Control sourceControl)
         {
             if (_objCachedSourceDetail?.Language != GlobalOptions.Language)
+            {
                 _objCachedSourceDetail = null;
+            }
+
             SourceDetail.SetControl(sourceControl);
         }
     }

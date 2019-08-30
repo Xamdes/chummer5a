@@ -17,10 +17,7 @@ namespace ChummerHub.Client.Model
             get; set;
         }
 
-        public ResultBase()
-        {
-            CallSuccess = true;
-        }
+        public ResultBase() => CallSuccess = true;
 
     }
 }

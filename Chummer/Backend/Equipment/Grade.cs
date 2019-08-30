@@ -71,30 +71,40 @@ namespace Chummer.Backend.Equipment
             if (!objNode.TryGetInt32FieldQuickly("devicerating", ref _intDeviceRating))
             {
                 if (Name.Contains("Alphaware"))
+                {
                     _intDeviceRating = 3;
+                }
                 else if (Name.Contains("Betaware"))
+                {
                     _intDeviceRating = 4;
+                }
                 else if (Name.Contains("Deltaware"))
+                {
                     _intDeviceRating = 5;
+                }
                 else if (Name.Contains("Gammaware"))
+                {
                     _intDeviceRating = 6;
+                }
                 else
+                {
                     _intDeviceRating = 2;
+                }
             }
         }
 
         private XmlNode _objCachedMyXmlNode;
         private string _strCachedXmlNodeLanguage = string.Empty;
 
-        public XmlNode GetNode()
-        {
-            return GetNode(GlobalOptions.Language);
-        }
+        public XmlNode GetNode() => GetNode(GlobalOptions.Language);
 
         public XmlNode GetNode(string strLanguage)
         {
             if (_objCachedMyXmlNode != null && strLanguage == _strCachedXmlNodeLanguage && !GlobalOptions.LiveCustomData)
+            {
                 return _objCachedMyXmlNode;
+            }
+
             _objCachedMyXmlNode = SourceID == Guid.Empty
                 ? XmlManager
                     .Load(_eSource == Improvement.ImprovementSource.Bioware ? "bioware.xml" : "cyberware.xml",
@@ -139,7 +149,9 @@ namespace Chummer.Backend.Equipment
         public string DisplayName(string strLanguage)
         {
             if (strLanguage == GlobalOptions.DefaultLanguage)
+            {
                 return Name;
+            }
 
             return GetNode(strLanguage)?["translate"]?.InnerText ?? Name;
         }

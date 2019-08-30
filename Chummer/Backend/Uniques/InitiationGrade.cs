@@ -88,7 +88,10 @@ namespace Chummer
         public void Load(XmlNode objNode)
         {
             if (!objNode.TryGetField("guid", Guid.TryParse, out _guiID))
+            {
                 _guiID = Guid.NewGuid();
+            }
+
             objNode.TryGetBoolFieldQuickly("res", ref _blnTechnomancer);
             objNode.TryGetInt32FieldQuickly("grade", ref _intGrade);
             objNode.TryGetBoolFieldQuickly("group", ref _blnGroup);
@@ -111,7 +114,10 @@ namespace Chummer
             objWriter.WriteElementString("schooling", Schooling.ToString());
             objWriter.WriteElementString("technomancer", Technomancer.ToString());
             if (_objOptions.PrintNotes)
+            {
                 objWriter.WriteElementString("notes", Notes);
+            }
+
             objWriter.WriteEndElement();
         }
         #endregion
@@ -181,15 +187,21 @@ namespace Chummer
 
                 // Discount for Group.
                 if (Group)
+                {
                     decMultiplier -= 0.1m;
+                }
 
                 // Discount for Ordeal.
                 if (Ordeal)
+                {
                     decMultiplier -= Technomancer ? 0.2m : 0.1m;
+                }
 
                 // Discount for Schooling.
                 if (Schooling)
+                {
                     decMultiplier -= 0.1m;
+                }
 
                 return decimal.ToInt32(decimal.Ceiling(decCost * decMultiplier));
             }
@@ -211,13 +223,17 @@ namespace Chummer
                 {
                     strReturn.Append(Technomancer ? LanguageManager.GetString("String_Network", strLanguage) : LanguageManager.GetString("String_Group", strLanguage));
                     if (Ordeal || Schooling)
+                    {
                         strReturn.Append(',' + strSpaceCharacter);
+                    }
                 }
                 if (Ordeal)
                 {
                     strReturn.Append(Technomancer ? LanguageManager.GetString("String_Task", strLanguage) : LanguageManager.GetString("String_Ordeal", strLanguage));
                     if (Schooling)
+                    {
                         strReturn.Append(',' + strSpaceCharacter);
+                    }
                 }
                 if (Schooling)
                 {
@@ -267,15 +283,9 @@ namespace Chummer
             return objNode;
         }
 
-        public int CompareTo(object obj)
-        {
-            return CompareTo((InitiationGrade)obj);
-        }
+        public int CompareTo(object obj) => CompareTo((InitiationGrade)obj);
 
-        public int CompareTo(InitiationGrade obj)
-        {
-            return Grade.CompareTo(obj.Grade);
-        }
+        public int CompareTo(InitiationGrade obj) => Grade.CompareTo(obj.Grade);
         #endregion
 
         public bool Remove(Character characterObject, bool blnConfirmDelete = true)
@@ -293,7 +303,9 @@ namespace Chummer
                 {
                     if (!characterObject.ConfirmDelete(LanguageManager.GetString("Message_DeleteInitiateGrade",
                         GlobalOptions.Language)))
+                    {
                         return false;
+                    }
                 }
 
                 characterObject.InitiationGrades.Remove(this);
@@ -310,13 +322,18 @@ namespace Chummer
                 {
                     if (!characterObject.ConfirmDelete(LanguageManager.GetString("Message_DeleteSubmersionGrade",
                         GlobalOptions.Language)))
+                    {
                         return false;
+                    }
                 }
 
                 characterObject.InitiationGrades.Remove(this);
             }
             else
+            {
                 return false;
+            }
+
             return true;
         }
     }

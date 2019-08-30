@@ -21,7 +21,7 @@ namespace ChummerHub.Services.GoogleDrive
 
     {
 #pragma warning disable CS0414 // The field 'DriveHandler.Credential' is assigned but its value is never used
-        private GoogleCredential Credential = null;
+        private readonly GoogleCredential Credential = null;
 #pragma warning restore CS0414 // The field 'DriveHandler.Credential' is assigned but its value is never used
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'DriveHandler.Scopes'
         public static string[] Scopes = {
@@ -33,13 +33,13 @@ namespace ChummerHub.Services.GoogleDrive
 
         };
 #pragma warning disable CS0414 // The field 'DriveHandler.ApplicationName' is assigned but its value is never used
-        private static string ApplicationName = "SINners";
+        private static readonly string ApplicationName = "SINners";
 #pragma warning restore CS0414 // The field 'DriveHandler.ApplicationName' is assigned but its value is never used
         private readonly ILogger _logger;
 
-        private static string _contentType = "application/octet-stream";
+        private static readonly string _contentType = "application/octet-stream";
         private static string _folderId = "";
-        private IConfiguration Configuration;
+        private readonly IConfiguration Configuration;
 
 
 
@@ -78,7 +78,9 @@ namespace ChummerHub.Services.GoogleDrive
                 string refreshToken = Configuration["Authentication:Google:RefreshToken"];
 
                 if (string.IsNullOrEmpty(refreshToken))
+                {
                     throw new ArgumentException("Configuration[\"Authentication:Google:RefreshToken\"] == null! ");
+                }
 
                 TokenResponse token = new TokenResponse
                 {
@@ -109,7 +111,7 @@ namespace ChummerHub.Services.GoogleDrive
         }
 
 #pragma warning disable CS0414 // The field 'DriveHandler.flow' is assigned but its value is never used
-        private static IAuthorizationCodeFlow flow = null;
+        private static readonly IAuthorizationCodeFlow flow = null;
 #pragma warning restore CS0414 // The field 'DriveHandler.flow' is assigned but its value is never used
 
 
@@ -122,7 +124,9 @@ namespace ChummerHub.Services.GoogleDrive
             string refreshToken = Configuration["Authentication:Google:RefreshToken"];
 
             if (string.IsNullOrEmpty(_folderId))
+            {
                 _folderId = Configuration["Authentication:Google:ChummerFolderId"];
+            }
         }
 
         internal string StoreXmlInCloud(SINnerUploadAble uploadFile, IFormFile uploadedFile)
@@ -134,7 +138,9 @@ namespace ChummerHub.Services.GoogleDrive
 
                 UserCredential creds = AuthorizeGoogleUser();
                 if (creds == null)
+                {
                     throw new Exception("Invalid Google User");
+                }
 
                 // Create Drive API service.
                 BaseClientService.Initializer initializer = new BaseClientService.Initializer()
@@ -257,7 +263,10 @@ namespace ChummerHub.Services.GoogleDrive
                     && (uploadprogress.Status != Google.Apis.Upload.UploadStatus.Failed))
                 {
                     if (uploadprogress.Exception != null)
+                    {
                         throw uploadprogress.Exception;
+                    }
+
                     uploadprogress = request.Resume();
                 }
                 if (uploadprogress.Status == Google.Apis.Upload.UploadStatus.Failed)
@@ -318,7 +327,10 @@ namespace ChummerHub.Services.GoogleDrive
                     && (uploadprogress.Status != Google.Apis.Upload.UploadStatus.Failed))
                 {
                     if (uploadprogress.Exception != null)
+                    {
                         throw uploadprogress.Exception;
+                    }
+
                     uploadprogress = request.Resume();
                 }
                 if (uploadprogress.Status == Google.Apis.Upload.UploadStatus.Failed)

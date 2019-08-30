@@ -35,11 +35,9 @@ namespace Chummer
         public event PropertyChangedEventHandler PropertyChanged;
 
         #region Constructor, Save, Load, and Print Methods
-        public CalendarWeek()
-        {
+        public CalendarWeek() =>
             // Create the GUID for the new CalendarWeek.
             _guiID = Guid.NewGuid();
-        }
 
         public CalendarWeek(int intYear, int intWeek)
         {
@@ -88,7 +86,10 @@ namespace Chummer
             objWriter.WriteElementString("month", Month.ToString(objCulture));
             objWriter.WriteElementString("week", MonthWeek.ToString(objCulture));
             if (blnPrintNotes)
+            {
                 objWriter.WriteElementString("notes", Notes);
+            }
+
             objWriter.WriteEndElement();
         }
         #endregion
@@ -273,7 +274,10 @@ namespace Chummer
             {
                 int intReturn = Year.CompareTo(objWeek.Year);
                 if (intReturn == 0)
+                {
                     intReturn = Week.CompareTo(objWeek.Week);
+                }
+
                 return intReturn;
             }
             return DisplayName(GlobalOptions.Language).CompareTo(obj);

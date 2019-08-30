@@ -67,7 +67,9 @@ namespace Chummer
             else
             {
                 if (!string.IsNullOrEmpty(_strLimitToCategories))
+                {
                     objXmlSkillList = _objXmlDocument.SelectNodes("/chummer/skills/skill[" + _strLimitToCategories + " and (" + _objCharacter.Options.BookXPath() + ")]");
+                }
                 else
                 {
                     string strFilter = "not(exotic)";
@@ -76,7 +78,9 @@ namespace Chummer
                         strFilter += " and (";
                         string[] strValue = _strIncludeCategory.Split(',');
                         foreach (string strSkillCategory in strValue)
+                        {
                             strFilter += "category = \"" + strSkillCategory.Trim() + "\" or ";
+                        }
                         // Remove the trailing " or ".
                         strFilter = strFilter.Substring(0, strFilter.Length - 4);
                         strFilter += ')';
@@ -86,7 +90,9 @@ namespace Chummer
                         strFilter += " and (";
                         string[] strValue = _strExcludeCategory.Split(',');
                         foreach (string strSkillCategory in strValue)
+                        {
                             strFilter += "category != \"" + strSkillCategory.Trim() + "\" and ";
+                        }
                         // Remove the trailing " and ".
                         strFilter = strFilter.Substring(0, strFilter.Length - 5);
                         strFilter += ')';
@@ -96,7 +102,9 @@ namespace Chummer
                         strFilter += " and (";
                         string[] strValue = _strIncludeSkillGroup.Split(',');
                         foreach (string strSkillGroup in strValue)
+                        {
                             strFilter += "skillgroup = \"" + strSkillGroup.Trim() + "\" or ";
+                        }
                         // Remove the trailing " or ".
                         strFilter = strFilter.Substring(0, strFilter.Length - 4);
                         strFilter += ')';
@@ -106,7 +114,9 @@ namespace Chummer
                         strFilter += " and (";
                         string[] strValue = _strExcludeSkillGroup.Split(',');
                         foreach (string strSkillGroup in strValue)
+                        {
                             strFilter += "skillgroup != \"" + strSkillGroup.Trim() + "\" and ";
+                        }
                         // Remove the trailing " and ".
                         strFilter = strFilter.Substring(0, strFilter.Length - 5);
                         strFilter += ')';
@@ -116,7 +126,9 @@ namespace Chummer
                         strFilter += " and (";
                         string[] strValue = LinkedAttribute.Split(',');
                         foreach (string strAttribute in strValue)
+                        {
                             strFilter += "attribute = \"" + strAttribute.Trim() + "\" or ";
+                        }
                         // Remove the trailing " or ".
                         strFilter = strFilter.Substring(0, strFilter.Length - 4);
                         strFilter += ')';
@@ -126,7 +138,9 @@ namespace Chummer
                         strFilter += " and (";
                         string[] strValue = _strLimitToSkill.Split(',');
                         foreach (string strSkill in strValue)
+                        {
                             strFilter += "name = \"" + strSkill.Trim() + "\" or ";
+                        }
                         // Remove the trailing " or ".
                         strFilter = strFilter.Substring(0, strFilter.Length - 4);
                         strFilter += ')';
@@ -136,7 +150,9 @@ namespace Chummer
                         strFilter += " and (";
                         string[] strValue = _strExcludeSkill.Split(',');
                         foreach (string strSkill in strValue)
+                        {
                             strFilter += "name != \"" + strSkill.Trim() + "\" and ";
+                        }
                         // Remove the trailing " or ".
                         strFilter = strFilter.Substring(0, strFilter.Length - 4);
                         strFilter += ')';
@@ -176,23 +192,39 @@ namespace Chummer
                     ExoticSkill objExoticSkill = objSkill as ExoticSkill;
                     bool blnAddSkill = true;
                     if (objSkill.Rating < _intMinimumRating || objSkill.Rating > _intMaximumRating)
+                    {
                         blnAddSkill = false;
+                    }
                     else if (!string.IsNullOrEmpty(_strForceSkill))
+                    {
                         blnAddSkill = _strForceSkill == objExoticSkill.Name + " (" + objExoticSkill.Specific + ')';
+                    }
                     else
                     {
                         if (!string.IsNullOrEmpty(_strIncludeCategory))
+                        {
                             blnAddSkill = _strIncludeCategory.Contains(objExoticSkill.SkillCategory);
+                        }
                         else if (!string.IsNullOrEmpty(_strExcludeCategory))
+                        {
                             blnAddSkill = !_strExcludeCategory.Contains(objExoticSkill.SkillCategory);
+                        }
                         else if (!string.IsNullOrEmpty(_strIncludeSkillGroup))
+                        {
                             blnAddSkill = _strIncludeSkillGroup.Contains(objExoticSkill.SkillGroup);
+                        }
                         else if (!string.IsNullOrEmpty(_strExcludeSkillGroup))
+                        {
                             blnAddSkill = !_strExcludeSkillGroup.Contains(objExoticSkill.SkillGroup);
+                        }
                         else if (!string.IsNullOrEmpty(_strLimitToSkill))
+                        {
                             blnAddSkill = _strLimitToSkill.Contains(objExoticSkill.Name);
+                        }
                         else if (!string.IsNullOrEmpty(_strExcludeSkill))
+                        {
                             blnAddSkill = !_strExcludeSkill.Contains(objExoticSkill.Name);
+                        }
                     }
 
                     if (blnAddSkill)
@@ -223,7 +255,9 @@ namespace Chummer
             cboSkill.EndUpdate();
 
             if (cboSkill.Items.Count == 1)
+            {
                 cmdOK_Click(sender, e);
+            }
         }
 
         private void cmdOK_Click(object sender, EventArgs e)
@@ -232,10 +266,7 @@ namespace Chummer
             DialogResult = DialogResult.OK;
         }
 
-        private void cmdCancel_Click(object sender, EventArgs e)
-        {
-            DialogResult = DialogResult.Cancel;
-        }
+        private void cmdCancel_Click(object sender, EventArgs e) => DialogResult = DialogResult.Cancel;
         #endregion
 
         #region Properties
@@ -268,7 +299,10 @@ namespace Chummer
 
                         // Remove the last " or "
                         if (objLimitToCategories.Length > 0)
+                        {
                             objLimitToCategories.Length -= 4;
+                        }
+
                         _strLimitToCategories = objLimitToCategories.ToString();
                     }
                 }

@@ -33,10 +33,7 @@ namespace Chummer.UI.Table
             Leave += (a, b) => table.ResumeSort(this);
         }
 
-        private void OnLoad(object sender, EventArgs eventArgs)
-        {
-            MinimumSize = _spinner.Size;
-        }
+        private void OnLoad(object sender, EventArgs eventArgs) => MinimumSize = _spinner.Size;
 
         protected internal override void UpdateValue(object newValue)
         {
@@ -112,7 +109,10 @@ namespace Chummer.UI.Table
         private void value_changed(object sender, EventArgs e)
         {
             if (_blnUpdating || ValueUpdater == null)
+            {
                 return;
+            }
+
             _blnUpdating = true;
             try
             {

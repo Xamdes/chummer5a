@@ -376,11 +376,16 @@ namespace Chummer
         public override void DownButton()
         {
             if (ReadOnly)
+            {
                 return;
+            }
+
             CancelEventArgs e = new CancelEventArgs();
             BeforeValueDecrement?.Invoke(this, e);
             if (e.Cancel)
+            {
                 return;
+            }
 
             if (_wrapValue && Value - Increment < Minimum)
             {
@@ -394,8 +399,8 @@ namespace Chummer
                 }
                 catch (ArgumentOutOfRangeException aor)
                 {
-                    aor.Data.Add("Name", this.Name);
-                    aor.Data.Add("Parent", this.Parent?.Name);
+                    aor.Data.Add("Name", Name);
+                    aor.Data.Add("Parent", Parent?.Name);
                     aor.Data.Add("BeforeValueDecrement", BeforeValueDecrement?.Method?.Name);
                     throw;
                 }
@@ -404,11 +409,16 @@ namespace Chummer
         public override void UpButton()
         {
             if (ReadOnly)
+            {
                 return;
+            }
+
             CancelEventArgs e = new CancelEventArgs();
             BeforeValueIncrement?.Invoke(this, e);
             if (e.Cancel)
+            {
                 return;
+            }
 
             if (_wrapValue && Value + Increment > Maximum)
             {
@@ -422,8 +432,8 @@ namespace Chummer
                 }
                 catch (ArgumentOutOfRangeException aor)
                 {
-                    aor.Data.Add("Name", this.Name);
-                    aor.Data.Add("Parent", this.Parent?.Name);
+                    aor.Data.Add("Name", Name);
+                    aor.Data.Add("Parent", Parent?.Name);
                     aor.Data.Add("BeforeValueIncrement", BeforeValueIncrement?.Method?.Name);
                     throw;
                 }
@@ -433,12 +443,18 @@ namespace Chummer
         protected override void OnMouseWheel(MouseEventArgs e)
         {
             if (e is HandledMouseEventArgs hme)
+            {
                 hme.Handled = true;
+            }
 
             if (e.Delta > 0)
+            {
                 Value = Math.Min(Value + MouseIncrement, Maximum);
+            }
             else if (e.Delta < 0)
+            {
                 Value = Math.Max(Value - MouseIncrement, Minimum);
+            }
         }
         #endregion
 
@@ -496,7 +512,10 @@ namespace Chummer
         protected override void OnTextBoxResize(object source, EventArgs e)
         {
             if (_textbox == null)
+            {
                 return;
+            }
+
             if (_showUpDownButtons == ShowUpDownButtonsMode.Always)
             {
                 // standard management
@@ -513,12 +532,17 @@ namespace Chummer
                 {
                     _textbox.Width = ClientSize.Width - _textbox.Left - _upDownButtons.Width - 2;
                     if (fixPos)
+                    {
                         _textbox.Location = new Point(16, _textbox.Location.Y);
+                    }
                 }
                 else
                 {
                     if (fixPos)
+                    {
                         _textbox.Location = new Point(2, _textbox.Location.Y);
+                    }
+
                     _textbox.Width = ClientSize.Width - _textbox.Left - 2;
                 }
 

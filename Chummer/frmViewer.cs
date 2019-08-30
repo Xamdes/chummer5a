@@ -35,7 +35,7 @@ namespace Chummer
 {
     public partial class frmViewer : Form
     {
-        private static Logger Log = NLog.LogManager.GetCurrentClassLogger();
+        private static readonly Logger Log = NLog.LogManager.GetCurrentClassLogger();
         private List<Character> _lstCharacters = new List<Character>();
         private XmlDocument _objCharacterXml = new XmlDocument();
         private string _strSelectedSheet = GlobalOptions.DefaultCharacterSheet;
@@ -65,7 +65,9 @@ namespace Chummer
             if (GlobalOptions.Language != GlobalOptions.DefaultLanguage)
             {
                 if (!_strSelectedSheet.Contains(Path.DirectorySeparatorChar))
+                {
                     _strSelectedSheet = Path.Combine(GlobalOptions.Language, _strSelectedSheet);
+                }
                 else if (!_strSelectedSheet.Contains(GlobalOptions.Language) && _strSelectedSheet.Contains(GlobalOptions.Language.Substring(0, 2)))
                 {
                     _strSelectedSheet = _strSelectedSheet.Replace(GlobalOptions.Language.Substring(0, 2), GlobalOptions.Language);
@@ -75,7 +77,9 @@ namespace Chummer
             {
                 int intLastIndexDirectorySeparator = _strSelectedSheet.LastIndexOf(Path.DirectorySeparatorChar);
                 if (intLastIndexDirectorySeparator != -1 && _strSelectedSheet.Contains(GlobalOptions.Language.Substring(0, 2)))
+                {
                     _strSelectedSheet = _strSelectedSheet.Substring(intLastIndexDirectorySeparator + 1);
+                }
             }
 
             RegistryKey objRegistry = Registry.CurrentUser.CreateSubKey("Software\\Microsoft\\Internet Explorer\\Main\\FeatureControl\\FEATURE_BROWSER_EMULATION");
@@ -124,17 +128,29 @@ namespace Chummer
                 string strLanguage = cboLanguage.SelectedValue?.ToString();
                 int intNameIndex;
                 if (string.IsNullOrEmpty(strLanguage) || strLanguage == GlobalOptions.DefaultLanguage)
+                {
                     intNameIndex = cboXSLT.FindStringExact(GlobalOptions.DefaultCharacterSheet);
+                }
                 else
+                {
                     intNameIndex = cboXSLT.FindStringExact(GlobalOptions.DefaultCharacterSheet.Substring(GlobalOptions.DefaultLanguage.LastIndexOf(Path.DirectorySeparatorChar) + 1));
+                }
+
                 if (intNameIndex != -1)
+                {
                     cboXSLT.SelectedIndex = intNameIndex;
+                }
                 else if (cboXSLT.Items.Count > 0)
                 {
                     if (string.IsNullOrEmpty(strLanguage) || strLanguage == GlobalOptions.DefaultLanguage)
+                    {
                         _strSelectedSheet = GlobalOptions.DefaultCharacterSheetDefaultValue;
+                    }
                     else
+                    {
                         _strSelectedSheet = Path.Combine(strLanguage, GlobalOptions.DefaultCharacterSheetDefaultValue);
+                    }
+
                     cboXSLT.SelectedValue = _strSelectedSheet;
                     if (cboXSLT.SelectedIndex == -1)
                     {
@@ -154,12 +170,16 @@ namespace Chummer
             if (_blnQueueRefresherRun)
             {
                 if (!_workerRefresher.IsBusy)
+                {
                     _workerRefresher.RunWorkerAsync();
+                }
             }
             else if (_blnQueueOutputGeneratorRun)
             {
                 if (!_workerOutputGenerator.IsBusy)
+                {
                     _workerOutputGenerator.RunWorkerAsync();
+                }
             }
         }
 
@@ -173,15 +193,9 @@ namespace Chummer
             }
         }
 
-        private void cmdPrint_Click(object sender, EventArgs e)
-        {
-            webBrowser1.ShowPrintDialog();
-        }
+        private void cmdPrint_Click(object sender, EventArgs e) => webBrowser1.ShowPrintDialog();
 
-        private void tsPrintPreview_Click(object sender, EventArgs e)
-        {
-            webBrowser1.ShowPrintPreviewDialog();
-        }
+        private void tsPrintPreview_Click(object sender, EventArgs e) => webBrowser1.ShowPrintPreviewDialog();
 
         private void tsSaveAsHTML_Click(object sender, EventArgs e)
         {
@@ -192,7 +206,9 @@ namespace Chummer
             string strSaveFile = SaveFileDialog1.FileName;
 
             if (string.IsNullOrEmpty(strSaveFile))
+            {
                 return;
+            }
 
             TextWriter objWriter = new StreamWriter(strSaveFile, false, Encoding.UTF8);
             objWriter.Write(webBrowser1.DocumentText);
@@ -208,7 +224,9 @@ namespace Chummer
             string strSaveFile = SaveFileDialog1.FileName;
 
             if (string.IsNullOrEmpty(strSaveFile))
+            {
                 return;
+            }
 
             try
             {
@@ -229,9 +247,14 @@ namespace Chummer
             Application.Idle -= RunQueuedWorkers;
 
             if (_workerRefresher.IsBusy)
+            {
                 _workerRefresher.CancelAsync();
+            }
+
             if (_workerOutputGenerator.IsBusy)
+            {
                 _workerOutputGenerator.CancelAsync();
+            }
 
             // Remove the mugshots directory when the form closes.
             string mugshotsDirectoryPath = Path.Combine(Utils.GetStartupPath, "mugshots");
@@ -248,8 +271,12 @@ namespace Chummer
 
             // Clear the reference to the character's Print window.
             foreach (CharacterShared objCharacterShared in Program.MainForm.OpenCharacterForms)
+            {
                 if (objCharacterShared.PrintWindow == this)
+                {
                     objCharacterShared.PrintWindow = null;
+                }
+            }
         }
         #endregion
 
@@ -278,9 +305,15 @@ namespace Chummer
         {
             Cursor = Cursors.AppStarting;
             if (_workerOutputGenerator.IsBusy)
+            {
                 _workerOutputGenerator.CancelAsync();
+            }
+
             if (_workerRefresher.IsBusy)
+            {
                 _workerRefresher.CancelAsync();
+            }
+
             _blnQueueRefresherRun = true;
         }
 
@@ -292,7 +325,10 @@ namespace Chummer
             Cursor = Cursors.AppStarting;
             SetDocumentText(LanguageManager.GetString("String_Generating_Sheet", GlobalOptions.Language));
             if (_workerOutputGenerator.IsBusy)
+            {
                 _workerOutputGenerator.CancelAsync();
+            }
+
             _blnQueueOutputGeneratorRun = true;
         }
 
@@ -354,9 +390,13 @@ namespace Chummer
                 objCharacterXml.LoadXml(strXml);
 
                 if (_workerRefresher.CancellationPending)
+                {
                     e.Cancel = true;
+                }
                 else
+                {
                     _objCharacterXml = objCharacterXml;
+                }
             }
         }
 
@@ -451,7 +491,9 @@ namespace Chummer
                 cmdSaveAsPdf.Enabled = true;
             }
             if (GlobalOptions.PrintToFileFirst)
+            {
                 File.Delete(_strName);
+            }
 
             Cursor = Cursors.Default;
         }
@@ -465,7 +507,9 @@ namespace Chummer
             string strSaveFile = SaveFileDialog1.FileName;
 
             if (string.IsNullOrEmpty(strSaveFile))
+            {
                 return;
+            }
 
             if (!Directory.Exists(Path.GetDirectoryName(strSaveFile)))
             {
@@ -543,11 +587,15 @@ namespace Chummer
 
             // Populate the XSL list with all of the manifested XSL files found in the sheets\[language] directory.
             using (XmlNodeList lstSheetNodes = XmlManager.Load("sheets.xml", strLanguage, true).SelectNodes($"/chummer/sheets[@lang='{strLanguage}']/sheet[not(hide)]"))
+            {
                 if (lstSheetNodes != null)
+                {
                     foreach (XmlNode xmlSheet in lstSheetNodes)
                     {
                         lstSheets.Add(new ListItem(strLanguage != GlobalOptions.DefaultLanguage ? Path.Combine(strLanguage, xmlSheet["filename"]?.InnerText ?? string.Empty) : xmlSheet["filename"]?.InnerText ?? string.Empty, xmlSheet["name"]?.InnerText ?? string.Empty));
                     }
+                }
+            }
 
             return lstSheets;
         }
@@ -585,7 +633,9 @@ namespace Chummer
             if (GlobalOptions.OmaeEnabled)
             {
                 foreach (ListItem objFile in GetXslFilesFromOmaeDirectory())
+                {
                     lstFiles.Add(objFile);
+                }
             }
 
             cboXSLT.BeginUpdate();
@@ -603,7 +653,9 @@ namespace Chummer
             {
                 string strSheetLanguage = myStrSelectedSheet.Substring(0, intLastIndexDirectorySeparator.Value);
                 if (strSheetLanguage.Length == 5)
+                {
                     strDefaultSheetLanguage = strSheetLanguage;
+                }
             }
 
             myCboLanguage.BeginUpdate();
@@ -612,7 +664,10 @@ namespace Chummer
             myCboLanguage.DataSource = LstLanguages;
             myCboLanguage.SelectedValue = strDefaultSheetLanguage;
             if (myCboLanguage.SelectedIndex == -1)
+            {
                 myCboLanguage.SelectedValue = GlobalOptions.DefaultLanguage;
+            }
+
             myCboLanguage.EndUpdate();
             return myCboLanguage;
         }
@@ -652,7 +707,9 @@ namespace Chummer
                         XmlNode node = xmlDocument.SelectSingleNode("/chummer/name");
 
                         if (node == null)
+                        {
                             continue;
+                        }
 
                         string strLanguageCode = Path.GetFileNameWithoutExtension(filePath);
                         if (GetXslFilesFromLocalDirectory(strLanguageCode).Count > 0)
@@ -715,12 +772,17 @@ namespace Chummer
             {
             }
             if (_blnLoading)
+            {
                 return;
+            }
 
             string strOldSelected = _strSelectedSheet;
             // Strip away the language prefix
             if (strOldSelected.Contains(Path.DirectorySeparatorChar))
+            {
                 strOldSelected = strOldSelected.Substring(strOldSelected.LastIndexOf(Path.DirectorySeparatorChar) + 1);
+            }
+
             _blnLoading = true;
             PopulateXsltList();
             string strNewLanguage = cboLanguage.SelectedValue?.ToString() ?? strOldSelected;
@@ -734,7 +796,9 @@ namespace Chummer
             {
                 int intNameIndex = cboXSLT.FindStringExact(strNewLanguage == GlobalOptions.DefaultLanguage ? GlobalOptions.DefaultCharacterSheet : GlobalOptions.DefaultCharacterSheet.Substring(strNewLanguage.LastIndexOf(Path.DirectorySeparatorChar) + 1));
                 if (intNameIndex != -1)
+                {
                     cboXSLT.SelectedIndex = intNameIndex;
+                }
                 else if (cboXSLT.Items.Count > 0)
                 {
                     _strSelectedSheet = strNewLanguage == GlobalOptions.DefaultLanguage ? GlobalOptions.DefaultCharacterSheetDefaultValue : Path.Combine(strNewLanguage, GlobalOptions.DefaultCharacterSheetDefaultValue);

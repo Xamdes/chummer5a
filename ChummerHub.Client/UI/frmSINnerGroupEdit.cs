@@ -7,7 +7,7 @@ namespace ChummerHub.Client.UI
 {
     public partial class frmSINnerGroupEdit : Form
     {
-        private Logger Log = NLog.LogManager.GetCurrentClassLogger();
+        private readonly Logger Log = NLog.LogManager.GetCurrentClassLogger();
         //public frmSINnerGroupEdit()
         //{
         //    InitializeComponent();
@@ -18,17 +18,14 @@ namespace ChummerHub.Client.UI
             InitializeComponent();
             MySINnerGroupCreate.MyGroup = group;
             if (group.Id == null || group.Id == Guid.Empty)
+            {
                 MySINnerGroupCreate.EditMode = true;
+            }
+
             MySINnerGroupCreate.InitializeMe(onlyPWHash);
         }
 
 
-        public ucSINnerGroupCreate MySINnerGroupCreate
-        {
-            get
-            {
-                return this.siNnerGroupCreate1;
-            }
-        }
+        public ucSINnerGroupCreate MySINnerGroupCreate => siNnerGroupCreate1;
     }
 }

@@ -30,11 +30,7 @@ namespace ChummerHub.Controllers.V1
         private readonly ApplicationDbContext _context;
 
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'ChummerHelper.ChummerHelper(ApplicationDbContext)'
-        public ChummerHelper(ApplicationDbContext context)
-#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'ChummerHelper.ChummerHelper(ApplicationDbContext)'
-        {
-            _context = context;
-        }
+        public ChummerHelper(ApplicationDbContext context) => _context = context;
 
         // GET: api/ChummerFiles
         [HttpGet]

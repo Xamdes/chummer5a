@@ -23,10 +23,6 @@ namespace ChummerHub.Areas.Identity.Pages
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'ErrorModel.OnGet()'
-        public void OnGet()
-#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'ErrorModel.OnGet()'
-        {
-            RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier;
-        }
+        public void OnGet() => RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier;
     }
 }

@@ -60,10 +60,7 @@ namespace SINners
         /// <param name='handlers'>
         /// Optional. The delegating handlers to add to the http client pipeline.
         /// </param>
-        protected SINnersClient(params DelegatingHandler[] handlers) : base(handlers)
-        {
-            this.Initialize();
-        }
+        protected SINnersClient(params DelegatingHandler[] handlers) : base(handlers) => Initialize();
 
         /// <summary>
         /// Initializes a new instance of the SINnersClient class.
@@ -74,10 +71,7 @@ namespace SINners
         /// <param name='handlers'>
         /// Optional. The delegating handlers to add to the http client pipeline.
         /// </param>
-        protected SINnersClient(HttpClientHandler rootHandler, params DelegatingHandler[] handlers) : base(rootHandler, handlers)
-        {
-            this.Initialize();
-        }
+        protected SINnersClient(HttpClientHandler rootHandler, params DelegatingHandler[] handlers) : base(rootHandler, handlers) => Initialize();
 
         /// <summary>
         /// Initializes a new instance of the SINnersClient class.
@@ -94,7 +88,7 @@ namespace SINners
             {
                 throw new ArgumentNullException("baseUri");
             }
-            this.BaseUri = baseUri;
+            BaseUri = baseUri;
         }
 
         /// <summary>
@@ -115,7 +109,7 @@ namespace SINners
             {
                 throw new ArgumentNullException("baseUri");
             }
-            this.BaseUri = baseUri;
+            BaseUri = baseUri;
         }
 
         /// <summary>
@@ -133,10 +127,10 @@ namespace SINners
             {
                 throw new ArgumentNullException("credentials");
             }
-            this.Credentials = credentials;
-            if (this.Credentials != null)
+            Credentials = credentials;
+            if (Credentials != null)
             {
-                this.Credentials.InitializeServiceClient(this);
+                Credentials.InitializeServiceClient(this);
             }
         }
 
@@ -158,10 +152,10 @@ namespace SINners
             {
                 throw new ArgumentNullException("credentials");
             }
-            this.Credentials = credentials;
-            if (this.Credentials != null)
+            Credentials = credentials;
+            if (Credentials != null)
             {
-                this.Credentials.InitializeServiceClient(this);
+                Credentials.InitializeServiceClient(this);
             }
         }
 
@@ -187,11 +181,11 @@ namespace SINners
             {
                 throw new ArgumentNullException("credentials");
             }
-            this.BaseUri = baseUri;
-            this.Credentials = credentials;
-            if (this.Credentials != null)
+            BaseUri = baseUri;
+            Credentials = credentials;
+            if (Credentials != null)
             {
-                this.Credentials.InitializeServiceClient(this);
+                Credentials.InitializeServiceClient(this);
             }
         }
 
@@ -220,11 +214,11 @@ namespace SINners
             {
                 throw new ArgumentNullException("credentials");
             }
-            this.BaseUri = baseUri;
-            this.Credentials = credentials;
-            if (this.Credentials != null)
+            BaseUri = baseUri;
+            Credentials = credentials;
+            if (Credentials != null)
             {
-                this.Credentials.InitializeServiceClient(this);
+                Credentials.InitializeServiceClient(this);
             }
         }
 
@@ -237,7 +231,7 @@ namespace SINners
         /// </summary>
         private void Initialize()
         {
-            this.BaseUri = new Uri("http://localhost");
+            BaseUri = new Uri("http://localhost");
             SerializationSettings = new JsonSerializerSettings
             {
                 Formatting = Formatting.Indented,
@@ -289,7 +283,7 @@ namespace SINners
                 ServiceClientTracing.Enter(_invocationId, this, "GetPossibleRoles", tracingParameters);
             }
             // Construct URL
-            string _baseUrl = this.BaseUri.AbsoluteUri;
+            string _baseUrl = BaseUri.AbsoluteUri;
             string _url = new Uri(new Uri(_baseUrl + (_baseUrl.EndsWith("/") ? "" : "/")), "api/v1/Account/GetPossibleRoles").ToString();
             // Create HTTP transport objects
             HttpRequestMessage _httpRequest = new HttpRequestMessage();
@@ -312,10 +306,10 @@ namespace SINners
             // Serialize Request
             string _requestContent = null;
             // Set Credentials
-            if (this.Credentials != null)
+            if (Credentials != null)
             {
                 cancellationToken.ThrowIfCancellationRequested();
-                await this.Credentials.ProcessHttpRequestAsync(_httpRequest, cancellationToken).ConfigureAwait(false);
+                await Credentials.ProcessHttpRequestAsync(_httpRequest, cancellationToken).ConfigureAwait(false);
             }
             // Send Request
             if (_shouldTrace)
@@ -323,7 +317,7 @@ namespace SINners
                 ServiceClientTracing.SendRequest(_invocationId, _httpRequest);
             }
             cancellationToken.ThrowIfCancellationRequested();
-            _httpResponse = await this.HttpClient.SendAsync(_httpRequest, cancellationToken).ConfigureAwait(false);
+            _httpResponse = await HttpClient.SendAsync(_httpRequest, cancellationToken).ConfigureAwait(false);
             if (_shouldTrace)
             {
                 ServiceClientTracing.ReceiveResponse(_invocationId, _httpResponse);
@@ -333,7 +327,7 @@ namespace SINners
             string _responseContent = null;
             if ((int)_statusCode != 200 && (int)_statusCode != 401 && (int)_statusCode != 403 && (int)_statusCode != 400)
             {
-                var ex = new HttpOperationException(string.Format("Operation returned an invalid status code '{0}'", _statusCode));
+                HttpOperationException ex = new HttpOperationException(string.Format("Operation returned an invalid status code '{0}'", _statusCode));
                 _responseContent = await _httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
                 ex.Request = new HttpRequestMessageWrapper(_httpRequest, _requestContent);
                 ex.Response = new HttpResponseMessageWrapper(_httpResponse, _responseContent);
@@ -349,7 +343,7 @@ namespace SINners
                 throw ex;
             }
             // Create Result
-            var _result = new HttpOperationResponse<ResultAccountGetPossibleRoles>
+            HttpOperationResponse<ResultAccountGetPossibleRoles> _result = new HttpOperationResponse<ResultAccountGetPossibleRoles>
             {
                 Request = _httpRequest,
                 Response = _httpResponse
@@ -360,7 +354,7 @@ namespace SINners
                 _responseContent = await _httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
                 try
                 {
-                    _result.Body = SafeJsonConvert.DeserializeObject<ResultAccountGetPossibleRoles>(_responseContent, this.DeserializationSettings);
+                    _result.Body = SafeJsonConvert.DeserializeObject<ResultAccountGetPossibleRoles>(_responseContent, DeserializationSettings);
                 }
                 catch (JsonException ex)
                 {
@@ -403,7 +397,7 @@ namespace SINners
                 ServiceClientTracing.Enter(_invocationId, this, "GetRoles", tracingParameters);
             }
             // Construct URL
-            string _baseUrl = this.BaseUri.AbsoluteUri;
+            string _baseUrl = BaseUri.AbsoluteUri;
             string _url = new Uri(new Uri(_baseUrl + (_baseUrl.EndsWith("/") ? "" : "/")), "api/v1/Account/GetRoles").ToString();
             // Create HTTP transport objects
             HttpRequestMessage _httpRequest = new HttpRequestMessage();
@@ -426,10 +420,10 @@ namespace SINners
             // Serialize Request
             string _requestContent = null;
             // Set Credentials
-            if (this.Credentials != null)
+            if (Credentials != null)
             {
                 cancellationToken.ThrowIfCancellationRequested();
-                await this.Credentials.ProcessHttpRequestAsync(_httpRequest, cancellationToken).ConfigureAwait(false);
+                await Credentials.ProcessHttpRequestAsync(_httpRequest, cancellationToken).ConfigureAwait(false);
             }
             // Send Request
             if (_shouldTrace)
@@ -437,7 +431,7 @@ namespace SINners
                 ServiceClientTracing.SendRequest(_invocationId, _httpRequest);
             }
             cancellationToken.ThrowIfCancellationRequested();
-            _httpResponse = await this.HttpClient.SendAsync(_httpRequest, cancellationToken).ConfigureAwait(false);
+            _httpResponse = await HttpClient.SendAsync(_httpRequest, cancellationToken).ConfigureAwait(false);
             if (_shouldTrace)
             {
                 ServiceClientTracing.ReceiveResponse(_invocationId, _httpResponse);
@@ -447,7 +441,7 @@ namespace SINners
             string _responseContent = null;
             if ((int)_statusCode != 200 && (int)_statusCode != 401 && (int)_statusCode != 403 && (int)_statusCode != 400)
             {
-                var ex = new HttpOperationException(string.Format("Operation returned an invalid status code '{0}'", _statusCode));
+                HttpOperationException ex = new HttpOperationException(string.Format("Operation returned an invalid status code '{0}'", _statusCode));
                 _responseContent = await _httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
                 ex.Request = new HttpRequestMessageWrapper(_httpRequest, _requestContent);
                 ex.Response = new HttpResponseMessageWrapper(_httpResponse, _responseContent);
@@ -463,7 +457,7 @@ namespace SINners
                 throw ex;
             }
             // Create Result
-            var _result = new HttpOperationResponse<ResultAccountGetRoles>
+            HttpOperationResponse<ResultAccountGetRoles> _result = new HttpOperationResponse<ResultAccountGetRoles>
             {
                 Request = _httpRequest,
                 Response = _httpResponse
@@ -474,7 +468,7 @@ namespace SINners
                 _responseContent = await _httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
                 try
                 {
-                    _result.Body = SafeJsonConvert.DeserializeObject<ResultAccountGetRoles>(_responseContent, this.DeserializationSettings);
+                    _result.Body = SafeJsonConvert.DeserializeObject<ResultAccountGetRoles>(_responseContent, DeserializationSettings);
                 }
                 catch (JsonException ex)
                 {
@@ -520,7 +514,7 @@ namespace SINners
                 ServiceClientTracing.Enter(_invocationId, this, "GetUserByEmail", tracingParameters);
             }
             // Construct URL
-            string _baseUrl = this.BaseUri.AbsoluteUri;
+            string _baseUrl = BaseUri.AbsoluteUri;
             string _url = new Uri(new Uri(_baseUrl + (_baseUrl.EndsWith("/") ? "" : "/")), "api/v1/Account/GetUserByEmail").ToString();
             List<string> _queryParameters = new List<string>();
             if (email != null)
@@ -552,10 +546,10 @@ namespace SINners
             // Serialize Request
             string _requestContent = null;
             // Set Credentials
-            if (this.Credentials != null)
+            if (Credentials != null)
             {
                 cancellationToken.ThrowIfCancellationRequested();
-                await this.Credentials.ProcessHttpRequestAsync(_httpRequest, cancellationToken).ConfigureAwait(false);
+                await Credentials.ProcessHttpRequestAsync(_httpRequest, cancellationToken).ConfigureAwait(false);
             }
             // Send Request
             if (_shouldTrace)
@@ -563,7 +557,7 @@ namespace SINners
                 ServiceClientTracing.SendRequest(_invocationId, _httpRequest);
             }
             cancellationToken.ThrowIfCancellationRequested();
-            _httpResponse = await this.HttpClient.SendAsync(_httpRequest, cancellationToken).ConfigureAwait(false);
+            _httpResponse = await HttpClient.SendAsync(_httpRequest, cancellationToken).ConfigureAwait(false);
             if (_shouldTrace)
             {
                 ServiceClientTracing.ReceiveResponse(_invocationId, _httpResponse);
@@ -573,7 +567,7 @@ namespace SINners
             string _responseContent = null;
             if ((int)_statusCode != 200 && (int)_statusCode != 401 && (int)_statusCode != 400)
             {
-                var ex = new HttpOperationException(string.Format("Operation returned an invalid status code '{0}'", _statusCode));
+                HttpOperationException ex = new HttpOperationException(string.Format("Operation returned an invalid status code '{0}'", _statusCode));
                 _responseContent = await _httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
                 ex.Request = new HttpRequestMessageWrapper(_httpRequest, _requestContent);
                 ex.Response = new HttpResponseMessageWrapper(_httpResponse, _responseContent);
@@ -589,7 +583,7 @@ namespace SINners
                 throw ex;
             }
             // Create Result
-            var _result = new HttpOperationResponse<ResultAccountGetUserByEmail>
+            HttpOperationResponse<ResultAccountGetUserByEmail> _result = new HttpOperationResponse<ResultAccountGetUserByEmail>
             {
                 Request = _httpRequest,
                 Response = _httpResponse
@@ -600,7 +594,7 @@ namespace SINners
                 _responseContent = await _httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
                 try
                 {
-                    _result.Body = SafeJsonConvert.DeserializeObject<ResultAccountGetUserByEmail>(_responseContent, this.DeserializationSettings);
+                    _result.Body = SafeJsonConvert.DeserializeObject<ResultAccountGetUserByEmail>(_responseContent, DeserializationSettings);
                 }
                 catch (JsonException ex)
                 {
@@ -655,7 +649,7 @@ namespace SINners
                 ServiceClientTracing.Enter(_invocationId, this, "GetAddSqlDbUser", tracingParameters);
             }
             // Construct URL
-            string _baseUrl = this.BaseUri.AbsoluteUri;
+            string _baseUrl = BaseUri.AbsoluteUri;
             string _url = new Uri(new Uri(_baseUrl + (_baseUrl.EndsWith("/") ? "" : "/")), "api/v1/Account/GetAddSqlDbUser").ToString();
             List<string> _queryParameters = new List<string>();
             if (username != null)
@@ -699,10 +693,10 @@ namespace SINners
             // Serialize Request
             string _requestContent = null;
             // Set Credentials
-            if (this.Credentials != null)
+            if (Credentials != null)
             {
                 cancellationToken.ThrowIfCancellationRequested();
-                await this.Credentials.ProcessHttpRequestAsync(_httpRequest, cancellationToken).ConfigureAwait(false);
+                await Credentials.ProcessHttpRequestAsync(_httpRequest, cancellationToken).ConfigureAwait(false);
             }
             // Send Request
             if (_shouldTrace)
@@ -710,7 +704,7 @@ namespace SINners
                 ServiceClientTracing.SendRequest(_invocationId, _httpRequest);
             }
             cancellationToken.ThrowIfCancellationRequested();
-            _httpResponse = await this.HttpClient.SendAsync(_httpRequest, cancellationToken).ConfigureAwait(false);
+            _httpResponse = await HttpClient.SendAsync(_httpRequest, cancellationToken).ConfigureAwait(false);
             if (_shouldTrace)
             {
                 ServiceClientTracing.ReceiveResponse(_invocationId, _httpResponse);
@@ -720,7 +714,7 @@ namespace SINners
             string _responseContent = null;
             if ((int)_statusCode != 200 && (int)_statusCode != 409 && (int)_statusCode != 400)
             {
-                var ex = new HttpOperationException(string.Format("Operation returned an invalid status code '{0}'", _statusCode));
+                HttpOperationException ex = new HttpOperationException(string.Format("Operation returned an invalid status code '{0}'", _statusCode));
                 _responseContent = await _httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
                 ex.Request = new HttpRequestMessageWrapper(_httpRequest, _requestContent);
                 ex.Response = new HttpResponseMessageWrapper(_httpResponse, _responseContent);
@@ -736,7 +730,7 @@ namespace SINners
                 throw ex;
             }
             // Create Result
-            var _result = new HttpOperationResponse<string>
+            HttpOperationResponse<string> _result = new HttpOperationResponse<string>
             {
                 Request = _httpRequest,
                 Response = _httpResponse
@@ -747,7 +741,7 @@ namespace SINners
                 _responseContent = await _httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
                 try
                 {
-                    _result.Body = SafeJsonConvert.DeserializeObject<string>(_responseContent, this.DeserializationSettings);
+                    _result.Body = SafeJsonConvert.DeserializeObject<string>(_responseContent, DeserializationSettings);
                 }
                 catch (JsonException ex)
                 {
@@ -796,7 +790,7 @@ namespace SINners
                 ServiceClientTracing.Enter(_invocationId, this, "PostSetUserRole", tracingParameters);
             }
             // Construct URL
-            string _baseUrl = this.BaseUri.AbsoluteUri;
+            string _baseUrl = BaseUri.AbsoluteUri;
             string _url = new Uri(new Uri(_baseUrl + (_baseUrl.EndsWith("/") ? "" : "/")), "api/v1/Account/PostSetUserRole").ToString();
             List<string> _queryParameters = new List<string>();
             if (email != null)
@@ -832,10 +826,10 @@ namespace SINners
             // Serialize Request
             string _requestContent = null;
             // Set Credentials
-            if (this.Credentials != null)
+            if (Credentials != null)
             {
                 cancellationToken.ThrowIfCancellationRequested();
-                await this.Credentials.ProcessHttpRequestAsync(_httpRequest, cancellationToken).ConfigureAwait(false);
+                await Credentials.ProcessHttpRequestAsync(_httpRequest, cancellationToken).ConfigureAwait(false);
             }
             // Send Request
             if (_shouldTrace)
@@ -843,7 +837,7 @@ namespace SINners
                 ServiceClientTracing.SendRequest(_invocationId, _httpRequest);
             }
             cancellationToken.ThrowIfCancellationRequested();
-            _httpResponse = await this.HttpClient.SendAsync(_httpRequest, cancellationToken).ConfigureAwait(false);
+            _httpResponse = await HttpClient.SendAsync(_httpRequest, cancellationToken).ConfigureAwait(false);
             if (_shouldTrace)
             {
                 ServiceClientTracing.ReceiveResponse(_invocationId, _httpResponse);
@@ -853,7 +847,7 @@ namespace SINners
             string _responseContent = null;
             if ((int)_statusCode != 200 && (int)_statusCode != 401 && (int)_statusCode != 400)
             {
-                var ex = new HttpOperationException(string.Format("Operation returned an invalid status code '{0}'", _statusCode));
+                HttpOperationException ex = new HttpOperationException(string.Format("Operation returned an invalid status code '{0}'", _statusCode));
                 _responseContent = await _httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
                 ex.Request = new HttpRequestMessageWrapper(_httpRequest, _requestContent);
                 ex.Response = new HttpResponseMessageWrapper(_httpResponse, _responseContent);
@@ -869,7 +863,7 @@ namespace SINners
                 throw ex;
             }
             // Create Result
-            var _result = new HttpOperationResponse<ApplicationUser>
+            HttpOperationResponse<ApplicationUser> _result = new HttpOperationResponse<ApplicationUser>
             {
                 Request = _httpRequest,
                 Response = _httpResponse
@@ -880,7 +874,7 @@ namespace SINners
                 _responseContent = await _httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
                 try
                 {
-                    _result.Body = SafeJsonConvert.DeserializeObject<ApplicationUser>(_responseContent, this.DeserializationSettings);
+                    _result.Body = SafeJsonConvert.DeserializeObject<ApplicationUser>(_responseContent, DeserializationSettings);
                 }
                 catch (JsonException ex)
                 {
@@ -923,7 +917,7 @@ namespace SINners
                 ServiceClientTracing.Enter(_invocationId, this, "GetUserByAuthorization", tracingParameters);
             }
             // Construct URL
-            string _baseUrl = this.BaseUri.AbsoluteUri;
+            string _baseUrl = BaseUri.AbsoluteUri;
             string _url = new Uri(new Uri(_baseUrl + (_baseUrl.EndsWith("/") ? "" : "/")), "api/v1/Account/GetUserByAuthorization").ToString();
             // Create HTTP transport objects
             HttpRequestMessage _httpRequest = new HttpRequestMessage();
@@ -946,10 +940,10 @@ namespace SINners
             // Serialize Request
             string _requestContent = null;
             // Set Credentials
-            if (this.Credentials != null)
+            if (Credentials != null)
             {
                 cancellationToken.ThrowIfCancellationRequested();
-                await this.Credentials.ProcessHttpRequestAsync(_httpRequest, cancellationToken).ConfigureAwait(false);
+                await Credentials.ProcessHttpRequestAsync(_httpRequest, cancellationToken).ConfigureAwait(false);
             }
             // Send Request
             if (_shouldTrace)
@@ -957,7 +951,7 @@ namespace SINners
                 ServiceClientTracing.SendRequest(_invocationId, _httpRequest);
             }
             cancellationToken.ThrowIfCancellationRequested();
-            _httpResponse = await this.HttpClient.SendAsync(_httpRequest, cancellationToken).ConfigureAwait(false);
+            _httpResponse = await HttpClient.SendAsync(_httpRequest, cancellationToken).ConfigureAwait(false);
             if (_shouldTrace)
             {
                 ServiceClientTracing.ReceiveResponse(_invocationId, _httpResponse);
@@ -967,7 +961,7 @@ namespace SINners
             string _responseContent = null;
             if ((int)_statusCode != 200 && (int)_statusCode != 401 && (int)_statusCode != 400)
             {
-                var ex = new HttpOperationException(string.Format("Operation returned an invalid status code '{0}'", _statusCode));
+                HttpOperationException ex = new HttpOperationException(string.Format("Operation returned an invalid status code '{0}'", _statusCode));
                 _responseContent = await _httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
                 ex.Request = new HttpRequestMessageWrapper(_httpRequest, _requestContent);
                 ex.Response = new HttpResponseMessageWrapper(_httpResponse, _responseContent);
@@ -983,7 +977,7 @@ namespace SINners
                 throw ex;
             }
             // Create Result
-            var _result = new HttpOperationResponse<ResultAccountGetUserByAuthorization>
+            HttpOperationResponse<ResultAccountGetUserByAuthorization> _result = new HttpOperationResponse<ResultAccountGetUserByAuthorization>
             {
                 Request = _httpRequest,
                 Response = _httpResponse
@@ -994,7 +988,7 @@ namespace SINners
                 _responseContent = await _httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
                 try
                 {
-                    _result.Body = SafeJsonConvert.DeserializeObject<ResultAccountGetUserByAuthorization>(_responseContent, this.DeserializationSettings);
+                    _result.Body = SafeJsonConvert.DeserializeObject<ResultAccountGetUserByAuthorization>(_responseContent, DeserializationSettings);
                 }
                 catch (JsonException ex)
                 {
@@ -1037,7 +1031,7 @@ namespace SINners
                 ServiceClientTracing.Enter(_invocationId, this, "GetDeleteAllSINnersDb", tracingParameters);
             }
             // Construct URL
-            string _baseUrl = this.BaseUri.AbsoluteUri;
+            string _baseUrl = BaseUri.AbsoluteUri;
             string _url = new Uri(new Uri(_baseUrl + (_baseUrl.EndsWith("/") ? "" : "/")), "api/v1/Account/GetDeleteAllSINnersDb").ToString();
             // Create HTTP transport objects
             HttpRequestMessage _httpRequest = new HttpRequestMessage();
@@ -1060,10 +1054,10 @@ namespace SINners
             // Serialize Request
             string _requestContent = null;
             // Set Credentials
-            if (this.Credentials != null)
+            if (Credentials != null)
             {
                 cancellationToken.ThrowIfCancellationRequested();
-                await this.Credentials.ProcessHttpRequestAsync(_httpRequest, cancellationToken).ConfigureAwait(false);
+                await Credentials.ProcessHttpRequestAsync(_httpRequest, cancellationToken).ConfigureAwait(false);
             }
             // Send Request
             if (_shouldTrace)
@@ -1071,7 +1065,7 @@ namespace SINners
                 ServiceClientTracing.SendRequest(_invocationId, _httpRequest);
             }
             cancellationToken.ThrowIfCancellationRequested();
-            _httpResponse = await this.HttpClient.SendAsync(_httpRequest, cancellationToken).ConfigureAwait(false);
+            _httpResponse = await HttpClient.SendAsync(_httpRequest, cancellationToken).ConfigureAwait(false);
             if (_shouldTrace)
             {
                 ServiceClientTracing.ReceiveResponse(_invocationId, _httpResponse);
@@ -1081,7 +1075,7 @@ namespace SINners
             string _responseContent = null;
             if ((int)_statusCode != 200 && (int)_statusCode != 401)
             {
-                var ex = new HttpOperationException(string.Format("Operation returned an invalid status code '{0}'", _statusCode));
+                HttpOperationException ex = new HttpOperationException(string.Format("Operation returned an invalid status code '{0}'", _statusCode));
                 _responseContent = await _httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
                 ex.Request = new HttpRequestMessageWrapper(_httpRequest, _requestContent);
                 ex.Response = new HttpResponseMessageWrapper(_httpResponse, _responseContent);
@@ -1097,7 +1091,7 @@ namespace SINners
                 throw ex;
             }
             // Create Result
-            var _result = new HttpOperationResponse<string>
+            HttpOperationResponse<string> _result = new HttpOperationResponse<string>
             {
                 Request = _httpRequest,
                 Response = _httpResponse
@@ -1108,7 +1102,7 @@ namespace SINners
                 _responseContent = await _httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
                 try
                 {
-                    _result.Body = SafeJsonConvert.DeserializeObject<string>(_responseContent, this.DeserializationSettings);
+                    _result.Body = SafeJsonConvert.DeserializeObject<string>(_responseContent, DeserializationSettings);
                 }
                 catch (JsonException ex)
                 {
@@ -1151,7 +1145,7 @@ namespace SINners
                 ServiceClientTracing.Enter(_invocationId, this, "GetDeleteAndRecreateDb", tracingParameters);
             }
             // Construct URL
-            string _baseUrl = this.BaseUri.AbsoluteUri;
+            string _baseUrl = BaseUri.AbsoluteUri;
             string _url = new Uri(new Uri(_baseUrl + (_baseUrl.EndsWith("/") ? "" : "/")), "api/v1/Account/GetDeleteAndRecreateDb").ToString();
             // Create HTTP transport objects
             HttpRequestMessage _httpRequest = new HttpRequestMessage();
@@ -1174,10 +1168,10 @@ namespace SINners
             // Serialize Request
             string _requestContent = null;
             // Set Credentials
-            if (this.Credentials != null)
+            if (Credentials != null)
             {
                 cancellationToken.ThrowIfCancellationRequested();
-                await this.Credentials.ProcessHttpRequestAsync(_httpRequest, cancellationToken).ConfigureAwait(false);
+                await Credentials.ProcessHttpRequestAsync(_httpRequest, cancellationToken).ConfigureAwait(false);
             }
             // Send Request
             if (_shouldTrace)
@@ -1185,7 +1179,7 @@ namespace SINners
                 ServiceClientTracing.SendRequest(_invocationId, _httpRequest);
             }
             cancellationToken.ThrowIfCancellationRequested();
-            _httpResponse = await this.HttpClient.SendAsync(_httpRequest, cancellationToken).ConfigureAwait(false);
+            _httpResponse = await HttpClient.SendAsync(_httpRequest, cancellationToken).ConfigureAwait(false);
             if (_shouldTrace)
             {
                 ServiceClientTracing.ReceiveResponse(_invocationId, _httpResponse);
@@ -1195,7 +1189,7 @@ namespace SINners
             string _responseContent = null;
             if ((int)_statusCode != 200 && (int)_statusCode != 401)
             {
-                var ex = new HttpOperationException(string.Format("Operation returned an invalid status code '{0}'", _statusCode));
+                HttpOperationException ex = new HttpOperationException(string.Format("Operation returned an invalid status code '{0}'", _statusCode));
                 _responseContent = await _httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
                 ex.Request = new HttpRequestMessageWrapper(_httpRequest, _requestContent);
                 ex.Response = new HttpResponseMessageWrapper(_httpResponse, _responseContent);
@@ -1211,7 +1205,7 @@ namespace SINners
                 throw ex;
             }
             // Create Result
-            var _result = new HttpOperationResponse<string>
+            HttpOperationResponse<string> _result = new HttpOperationResponse<string>
             {
                 Request = _httpRequest,
                 Response = _httpResponse
@@ -1222,7 +1216,7 @@ namespace SINners
                 _responseContent = await _httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
                 try
                 {
-                    _result.Body = SafeJsonConvert.DeserializeObject<string>(_responseContent, this.DeserializationSettings);
+                    _result.Body = SafeJsonConvert.DeserializeObject<string>(_responseContent, DeserializationSettings);
                 }
                 catch (JsonException ex)
                 {
@@ -1268,7 +1262,7 @@ namespace SINners
                 ServiceClientTracing.Enter(_invocationId, this, "GetSINnersByAuthorization", tracingParameters);
             }
             // Construct URL
-            string _baseUrl = this.BaseUri.AbsoluteUri;
+            string _baseUrl = BaseUri.AbsoluteUri;
             string _url = new Uri(new Uri(_baseUrl + (_baseUrl.EndsWith("/") ? "" : "/")), "api/v1/Account/GetSINnersByAuthorization").ToString();
             // Create HTTP transport objects
             HttpRequestMessage _httpRequest = new HttpRequestMessage();
@@ -1291,10 +1285,10 @@ namespace SINners
             // Serialize Request
             string _requestContent = null;
             // Set Credentials
-            if (this.Credentials != null)
+            if (Credentials != null)
             {
                 cancellationToken.ThrowIfCancellationRequested();
-                await this.Credentials.ProcessHttpRequestAsync(_httpRequest, cancellationToken).ConfigureAwait(false);
+                await Credentials.ProcessHttpRequestAsync(_httpRequest, cancellationToken).ConfigureAwait(false);
             }
             // Send Request
             if (_shouldTrace)
@@ -1302,7 +1296,7 @@ namespace SINners
                 ServiceClientTracing.SendRequest(_invocationId, _httpRequest);
             }
             cancellationToken.ThrowIfCancellationRequested();
-            _httpResponse = await this.HttpClient.SendAsync(_httpRequest, cancellationToken).ConfigureAwait(false);
+            _httpResponse = await HttpClient.SendAsync(_httpRequest, cancellationToken).ConfigureAwait(false);
             if (_shouldTrace)
             {
                 ServiceClientTracing.ReceiveResponse(_invocationId, _httpResponse);
@@ -1312,7 +1306,7 @@ namespace SINners
             string _responseContent = null;
             if ((int)_statusCode != 200 && (int)_statusCode != 400)
             {
-                var ex = new HttpOperationException(string.Format("Operation returned an invalid status code '{0}'", _statusCode));
+                HttpOperationException ex = new HttpOperationException(string.Format("Operation returned an invalid status code '{0}'", _statusCode));
                 _responseContent = await _httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
                 ex.Request = new HttpRequestMessageWrapper(_httpRequest, _requestContent);
                 ex.Response = new HttpResponseMessageWrapper(_httpResponse, _responseContent);
@@ -1328,7 +1322,7 @@ namespace SINners
                 throw ex;
             }
             // Create Result
-            var _result = new HttpOperationResponse<ResultAccountGetSinnersByAuthorization>
+            HttpOperationResponse<ResultAccountGetSinnersByAuthorization> _result = new HttpOperationResponse<ResultAccountGetSinnersByAuthorization>
             {
                 Request = _httpRequest,
                 Response = _httpResponse
@@ -1339,7 +1333,7 @@ namespace SINners
                 _responseContent = await _httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
                 try
                 {
-                    _result.Body = SafeJsonConvert.DeserializeObject<ResultAccountGetSinnersByAuthorization>(_responseContent, this.DeserializationSettings);
+                    _result.Body = SafeJsonConvert.DeserializeObject<ResultAccountGetSinnersByAuthorization>(_responseContent, DeserializationSettings);
                 }
                 catch (JsonException ex)
                 {
@@ -1382,7 +1376,7 @@ namespace SINners
                 ServiceClientTracing.Enter(_invocationId, this, "GetSinnerAsAdmin", tracingParameters);
             }
             // Construct URL
-            string _baseUrl = this.BaseUri.AbsoluteUri;
+            string _baseUrl = BaseUri.AbsoluteUri;
             string _url = new Uri(new Uri(_baseUrl + (_baseUrl.EndsWith("/") ? "" : "/")), "api/v1/Account/GetSinnerAsAdmin").ToString();
             // Create HTTP transport objects
             HttpRequestMessage _httpRequest = new HttpRequestMessage();
@@ -1405,10 +1399,10 @@ namespace SINners
             // Serialize Request
             string _requestContent = null;
             // Set Credentials
-            if (this.Credentials != null)
+            if (Credentials != null)
             {
                 cancellationToken.ThrowIfCancellationRequested();
-                await this.Credentials.ProcessHttpRequestAsync(_httpRequest, cancellationToken).ConfigureAwait(false);
+                await Credentials.ProcessHttpRequestAsync(_httpRequest, cancellationToken).ConfigureAwait(false);
             }
             // Send Request
             if (_shouldTrace)
@@ -1416,7 +1410,7 @@ namespace SINners
                 ServiceClientTracing.SendRequest(_invocationId, _httpRequest);
             }
             cancellationToken.ThrowIfCancellationRequested();
-            _httpResponse = await this.HttpClient.SendAsync(_httpRequest, cancellationToken).ConfigureAwait(false);
+            _httpResponse = await HttpClient.SendAsync(_httpRequest, cancellationToken).ConfigureAwait(false);
             if (_shouldTrace)
             {
                 ServiceClientTracing.ReceiveResponse(_invocationId, _httpResponse);
@@ -1426,7 +1420,7 @@ namespace SINners
             string _responseContent = null;
             if ((int)_statusCode != 200 && (int)_statusCode != 404 && (int)_statusCode != 204 && (int)_statusCode != 400)
             {
-                var ex = new HttpOperationException(string.Format("Operation returned an invalid status code '{0}'", _statusCode));
+                HttpOperationException ex = new HttpOperationException(string.Format("Operation returned an invalid status code '{0}'", _statusCode));
                 _responseContent = await _httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
                 ex.Request = new HttpRequestMessageWrapper(_httpRequest, _requestContent);
                 ex.Response = new HttpResponseMessageWrapper(_httpResponse, _responseContent);
@@ -1442,7 +1436,7 @@ namespace SINners
                 throw ex;
             }
             // Create Result
-            var _result = new HttpOperationResponse<ResultGroupGetSearchGroups>
+            HttpOperationResponse<ResultGroupGetSearchGroups> _result = new HttpOperationResponse<ResultGroupGetSearchGroups>
             {
                 Request = _httpRequest,
                 Response = _httpResponse
@@ -1453,7 +1447,7 @@ namespace SINners
                 _responseContent = await _httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
                 try
                 {
-                    _result.Body = SafeJsonConvert.DeserializeObject<ResultGroupGetSearchGroups>(_responseContent, this.DeserializationSettings);
+                    _result.Body = SafeJsonConvert.DeserializeObject<ResultGroupGetSearchGroups>(_responseContent, DeserializationSettings);
                 }
                 catch (JsonException ex)
                 {
@@ -1496,7 +1490,7 @@ namespace SINners
                 ServiceClientTracing.Enter(_invocationId, this, "Logout", tracingParameters);
             }
             // Construct URL
-            string _baseUrl = this.BaseUri.AbsoluteUri;
+            string _baseUrl = BaseUri.AbsoluteUri;
             string _url = new Uri(new Uri(_baseUrl + (_baseUrl.EndsWith("/") ? "" : "/")), "api/v1/Account/Logout").ToString();
             // Create HTTP transport objects
             HttpRequestMessage _httpRequest = new HttpRequestMessage();
@@ -1519,10 +1513,10 @@ namespace SINners
             // Serialize Request
             string _requestContent = null;
             // Set Credentials
-            if (this.Credentials != null)
+            if (Credentials != null)
             {
                 cancellationToken.ThrowIfCancellationRequested();
-                await this.Credentials.ProcessHttpRequestAsync(_httpRequest, cancellationToken).ConfigureAwait(false);
+                await Credentials.ProcessHttpRequestAsync(_httpRequest, cancellationToken).ConfigureAwait(false);
             }
             // Send Request
             if (_shouldTrace)
@@ -1530,7 +1524,7 @@ namespace SINners
                 ServiceClientTracing.SendRequest(_invocationId, _httpRequest);
             }
             cancellationToken.ThrowIfCancellationRequested();
-            _httpResponse = await this.HttpClient.SendAsync(_httpRequest, cancellationToken).ConfigureAwait(false);
+            _httpResponse = await HttpClient.SendAsync(_httpRequest, cancellationToken).ConfigureAwait(false);
             if (_shouldTrace)
             {
                 ServiceClientTracing.ReceiveResponse(_invocationId, _httpResponse);
@@ -1540,7 +1534,7 @@ namespace SINners
             string _responseContent = null;
             if ((int)_statusCode != 200 && (int)_statusCode != 401 && (int)_statusCode != 400)
             {
-                var ex = new HttpOperationException(string.Format("Operation returned an invalid status code '{0}'", _statusCode));
+                HttpOperationException ex = new HttpOperationException(string.Format("Operation returned an invalid status code '{0}'", _statusCode));
                 _responseContent = await _httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
                 ex.Request = new HttpRequestMessageWrapper(_httpRequest, _requestContent);
                 ex.Response = new HttpResponseMessageWrapper(_httpResponse, _responseContent);
@@ -1556,7 +1550,7 @@ namespace SINners
                 throw ex;
             }
             // Create Result
-            var _result = new HttpOperationResponse<bool?>
+            HttpOperationResponse<bool?> _result = new HttpOperationResponse<bool?>
             {
                 Request = _httpRequest,
                 Response = _httpResponse
@@ -1567,7 +1561,7 @@ namespace SINners
                 _responseContent = await _httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
                 try
                 {
-                    _result.Body = SafeJsonConvert.DeserializeObject<bool?>(_responseContent, this.DeserializationSettings);
+                    _result.Body = SafeJsonConvert.DeserializeObject<bool?>(_responseContent, DeserializationSettings);
                 }
                 catch (JsonException ex)
                 {
@@ -1620,7 +1614,7 @@ namespace SINners
                 ServiceClientTracing.Enter(_invocationId, this, "Open", tracingParameters);
             }
             // Construct URL
-            string _baseUrl = this.BaseUri.AbsoluteUri;
+            string _baseUrl = BaseUri.AbsoluteUri;
             string _url = new Uri(new Uri(_baseUrl + (_baseUrl.EndsWith("/") ? "" : "/")), "Open/{Hash}").ToString();
             _url = _url.Replace("{Hash}", Uri.EscapeDataString(hash));
             List<string> _queryParameters = new List<string>();
@@ -1653,10 +1647,10 @@ namespace SINners
             // Serialize Request
             string _requestContent = null;
             // Set Credentials
-            if (this.Credentials != null)
+            if (Credentials != null)
             {
                 cancellationToken.ThrowIfCancellationRequested();
-                await this.Credentials.ProcessHttpRequestAsync(_httpRequest, cancellationToken).ConfigureAwait(false);
+                await Credentials.ProcessHttpRequestAsync(_httpRequest, cancellationToken).ConfigureAwait(false);
             }
             // Send Request
             if (_shouldTrace)
@@ -1664,7 +1658,7 @@ namespace SINners
                 ServiceClientTracing.SendRequest(_invocationId, _httpRequest);
             }
             cancellationToken.ThrowIfCancellationRequested();
-            _httpResponse = await this.HttpClient.SendAsync(_httpRequest, cancellationToken).ConfigureAwait(false);
+            _httpResponse = await HttpClient.SendAsync(_httpRequest, cancellationToken).ConfigureAwait(false);
             if (_shouldTrace)
             {
                 ServiceClientTracing.ReceiveResponse(_invocationId, _httpResponse);
@@ -1674,7 +1668,7 @@ namespace SINners
             string _responseContent = null;
             if ((int)_statusCode != 302 && (int)_statusCode != 404)
             {
-                var ex = new HttpOperationException(string.Format("Operation returned an invalid status code '{0}'", _statusCode));
+                HttpOperationException ex = new HttpOperationException(string.Format("Operation returned an invalid status code '{0}'", _statusCode));
                 _responseContent = await _httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
                 ex.Request = new HttpRequestMessageWrapper(_httpRequest, _requestContent);
                 ex.Response = new HttpResponseMessageWrapper(_httpResponse, _responseContent);
@@ -1690,7 +1684,7 @@ namespace SINners
                 throw ex;
             }
             // Create Result
-            var _result = new HttpOperationResponse
+            HttpOperationResponse _result = new HttpOperationResponse
             {
                 Request = _httpRequest,
                 Response = _httpResponse
@@ -1726,7 +1720,7 @@ namespace SINners
                 ServiceClientTracing.Enter(_invocationId, this, "GetVersion", tracingParameters);
             }
             // Construct URL
-            string _baseUrl = this.BaseUri.AbsoluteUri;
+            string _baseUrl = BaseUri.AbsoluteUri;
             string _url = new Uri(new Uri(_baseUrl + (_baseUrl.EndsWith("/") ? "" : "/")), "api/v1/ChummerHelper/GetVersion").ToString();
             // Create HTTP transport objects
             HttpRequestMessage _httpRequest = new HttpRequestMessage();
@@ -1749,10 +1743,10 @@ namespace SINners
             // Serialize Request
             string _requestContent = null;
             // Set Credentials
-            if (this.Credentials != null)
+            if (Credentials != null)
             {
                 cancellationToken.ThrowIfCancellationRequested();
-                await this.Credentials.ProcessHttpRequestAsync(_httpRequest, cancellationToken).ConfigureAwait(false);
+                await Credentials.ProcessHttpRequestAsync(_httpRequest, cancellationToken).ConfigureAwait(false);
             }
             // Send Request
             if (_shouldTrace)
@@ -1760,7 +1754,7 @@ namespace SINners
                 ServiceClientTracing.SendRequest(_invocationId, _httpRequest);
             }
             cancellationToken.ThrowIfCancellationRequested();
-            _httpResponse = await this.HttpClient.SendAsync(_httpRequest, cancellationToken).ConfigureAwait(false);
+            _httpResponse = await HttpClient.SendAsync(_httpRequest, cancellationToken).ConfigureAwait(false);
             if (_shouldTrace)
             {
                 ServiceClientTracing.ReceiveResponse(_invocationId, _httpResponse);
@@ -1770,7 +1764,7 @@ namespace SINners
             string _responseContent = null;
             if ((int)_statusCode != 200 && (int)_statusCode != 403)
             {
-                var ex = new HttpOperationException(string.Format("Operation returned an invalid status code '{0}'", _statusCode));
+                HttpOperationException ex = new HttpOperationException(string.Format("Operation returned an invalid status code '{0}'", _statusCode));
                 _responseContent = await _httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
                 ex.Request = new HttpRequestMessageWrapper(_httpRequest, _requestContent);
                 ex.Response = new HttpResponseMessageWrapper(_httpResponse, _responseContent);
@@ -1786,7 +1780,7 @@ namespace SINners
                 throw ex;
             }
             // Create Result
-            var _result = new HttpOperationResponse<ChummerHubVersion>
+            HttpOperationResponse<ChummerHubVersion> _result = new HttpOperationResponse<ChummerHubVersion>
             {
                 Request = _httpRequest,
                 Response = _httpResponse
@@ -1797,7 +1791,7 @@ namespace SINners
                 _responseContent = await _httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
                 try
                 {
-                    _result.Body = SafeJsonConvert.DeserializeObject<ChummerHubVersion>(_responseContent, this.DeserializationSettings);
+                    _result.Body = SafeJsonConvert.DeserializeObject<ChummerHubVersion>(_responseContent, DeserializationSettings);
                 }
                 catch (JsonException ex)
                 {
@@ -1846,9 +1840,9 @@ namespace SINners
                 ServiceClientTracing.Enter(_invocationId, this, "GetDownloadFile", tracingParameters);
             }
             // Construct URL
-            string _baseUrl = this.BaseUri.AbsoluteUri;
+            string _baseUrl = BaseUri.AbsoluteUri;
             string _url = new Uri(new Uri(_baseUrl + (_baseUrl.EndsWith("/") ? "" : "/")), "api/v1/SIN/GetDownloadFile/{sinnerid}").ToString();
-            _url = _url.Replace("{sinnerid}", Uri.EscapeDataString(SafeJsonConvert.SerializeObject(sinnerid, this.SerializationSettings).Trim('"')));
+            _url = _url.Replace("{sinnerid}", Uri.EscapeDataString(SafeJsonConvert.SerializeObject(sinnerid, SerializationSettings).Trim('"')));
             // Create HTTP transport objects
             HttpRequestMessage _httpRequest = new HttpRequestMessage();
             HttpResponseMessage _httpResponse = null;
@@ -1870,10 +1864,10 @@ namespace SINners
             // Serialize Request
             string _requestContent = null;
             // Set Credentials
-            if (this.Credentials != null)
+            if (Credentials != null)
             {
                 cancellationToken.ThrowIfCancellationRequested();
-                await this.Credentials.ProcessHttpRequestAsync(_httpRequest, cancellationToken).ConfigureAwait(false);
+                await Credentials.ProcessHttpRequestAsync(_httpRequest, cancellationToken).ConfigureAwait(false);
             }
             // Send Request
             if (_shouldTrace)
@@ -1881,7 +1875,7 @@ namespace SINners
                 ServiceClientTracing.SendRequest(_invocationId, _httpRequest);
             }
             cancellationToken.ThrowIfCancellationRequested();
-            _httpResponse = await this.HttpClient.SendAsync(_httpRequest, HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
+            _httpResponse = await HttpClient.SendAsync(_httpRequest, HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
             if (_shouldTrace)
             {
                 ServiceClientTracing.ReceiveResponse(_invocationId, _httpResponse);
@@ -1891,7 +1885,7 @@ namespace SINners
             string _responseContent = null;
             if ((int)_statusCode != 404 && (int)_statusCode != 400 && (int)_statusCode != 200)
             {
-                var ex = new HttpOperationException(string.Format("Operation returned an invalid status code '{0}'", _statusCode));
+                HttpOperationException ex = new HttpOperationException(string.Format("Operation returned an invalid status code '{0}'", _statusCode));
                 _responseContent = await _httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
                 ex.Request = new HttpRequestMessageWrapper(_httpRequest, _requestContent);
                 ex.Response = new HttpResponseMessageWrapper(_httpResponse, _responseContent);
@@ -1907,7 +1901,7 @@ namespace SINners
                 throw ex;
             }
             // Create Result
-            var _result = new HttpOperationResponse<System.IO.Stream>
+            HttpOperationResponse<System.IO.Stream> _result = new HttpOperationResponse<System.IO.Stream>
             {
                 Request = _httpRequest,
                 Response = _httpResponse
@@ -1951,9 +1945,9 @@ namespace SINners
                 ServiceClientTracing.Enter(_invocationId, this, "GetSINnerGroupFromSINerById", tracingParameters);
             }
             // Construct URL
-            string _baseUrl = this.BaseUri.AbsoluteUri;
+            string _baseUrl = BaseUri.AbsoluteUri;
             string _url = new Uri(new Uri(_baseUrl + (_baseUrl.EndsWith("/") ? "" : "/")), "api/v1/SIN/GetSINnerGroupFromSINerById/{id}").ToString();
-            _url = _url.Replace("{id}", Uri.EscapeDataString(SafeJsonConvert.SerializeObject(id, this.SerializationSettings).Trim('"')));
+            _url = _url.Replace("{id}", Uri.EscapeDataString(SafeJsonConvert.SerializeObject(id, SerializationSettings).Trim('"')));
             // Create HTTP transport objects
             HttpRequestMessage _httpRequest = new HttpRequestMessage();
             HttpResponseMessage _httpResponse = null;
@@ -1975,10 +1969,10 @@ namespace SINners
             // Serialize Request
             string _requestContent = null;
             // Set Credentials
-            if (this.Credentials != null)
+            if (Credentials != null)
             {
                 cancellationToken.ThrowIfCancellationRequested();
-                await this.Credentials.ProcessHttpRequestAsync(_httpRequest, cancellationToken).ConfigureAwait(false);
+                await Credentials.ProcessHttpRequestAsync(_httpRequest, cancellationToken).ConfigureAwait(false);
             }
             // Send Request
             if (_shouldTrace)
@@ -1986,7 +1980,7 @@ namespace SINners
                 ServiceClientTracing.SendRequest(_invocationId, _httpRequest);
             }
             cancellationToken.ThrowIfCancellationRequested();
-            _httpResponse = await this.HttpClient.SendAsync(_httpRequest, cancellationToken).ConfigureAwait(false);
+            _httpResponse = await HttpClient.SendAsync(_httpRequest, cancellationToken).ConfigureAwait(false);
             if (_shouldTrace)
             {
                 ServiceClientTracing.ReceiveResponse(_invocationId, _httpResponse);
@@ -1996,7 +1990,7 @@ namespace SINners
             string _responseContent = null;
             if ((int)_statusCode != 200 && (int)_statusCode != 404 && (int)_statusCode != 204 && (int)_statusCode != 400)
             {
-                var ex = new HttpOperationException(string.Format("Operation returned an invalid status code '{0}'", _statusCode));
+                HttpOperationException ex = new HttpOperationException(string.Format("Operation returned an invalid status code '{0}'", _statusCode));
                 _responseContent = await _httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
                 ex.Request = new HttpRequestMessageWrapper(_httpRequest, _requestContent);
                 ex.Response = new HttpResponseMessageWrapper(_httpResponse, _responseContent);
@@ -2012,7 +2006,7 @@ namespace SINners
                 throw ex;
             }
             // Create Result
-            var _result = new HttpOperationResponse<ResultSinnerGetSINnerGroupFromSINerById>
+            HttpOperationResponse<ResultSinnerGetSINnerGroupFromSINerById> _result = new HttpOperationResponse<ResultSinnerGetSINnerGroupFromSINerById>
             {
                 Request = _httpRequest,
                 Response = _httpResponse
@@ -2023,7 +2017,7 @@ namespace SINners
                 _responseContent = await _httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
                 try
                 {
-                    _result.Body = SafeJsonConvert.DeserializeObject<ResultSinnerGetSINnerGroupFromSINerById>(_responseContent, this.DeserializationSettings);
+                    _result.Body = SafeJsonConvert.DeserializeObject<ResultSinnerGetSINnerGroupFromSINerById>(_responseContent, DeserializationSettings);
                 }
                 catch (JsonException ex)
                 {
@@ -2069,9 +2063,9 @@ namespace SINners
                 ServiceClientTracing.Enter(_invocationId, this, "GetSINById", tracingParameters);
             }
             // Construct URL
-            string _baseUrl = this.BaseUri.AbsoluteUri;
+            string _baseUrl = BaseUri.AbsoluteUri;
             string _url = new Uri(new Uri(_baseUrl + (_baseUrl.EndsWith("/") ? "" : "/")), "api/v1/SIN/GetSINById/{id}").ToString();
-            _url = _url.Replace("{id}", Uri.EscapeDataString(SafeJsonConvert.SerializeObject(id, this.SerializationSettings).Trim('"')));
+            _url = _url.Replace("{id}", Uri.EscapeDataString(SafeJsonConvert.SerializeObject(id, SerializationSettings).Trim('"')));
             // Create HTTP transport objects
             HttpRequestMessage _httpRequest = new HttpRequestMessage();
             HttpResponseMessage _httpResponse = null;
@@ -2093,10 +2087,10 @@ namespace SINners
             // Serialize Request
             string _requestContent = null;
             // Set Credentials
-            if (this.Credentials != null)
+            if (Credentials != null)
             {
                 cancellationToken.ThrowIfCancellationRequested();
-                await this.Credentials.ProcessHttpRequestAsync(_httpRequest, cancellationToken).ConfigureAwait(false);
+                await Credentials.ProcessHttpRequestAsync(_httpRequest, cancellationToken).ConfigureAwait(false);
             }
             // Send Request
             if (_shouldTrace)
@@ -2104,7 +2098,7 @@ namespace SINners
                 ServiceClientTracing.SendRequest(_invocationId, _httpRequest);
             }
             cancellationToken.ThrowIfCancellationRequested();
-            _httpResponse = await this.HttpClient.SendAsync(_httpRequest, cancellationToken).ConfigureAwait(false);
+            _httpResponse = await HttpClient.SendAsync(_httpRequest, cancellationToken).ConfigureAwait(false);
             if (_shouldTrace)
             {
                 ServiceClientTracing.ReceiveResponse(_invocationId, _httpResponse);
@@ -2114,7 +2108,7 @@ namespace SINners
             string _responseContent = null;
             if ((int)_statusCode != 200 && (int)_statusCode != 404 && (int)_statusCode != 400)
             {
-                var ex = new HttpOperationException(string.Format("Operation returned an invalid status code '{0}'", _statusCode));
+                HttpOperationException ex = new HttpOperationException(string.Format("Operation returned an invalid status code '{0}'", _statusCode));
                 _responseContent = await _httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
                 ex.Request = new HttpRequestMessageWrapper(_httpRequest, _requestContent);
                 ex.Response = new HttpResponseMessageWrapper(_httpResponse, _responseContent);
@@ -2130,7 +2124,7 @@ namespace SINners
                 throw ex;
             }
             // Create Result
-            var _result = new HttpOperationResponse<ResultSinnerGetSINById>
+            HttpOperationResponse<ResultSinnerGetSINById> _result = new HttpOperationResponse<ResultSinnerGetSINById>
             {
                 Request = _httpRequest,
                 Response = _httpResponse
@@ -2141,7 +2135,7 @@ namespace SINners
                 _responseContent = await _httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
                 try
                 {
-                    _result.Body = SafeJsonConvert.DeserializeObject<ResultSinnerGetSINById>(_responseContent, this.DeserializationSettings);
+                    _result.Body = SafeJsonConvert.DeserializeObject<ResultSinnerGetSINById>(_responseContent, DeserializationSettings);
                 }
                 catch (JsonException ex)
                 {
@@ -2187,9 +2181,9 @@ namespace SINners
                 ServiceClientTracing.Enter(_invocationId, this, "GetSINnerVisibilityById", tracingParameters);
             }
             // Construct URL
-            string _baseUrl = this.BaseUri.AbsoluteUri;
+            string _baseUrl = BaseUri.AbsoluteUri;
             string _url = new Uri(new Uri(_baseUrl + (_baseUrl.EndsWith("/") ? "" : "/")), "api/v1/SIN/GetSINnerVisibilityById/{id}").ToString();
-            _url = _url.Replace("{id}", Uri.EscapeDataString(SafeJsonConvert.SerializeObject(id, this.SerializationSettings).Trim('"')));
+            _url = _url.Replace("{id}", Uri.EscapeDataString(SafeJsonConvert.SerializeObject(id, SerializationSettings).Trim('"')));
             // Create HTTP transport objects
             HttpRequestMessage _httpRequest = new HttpRequestMessage();
             HttpResponseMessage _httpResponse = null;
@@ -2211,10 +2205,10 @@ namespace SINners
             // Serialize Request
             string _requestContent = null;
             // Set Credentials
-            if (this.Credentials != null)
+            if (Credentials != null)
             {
                 cancellationToken.ThrowIfCancellationRequested();
-                await this.Credentials.ProcessHttpRequestAsync(_httpRequest, cancellationToken).ConfigureAwait(false);
+                await Credentials.ProcessHttpRequestAsync(_httpRequest, cancellationToken).ConfigureAwait(false);
             }
             // Send Request
             if (_shouldTrace)
@@ -2222,7 +2216,7 @@ namespace SINners
                 ServiceClientTracing.SendRequest(_invocationId, _httpRequest);
             }
             cancellationToken.ThrowIfCancellationRequested();
-            _httpResponse = await this.HttpClient.SendAsync(_httpRequest, cancellationToken).ConfigureAwait(false);
+            _httpResponse = await HttpClient.SendAsync(_httpRequest, cancellationToken).ConfigureAwait(false);
             if (_shouldTrace)
             {
                 ServiceClientTracing.ReceiveResponse(_invocationId, _httpResponse);
@@ -2232,7 +2226,7 @@ namespace SINners
             string _responseContent = null;
             if ((int)_statusCode != 200 && (int)_statusCode != 404 && (int)_statusCode != 400)
             {
-                var ex = new HttpOperationException(string.Format("Operation returned an invalid status code '{0}'", _statusCode));
+                HttpOperationException ex = new HttpOperationException(string.Format("Operation returned an invalid status code '{0}'", _statusCode));
                 _responseContent = await _httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
                 ex.Request = new HttpRequestMessageWrapper(_httpRequest, _requestContent);
                 ex.Response = new HttpResponseMessageWrapper(_httpResponse, _responseContent);
@@ -2248,7 +2242,7 @@ namespace SINners
                 throw ex;
             }
             // Create Result
-            var _result = new HttpOperationResponse<ResultSinnerGetSINnerVisibilityById>
+            HttpOperationResponse<ResultSinnerGetSINnerVisibilityById> _result = new HttpOperationResponse<ResultSinnerGetSINnerVisibilityById>
             {
                 Request = _httpRequest,
                 Response = _httpResponse
@@ -2259,7 +2253,7 @@ namespace SINners
                 _responseContent = await _httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
                 try
                 {
-                    _result.Body = SafeJsonConvert.DeserializeObject<ResultSinnerGetSINnerVisibilityById>(_responseContent, this.DeserializationSettings);
+                    _result.Body = SafeJsonConvert.DeserializeObject<ResultSinnerGetSINnerVisibilityById>(_responseContent, DeserializationSettings);
                 }
                 catch (JsonException ex)
                 {
@@ -2309,7 +2303,7 @@ namespace SINners
                 ServiceClientTracing.Enter(_invocationId, this, "SinnerGetOwnedSINByAlias", tracingParameters);
             }
             // Construct URL
-            string _baseUrl = this.BaseUri.AbsoluteUri;
+            string _baseUrl = BaseUri.AbsoluteUri;
             string _url = new Uri(new Uri(_baseUrl + (_baseUrl.EndsWith("/") ? "" : "/")), "api/v1/SIN/GetOwnedSINByAlias/{id}").ToString();
             _url = _url.Replace("{id}", Uri.EscapeDataString(id));
             // Create HTTP transport objects
@@ -2333,10 +2327,10 @@ namespace SINners
             // Serialize Request
             string _requestContent = null;
             // Set Credentials
-            if (this.Credentials != null)
+            if (Credentials != null)
             {
                 cancellationToken.ThrowIfCancellationRequested();
-                await this.Credentials.ProcessHttpRequestAsync(_httpRequest, cancellationToken).ConfigureAwait(false);
+                await Credentials.ProcessHttpRequestAsync(_httpRequest, cancellationToken).ConfigureAwait(false);
             }
             // Send Request
             if (_shouldTrace)
@@ -2344,7 +2338,7 @@ namespace SINners
                 ServiceClientTracing.SendRequest(_invocationId, _httpRequest);
             }
             cancellationToken.ThrowIfCancellationRequested();
-            _httpResponse = await this.HttpClient.SendAsync(_httpRequest, cancellationToken).ConfigureAwait(false);
+            _httpResponse = await HttpClient.SendAsync(_httpRequest, cancellationToken).ConfigureAwait(false);
             if (_shouldTrace)
             {
                 ServiceClientTracing.ReceiveResponse(_invocationId, _httpResponse);
@@ -2354,7 +2348,7 @@ namespace SINners
             string _responseContent = null;
             if ((int)_statusCode != 200 && (int)_statusCode != 404 && (int)_statusCode != 400)
             {
-                var ex = new HttpOperationException(string.Format("Operation returned an invalid status code '{0}'", _statusCode));
+                HttpOperationException ex = new HttpOperationException(string.Format("Operation returned an invalid status code '{0}'", _statusCode));
                 _responseContent = await _httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
                 ex.Request = new HttpRequestMessageWrapper(_httpRequest, _requestContent);
                 ex.Response = new HttpResponseMessageWrapper(_httpResponse, _responseContent);
@@ -2370,7 +2364,7 @@ namespace SINners
                 throw ex;
             }
             // Create Result
-            var _result = new HttpOperationResponse<ResultSinnerGetOwnedSINByAlias>
+            HttpOperationResponse<ResultSinnerGetOwnedSINByAlias> _result = new HttpOperationResponse<ResultSinnerGetOwnedSINByAlias>
             {
                 Request = _httpRequest,
                 Response = _httpResponse
@@ -2381,7 +2375,7 @@ namespace SINners
                 _responseContent = await _httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
                 try
                 {
-                    _result.Body = SafeJsonConvert.DeserializeObject<ResultSinnerGetOwnedSINByAlias>(_responseContent, this.DeserializationSettings);
+                    _result.Body = SafeJsonConvert.DeserializeObject<ResultSinnerGetOwnedSINByAlias>(_responseContent, DeserializationSettings);
                 }
                 catch (JsonException ex)
                 {
@@ -2433,9 +2427,9 @@ namespace SINners
                 ServiceClientTracing.Enter(_invocationId, this, "PutSIN", tracingParameters);
             }
             // Construct URL
-            string _baseUrl = this.BaseUri.AbsoluteUri;
+            string _baseUrl = BaseUri.AbsoluteUri;
             string _url = new Uri(new Uri(_baseUrl + (_baseUrl.EndsWith("/") ? "" : "/")), "api/v1/SIN/PutSIN/{id}").ToString();
-            _url = _url.Replace("{id}", Uri.EscapeDataString(SafeJsonConvert.SerializeObject(id, this.SerializationSettings).Trim('"')));
+            _url = _url.Replace("{id}", Uri.EscapeDataString(SafeJsonConvert.SerializeObject(id, SerializationSettings).Trim('"')));
             // Create HTTP transport objects
             HttpRequestMessage _httpRequest = new HttpRequestMessage();
             HttpResponseMessage _httpResponse = null;
@@ -2475,10 +2469,10 @@ namespace SINners
             }
             _httpRequest.Content = _multiPartContent;
             // Set Credentials
-            if (this.Credentials != null)
+            if (Credentials != null)
             {
                 cancellationToken.ThrowIfCancellationRequested();
-                await this.Credentials.ProcessHttpRequestAsync(_httpRequest, cancellationToken).ConfigureAwait(false);
+                await Credentials.ProcessHttpRequestAsync(_httpRequest, cancellationToken).ConfigureAwait(false);
             }
             // Send Request
             if (_shouldTrace)
@@ -2486,7 +2480,7 @@ namespace SINners
                 ServiceClientTracing.SendRequest(_invocationId, _httpRequest);
             }
             cancellationToken.ThrowIfCancellationRequested();
-            _httpResponse = await this.HttpClient.SendAsync(_httpRequest, cancellationToken).ConfigureAwait(false);
+            _httpResponse = await HttpClient.SendAsync(_httpRequest, cancellationToken).ConfigureAwait(false);
             if (_shouldTrace)
             {
                 ServiceClientTracing.ReceiveResponse(_invocationId, _httpResponse);
@@ -2496,7 +2490,7 @@ namespace SINners
             string _responseContent = null;
             if ((int)_statusCode != 200 && (int)_statusCode != 404 && (int)_statusCode != 409 && (int)_statusCode != 400)
             {
-                var ex = new HttpOperationException(string.Format("Operation returned an invalid status code '{0}'", _statusCode));
+                HttpOperationException ex = new HttpOperationException(string.Format("Operation returned an invalid status code '{0}'", _statusCode));
                 _responseContent = await _httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
                 ex.Request = new HttpRequestMessageWrapper(_httpRequest, _requestContent);
                 ex.Response = new HttpResponseMessageWrapper(_httpResponse, _responseContent);
@@ -2512,7 +2506,7 @@ namespace SINners
                 throw ex;
             }
             // Create Result
-            var _result = new HttpOperationResponse<ResultSINnerPut>
+            HttpOperationResponse<ResultSINnerPut> _result = new HttpOperationResponse<ResultSINnerPut>
             {
                 Request = _httpRequest,
                 Response = _httpResponse
@@ -2523,7 +2517,7 @@ namespace SINners
                 _responseContent = await _httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
                 try
                 {
-                    _result.Body = SafeJsonConvert.DeserializeObject<ResultSINnerPut>(_responseContent, this.DeserializationSettings);
+                    _result.Body = SafeJsonConvert.DeserializeObject<ResultSINnerPut>(_responseContent, DeserializationSettings);
                 }
                 catch (JsonException ex)
                 {
@@ -2572,16 +2566,16 @@ namespace SINners
                 ServiceClientTracing.Enter(_invocationId, this, "GetThumbnailById", tracingParameters);
             }
             // Construct URL
-            string _baseUrl = this.BaseUri.AbsoluteUri;
+            string _baseUrl = BaseUri.AbsoluteUri;
             string _url = new Uri(new Uri(_baseUrl + (_baseUrl.EndsWith("/") ? "" : "/")), "api/v1/SIN/GetThumbnailById").ToString();
             List<string> _queryParameters = new List<string>();
             if (sINnerId != null)
             {
-                _queryParameters.Add(string.Format("SINnerId={0}", Uri.EscapeDataString(SafeJsonConvert.SerializeObject(sINnerId, this.SerializationSettings).Trim('"'))));
+                _queryParameters.Add(string.Format("SINnerId={0}", Uri.EscapeDataString(SafeJsonConvert.SerializeObject(sINnerId, SerializationSettings).Trim('"'))));
             }
             if (index != null)
             {
-                _queryParameters.Add(string.Format("index={0}", Uri.EscapeDataString(SafeJsonConvert.SerializeObject(index, this.SerializationSettings).Trim('"'))));
+                _queryParameters.Add(string.Format("index={0}", Uri.EscapeDataString(SafeJsonConvert.SerializeObject(index, SerializationSettings).Trim('"'))));
             }
             if (_queryParameters.Count > 0)
             {
@@ -2608,10 +2602,10 @@ namespace SINners
             // Serialize Request
             string _requestContent = null;
             // Set Credentials
-            if (this.Credentials != null)
+            if (Credentials != null)
             {
                 cancellationToken.ThrowIfCancellationRequested();
-                await this.Credentials.ProcessHttpRequestAsync(_httpRequest, cancellationToken).ConfigureAwait(false);
+                await Credentials.ProcessHttpRequestAsync(_httpRequest, cancellationToken).ConfigureAwait(false);
             }
             // Send Request
             if (_shouldTrace)
@@ -2619,7 +2613,7 @@ namespace SINners
                 ServiceClientTracing.SendRequest(_invocationId, _httpRequest);
             }
             cancellationToken.ThrowIfCancellationRequested();
-            _httpResponse = await this.HttpClient.SendAsync(_httpRequest, cancellationToken).ConfigureAwait(false);
+            _httpResponse = await HttpClient.SendAsync(_httpRequest, cancellationToken).ConfigureAwait(false);
             if (_shouldTrace)
             {
                 ServiceClientTracing.ReceiveResponse(_invocationId, _httpResponse);
@@ -2629,7 +2623,7 @@ namespace SINners
             string _responseContent = null;
             if ((int)_statusCode != 200 && (int)_statusCode != 404)
             {
-                var ex = new HttpOperationException(string.Format("Operation returned an invalid status code '{0}'", _statusCode));
+                HttpOperationException ex = new HttpOperationException(string.Format("Operation returned an invalid status code '{0}'", _statusCode));
                 _responseContent = await _httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
                 ex.Request = new HttpRequestMessageWrapper(_httpRequest, _requestContent);
                 ex.Response = new HttpResponseMessageWrapper(_httpResponse, _responseContent);
@@ -2645,7 +2639,7 @@ namespace SINners
                 throw ex;
             }
             // Create Result
-            var _result = new HttpOperationResponse
+            HttpOperationResponse _result = new HttpOperationResponse
             {
                 Request = _httpRequest,
                 Response = _httpResponse
@@ -2689,7 +2683,7 @@ namespace SINners
                 ServiceClientTracing.Enter(_invocationId, this, "PostSIN", tracingParameters);
             }
             // Construct URL
-            string _baseUrl = this.BaseUri.AbsoluteUri;
+            string _baseUrl = BaseUri.AbsoluteUri;
             string _url = new Uri(new Uri(_baseUrl + (_baseUrl.EndsWith("/") ? "" : "/")), "api/v1/SIN/PostSIN").ToString();
             // Create HTTP transport objects
             HttpRequestMessage _httpRequest = new HttpRequestMessage();
@@ -2713,15 +2707,15 @@ namespace SINners
             string _requestContent = null;
             if (uploadInfo != null)
             {
-                _requestContent = SafeJsonConvert.SerializeObject(uploadInfo, this.SerializationSettings);
+                _requestContent = SafeJsonConvert.SerializeObject(uploadInfo, SerializationSettings);
                 _httpRequest.Content = new StringContent(_requestContent, Encoding.UTF8);
                 _httpRequest.Content.Headers.ContentType = MediaTypeHeaderValue.Parse("application/json-patch+json; charset=utf-8");
             }
             // Set Credentials
-            if (this.Credentials != null)
+            if (Credentials != null)
             {
                 cancellationToken.ThrowIfCancellationRequested();
-                await this.Credentials.ProcessHttpRequestAsync(_httpRequest, cancellationToken).ConfigureAwait(false);
+                await Credentials.ProcessHttpRequestAsync(_httpRequest, cancellationToken).ConfigureAwait(false);
             }
             // Send Request
             if (_shouldTrace)
@@ -2729,7 +2723,7 @@ namespace SINners
                 ServiceClientTracing.SendRequest(_invocationId, _httpRequest);
             }
             cancellationToken.ThrowIfCancellationRequested();
-            _httpResponse = await this.HttpClient.SendAsync(_httpRequest, cancellationToken).ConfigureAwait(false);
+            _httpResponse = await HttpClient.SendAsync(_httpRequest, cancellationToken).ConfigureAwait(false);
             if (_shouldTrace)
             {
                 ServiceClientTracing.ReceiveResponse(_invocationId, _httpResponse);
@@ -2739,7 +2733,7 @@ namespace SINners
             string _responseContent = null;
             if ((int)_statusCode != 200 && (int)_statusCode != 202 && (int)_statusCode != 201 && (int)_statusCode != 400 && (int)_statusCode != 409)
             {
-                var ex = new HttpOperationException(string.Format("Operation returned an invalid status code '{0}'", _statusCode));
+                HttpOperationException ex = new HttpOperationException(string.Format("Operation returned an invalid status code '{0}'", _statusCode));
                 _responseContent = await _httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
                 ex.Request = new HttpRequestMessageWrapper(_httpRequest, _requestContent);
                 ex.Response = new HttpResponseMessageWrapper(_httpResponse, _responseContent);
@@ -2755,7 +2749,7 @@ namespace SINners
                 throw ex;
             }
             // Create Result
-            var _result = new HttpOperationResponse<ResultSinnerPostSIN>
+            HttpOperationResponse<ResultSinnerPostSIN> _result = new HttpOperationResponse<ResultSinnerPostSIN>
             {
                 Request = _httpRequest,
                 Response = _httpResponse
@@ -2766,7 +2760,7 @@ namespace SINners
                 _responseContent = await _httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
                 try
                 {
-                    _result.Body = SafeJsonConvert.DeserializeObject<ResultSinnerPostSIN>(_responseContent, this.DeserializationSettings);
+                    _result.Body = SafeJsonConvert.DeserializeObject<ResultSinnerPostSIN>(_responseContent, DeserializationSettings);
                 }
                 catch (JsonException ex)
                 {
@@ -2784,7 +2778,7 @@ namespace SINners
                 _responseContent = await _httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
                 try
                 {
-                    _result.Body = SafeJsonConvert.DeserializeObject<ResultSinnerPostSIN>(_responseContent, this.DeserializationSettings);
+                    _result.Body = SafeJsonConvert.DeserializeObject<ResultSinnerPostSIN>(_responseContent, DeserializationSettings);
                 }
                 catch (JsonException ex)
                 {
@@ -2830,9 +2824,9 @@ namespace SINners
                 ServiceClientTracing.Enter(_invocationId, this, "Delete", tracingParameters);
             }
             // Construct URL
-            string _baseUrl = this.BaseUri.AbsoluteUri;
+            string _baseUrl = BaseUri.AbsoluteUri;
             string _url = new Uri(new Uri(_baseUrl + (_baseUrl.EndsWith("/") ? "" : "/")), "api/v1/SIN/Delete/{id}").ToString();
-            _url = _url.Replace("{id}", Uri.EscapeDataString(SafeJsonConvert.SerializeObject(id, this.SerializationSettings).Trim('"')));
+            _url = _url.Replace("{id}", Uri.EscapeDataString(SafeJsonConvert.SerializeObject(id, SerializationSettings).Trim('"')));
             // Create HTTP transport objects
             HttpRequestMessage _httpRequest = new HttpRequestMessage();
             HttpResponseMessage _httpResponse = null;
@@ -2854,10 +2848,10 @@ namespace SINners
             // Serialize Request
             string _requestContent = null;
             // Set Credentials
-            if (this.Credentials != null)
+            if (Credentials != null)
             {
                 cancellationToken.ThrowIfCancellationRequested();
-                await this.Credentials.ProcessHttpRequestAsync(_httpRequest, cancellationToken).ConfigureAwait(false);
+                await Credentials.ProcessHttpRequestAsync(_httpRequest, cancellationToken).ConfigureAwait(false);
             }
             // Send Request
             if (_shouldTrace)
@@ -2865,7 +2859,7 @@ namespace SINners
                 ServiceClientTracing.SendRequest(_invocationId, _httpRequest);
             }
             cancellationToken.ThrowIfCancellationRequested();
-            _httpResponse = await this.HttpClient.SendAsync(_httpRequest, cancellationToken).ConfigureAwait(false);
+            _httpResponse = await HttpClient.SendAsync(_httpRequest, cancellationToken).ConfigureAwait(false);
             if (_shouldTrace)
             {
                 ServiceClientTracing.ReceiveResponse(_invocationId, _httpResponse);
@@ -2875,7 +2869,7 @@ namespace SINners
             string _responseContent = null;
             if ((int)_statusCode != 200 && (int)_statusCode != 404)
             {
-                var ex = new HttpOperationException(string.Format("Operation returned an invalid status code '{0}'", _statusCode));
+                HttpOperationException ex = new HttpOperationException(string.Format("Operation returned an invalid status code '{0}'", _statusCode));
                 _responseContent = await _httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
                 ex.Request = new HttpRequestMessageWrapper(_httpRequest, _requestContent);
                 ex.Response = new HttpResponseMessageWrapper(_httpResponse, _responseContent);
@@ -2891,7 +2885,7 @@ namespace SINners
                 throw ex;
             }
             // Create Result
-            var _result = new HttpOperationResponse<ResultSinnerDelete>
+            HttpOperationResponse<ResultSinnerDelete> _result = new HttpOperationResponse<ResultSinnerDelete>
             {
                 Request = _httpRequest,
                 Response = _httpResponse
@@ -2902,7 +2896,7 @@ namespace SINners
                 _responseContent = await _httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
                 try
                 {
-                    _result.Body = SafeJsonConvert.DeserializeObject<ResultSinnerDelete>(_responseContent, this.DeserializationSettings);
+                    _result.Body = SafeJsonConvert.DeserializeObject<ResultSinnerDelete>(_responseContent, DeserializationSettings);
                 }
                 catch (JsonException ex)
                 {
@@ -2964,12 +2958,12 @@ namespace SINners
                 ServiceClientTracing.Enter(_invocationId, this, "PutGroupInGroup", tracingParameters);
             }
             // Construct URL
-            string _baseUrl = this.BaseUri.AbsoluteUri;
+            string _baseUrl = BaseUri.AbsoluteUri;
             string _url = new Uri(new Uri(_baseUrl + (_baseUrl.EndsWith("/") ? "" : "/")), "api/v1/SINGroup/PutGroupInGroup").ToString();
             List<string> _queryParameters = new List<string>();
             if (groupId != null)
             {
-                _queryParameters.Add(string.Format("GroupId={0}", Uri.EscapeDataString(SafeJsonConvert.SerializeObject(groupId, this.SerializationSettings).Trim('"'))));
+                _queryParameters.Add(string.Format("GroupId={0}", Uri.EscapeDataString(SafeJsonConvert.SerializeObject(groupId, SerializationSettings).Trim('"'))));
             }
             if (groupname != null)
             {
@@ -2977,7 +2971,7 @@ namespace SINners
             }
             if (parentGroupId != null)
             {
-                _queryParameters.Add(string.Format("parentGroupId={0}", Uri.EscapeDataString(SafeJsonConvert.SerializeObject(parentGroupId, this.SerializationSettings).Trim('"'))));
+                _queryParameters.Add(string.Format("parentGroupId={0}", Uri.EscapeDataString(SafeJsonConvert.SerializeObject(parentGroupId, SerializationSettings).Trim('"'))));
             }
             if (adminIdentityRole != null)
             {
@@ -2985,7 +2979,7 @@ namespace SINners
             }
             if (isPublicVisible != null)
             {
-                _queryParameters.Add(string.Format("isPublicVisible={0}", Uri.EscapeDataString(SafeJsonConvert.SerializeObject(isPublicVisible, this.SerializationSettings).Trim('"'))));
+                _queryParameters.Add(string.Format("isPublicVisible={0}", Uri.EscapeDataString(SafeJsonConvert.SerializeObject(isPublicVisible, SerializationSettings).Trim('"'))));
             }
             if (_queryParameters.Count > 0)
             {
@@ -3012,10 +3006,10 @@ namespace SINners
             // Serialize Request
             string _requestContent = null;
             // Set Credentials
-            if (this.Credentials != null)
+            if (Credentials != null)
             {
                 cancellationToken.ThrowIfCancellationRequested();
-                await this.Credentials.ProcessHttpRequestAsync(_httpRequest, cancellationToken).ConfigureAwait(false);
+                await Credentials.ProcessHttpRequestAsync(_httpRequest, cancellationToken).ConfigureAwait(false);
             }
             // Send Request
             if (_shouldTrace)
@@ -3023,7 +3017,7 @@ namespace SINners
                 ServiceClientTracing.SendRequest(_invocationId, _httpRequest);
             }
             cancellationToken.ThrowIfCancellationRequested();
-            _httpResponse = await this.HttpClient.SendAsync(_httpRequest, cancellationToken).ConfigureAwait(false);
+            _httpResponse = await HttpClient.SendAsync(_httpRequest, cancellationToken).ConfigureAwait(false);
             if (_shouldTrace)
             {
                 ServiceClientTracing.ReceiveResponse(_invocationId, _httpResponse);
@@ -3033,7 +3027,7 @@ namespace SINners
             string _responseContent = null;
             if ((int)_statusCode != 200 && (int)_statusCode != 400 && (int)_statusCode != 404)
             {
-                var ex = new HttpOperationException(string.Format("Operation returned an invalid status code '{0}'", _statusCode));
+                HttpOperationException ex = new HttpOperationException(string.Format("Operation returned an invalid status code '{0}'", _statusCode));
                 _responseContent = await _httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
                 ex.Request = new HttpRequestMessageWrapper(_httpRequest, _requestContent);
                 ex.Response = new HttpResponseMessageWrapper(_httpResponse, _responseContent);
@@ -3049,7 +3043,7 @@ namespace SINners
                 throw ex;
             }
             // Create Result
-            var _result = new HttpOperationResponse<ResultGroupPutGroupInGroup>
+            HttpOperationResponse<ResultGroupPutGroupInGroup> _result = new HttpOperationResponse<ResultGroupPutGroupInGroup>
             {
                 Request = _httpRequest,
                 Response = _httpResponse
@@ -3060,7 +3054,7 @@ namespace SINners
                 _responseContent = await _httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
                 try
                 {
-                    _result.Body = SafeJsonConvert.DeserializeObject<ResultGroupPutGroupInGroup>(_responseContent, this.DeserializationSettings);
+                    _result.Body = SafeJsonConvert.DeserializeObject<ResultGroupPutGroupInGroup>(_responseContent, DeserializationSettings);
                 }
                 catch (JsonException ex)
                 {
@@ -3112,9 +3106,9 @@ namespace SINners
                 ServiceClientTracing.Enter(_invocationId, this, "PutGroupSetting", tracingParameters);
             }
             // Construct URL
-            string _baseUrl = this.BaseUri.AbsoluteUri;
+            string _baseUrl = BaseUri.AbsoluteUri;
             string _url = new Uri(new Uri(_baseUrl + (_baseUrl.EndsWith("/") ? "" : "/")), "api/v1/SINGroup/PutGroupSetting/{id}").ToString();
-            _url = _url.Replace("{id}", Uri.EscapeDataString(SafeJsonConvert.SerializeObject(id, this.SerializationSettings).Trim('"')));
+            _url = _url.Replace("{id}", Uri.EscapeDataString(SafeJsonConvert.SerializeObject(id, SerializationSettings).Trim('"')));
             // Create HTTP transport objects
             HttpRequestMessage _httpRequest = new HttpRequestMessage();
             HttpResponseMessage _httpResponse = null;
@@ -3154,10 +3148,10 @@ namespace SINners
             }
             _httpRequest.Content = _multiPartContent;
             // Set Credentials
-            if (this.Credentials != null)
+            if (Credentials != null)
             {
                 cancellationToken.ThrowIfCancellationRequested();
-                await this.Credentials.ProcessHttpRequestAsync(_httpRequest, cancellationToken).ConfigureAwait(false);
+                await Credentials.ProcessHttpRequestAsync(_httpRequest, cancellationToken).ConfigureAwait(false);
             }
             // Send Request
             if (_shouldTrace)
@@ -3165,7 +3159,7 @@ namespace SINners
                 ServiceClientTracing.SendRequest(_invocationId, _httpRequest);
             }
             cancellationToken.ThrowIfCancellationRequested();
-            _httpResponse = await this.HttpClient.SendAsync(_httpRequest, cancellationToken).ConfigureAwait(false);
+            _httpResponse = await HttpClient.SendAsync(_httpRequest, cancellationToken).ConfigureAwait(false);
             if (_shouldTrace)
             {
                 ServiceClientTracing.ReceiveResponse(_invocationId, _httpResponse);
@@ -3175,7 +3169,7 @@ namespace SINners
             string _responseContent = null;
             if ((int)_statusCode != 200 && (int)_statusCode != 404 && (int)_statusCode != 409 && (int)_statusCode != 400)
             {
-                var ex = new HttpOperationException(string.Format("Operation returned an invalid status code '{0}'", _statusCode));
+                HttpOperationException ex = new HttpOperationException(string.Format("Operation returned an invalid status code '{0}'", _statusCode));
                 _responseContent = await _httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
                 ex.Request = new HttpRequestMessageWrapper(_httpRequest, _requestContent);
                 ex.Response = new HttpResponseMessageWrapper(_httpResponse, _responseContent);
@@ -3191,7 +3185,7 @@ namespace SINners
                 throw ex;
             }
             // Create Result
-            var _result = new HttpOperationResponse<ResultGroupPutSetting>
+            HttpOperationResponse<ResultGroupPutSetting> _result = new HttpOperationResponse<ResultGroupPutSetting>
             {
                 Request = _httpRequest,
                 Response = _httpResponse
@@ -3202,7 +3196,7 @@ namespace SINners
                 _responseContent = await _httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
                 try
                 {
-                    _result.Body = SafeJsonConvert.DeserializeObject<ResultGroupPutSetting>(_responseContent, this.DeserializationSettings);
+                    _result.Body = SafeJsonConvert.DeserializeObject<ResultGroupPutSetting>(_responseContent, DeserializationSettings);
                 }
                 catch (JsonException ex)
                 {
@@ -3258,12 +3252,12 @@ namespace SINners
                 ServiceClientTracing.Enter(_invocationId, this, "PostGroup", tracingParameters);
             }
             // Construct URL
-            string _baseUrl = this.BaseUri.AbsoluteUri;
+            string _baseUrl = BaseUri.AbsoluteUri;
             string _url = new Uri(new Uri(_baseUrl + (_baseUrl.EndsWith("/") ? "" : "/")), "api/v1/SINGroup/PostGroup").ToString();
             List<string> _queryParameters = new List<string>();
             if (sinnerId != null)
             {
-                _queryParameters.Add(string.Format("SinnerId={0}", Uri.EscapeDataString(SafeJsonConvert.SerializeObject(sinnerId, this.SerializationSettings).Trim('"'))));
+                _queryParameters.Add(string.Format("SinnerId={0}", Uri.EscapeDataString(SafeJsonConvert.SerializeObject(sinnerId, SerializationSettings).Trim('"'))));
             }
             if (_queryParameters.Count > 0)
             {
@@ -3291,15 +3285,15 @@ namespace SINners
             string _requestContent = null;
             if (mygroup != null)
             {
-                _requestContent = SafeJsonConvert.SerializeObject(mygroup, this.SerializationSettings);
+                _requestContent = SafeJsonConvert.SerializeObject(mygroup, SerializationSettings);
                 _httpRequest.Content = new StringContent(_requestContent, Encoding.UTF8);
                 _httpRequest.Content.Headers.ContentType = MediaTypeHeaderValue.Parse("application/json-patch+json; charset=utf-8");
             }
             // Set Credentials
-            if (this.Credentials != null)
+            if (Credentials != null)
             {
                 cancellationToken.ThrowIfCancellationRequested();
-                await this.Credentials.ProcessHttpRequestAsync(_httpRequest, cancellationToken).ConfigureAwait(false);
+                await Credentials.ProcessHttpRequestAsync(_httpRequest, cancellationToken).ConfigureAwait(false);
             }
             // Send Request
             if (_shouldTrace)
@@ -3307,7 +3301,7 @@ namespace SINners
                 ServiceClientTracing.SendRequest(_invocationId, _httpRequest);
             }
             cancellationToken.ThrowIfCancellationRequested();
-            _httpResponse = await this.HttpClient.SendAsync(_httpRequest, cancellationToken).ConfigureAwait(false);
+            _httpResponse = await HttpClient.SendAsync(_httpRequest, cancellationToken).ConfigureAwait(false);
             if (_shouldTrace)
             {
                 ServiceClientTracing.ReceiveResponse(_invocationId, _httpResponse);
@@ -3317,7 +3311,7 @@ namespace SINners
             string _responseContent = null;
             if ((int)_statusCode != 202 && (int)_statusCode != 201 && (int)_statusCode != 400 && (int)_statusCode != 409)
             {
-                var ex = new HttpOperationException(string.Format("Operation returned an invalid status code '{0}'", _statusCode));
+                HttpOperationException ex = new HttpOperationException(string.Format("Operation returned an invalid status code '{0}'", _statusCode));
                 _responseContent = await _httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
                 ex.Request = new HttpRequestMessageWrapper(_httpRequest, _requestContent);
                 ex.Response = new HttpResponseMessageWrapper(_httpResponse, _responseContent);
@@ -3333,7 +3327,7 @@ namespace SINners
                 throw ex;
             }
             // Create Result
-            var _result = new HttpOperationResponse<ResultGroupPostGroup>
+            HttpOperationResponse<ResultGroupPostGroup> _result = new HttpOperationResponse<ResultGroupPostGroup>
             {
                 Request = _httpRequest,
                 Response = _httpResponse
@@ -3344,7 +3338,7 @@ namespace SINners
                 _responseContent = await _httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
                 try
                 {
-                    _result.Body = SafeJsonConvert.DeserializeObject<ResultGroupPostGroup>(_responseContent, this.DeserializationSettings);
+                    _result.Body = SafeJsonConvert.DeserializeObject<ResultGroupPostGroup>(_responseContent, DeserializationSettings);
                 }
                 catch (JsonException ex)
                 {
@@ -3399,16 +3393,16 @@ namespace SINners
                 ServiceClientTracing.Enter(_invocationId, this, "PutSINerInGroup", tracingParameters);
             }
             // Construct URL
-            string _baseUrl = this.BaseUri.AbsoluteUri;
+            string _baseUrl = BaseUri.AbsoluteUri;
             string _url = new Uri(new Uri(_baseUrl + (_baseUrl.EndsWith("/") ? "" : "/")), "api/v1/SINGroup/PutSINerInGroup").ToString();
             List<string> _queryParameters = new List<string>();
             if (groupId != null)
             {
-                _queryParameters.Add(string.Format("GroupId={0}", Uri.EscapeDataString(SafeJsonConvert.SerializeObject(groupId, this.SerializationSettings).Trim('"'))));
+                _queryParameters.Add(string.Format("GroupId={0}", Uri.EscapeDataString(SafeJsonConvert.SerializeObject(groupId, SerializationSettings).Trim('"'))));
             }
             if (sinnerId != null)
             {
-                _queryParameters.Add(string.Format("SinnerId={0}", Uri.EscapeDataString(SafeJsonConvert.SerializeObject(sinnerId, this.SerializationSettings).Trim('"'))));
+                _queryParameters.Add(string.Format("SinnerId={0}", Uri.EscapeDataString(SafeJsonConvert.SerializeObject(sinnerId, SerializationSettings).Trim('"'))));
             }
             if (pwhash != null)
             {
@@ -3439,10 +3433,10 @@ namespace SINners
             // Serialize Request
             string _requestContent = null;
             // Set Credentials
-            if (this.Credentials != null)
+            if (Credentials != null)
             {
                 cancellationToken.ThrowIfCancellationRequested();
-                await this.Credentials.ProcessHttpRequestAsync(_httpRequest, cancellationToken).ConfigureAwait(false);
+                await Credentials.ProcessHttpRequestAsync(_httpRequest, cancellationToken).ConfigureAwait(false);
             }
             // Send Request
             if (_shouldTrace)
@@ -3450,7 +3444,7 @@ namespace SINners
                 ServiceClientTracing.SendRequest(_invocationId, _httpRequest);
             }
             cancellationToken.ThrowIfCancellationRequested();
-            _httpResponse = await this.HttpClient.SendAsync(_httpRequest, cancellationToken).ConfigureAwait(false);
+            _httpResponse = await HttpClient.SendAsync(_httpRequest, cancellationToken).ConfigureAwait(false);
             if (_shouldTrace)
             {
                 ServiceClientTracing.ReceiveResponse(_invocationId, _httpResponse);
@@ -3460,7 +3454,7 @@ namespace SINners
             string _responseContent = null;
             if ((int)_statusCode != 200 && (int)_statusCode != 400)
             {
-                var ex = new HttpOperationException(string.Format("Operation returned an invalid status code '{0}'", _statusCode));
+                HttpOperationException ex = new HttpOperationException(string.Format("Operation returned an invalid status code '{0}'", _statusCode));
                 _responseContent = await _httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
                 ex.Request = new HttpRequestMessageWrapper(_httpRequest, _requestContent);
                 ex.Response = new HttpResponseMessageWrapper(_httpResponse, _responseContent);
@@ -3476,7 +3470,7 @@ namespace SINners
                 throw ex;
             }
             // Create Result
-            var _result = new HttpOperationResponse<object>
+            HttpOperationResponse<object> _result = new HttpOperationResponse<object>
             {
                 Request = _httpRequest,
                 Response = _httpResponse
@@ -3487,7 +3481,7 @@ namespace SINners
                 _responseContent = await _httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
                 try
                 {
-                    _result.Body = SafeJsonConvert.DeserializeObject<SINner>(_responseContent, this.DeserializationSettings);
+                    _result.Body = SafeJsonConvert.DeserializeObject<SINner>(_responseContent, DeserializationSettings);
                 }
                 catch (JsonException ex)
                 {
@@ -3505,7 +3499,7 @@ namespace SINners
                 _responseContent = await _httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
                 try
                 {
-                    _result.Body = SafeJsonConvert.DeserializeObject<object>(_responseContent, this.DeserializationSettings);
+                    _result.Body = SafeJsonConvert.DeserializeObject<object>(_responseContent, DeserializationSettings);
                 }
                 catch (JsonException ex)
                 {
@@ -3554,12 +3548,12 @@ namespace SINners
                 ServiceClientTracing.Enter(_invocationId, this, "GetGroupById", tracingParameters);
             }
             // Construct URL
-            string _baseUrl = this.BaseUri.AbsoluteUri;
+            string _baseUrl = BaseUri.AbsoluteUri;
             string _url = new Uri(new Uri(_baseUrl + (_baseUrl.EndsWith("/") ? "" : "/")), "api/v1/SINGroup/GetGroupById").ToString();
             List<string> _queryParameters = new List<string>();
             if (groupid != null)
             {
-                _queryParameters.Add(string.Format("groupid={0}", Uri.EscapeDataString(SafeJsonConvert.SerializeObject(groupid, this.SerializationSettings).Trim('"'))));
+                _queryParameters.Add(string.Format("groupid={0}", Uri.EscapeDataString(SafeJsonConvert.SerializeObject(groupid, SerializationSettings).Trim('"'))));
             }
             if (_queryParameters.Count > 0)
             {
@@ -3586,10 +3580,10 @@ namespace SINners
             // Serialize Request
             string _requestContent = null;
             // Set Credentials
-            if (this.Credentials != null)
+            if (Credentials != null)
             {
                 cancellationToken.ThrowIfCancellationRequested();
-                await this.Credentials.ProcessHttpRequestAsync(_httpRequest, cancellationToken).ConfigureAwait(false);
+                await Credentials.ProcessHttpRequestAsync(_httpRequest, cancellationToken).ConfigureAwait(false);
             }
             // Send Request
             if (_shouldTrace)
@@ -3597,7 +3591,7 @@ namespace SINners
                 ServiceClientTracing.SendRequest(_invocationId, _httpRequest);
             }
             cancellationToken.ThrowIfCancellationRequested();
-            _httpResponse = await this.HttpClient.SendAsync(_httpRequest, cancellationToken).ConfigureAwait(false);
+            _httpResponse = await HttpClient.SendAsync(_httpRequest, cancellationToken).ConfigureAwait(false);
             if (_shouldTrace)
             {
                 ServiceClientTracing.ReceiveResponse(_invocationId, _httpResponse);
@@ -3607,7 +3601,7 @@ namespace SINners
             string _responseContent = null;
             if ((int)_statusCode != 200 && (int)_statusCode != 404)
             {
-                var ex = new HttpOperationException(string.Format("Operation returned an invalid status code '{0}'", _statusCode));
+                HttpOperationException ex = new HttpOperationException(string.Format("Operation returned an invalid status code '{0}'", _statusCode));
                 _responseContent = await _httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
                 ex.Request = new HttpRequestMessageWrapper(_httpRequest, _requestContent);
                 ex.Response = new HttpResponseMessageWrapper(_httpResponse, _responseContent);
@@ -3623,7 +3617,7 @@ namespace SINners
                 throw ex;
             }
             // Create Result
-            var _result = new HttpOperationResponse<ResultGroupGetGroupById>
+            HttpOperationResponse<ResultGroupGetGroupById> _result = new HttpOperationResponse<ResultGroupGetGroupById>
             {
                 Request = _httpRequest,
                 Response = _httpResponse
@@ -3634,7 +3628,7 @@ namespace SINners
                 _responseContent = await _httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
                 try
                 {
-                    _result.Body = SafeJsonConvert.DeserializeObject<ResultGroupGetGroupById>(_responseContent, this.DeserializationSettings);
+                    _result.Body = SafeJsonConvert.DeserializeObject<ResultGroupGetGroupById>(_responseContent, DeserializationSettings);
                 }
                 catch (JsonException ex)
                 {
@@ -3686,7 +3680,7 @@ namespace SINners
                 ServiceClientTracing.Enter(_invocationId, this, "GetPublicGroup", tracingParameters);
             }
             // Construct URL
-            string _baseUrl = this.BaseUri.AbsoluteUri;
+            string _baseUrl = BaseUri.AbsoluteUri;
             string _url = new Uri(new Uri(_baseUrl + (_baseUrl.EndsWith("/") ? "" : "/")), "api/v1/SINGroup/GetPublicGroup").ToString();
             List<string> _queryParameters = new List<string>();
             if (groupname != null)
@@ -3722,10 +3716,10 @@ namespace SINners
             // Serialize Request
             string _requestContent = null;
             // Set Credentials
-            if (this.Credentials != null)
+            if (Credentials != null)
             {
                 cancellationToken.ThrowIfCancellationRequested();
-                await this.Credentials.ProcessHttpRequestAsync(_httpRequest, cancellationToken).ConfigureAwait(false);
+                await Credentials.ProcessHttpRequestAsync(_httpRequest, cancellationToken).ConfigureAwait(false);
             }
             // Send Request
             if (_shouldTrace)
@@ -3733,7 +3727,7 @@ namespace SINners
                 ServiceClientTracing.SendRequest(_invocationId, _httpRequest);
             }
             cancellationToken.ThrowIfCancellationRequested();
-            _httpResponse = await this.HttpClient.SendAsync(_httpRequest, cancellationToken).ConfigureAwait(false);
+            _httpResponse = await HttpClient.SendAsync(_httpRequest, cancellationToken).ConfigureAwait(false);
             if (_shouldTrace)
             {
                 ServiceClientTracing.ReceiveResponse(_invocationId, _httpResponse);
@@ -3743,7 +3737,7 @@ namespace SINners
             string _responseContent = null;
             if ((int)_statusCode != 200 && (int)_statusCode != 400 && (int)_statusCode != 404)
             {
-                var ex = new HttpOperationException(string.Format("Operation returned an invalid status code '{0}'", _statusCode));
+                HttpOperationException ex = new HttpOperationException(string.Format("Operation returned an invalid status code '{0}'", _statusCode));
                 _responseContent = await _httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
                 ex.Request = new HttpRequestMessageWrapper(_httpRequest, _requestContent);
                 ex.Response = new HttpResponseMessageWrapper(_httpResponse, _responseContent);
@@ -3759,7 +3753,7 @@ namespace SINners
                 throw ex;
             }
             // Create Result
-            var _result = new HttpOperationResponse<ResultGroupGetSearchGroups>
+            HttpOperationResponse<ResultGroupGetSearchGroups> _result = new HttpOperationResponse<ResultGroupGetSearchGroups>
             {
                 Request = _httpRequest,
                 Response = _httpResponse
@@ -3770,7 +3764,7 @@ namespace SINners
                 _responseContent = await _httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
                 try
                 {
-                    _result.Body = SafeJsonConvert.DeserializeObject<ResultGroupGetSearchGroups>(_responseContent, this.DeserializationSettings);
+                    _result.Body = SafeJsonConvert.DeserializeObject<ResultGroupGetSearchGroups>(_responseContent, DeserializationSettings);
                 }
                 catch (JsonException ex)
                 {
@@ -3828,7 +3822,7 @@ namespace SINners
                 ServiceClientTracing.Enter(_invocationId, this, "GetGroupmembers", tracingParameters);
             }
             // Construct URL
-            string _baseUrl = this.BaseUri.AbsoluteUri;
+            string _baseUrl = BaseUri.AbsoluteUri;
             string _url = new Uri(new Uri(_baseUrl + (_baseUrl.EndsWith("/") ? "" : "/")), "api/v1/SINGroup/GetGroupmembers").ToString();
             List<string> _queryParameters = new List<string>();
             if (groupname != null)
@@ -3872,10 +3866,10 @@ namespace SINners
             // Serialize Request
             string _requestContent = null;
             // Set Credentials
-            if (this.Credentials != null)
+            if (Credentials != null)
             {
                 cancellationToken.ThrowIfCancellationRequested();
-                await this.Credentials.ProcessHttpRequestAsync(_httpRequest, cancellationToken).ConfigureAwait(false);
+                await Credentials.ProcessHttpRequestAsync(_httpRequest, cancellationToken).ConfigureAwait(false);
             }
             // Send Request
             if (_shouldTrace)
@@ -3883,7 +3877,7 @@ namespace SINners
                 ServiceClientTracing.SendRequest(_invocationId, _httpRequest);
             }
             cancellationToken.ThrowIfCancellationRequested();
-            _httpResponse = await this.HttpClient.SendAsync(_httpRequest, cancellationToken).ConfigureAwait(false);
+            _httpResponse = await HttpClient.SendAsync(_httpRequest, cancellationToken).ConfigureAwait(false);
             if (_shouldTrace)
             {
                 ServiceClientTracing.ReceiveResponse(_invocationId, _httpResponse);
@@ -3893,7 +3887,7 @@ namespace SINners
             string _responseContent = null;
             if ((int)_statusCode != 200 && (int)_statusCode != 400 && (int)_statusCode != 404)
             {
-                var ex = new HttpOperationException(string.Format("Operation returned an invalid status code '{0}'", _statusCode));
+                HttpOperationException ex = new HttpOperationException(string.Format("Operation returned an invalid status code '{0}'", _statusCode));
                 _responseContent = await _httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
                 ex.Request = new HttpRequestMessageWrapper(_httpRequest, _requestContent);
                 ex.Response = new HttpResponseMessageWrapper(_httpResponse, _responseContent);
@@ -3909,7 +3903,7 @@ namespace SINners
                 throw ex;
             }
             // Create Result
-            var _result = new HttpOperationResponse<ResultGroupGetSearchGroups>
+            HttpOperationResponse<ResultGroupGetSearchGroups> _result = new HttpOperationResponse<ResultGroupGetSearchGroups>
             {
                 Request = _httpRequest,
                 Response = _httpResponse
@@ -3920,7 +3914,7 @@ namespace SINners
                 _responseContent = await _httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
                 try
                 {
-                    _result.Body = SafeJsonConvert.DeserializeObject<ResultGroupGetSearchGroups>(_responseContent, this.DeserializationSettings);
+                    _result.Body = SafeJsonConvert.DeserializeObject<ResultGroupGetSearchGroups>(_responseContent, DeserializationSettings);
                 }
                 catch (JsonException ex)
                 {
@@ -3978,7 +3972,7 @@ namespace SINners
                 ServiceClientTracing.Enter(_invocationId, this, "GetSearchGroups", tracingParameters);
             }
             // Construct URL
-            string _baseUrl = this.BaseUri.AbsoluteUri;
+            string _baseUrl = BaseUri.AbsoluteUri;
             string _url = new Uri(new Uri(_baseUrl + (_baseUrl.EndsWith("/") ? "" : "/")), "api/v1/SINGroup/GetSearchGroups").ToString();
             List<string> _queryParameters = new List<string>();
             if (groupname != null)
@@ -4022,10 +4016,10 @@ namespace SINners
             // Serialize Request
             string _requestContent = null;
             // Set Credentials
-            if (this.Credentials != null)
+            if (Credentials != null)
             {
                 cancellationToken.ThrowIfCancellationRequested();
-                await this.Credentials.ProcessHttpRequestAsync(_httpRequest, cancellationToken).ConfigureAwait(false);
+                await Credentials.ProcessHttpRequestAsync(_httpRequest, cancellationToken).ConfigureAwait(false);
             }
             // Send Request
             if (_shouldTrace)
@@ -4033,7 +4027,7 @@ namespace SINners
                 ServiceClientTracing.SendRequest(_invocationId, _httpRequest);
             }
             cancellationToken.ThrowIfCancellationRequested();
-            _httpResponse = await this.HttpClient.SendAsync(_httpRequest, cancellationToken).ConfigureAwait(false);
+            _httpResponse = await HttpClient.SendAsync(_httpRequest, cancellationToken).ConfigureAwait(false);
             if (_shouldTrace)
             {
                 ServiceClientTracing.ReceiveResponse(_invocationId, _httpResponse);
@@ -4043,7 +4037,7 @@ namespace SINners
             string _responseContent = null;
             if ((int)_statusCode != 200 && (int)_statusCode != 400 && (int)_statusCode != 404)
             {
-                var ex = new HttpOperationException(string.Format("Operation returned an invalid status code '{0}'", _statusCode));
+                HttpOperationException ex = new HttpOperationException(string.Format("Operation returned an invalid status code '{0}'", _statusCode));
                 _responseContent = await _httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
                 ex.Request = new HttpRequestMessageWrapper(_httpRequest, _requestContent);
                 ex.Response = new HttpResponseMessageWrapper(_httpResponse, _responseContent);
@@ -4059,7 +4053,7 @@ namespace SINners
                 throw ex;
             }
             // Create Result
-            var _result = new HttpOperationResponse<ResultGroupGetSearchGroups>
+            HttpOperationResponse<ResultGroupGetSearchGroups> _result = new HttpOperationResponse<ResultGroupGetSearchGroups>
             {
                 Request = _httpRequest,
                 Response = _httpResponse
@@ -4070,7 +4064,7 @@ namespace SINners
                 _responseContent = await _httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
                 try
                 {
-                    _result.Body = SafeJsonConvert.DeserializeObject<ResultGroupGetSearchGroups>(_responseContent, this.DeserializationSettings);
+                    _result.Body = SafeJsonConvert.DeserializeObject<ResultGroupGetSearchGroups>(_responseContent, DeserializationSettings);
                 }
                 catch (JsonException ex)
                 {
@@ -4123,16 +4117,16 @@ namespace SINners
                 ServiceClientTracing.Enter(_invocationId, this, "DeleteLeaveGroup", tracingParameters);
             }
             // Construct URL
-            string _baseUrl = this.BaseUri.AbsoluteUri;
+            string _baseUrl = BaseUri.AbsoluteUri;
             string _url = new Uri(new Uri(_baseUrl + (_baseUrl.EndsWith("/") ? "" : "/")), "api/v1/SINGroup/DeleteLeaveGroup").ToString();
             List<string> _queryParameters = new List<string>();
             if (groupid != null)
             {
-                _queryParameters.Add(string.Format("groupid={0}", Uri.EscapeDataString(SafeJsonConvert.SerializeObject(groupid, this.SerializationSettings).Trim('"'))));
+                _queryParameters.Add(string.Format("groupid={0}", Uri.EscapeDataString(SafeJsonConvert.SerializeObject(groupid, SerializationSettings).Trim('"'))));
             }
             if (sinnerid != null)
             {
-                _queryParameters.Add(string.Format("sinnerid={0}", Uri.EscapeDataString(SafeJsonConvert.SerializeObject(sinnerid, this.SerializationSettings).Trim('"'))));
+                _queryParameters.Add(string.Format("sinnerid={0}", Uri.EscapeDataString(SafeJsonConvert.SerializeObject(sinnerid, SerializationSettings).Trim('"'))));
             }
             if (_queryParameters.Count > 0)
             {
@@ -4159,10 +4153,10 @@ namespace SINners
             // Serialize Request
             string _requestContent = null;
             // Set Credentials
-            if (this.Credentials != null)
+            if (Credentials != null)
             {
                 cancellationToken.ThrowIfCancellationRequested();
-                await this.Credentials.ProcessHttpRequestAsync(_httpRequest, cancellationToken).ConfigureAwait(false);
+                await Credentials.ProcessHttpRequestAsync(_httpRequest, cancellationToken).ConfigureAwait(false);
             }
             // Send Request
             if (_shouldTrace)
@@ -4170,7 +4164,7 @@ namespace SINners
                 ServiceClientTracing.SendRequest(_invocationId, _httpRequest);
             }
             cancellationToken.ThrowIfCancellationRequested();
-            _httpResponse = await this.HttpClient.SendAsync(_httpRequest, cancellationToken).ConfigureAwait(false);
+            _httpResponse = await HttpClient.SendAsync(_httpRequest, cancellationToken).ConfigureAwait(false);
             if (_shouldTrace)
             {
                 ServiceClientTracing.ReceiveResponse(_invocationId, _httpResponse);
@@ -4180,7 +4174,7 @@ namespace SINners
             string _responseContent = null;
             if ((int)_statusCode != 200 && (int)_statusCode != 400)
             {
-                var ex = new HttpOperationException(string.Format("Operation returned an invalid status code '{0}'", _statusCode));
+                HttpOperationException ex = new HttpOperationException(string.Format("Operation returned an invalid status code '{0}'", _statusCode));
                 _responseContent = await _httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
                 ex.Request = new HttpRequestMessageWrapper(_httpRequest, _requestContent);
                 ex.Response = new HttpResponseMessageWrapper(_httpResponse, _responseContent);
@@ -4196,7 +4190,7 @@ namespace SINners
                 throw ex;
             }
             // Create Result
-            var _result = new HttpOperationResponse<bool?>
+            HttpOperationResponse<bool?> _result = new HttpOperationResponse<bool?>
             {
                 Request = _httpRequest,
                 Response = _httpResponse
@@ -4207,7 +4201,7 @@ namespace SINners
                 _responseContent = await _httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
                 try
                 {
-                    _result.Body = SafeJsonConvert.DeserializeObject<bool?>(_responseContent, this.DeserializationSettings);
+                    _result.Body = SafeJsonConvert.DeserializeObject<bool?>(_responseContent, DeserializationSettings);
                 }
                 catch (JsonException ex)
                 {
@@ -4256,12 +4250,12 @@ namespace SINners
                 ServiceClientTracing.Enter(_invocationId, this, "DeleteGroup", tracingParameters);
             }
             // Construct URL
-            string _baseUrl = this.BaseUri.AbsoluteUri;
+            string _baseUrl = BaseUri.AbsoluteUri;
             string _url = new Uri(new Uri(_baseUrl + (_baseUrl.EndsWith("/") ? "" : "/")), "api/v1/SINGroup/DeleteGroup").ToString();
             List<string> _queryParameters = new List<string>();
             if (groupid != null)
             {
-                _queryParameters.Add(string.Format("groupid={0}", Uri.EscapeDataString(SafeJsonConvert.SerializeObject(groupid, this.SerializationSettings).Trim('"'))));
+                _queryParameters.Add(string.Format("groupid={0}", Uri.EscapeDataString(SafeJsonConvert.SerializeObject(groupid, SerializationSettings).Trim('"'))));
             }
             if (_queryParameters.Count > 0)
             {
@@ -4288,10 +4282,10 @@ namespace SINners
             // Serialize Request
             string _requestContent = null;
             // Set Credentials
-            if (this.Credentials != null)
+            if (Credentials != null)
             {
                 cancellationToken.ThrowIfCancellationRequested();
-                await this.Credentials.ProcessHttpRequestAsync(_httpRequest, cancellationToken).ConfigureAwait(false);
+                await Credentials.ProcessHttpRequestAsync(_httpRequest, cancellationToken).ConfigureAwait(false);
             }
             // Send Request
             if (_shouldTrace)
@@ -4299,7 +4293,7 @@ namespace SINners
                 ServiceClientTracing.SendRequest(_invocationId, _httpRequest);
             }
             cancellationToken.ThrowIfCancellationRequested();
-            _httpResponse = await this.HttpClient.SendAsync(_httpRequest, cancellationToken).ConfigureAwait(false);
+            _httpResponse = await HttpClient.SendAsync(_httpRequest, cancellationToken).ConfigureAwait(false);
             if (_shouldTrace)
             {
                 ServiceClientTracing.ReceiveResponse(_invocationId, _httpResponse);
@@ -4309,7 +4303,7 @@ namespace SINners
             string _responseContent = null;
             if ((int)_statusCode != 200 && (int)_statusCode != 400)
             {
-                var ex = new HttpOperationException(string.Format("Operation returned an invalid status code '{0}'", _statusCode));
+                HttpOperationException ex = new HttpOperationException(string.Format("Operation returned an invalid status code '{0}'", _statusCode));
                 _responseContent = await _httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
                 ex.Request = new HttpRequestMessageWrapper(_httpRequest, _requestContent);
                 ex.Response = new HttpResponseMessageWrapper(_httpResponse, _responseContent);
@@ -4325,7 +4319,7 @@ namespace SINners
                 throw ex;
             }
             // Create Result
-            var _result = new HttpOperationResponse<bool?>
+            HttpOperationResponse<bool?> _result = new HttpOperationResponse<bool?>
             {
                 Request = _httpRequest,
                 Response = _httpResponse
@@ -4336,7 +4330,7 @@ namespace SINners
                 _responseContent = await _httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
                 try
                 {
-                    _result.Body = SafeJsonConvert.DeserializeObject<bool?>(_responseContent, this.DeserializationSettings);
+                    _result.Body = SafeJsonConvert.DeserializeObject<bool?>(_responseContent, DeserializationSettings);
                 }
                 catch (JsonException ex)
                 {
@@ -4385,12 +4379,12 @@ namespace SINners
                 ServiceClientTracing.Enter(_invocationId, this, "GetGroupmembersById", tracingParameters);
             }
             // Construct URL
-            string _baseUrl = this.BaseUri.AbsoluteUri;
+            string _baseUrl = BaseUri.AbsoluteUri;
             string _url = new Uri(new Uri(_baseUrl + (_baseUrl.EndsWith("/") ? "" : "/")), "api/v1/SINGroup/GetGroupmembersById").ToString();
             List<string> _queryParameters = new List<string>();
             if (groupid != null)
             {
-                _queryParameters.Add(string.Format("groupid={0}", Uri.EscapeDataString(SafeJsonConvert.SerializeObject(groupid, this.SerializationSettings).Trim('"'))));
+                _queryParameters.Add(string.Format("groupid={0}", Uri.EscapeDataString(SafeJsonConvert.SerializeObject(groupid, SerializationSettings).Trim('"'))));
             }
             if (_queryParameters.Count > 0)
             {
@@ -4417,10 +4411,10 @@ namespace SINners
             // Serialize Request
             string _requestContent = null;
             // Set Credentials
-            if (this.Credentials != null)
+            if (Credentials != null)
             {
                 cancellationToken.ThrowIfCancellationRequested();
-                await this.Credentials.ProcessHttpRequestAsync(_httpRequest, cancellationToken).ConfigureAwait(false);
+                await Credentials.ProcessHttpRequestAsync(_httpRequest, cancellationToken).ConfigureAwait(false);
             }
             // Send Request
             if (_shouldTrace)
@@ -4428,7 +4422,7 @@ namespace SINners
                 ServiceClientTracing.SendRequest(_invocationId, _httpRequest);
             }
             cancellationToken.ThrowIfCancellationRequested();
-            _httpResponse = await this.HttpClient.SendAsync(_httpRequest, cancellationToken).ConfigureAwait(false);
+            _httpResponse = await HttpClient.SendAsync(_httpRequest, cancellationToken).ConfigureAwait(false);
             if (_shouldTrace)
             {
                 ServiceClientTracing.ReceiveResponse(_invocationId, _httpResponse);
@@ -4438,7 +4432,7 @@ namespace SINners
             string _responseContent = null;
             if ((int)_statusCode != 200 && (int)_statusCode != 400 && (int)_statusCode != 404)
             {
-                var ex = new HttpOperationException(string.Format("Operation returned an invalid status code '{0}'", _statusCode));
+                HttpOperationException ex = new HttpOperationException(string.Format("Operation returned an invalid status code '{0}'", _statusCode));
                 _responseContent = await _httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
                 ex.Request = new HttpRequestMessageWrapper(_httpRequest, _requestContent);
                 ex.Response = new HttpResponseMessageWrapper(_httpResponse, _responseContent);
@@ -4454,7 +4448,7 @@ namespace SINners
                 throw ex;
             }
             // Create Result
-            var _result = new HttpOperationResponse<ResultGroupGetSearchGroups>
+            HttpOperationResponse<ResultGroupGetSearchGroups> _result = new HttpOperationResponse<ResultGroupGetSearchGroups>
             {
                 Request = _httpRequest,
                 Response = _httpResponse
@@ -4465,7 +4459,7 @@ namespace SINners
                 _responseContent = await _httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
                 try
                 {
-                    _result.Body = SafeJsonConvert.DeserializeObject<ResultGroupGetSearchGroups>(_responseContent, this.DeserializationSettings);
+                    _result.Body = SafeJsonConvert.DeserializeObject<ResultGroupGetSearchGroups>(_responseContent, DeserializationSettings);
                 }
                 catch (JsonException ex)
                 {
@@ -4515,7 +4509,7 @@ namespace SINners
                 ServiceClientTracing.Enter(_invocationId, this, "Search", tracingParameters);
             }
             // Construct URL
-            string _baseUrl = this.BaseUri.AbsoluteUri;
+            string _baseUrl = BaseUri.AbsoluteUri;
             string _url = new Uri(new Uri(_baseUrl + (_baseUrl.EndsWith("/") ? "" : "/")), "api/v1/SINSearch/Search").ToString();
             // Create HTTP transport objects
             HttpRequestMessage _httpRequest = new HttpRequestMessage();
@@ -4539,15 +4533,15 @@ namespace SINners
             string _requestContent = null;
             if (searchTag != null)
             {
-                _requestContent = SafeJsonConvert.SerializeObject(searchTag, this.SerializationSettings);
+                _requestContent = SafeJsonConvert.SerializeObject(searchTag, SerializationSettings);
                 _httpRequest.Content = new StringContent(_requestContent, Encoding.UTF8);
                 _httpRequest.Content.Headers.ContentType = MediaTypeHeaderValue.Parse("application/json-patch+json; charset=utf-8");
             }
             // Set Credentials
-            if (this.Credentials != null)
+            if (Credentials != null)
             {
                 cancellationToken.ThrowIfCancellationRequested();
-                await this.Credentials.ProcessHttpRequestAsync(_httpRequest, cancellationToken).ConfigureAwait(false);
+                await Credentials.ProcessHttpRequestAsync(_httpRequest, cancellationToken).ConfigureAwait(false);
             }
             // Send Request
             if (_shouldTrace)
@@ -4555,7 +4549,7 @@ namespace SINners
                 ServiceClientTracing.SendRequest(_invocationId, _httpRequest);
             }
             cancellationToken.ThrowIfCancellationRequested();
-            _httpResponse = await this.HttpClient.SendAsync(_httpRequest, cancellationToken).ConfigureAwait(false);
+            _httpResponse = await HttpClient.SendAsync(_httpRequest, cancellationToken).ConfigureAwait(false);
             if (_shouldTrace)
             {
                 ServiceClientTracing.ReceiveResponse(_invocationId, _httpResponse);
@@ -4565,7 +4559,7 @@ namespace SINners
             string _responseContent = null;
             if ((int)_statusCode != 200 && (int)_statusCode != 404)
             {
-                var ex = new HttpOperationException(string.Format("Operation returned an invalid status code '{0}'", _statusCode));
+                HttpOperationException ex = new HttpOperationException(string.Format("Operation returned an invalid status code '{0}'", _statusCode));
                 _responseContent = await _httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
                 ex.Request = new HttpRequestMessageWrapper(_httpRequest, _requestContent);
                 ex.Response = new HttpResponseMessageWrapper(_httpResponse, _responseContent);
@@ -4581,7 +4575,7 @@ namespace SINners
                 throw ex;
             }
             // Create Result
-            var _result = new HttpOperationResponse<IList<SINner>>
+            HttpOperationResponse<IList<SINner>> _result = new HttpOperationResponse<IList<SINner>>
             {
                 Request = _httpRequest,
                 Response = _httpResponse
@@ -4592,7 +4586,7 @@ namespace SINners
                 _responseContent = await _httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
                 try
                 {
-                    _result.Body = SafeJsonConvert.DeserializeObject<IList<SINner>>(_responseContent, this.DeserializationSettings);
+                    _result.Body = SafeJsonConvert.DeserializeObject<IList<SINner>>(_responseContent, DeserializationSettings);
                 }
                 catch (JsonException ex)
                 {
@@ -4635,7 +4629,7 @@ namespace SINners
                 ServiceClientTracing.Enter(_invocationId, this, "AdminGetSINners", tracingParameters);
             }
             // Construct URL
-            string _baseUrl = this.BaseUri.AbsoluteUri;
+            string _baseUrl = BaseUri.AbsoluteUri;
             string _url = new Uri(new Uri(_baseUrl + (_baseUrl.EndsWith("/") ? "" : "/")), "api/v1/SINSearch/AdminGetSINners").ToString();
             // Create HTTP transport objects
             HttpRequestMessage _httpRequest = new HttpRequestMessage();
@@ -4658,10 +4652,10 @@ namespace SINners
             // Serialize Request
             string _requestContent = null;
             // Set Credentials
-            if (this.Credentials != null)
+            if (Credentials != null)
             {
                 cancellationToken.ThrowIfCancellationRequested();
-                await this.Credentials.ProcessHttpRequestAsync(_httpRequest, cancellationToken).ConfigureAwait(false);
+                await Credentials.ProcessHttpRequestAsync(_httpRequest, cancellationToken).ConfigureAwait(false);
             }
             // Send Request
             if (_shouldTrace)
@@ -4669,7 +4663,7 @@ namespace SINners
                 ServiceClientTracing.SendRequest(_invocationId, _httpRequest);
             }
             cancellationToken.ThrowIfCancellationRequested();
-            _httpResponse = await this.HttpClient.SendAsync(_httpRequest, cancellationToken).ConfigureAwait(false);
+            _httpResponse = await HttpClient.SendAsync(_httpRequest, cancellationToken).ConfigureAwait(false);
             if (_shouldTrace)
             {
                 ServiceClientTracing.ReceiveResponse(_invocationId, _httpResponse);
@@ -4679,7 +4673,7 @@ namespace SINners
             string _responseContent = null;
             if ((int)_statusCode != 200)
             {
-                var ex = new HttpOperationException(string.Format("Operation returned an invalid status code '{0}'", _statusCode));
+                HttpOperationException ex = new HttpOperationException(string.Format("Operation returned an invalid status code '{0}'", _statusCode));
                 _responseContent = await _httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
                 ex.Request = new HttpRequestMessageWrapper(_httpRequest, _requestContent);
                 ex.Response = new HttpResponseMessageWrapper(_httpResponse, _responseContent);
@@ -4695,7 +4689,7 @@ namespace SINners
                 throw ex;
             }
             // Create Result
-            var _result = new HttpOperationResponse<IList<SINner>>
+            HttpOperationResponse<IList<SINner>> _result = new HttpOperationResponse<IList<SINner>>
             {
                 Request = _httpRequest,
                 Response = _httpResponse
@@ -4706,7 +4700,7 @@ namespace SINners
                 _responseContent = await _httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
                 try
                 {
-                    _result.Body = SafeJsonConvert.DeserializeObject<IList<SINner>>(_responseContent, this.DeserializationSettings);
+                    _result.Body = SafeJsonConvert.DeserializeObject<IList<SINner>>(_responseContent, DeserializationSettings);
                 }
                 catch (JsonException ex)
                 {
@@ -4749,7 +4743,7 @@ namespace SINners
                 ServiceClientTracing.Enter(_invocationId, this, "GetSomeTestUploadClients", tracingParameters);
             }
             // Construct URL
-            string _baseUrl = this.BaseUri.AbsoluteUri;
+            string _baseUrl = BaseUri.AbsoluteUri;
             string _url = new Uri(new Uri(_baseUrl + (_baseUrl.EndsWith("/") ? "" : "/")), "api/v1/UploadClient/GetSomeTestUploadClients").ToString();
             // Create HTTP transport objects
             HttpRequestMessage _httpRequest = new HttpRequestMessage();
@@ -4772,10 +4766,10 @@ namespace SINners
             // Serialize Request
             string _requestContent = null;
             // Set Credentials
-            if (this.Credentials != null)
+            if (Credentials != null)
             {
                 cancellationToken.ThrowIfCancellationRequested();
-                await this.Credentials.ProcessHttpRequestAsync(_httpRequest, cancellationToken).ConfigureAwait(false);
+                await Credentials.ProcessHttpRequestAsync(_httpRequest, cancellationToken).ConfigureAwait(false);
             }
             // Send Request
             if (_shouldTrace)
@@ -4783,7 +4777,7 @@ namespace SINners
                 ServiceClientTracing.SendRequest(_invocationId, _httpRequest);
             }
             cancellationToken.ThrowIfCancellationRequested();
-            _httpResponse = await this.HttpClient.SendAsync(_httpRequest, cancellationToken).ConfigureAwait(false);
+            _httpResponse = await HttpClient.SendAsync(_httpRequest, cancellationToken).ConfigureAwait(false);
             if (_shouldTrace)
             {
                 ServiceClientTracing.ReceiveResponse(_invocationId, _httpResponse);
@@ -4793,7 +4787,7 @@ namespace SINners
             string _responseContent = null;
             if ((int)_statusCode != 200)
             {
-                var ex = new HttpOperationException(string.Format("Operation returned an invalid status code '{0}'", _statusCode));
+                HttpOperationException ex = new HttpOperationException(string.Format("Operation returned an invalid status code '{0}'", _statusCode));
                 _responseContent = await _httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
                 ex.Request = new HttpRequestMessageWrapper(_httpRequest, _requestContent);
                 ex.Response = new HttpResponseMessageWrapper(_httpResponse, _responseContent);
@@ -4809,7 +4803,7 @@ namespace SINners
                 throw ex;
             }
             // Create Result
-            var _result = new HttpOperationResponse<IList<UploadClient>>
+            HttpOperationResponse<IList<UploadClient>> _result = new HttpOperationResponse<IList<UploadClient>>
             {
                 Request = _httpRequest,
                 Response = _httpResponse
@@ -4820,7 +4814,7 @@ namespace SINners
                 _responseContent = await _httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
                 try
                 {
-                    _result.Body = SafeJsonConvert.DeserializeObject<IList<UploadClient>>(_responseContent, this.DeserializationSettings);
+                    _result.Body = SafeJsonConvert.DeserializeObject<IList<UploadClient>>(_responseContent, DeserializationSettings);
                 }
                 catch (JsonException ex)
                 {
@@ -4866,9 +4860,9 @@ namespace SINners
                 ServiceClientTracing.Enter(_invocationId, this, "GetUploadClient", tracingParameters);
             }
             // Construct URL
-            string _baseUrl = this.BaseUri.AbsoluteUri;
+            string _baseUrl = BaseUri.AbsoluteUri;
             string _url = new Uri(new Uri(_baseUrl + (_baseUrl.EndsWith("/") ? "" : "/")), "api/v1/UploadClient/GetUploadClient/{id}").ToString();
-            _url = _url.Replace("{id}", Uri.EscapeDataString(SafeJsonConvert.SerializeObject(id, this.SerializationSettings).Trim('"')));
+            _url = _url.Replace("{id}", Uri.EscapeDataString(SafeJsonConvert.SerializeObject(id, SerializationSettings).Trim('"')));
             // Create HTTP transport objects
             HttpRequestMessage _httpRequest = new HttpRequestMessage();
             HttpResponseMessage _httpResponse = null;
@@ -4890,10 +4884,10 @@ namespace SINners
             // Serialize Request
             string _requestContent = null;
             // Set Credentials
-            if (this.Credentials != null)
+            if (Credentials != null)
             {
                 cancellationToken.ThrowIfCancellationRequested();
-                await this.Credentials.ProcessHttpRequestAsync(_httpRequest, cancellationToken).ConfigureAwait(false);
+                await Credentials.ProcessHttpRequestAsync(_httpRequest, cancellationToken).ConfigureAwait(false);
             }
             // Send Request
             if (_shouldTrace)
@@ -4901,7 +4895,7 @@ namespace SINners
                 ServiceClientTracing.SendRequest(_invocationId, _httpRequest);
             }
             cancellationToken.ThrowIfCancellationRequested();
-            _httpResponse = await this.HttpClient.SendAsync(_httpRequest, cancellationToken).ConfigureAwait(false);
+            _httpResponse = await HttpClient.SendAsync(_httpRequest, cancellationToken).ConfigureAwait(false);
             if (_shouldTrace)
             {
                 ServiceClientTracing.ReceiveResponse(_invocationId, _httpResponse);
@@ -4911,7 +4905,7 @@ namespace SINners
             string _responseContent = null;
             if ((int)_statusCode != 200)
             {
-                var ex = new HttpOperationException(string.Format("Operation returned an invalid status code '{0}'", _statusCode));
+                HttpOperationException ex = new HttpOperationException(string.Format("Operation returned an invalid status code '{0}'", _statusCode));
                 _responseContent = await _httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
                 ex.Request = new HttpRequestMessageWrapper(_httpRequest, _requestContent);
                 ex.Response = new HttpResponseMessageWrapper(_httpResponse, _responseContent);
@@ -4927,7 +4921,7 @@ namespace SINners
                 throw ex;
             }
             // Create Result
-            var _result = new HttpOperationResponse
+            HttpOperationResponse _result = new HttpOperationResponse
             {
                 Request = _httpRequest,
                 Response = _httpResponse
@@ -4966,9 +4960,9 @@ namespace SINners
                 ServiceClientTracing.Enter(_invocationId, this, "GetSINners", tracingParameters);
             }
             // Construct URL
-            string _baseUrl = this.BaseUri.AbsoluteUri;
+            string _baseUrl = BaseUri.AbsoluteUri;
             string _url = new Uri(new Uri(_baseUrl + (_baseUrl.EndsWith("/") ? "" : "/")), "api/v1/UploadClient/GetSINners/{id}").ToString();
-            _url = _url.Replace("{id}", Uri.EscapeDataString(SafeJsonConvert.SerializeObject(id, this.SerializationSettings).Trim('"')));
+            _url = _url.Replace("{id}", Uri.EscapeDataString(SafeJsonConvert.SerializeObject(id, SerializationSettings).Trim('"')));
             // Create HTTP transport objects
             HttpRequestMessage _httpRequest = new HttpRequestMessage();
             HttpResponseMessage _httpResponse = null;
@@ -4990,10 +4984,10 @@ namespace SINners
             // Serialize Request
             string _requestContent = null;
             // Set Credentials
-            if (this.Credentials != null)
+            if (Credentials != null)
             {
                 cancellationToken.ThrowIfCancellationRequested();
-                await this.Credentials.ProcessHttpRequestAsync(_httpRequest, cancellationToken).ConfigureAwait(false);
+                await Credentials.ProcessHttpRequestAsync(_httpRequest, cancellationToken).ConfigureAwait(false);
             }
             // Send Request
             if (_shouldTrace)
@@ -5001,7 +4995,7 @@ namespace SINners
                 ServiceClientTracing.SendRequest(_invocationId, _httpRequest);
             }
             cancellationToken.ThrowIfCancellationRequested();
-            _httpResponse = await this.HttpClient.SendAsync(_httpRequest, cancellationToken).ConfigureAwait(false);
+            _httpResponse = await HttpClient.SendAsync(_httpRequest, cancellationToken).ConfigureAwait(false);
             if (_shouldTrace)
             {
                 ServiceClientTracing.ReceiveResponse(_invocationId, _httpResponse);
@@ -5011,7 +5005,7 @@ namespace SINners
             string _responseContent = null;
             if ((int)_statusCode != 200)
             {
-                var ex = new HttpOperationException(string.Format("Operation returned an invalid status code '{0}'", _statusCode));
+                HttpOperationException ex = new HttpOperationException(string.Format("Operation returned an invalid status code '{0}'", _statusCode));
                 _responseContent = await _httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
                 ex.Request = new HttpRequestMessageWrapper(_httpRequest, _requestContent);
                 ex.Response = new HttpResponseMessageWrapper(_httpResponse, _responseContent);
@@ -5027,7 +5021,7 @@ namespace SINners
                 throw ex;
             }
             // Create Result
-            var _result = new HttpOperationResponse
+            HttpOperationResponse _result = new HttpOperationResponse
             {
                 Request = _httpRequest,
                 Response = _httpResponse

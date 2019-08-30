@@ -27,7 +27,7 @@ namespace Chummer
     public class DropUserdataTelemetryProcessor : ITelemetryProcessor
     {
 
-        private string UserProfilePath = string.Empty;
+        private readonly string UserProfilePath = string.Empty;
         private ITelemetryProcessor Next
         {
             get; set;
@@ -42,7 +42,7 @@ namespace Chummer
         // Link processors to each other in a chain.
         public DropUserdataTelemetryProcessor(ITelemetryProcessor next, string UserProfilePath)
         {
-            this.Next = next;
+            Next = next;
             this.UserProfilePath = UserProfilePath;
         }
         public void Process(ITelemetry item)
@@ -50,7 +50,7 @@ namespace Chummer
             ModifyItem(item);
             if (GlobalOptions.UseLoggingApplicationInsights == UseAILogging.Trace)
             {
-                this.Next.Process(item);
+                Next.Process(item);
                 return;
             }
             if (GlobalOptions.UseLoggingApplicationInsights >= UseAILogging.Crashes)
@@ -60,7 +60,7 @@ namespace Chummer
                     if ((exceptionTelemetry.Exception.Data.Contains("IsCrash"))
                         || (exceptionTelemetry.Properties.ContainsKey("IsCrash") == true))
                     {
-                        this.Next.Process(item);
+                        Next.Process(item);
                         return;
                     }
                 }
@@ -71,7 +71,7 @@ namespace Chummer
                     || (item is PageViewTelemetry)
                     || (item is PageViewPerformanceTelemetry))
                 {
-                    this.Next.Process(item);
+                    Next.Process(item);
                     return;
                 }
             }
@@ -81,7 +81,7 @@ namespace Chummer
                 {
                     if (traceTelemetry.SeverityLevel >= SeverityLevel.Information)
                     {
-                        this.Next.Process(item);
+                        Next.Process(item);
                         return;
                     }
                 }
@@ -103,7 +103,10 @@ namespace Chummer
             {
                 string newurl = req.Url?.ToString()?.CheapReplace(UserProfilePath, () => @"{username}", true);
                 if (!string.IsNullOrEmpty(newurl))
+                {
                     req.Url = new Uri(newurl);
+                }
+
                 return;
             }
 
@@ -115,7 +118,9 @@ namespace Chummer
                     foreach (DictionaryEntry de in exception.Exception.Data)
                     {
                         if (!exception.Properties.ContainsKey(de.Key.ToString()))
+                        {
                             exception.Properties.Add(de.Key.ToString(), de.Value?.ToString());
+                        }
                     }
                     if (exception.Message == null)
                     {
@@ -123,7 +128,10 @@ namespace Chummer
                     }
                 }
                 else
+                {
                     exception.Message = exception.Message?.CheapReplace(UserProfilePath, () => @"{username}", true);
+                }
+
                 return;
             }
 

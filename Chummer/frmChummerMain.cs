@@ -47,7 +47,7 @@ namespace Chummer
 {
     public sealed partial class frmChummerMain : Form
     {
-        private static Logger Log = NLog.LogManager.GetCurrentClassLogger();
+        private static readonly Logger Log = NLog.LogManager.GetCurrentClassLogger();
 #if LEGACY
         private frmOmae _frmOmae;
 #endif
@@ -85,7 +85,9 @@ namespace Chummer
 
             //lets write that in separate lines to see where the exception is thrown
             if (GlobalOptions.HideCharacterRoster == true)
+            {
                 CharacterRoster = null;
+            }
             else
             {
                 CharacterRoster = new frmCharacterRoster
@@ -116,7 +118,7 @@ namespace Chummer
                         op_frmChummerMain.tc.TrackPageView(pvt);
                     }
 
-                    this.Text = MainTitle;
+                    Text = MainTitle;
 
 
 
@@ -152,7 +154,9 @@ namespace Chummer
                             try
                             {
                                 if (File.Exists(strLoopOldFilePath))
+                                {
                                     File.Delete(strLoopOldFilePath);
+                                }
                             }
                             catch (UnauthorizedAccessException e)
                             {
@@ -256,7 +260,9 @@ namespace Chummer
                                 if (strArgs[i] == "/test")
                                 {
                                     lock (blnShowTestLock)
+                                    {
                                         blnShowTest = true;
+                                    }
                                 }
                                 else if ((strArgs[i] == "/help")
                                     || (strArgs[i] == "?")
@@ -282,7 +288,10 @@ namespace Chummer
                                             strArgs.Aggregate((j, k) => j + " " + k));
                                     }
                                     if (lstCharactersToLoad.Any(x => x.FileName == strArgs[i]))
+                                    {
                                         return;
+                                    }
+
                                     Character objLoopCharacter = LoadCharacter(strArgs[i]).Result;
                                     lstCharactersToLoad.Add(objLoopCharacter);
                                 }
@@ -291,9 +300,15 @@ namespace Chummer
                         catch (Exception e)
                         {
                             if (op_frmChummerMain.MyDependencyTelemetry != null)
+                            {
                                 op_frmChummerMain.MyDependencyTelemetry.Success = false;
+                            }
+
                             if (op_frmChummerMain.MyRequestTelemetry != null)
+                            {
                                 op_frmChummerMain.MyRequestTelemetry.Success = false;
+                            }
+
                             ExceptionTelemetry ex = new ExceptionTelemetry(e)
                             {
                                 SeverityLevel = SeverityLevel.Warning
@@ -332,9 +347,15 @@ namespace Chummer
                     if (op_frmChummerMain != null)
                     {
                         if (op_frmChummerMain.MyDependencyTelemetry != null)
+                        {
                             op_frmChummerMain.MyDependencyTelemetry.Success = false;
+                        }
+
                         if (op_frmChummerMain.MyRequestTelemetry != null)
+                        {
                             op_frmChummerMain.MyRequestTelemetry.Success = false;
+                        }
+
                         op_frmChummerMain.tc.TrackException(e);
                     }
                     Log.Error(e);
@@ -413,21 +434,33 @@ namespace Chummer
                 case NotifyCollectionChangedAction.Add:
                     {
                         foreach (Character objCharacter in notifyCollectionChangedEventArgs.NewItems)
+                        {
                             objCharacter.PropertyChanged += UpdateCharacterTabTitle;
+                        }
+
                         break;
                     }
                 case NotifyCollectionChangedAction.Remove:
                     {
                         foreach (Character objCharacter in notifyCollectionChangedEventArgs.OldItems)
+                        {
                             objCharacter.PropertyChanged -= UpdateCharacterTabTitle;
+                        }
+
                         break;
                     }
                 case NotifyCollectionChangedAction.Replace:
                     {
                         foreach (Character objCharacter in notifyCollectionChangedEventArgs.OldItems)
+                        {
                             objCharacter.PropertyChanged -= UpdateCharacterTabTitle;
+                        }
+
                         foreach (Character objCharacter in notifyCollectionChangedEventArgs.NewItems)
+                        {
                             objCharacter.PropertyChanged += UpdateCharacterTabTitle;
+                        }
+
                         break;
                     }
             }
@@ -563,7 +596,10 @@ namespace Chummer
                 string strVersion = line.Substring(line.IndexOf(':') + 1);
                 int intPos = strVersion.IndexOf('}');
                 if (intPos != -1)
+                {
                     strVersion = strVersion.Substring(0, intPos);
+                }
+
                 strVersion = strVersion.FastEscape('\"');
 
                 if (_workerVersionUpdateChecker.CancellationPending)
@@ -627,10 +663,7 @@ namespace Chummer
         }
         */
 
-        private void ExitToolsStripMenuItem_Click(object sender, EventArgs e)
-        {
-            Close();
-        }
+        private void ExitToolsStripMenuItem_Click(object sender, EventArgs e) => Close();
 
         /*
         private void dashboardToolStripMenuItem_Click(object sender, EventArgs e)
@@ -644,7 +677,9 @@ namespace Chummer
             foreach (Form childForm in MdiChildren)
             {
                 if (childForm != CharacterRoster)
+                {
                     childForm.Close();
+                }
             }
         }
 
@@ -678,10 +713,7 @@ namespace Chummer
             }
         }
 
-        private void ResetFrmUpdate(object sender, EventArgs e)
-        {
-            _frmUpdate = null;
-        }
+        private void ResetFrmUpdate(object sender, EventArgs e) => _frmUpdate = null;
 
         private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -689,20 +721,11 @@ namespace Chummer
             frmShowAbout.ShowDialog(this);
         }
 
-        private void mnuChummerWiki_Click(object sender, EventArgs e)
-        {
-            Process.Start("http://www.chummergen.com/chummer/wiki/");
-        }
+        private void mnuChummerWiki_Click(object sender, EventArgs e) => Process.Start("http://www.chummergen.com/chummer/wiki/");
 
-        private void mnuChummerDiscord_Click(object sender, EventArgs e)
-        {
-            Process.Start("https://discord.gg/mJB7st9");
-        }
+        private void mnuChummerDiscord_Click(object sender, EventArgs e) => Process.Start("https://discord.gg/mJB7st9");
 
-        private void mnuHelpDumpshock_Click(object sender, EventArgs e)
-        {
-            Process.Start("https://github.com/chummer5a/chummer5a/issues/");
-        }
+        private void mnuHelpDumpshock_Click(object sender, EventArgs e) => Process.Start("https://github.com/chummer5a/chummer5a/issues/");
 
         public frmPrintMultiple PrintMultipleCharactersForm
         {
@@ -712,9 +735,14 @@ namespace Chummer
         private void mnuFilePrintMultiple_Click(object sender, EventArgs e)
         {
             if (PrintMultipleCharactersForm == null || PrintMultipleCharactersForm.IsDisposed)
+            {
                 PrintMultipleCharactersForm = new frmPrintMultiple();
+            }
             else
+            {
                 PrintMultipleCharactersForm.Activate();
+            }
+
             PrintMultipleCharactersForm.Show(this);
         }
 
@@ -739,7 +767,9 @@ namespace Chummer
                 Cursor = objOldCursor;
 
                 if (frmPickSetting.DialogResult == DialogResult.Cancel)
+                {
                     return;
+                }
 
                 objCharacter.SettingsFile = frmPickSetting.SettingsFile;
             }
@@ -763,7 +793,10 @@ namespace Chummer
             Cursor = objOldCursor;
 
             if (frmSelectMetatype.DialogResult == DialogResult.Cancel)
+            {
                 return;
+            }
+
             objOldCursor = Cursor;
             Cursor = Cursors.WaitCursor;
 
@@ -777,7 +810,9 @@ namespace Chummer
                 objWeapon.ParentID = Guid.NewGuid().ToString("D"); // Unarmed Attack can never be removed
                 objCharacter.Weapons.Add(objWeapon);
                 foreach (Weapon objLoopWeapon in lstWeapons)
+                {
                     objCharacter.Weapons.Add(objLoopWeapon);
+                }
             }
 
             frmCareer frmNewCharacter = new frmCareer(objCharacter)
@@ -865,7 +900,9 @@ namespace Chummer
                     {
                         string strTagText = LanguageManager.GetString(ActiveMdiChild.Tag?.ToString(), GlobalOptions.Language, false);
                         if (!string.IsNullOrEmpty(strTagText))
+                        {
                             tp.Text = strTagText;
+                        }
                     }
 
                     tabForms.SelectedTab = tp;
@@ -889,13 +926,12 @@ namespace Chummer
 
             // Don't show the tab control if there is only one window open.
             if (tabForms.TabCount <= 1)
+            {
                 tabForms.Visible = false;
+            }
         }
 
-        private void tabForms_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            (tabForms.SelectedTab?.Tag as Form)?.Select();
-        }
+        private void tabForms_SelectedIndexChanged(object sender, EventArgs e) => (tabForms.SelectedTab?.Tag as Form)?.Select();
 
         public bool SwitchToOpenCharacter(Character objCharacter, bool blnIncludeInMRU)
         {
@@ -910,7 +946,10 @@ namespace Chummer
                         {
                             tabForms.SelectTab(objTabPage);
                             if (_mascotChummy != null)
+                            {
                                 _mascotChummy.CharacterObject = objCharacter;
+                            }
+
                             return true;
                         }
                     }
@@ -1043,22 +1082,23 @@ namespace Chummer
                 WindowState = Properties.Settings.Default.WindowState;
 
                 if (WindowState == FormWindowState.Minimized)
+                {
                     WindowState = FormWindowState.Normal;
+                }
 
                 Location = Properties.Settings.Default.Location;
                 Size = Properties.Settings.Default.Size;
             }
 
             if (GlobalOptions.StartupFullscreen)
+            {
                 WindowState = FormWindowState.Maximized;
+            }
 
             mnuToolsOmae.Visible = GlobalOptions.OmaeEnabled;
         }
 
-        private static bool IsVisibleOnAnyScreen()
-        {
-            return Screen.AllScreens.Any(screen => screen.WorkingArea.Contains(Properties.Settings.Default.Location));
-        }
+        private static bool IsVisibleOnAnyScreen() => Screen.AllScreens.Any(screen => screen.WorkingArea.Contains(Properties.Settings.Default.Location));
 
         private async void frmChummerMain_DragDrop(object sender, DragEventArgs e)
         {
@@ -1072,23 +1112,25 @@ namespace Chummer
             {
                 Character objLoopCharacter = LoadCharacter(s[i]).Result;
                 lock (lstCharactersLock)
+                {
                     lstCharacters[i] = objLoopCharacter;
+                }
             });
             Cursor = objOldCursor;
             Program.MainForm.OpenCharacterList(lstCharacters);
         }
 
-        private void frmChummerMain_DragEnter(object sender, DragEventArgs e)
-        {
+        private void frmChummerMain_DragEnter(object sender, DragEventArgs e) =>
             // Only use a drop effect if a file is being dragged into the window.
             e.Effect = e.Data.GetDataPresent(DataFormats.FileDrop) ? DragDropEffects.All : DragDropEffects.None;
-        }
 
         private void mnuToolsTranslator_Click(object sender, EventArgs e)
         {
             string strTranslator = Path.Combine(Utils.GetStartupPath, "Translator.exe");
             if (File.Exists(strTranslator))
+            {
                 Process.Start(strTranslator);
+            }
         }
         #endregion
 
@@ -1104,10 +1146,7 @@ namespace Chummer
         /// <param name="caption"></param>
         /// <param name="defaultButton"></param>
         /// <returns></returns>
-        public DialogResult ShowMessageBox(string message, string caption = null, MessageBoxButtons buttons = MessageBoxButtons.OK, MessageBoxIcon icon = MessageBoxIcon.None, MessageBoxDefaultButton defaultButton = MessageBoxDefaultButton.Button1)
-        {
-            return ShowMessageBox(new Form() { TopMost = true }, message, caption, buttons, icon);
-        }
+        public DialogResult ShowMessageBox(string message, string caption = null, MessageBoxButtons buttons = MessageBoxButtons.OK, MessageBoxIcon icon = MessageBoxIcon.None, MessageBoxDefaultButton defaultButton = MessageBoxDefaultButton.Button1) => ShowMessageBox(new Form() { TopMost = true }, message, caption, buttons, icon);
 
         public DialogResult ShowMessageBox(Control owner, string message, string caption = null, MessageBoxButtons buttons = MessageBoxButtons.OK, MessageBoxIcon icon = MessageBoxIcon.None, MessageBoxDefaultButton defaultButton = MessageBoxDefaultButton.Button1)
         {
@@ -1120,7 +1159,9 @@ namespace Chummer
             }
 
             if (owner == null)
+            {
                 owner = this;
+            }
 
             if (owner.InvokeRequired)
             {
@@ -1192,7 +1233,9 @@ namespace Chummer
                 frmPickSetting.ShowDialog(this);
 
                 if (frmPickSetting.DialogResult == DialogResult.Cancel)
+                {
                     return;
+                }
 
                 objCharacter.SettingsFile = frmPickSetting.SettingsFile;
             }
@@ -1208,7 +1251,10 @@ namespace Chummer
             Cursor = objOldCursor;
 
             if (frmBP.DialogResult == DialogResult.Cancel)
+            {
                 return;
+            }
+
             if (objCharacter.BuildMethod == CharacterBuildMethod.Karma || objCharacter.BuildMethod == CharacterBuildMethod.LifeModule)
             {
                 objOldCursor = Cursor;
@@ -1249,7 +1295,9 @@ namespace Chummer
                 objWeapon.ParentID = Guid.NewGuid().ToString("D"); // Unarmed Attack can never be removed
                 objCharacter.Weapons.Add(objWeapon);
                 foreach (Weapon objLoopWeapon in lstWeapons)
+                {
                     objCharacter.Weapons.Add(objLoopWeapon);
+                }
             }
 
             OpenCharacters.Add(objCharacter);
@@ -1284,9 +1332,13 @@ namespace Chummer
                 {
                     Character objLoopCharacter = OpenCharacters.FirstOrDefault(x => x.FileName == strFile);
                     if (objLoopCharacter != null)
+                    {
                         SwitchToOpenCharacter(objLoopCharacter, true);
+                    }
                     else
+                    {
                         lstFilesToOpen.Add(strFile);
+                    }
                 }
                 if (lstFilesToOpen.Count != 0)
                 {
@@ -1296,7 +1348,9 @@ namespace Chummer
                     {
                         Character objLoopCharacter = LoadCharacter(lstFilesToOpen[i]).Result;
                         lock (lstCharactersLock)
+                        {
                             lstCharacters[i] = objLoopCharacter;
+                        }
                     });
                     Program.MainForm.OpenCharacterList(lstCharacters);
                 }
@@ -1311,10 +1365,7 @@ namespace Chummer
         /// <summary>
         /// Opens the correct window for a single character (not thread-safe).
         /// </summary>
-        public void OpenCharacter(Character objCharacter, bool blnIncludeInMRU = true)
-        {
-            OpenCharacterList(new List<Character> { objCharacter }, blnIncludeInMRU);
-        }
+        public void OpenCharacter(Character objCharacter, bool blnIncludeInMRU = true) => OpenCharacterList(new List<Character> { objCharacter }, blnIncludeInMRU);
 
         /// <summary>
         /// Open the correct windows for a list of characters (not thread-safe).
@@ -1324,7 +1375,9 @@ namespace Chummer
         public void OpenCharacterList(IEnumerable<Character> lstCharacters, bool blnIncludeInMRU = true)
         {
             if (lstCharacters == null)
+            {
                 return;
+            }
 
             Cursor objOldCursor = Cursor;
             Cursor = Cursors.WaitCursor;
@@ -1336,7 +1389,9 @@ namespace Chummer
             foreach (Character objCharacter in lstCharacters)
             {
                 if (objCharacter == null || OpenCharacterForms.Any(x => x.CharacterObject == objCharacter))
+                {
                     continue;
+                }
                 //Timekeeper.Start("load_event_time");
                 // Show the character form.
                 if (!objCharacter.Created)
@@ -1361,7 +1416,9 @@ namespace Chummer
                 }
 
                 if (blnIncludeInMRU && !string.IsNullOrEmpty(objCharacter.FileName) && File.Exists(objCharacter.FileName))
+                {
                     GlobalOptions.MostRecentlyUsedCharacters.Insert(0, objCharacter.FileName);
+                }
 
                 UpdateCharacterTabTitle(objCharacter, new PropertyChangedEventArgs(nameof(Character.CharacterName)));
 
@@ -1410,12 +1467,15 @@ namespace Chummer
                     catch (XmlException ex)
                     {
                         if (blnShowErrors)
+                        {
                             Program.MainForm.ShowMessageBox(
                                string.Format(
                                    LanguageManager.GetString("Message_FailedLoad", GlobalOptions.Language),
                                    ex.Message),
                                LanguageManager.GetString("MessageTitle_FailedLoad", GlobalOptions.Language),
                                MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        }
+
                         frmLoadingForm?.Close();
                         return null;
                     }
@@ -1458,10 +1518,15 @@ namespace Chummer
 
                 // If a new name is given, set the character's name to match (used in cloning).
                 if (!string.IsNullOrEmpty(strNewName))
+                {
                     objCharacter.Name = strNewName;
+                }
                 // Clear the File Name field so that this does not accidentally overwrite the original save file (used in cloning).
                 if (blnClearFileName)
+                {
                     objCharacter.FileName = string.Empty;
+                }
+
                 frmLoadingForm?.Close();
             }
             else if (blnShowErrors)
@@ -1594,9 +1659,13 @@ namespace Chummer
 
                         objItem.Visible = true;
                         if (i2 == 9)
+                        {
                             objItem.Text = "1&0 " + strFile;
+                        }
                         else
+                        {
                             objItem.Text = '&' + (i + 1).ToString() + ' ' + strFile;
+                        }
 
                         ++i2;
                     }
@@ -1606,11 +1675,7 @@ namespace Chummer
             ResumeLayout();
         }
 
-        private void objCareer_DiceRollerOpened(object sender)
-        {
-            Program.MainForm.ShowMessageBox("This feature is currently disabled. Please open a ticket if this makes the world burn, otherwise it will get re-enabled when somebody gets around to it");
-            //TODO: IMPLEMENT THIS SHIT
-        }
+        private void objCareer_DiceRollerOpened(object sender) => Program.MainForm.ShowMessageBox("This feature is currently disabled. Please open a ticket if this makes the world burn, otherwise it will get re-enabled when somebody gets around to it");//TODO: IMPLEMENT THIS SHIT
 
         private void objCareer_DiceRollerOpenedInt(Character objCharacter, int intDice)
         {
@@ -1635,15 +1700,9 @@ namespace Chummer
             }
         }
 
-        private void mnuClearUnpinnedItems_Click(object sender, EventArgs e)
-        {
-            GlobalOptions.MostRecentlyUsedCharacters.Clear();
-        }
+        private void mnuClearUnpinnedItems_Click(object sender, EventArgs e) => GlobalOptions.MostRecentlyUsedCharacters.Clear();
 
-        private void mnuRestart_Click(object sender, EventArgs e)
-        {
-            Utils.RestartApplication(GlobalOptions.Language, "Message_Options_Restart");
-        }
+        private void mnuRestart_Click(object sender, EventArgs e) => Utils.RestartApplication(GlobalOptions.Language, "Message_Options_Restart");
         #endregion
 
         #region Application Properties
@@ -1682,7 +1741,10 @@ namespace Chummer
         private void frmChummerMain_Closing(object sender, FormClosingEventArgs e)
         {
             if (_workerVersionUpdateChecker.IsBusy)
+            {
                 _workerVersionUpdateChecker.CancelAsync();
+            }
+
             Properties.Settings.Default.WindowState = WindowState;
             if (WindowState == FormWindowState.Normal)
             {
@@ -1702,7 +1764,9 @@ namespace Chummer
         {
             if (MessageBox.Show(LanguageManager.GetString("Message_HeroLabImporterWarning", GlobalOptions.Language),
                     LanguageManager.GetString("Message_HeroLabImporterWarning_Title", GlobalOptions.Language), MessageBoxButtons.YesNo, MessageBoxIcon.Warning) != DialogResult.Yes)
+            {
                 return;
+            }
 
             frmHeroLabImporter frmHeroLabImporter = new frmHeroLabImporter();
             frmHeroLabImporter.Show();

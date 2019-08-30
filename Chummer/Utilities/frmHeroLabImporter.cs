@@ -112,9 +112,13 @@ namespace Chummer
                             string strKey = Path.GetFileName(strEntryFullName);
                             Bitmap imgMugshot = (new Bitmap(entry.Open(), true)).ConvertPixelFormat(PixelFormat.Format32bppPArgb);
                             if (_dicImages.ContainsKey(strKey))
+                            {
                                 _dicImages[strKey] = imgMugshot;
+                            }
                             else
+                            {
                                 _dicImages.Add(strKey, imgMugshot);
+                            }
                         }
                     }
                 }
@@ -170,7 +174,10 @@ namespace Chummer
 
                     string strRaceString = xmlBaseCharacterNode.SelectSingleNode("race/@name")?.InnerText;
                     if (strRaceString == "Metasapient")
+                    {
                         strRaceString = "A.I.";
+                    }
+
                     if (!string.IsNullOrEmpty(strRaceString))
                     {
                         using (XmlNodeList xmlMetatypeList = xmlMetatypesDocument.SelectNodes("/chummer/metatypes/metatype"))
@@ -326,11 +333,16 @@ namespace Chummer
             {
                 strName = objCache.CharacterName;
                 if (string.IsNullOrEmpty(strName))
+                {
                     strName = LanguageManager.GetString("String_UnnamedCharacter", GlobalOptions.Language);
+                }
             }
             string strBuildMethod = LanguageManager.GetString("String_" + objCache.BuildMethod, GlobalOptions.Language, false);
             if (string.IsNullOrEmpty(strBuildMethod))
+            {
                 strBuildMethod = "Unknown build method";
+            }
+
             string strCreated = LanguageManager.GetString(objCache.Created ? "Title_CareerMode" : "Title_CreateMode", GlobalOptions.Language);
             string strReturn = $"{strName} ({strBuildMethod} - {strCreated})";
             return strReturn;
@@ -351,31 +363,46 @@ namespace Chummer
 
                 lblCharacterName.Text = objCache.CharacterName;
                 if (string.IsNullOrEmpty(lblCharacterName.Text))
+                {
                     lblCharacterName.Text = strUnknown;
+                }
+
                 lblCharacterNameLabel.Visible = !string.IsNullOrEmpty(lblCharacterName.Text);
                 lblCharacterName.Visible = !string.IsNullOrEmpty(lblCharacterName.Text);
 
                 lblCharacterAlias.Text = objCache.CharacterAlias;
                 if (string.IsNullOrEmpty(lblCharacterAlias.Text))
+                {
                     lblCharacterAlias.Text = strUnknown;
+                }
+
                 lblCharacterAliasLabel.Visible = !string.IsNullOrEmpty(lblCharacterAlias.Text);
                 lblCharacterAlias.Visible = !string.IsNullOrEmpty(lblCharacterAlias.Text);
 
                 lblPlayerName.Text = objCache.PlayerName;
                 if (string.IsNullOrEmpty(lblPlayerName.Text))
+                {
                     lblPlayerName.Text = strUnknown;
+                }
+
                 lblPlayerNameLabel.Visible = !string.IsNullOrEmpty(lblPlayerName.Text);
                 lblPlayerName.Visible = !string.IsNullOrEmpty(lblPlayerName.Text);
 
                 lblCareerKarma.Text = objCache.Karma;
                 if (string.IsNullOrEmpty(lblCareerKarma.Text) || lblCareerKarma.Text == "0")
+                {
                     lblCareerKarma.Text = strNone;
+                }
+
                 lblCareerKarmaLabel.Visible = !string.IsNullOrEmpty(lblCareerKarma.Text);
                 lblCareerKarma.Visible = !string.IsNullOrEmpty(lblCareerKarma.Text);
 
                 lblEssence.Text = objCache.Essence;
                 if (string.IsNullOrEmpty(lblEssence.Text))
+                {
                     lblEssence.Text = strUnknown;
+                }
+
                 lblEssenceLabel.Visible = !string.IsNullOrEmpty(lblEssence.Text);
                 lblEssence.Visible = !string.IsNullOrEmpty(lblEssence.Text);
 
@@ -400,7 +427,9 @@ namespace Chummer
                 }
                 lblMetatype.Text = strMetatype;
                 if (string.IsNullOrEmpty(lblMetatype.Text))
+                {
                     lblMetatype.Text = strUnknown;
+                }
 
                 lblMetatypeLabel.Visible = !string.IsNullOrEmpty(lblMetatype.Text);
                 lblMetatype.Visible = !string.IsNullOrEmpty(lblMetatype.Text);
@@ -440,28 +469,28 @@ namespace Chummer
             {
                 int intIndex = Convert.ToInt32(objSelectedNode.Tag);
                 if (intIndex >= 0 && intIndex < _lstCharacterCache.Count)
+                {
                     objCache = _lstCharacterCache[intIndex];
+                }
             }
             UpdateCharacter(objCache);
             treCharacterList.ClearNodeBackground(treCharacterList.SelectedNode);
         }
 
-        private void treCharacterList_DoubleClick(object sender, EventArgs e)
-        {
-            DoImport();
-        }
+        private void treCharacterList_DoubleClick(object sender, EventArgs e) => DoImport();
 
-        private void cmdImport_Click(object sender, EventArgs e)
-        {
-            DoImport();
-        }
+        private void cmdImport_Click(object sender, EventArgs e) => DoImport();
 
         private void picMugshot_SizeChanged(object sender, EventArgs e)
         {
             if (picMugshot.Image != null && picMugshot.Height >= picMugshot.Image.Height && picMugshot.Width >= picMugshot.Image.Width)
+            {
                 picMugshot.SizeMode = PictureBoxSizeMode.CenterImage;
+            }
             else
+            {
                 picMugshot.SizeMode = PictureBoxSizeMode.Zoom;
+            }
         }
         #endregion
 
@@ -502,7 +531,9 @@ namespace Chummer
                             frmPickSetting.ShowDialog(this);
 
                             if (frmPickSetting.DialogResult == DialogResult.Cancel)
+                            {
                                 return;
+                            }
 
                             objCharacter.SettingsFile = frmPickSetting.SettingsFile;
                         }

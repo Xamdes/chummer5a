@@ -41,7 +41,10 @@ namespace Chummer.Backend
             // Specifically, the NVDA screen reader. See https://github.com/chummer5a/chummer5a/issues/1888
             // In theory shouldn't mask any existing issues?
             if (frame == null)
+            {
                 return;
+            }
+
             string heat = $"{frame.GetFileName()}:{frame.GetFileLineNumber()}";
 
             if (_map.TryGetValue(heat, out int intTmp))

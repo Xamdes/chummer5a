@@ -49,9 +49,14 @@ namespace Chummer
             cboAttribute.DisplayMember = "Name";
             cboAttribute.DataSource = _lstAttributes;
             if (_lstAttributes.Count >= 1)
+            {
                 cboAttribute.SelectedIndex = 0;
+            }
             else
+            {
                 cmdOK.Enabled = false;
+            }
+
             cboAttribute.EndUpdate();
         }
 
@@ -69,10 +74,7 @@ namespace Chummer
             }
         }
 
-        private void cmdCancel_Click(object sender, EventArgs e)
-        {
-            DialogResult = DialogResult.Cancel;
-        }
+        private void cmdCancel_Click(object sender, EventArgs e) => DialogResult = DialogResult.Cancel;
         #endregion
 
         #region Properties

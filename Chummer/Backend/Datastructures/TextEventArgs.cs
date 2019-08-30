@@ -23,10 +23,7 @@ namespace Chummer
 {
     public class TextEventArgs : EventArgs
     {
-        public TextEventArgs(string strText)
-        {
-            Text = strText;
-        }
+        public TextEventArgs(string strText) => Text = strText;
 
         public string Text
         {

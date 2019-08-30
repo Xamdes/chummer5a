@@ -27,9 +27,14 @@ namespace ChummerHub.Controllers.V1
                     object proposedValue = null;
                     object databaseValue = null;
                     if (proposedValues?.Properties?.Contains(property) == true)
+                    {
                         proposedValue = proposedValues[property];
+                    }
+
                     if (databaseValues?.Properties?.Contains(property) == true)
+                    {
                         databaseValue = databaseValues[property];
+                    }
 
                     msg += Environment.NewLine + "property: " + property + Environment.NewLine;
                     msg += "\tproposedValue: " + proposedValue + Environment.NewLine;

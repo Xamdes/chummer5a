@@ -35,7 +35,9 @@ namespace Chummer
         private static void BuildFromException(object sender, UnhandledExceptionEventArgs e)
         {
             if (Debugger.IsAttached)
+            {
                 return;
+            }
 
             CrashReportData report = new CrashReportData(Guid.NewGuid()).AddDefaultData().AddData("exception.txt", e.ExceptionObject.ToString());
 
@@ -88,7 +90,9 @@ namespace Chummer
             get
             {
                 if (_subject == null)
+                {
                     return Id.ToString("D");
+                }
 
                 return _subject;
             }
@@ -101,10 +105,7 @@ namespace Chummer
             values = new List<KeyValuePair<string, Stream>>();
         }
 
-        public CrashReportData AddDefaultData()
-        {
-            return AddData("info.txt", DefaultInfo());
-        }
+        public CrashReportData AddDefaultData() => AddData("info.txt", DefaultInfo());
 
         private string DefaultInfo()
         {

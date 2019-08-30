@@ -31,7 +31,7 @@ namespace Chummer
     [DebuggerDisplay("{DisplayName(GlobalOptions.DefaultLanguage)}")]
     public class Enhancement : IHasInternalId, IHasName, IHasXmlNode, IHasNotes, ICanRemove, IHasSource
     {
-        private static Logger Log = NLog.LogManager.GetCurrentClassLogger();
+        private static readonly Logger Log = NLog.LogManager.GetCurrentClassLogger();
         private Guid _guiID;
         private Guid _guiSourceID;
         private string _strName = string.Empty;
@@ -64,12 +64,18 @@ namespace Chummer
                 Utils.BreakIfDebug();
             }
             if (objXmlArtNode.TryGetStringFieldQuickly("name", ref _strName))
+            {
                 _objCachedMyXmlNode = null;
+            }
+
             objXmlArtNode.TryGetStringFieldQuickly("source", ref _strSource);
             objXmlArtNode.TryGetStringFieldQuickly("page", ref _strPage);
             _objImprovementSource = objSource;
             if (!objXmlArtNode.TryGetStringFieldQuickly("altnotes", ref _strNotes))
+            {
                 objXmlArtNode.TryGetStringFieldQuickly("notes", ref _strNotes);
+            }
+
             objXmlArtNode.TryGetInt32FieldQuickly("grade", ref _intGrade);
             _nodBonus = objXmlArtNode["bonus"];
             if (_nodBonus != null)
@@ -110,15 +116,22 @@ namespace Chummer
             objWriter.WriteElementString("page", _strPage);
             objWriter.WriteElementString("grade", _intGrade.ToString(GlobalOptions.InvariantCultureInfo));
             if (_nodBonus != null)
+            {
                 objWriter.WriteRaw(_nodBonus.OuterXml);
+            }
             else
+            {
                 objWriter.WriteElementString("bonus", string.Empty);
+            }
+
             objWriter.WriteElementString("improvementsource", _objImprovementSource.ToString());
             objWriter.WriteElementString("notes", _strNotes);
             objWriter.WriteEndElement();
 
             if (Grade >= 0)
+            {
                 _objCharacter.SourceProcess(_strSource);
+            }
         }
 
         /// <summary>
@@ -137,12 +150,17 @@ namespace Chummer
                 node?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
             }
             if (objNode.TryGetStringFieldQuickly("name", ref _strName))
+            {
                 _objCachedMyXmlNode = null;
+            }
+
             objNode.TryGetStringFieldQuickly("source", ref _strSource);
             objNode.TryGetStringFieldQuickly("page", ref _strPage);
             _nodBonus = objNode["bonus"];
             if (objNode["improvementsource"] != null)
+            {
                 _objImprovementSource = Improvement.ConvertToImprovementSource(objNode["improvementsource"].InnerText);
+            }
 
             objNode.TryGetInt32FieldQuickly("grade", ref _intGrade);
             objNode.TryGetStringFieldQuickly("notes", ref _strNotes);
@@ -163,7 +181,10 @@ namespace Chummer
             objWriter.WriteElementString("page", Page(strLanguageToPrint));
             objWriter.WriteElementString("improvementsource", SourceType.ToString());
             if (_objCharacter.Options.PrintNotes)
+            {
                 objWriter.WriteElementString("notes", Notes);
+            }
+
             objWriter.WriteEndElement();
         }
         #endregion
@@ -183,7 +204,10 @@ namespace Chummer
             set
             {
                 if (_guiSourceID == value)
+                {
                     return;
+                }
+
                 _guiSourceID = value;
                 _objCachedMyXmlNode = null;
             }
@@ -224,7 +248,10 @@ namespace Chummer
             set
             {
                 if (_strName != value)
+                {
                     _objCachedMyXmlNode = null;
+                }
+
                 _strName = value;
             }
         }
@@ -236,7 +263,9 @@ namespace Chummer
         {
             // Get the translated name if applicable.
             if (strLanguage == GlobalOptions.DefaultLanguage)
+            {
                 return Name;
+            }
 
             return GetNode(strLanguage)?["translate"]?.InnerText ?? Name;
         }
@@ -276,7 +305,9 @@ namespace Chummer
         {
             // Get the translated name if applicable.
             if (strLanguage == GlobalOptions.DefaultLanguage)
+            {
                 return _strPage;
+            }
 
             return GetNode(strLanguage)?["altpage"]?.InnerText ?? _strPage;
         }
@@ -301,10 +332,7 @@ namespace Chummer
         private XmlNode _objCachedMyXmlNode;
         private string _strCachedXmlNodeLanguage = string.Empty;
 
-        public XmlNode GetNode()
-        {
-            return GetNode(GlobalOptions.Language);
-        }
+        public XmlNode GetNode() => GetNode(GlobalOptions.Language);
 
         public XmlNode GetNode(string strLanguage)
         {
@@ -325,11 +353,16 @@ namespace Chummer
         public TreeNode CreateTreeNode(ContextMenuStrip cmsEnhancement, bool blnAddCategory = false)
         {
             if (Grade == -1 && !string.IsNullOrEmpty(Source) && !_objCharacter.Options.BookEnabled(Source))
+            {
                 return null;
+            }
 
             string strText = DisplayName(GlobalOptions.Language);
             if (blnAddCategory)
+            {
                 strText = LanguageManager.GetString("Label_Enhancement", GlobalOptions.Language) + LanguageManager.GetString("String_Space", GlobalOptions.Language) + strText;
+            }
+
             TreeNode objNode = new TreeNode
             {
                 Name = InternalId,
@@ -363,19 +396,26 @@ namespace Chummer
         public bool Remove(Character characterObject, bool blnConfirmDelete = true)
         {
             if (Grade <= 0)
+            {
                 return false;
+            }
+
             if (blnConfirmDelete)
             {
                 if (!characterObject.ConfirmDelete(LanguageManager.GetString("Message_DeleteEnhancement",
                     GlobalOptions.Language)))
+                {
                     return false;
+                }
             }
 
             characterObject.Enhancements.Remove(this);
             foreach (Power objPower in characterObject.Powers)
             {
                 if (objPower.Enhancements.Contains(this))
+                {
                     objPower.Enhancements.Remove(this);
+                }
             }
 
             ImprovementManager.RemoveImprovements(characterObject, _objImprovementSource, InternalId);
@@ -386,7 +426,10 @@ namespace Chummer
         public void SetSourceDetail(Control sourceControl)
         {
             if (_objCachedSourceDetail?.Language != GlobalOptions.Language)
+            {
                 _objCachedSourceDetail = null;
+            }
+
             SourceDetail.SetControl(sourceControl);
         }
     }

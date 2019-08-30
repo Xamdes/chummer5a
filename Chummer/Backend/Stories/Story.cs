@@ -51,23 +51,35 @@ namespace Chummer
                     {
                         _blnNeedToRegeneratePersistents = true;
                         foreach (StoryModule objModule in e.NewItems)
+                        {
                             objModule.ParentStory = this;
+                        }
+
                         break;
                     }
                 case NotifyCollectionChangedAction.Remove:
                     {
                         _blnNeedToRegeneratePersistents = true;
                         foreach (StoryModule objModule in e.OldItems)
+                        {
                             objModule.ParentStory = null;
+                        }
+
                         break;
                     }
                 case NotifyCollectionChangedAction.Replace:
                     {
                         _blnNeedToRegeneratePersistents = true;
                         foreach (StoryModule objModule in e.OldItems)
+                        {
                             objModule.ParentStory = null;
+                        }
+
                         foreach (StoryModule objModule in e.NewItems)
+                        {
                             objModule.ParentStory = this;
+                        }
+
                         break;
                     }
                 case NotifyCollectionChangedAction.Reset:
@@ -96,12 +108,19 @@ namespace Chummer
                     if (!string.IsNullOrEmpty(strStoryId))
                     {
                         if (!int.TryParse(xmlStory.SelectSingleNode("weight")?.Value ?? "1", out int intWeight))
+                        {
                             intWeight = 1;
+                        }
+
                         intTotalWeight += intWeight;
                         if (dicStoriesListWithWeights.ContainsKey(strStoryId))
+                        {
                             dicStoriesListWithWeights[strStoryId] += intWeight;
+                        }
                         else
+                        {
                             dicStoriesListWithWeights.Add(strStoryId, intWeight);
+                        }
                     }
                 }
 
@@ -143,11 +162,15 @@ namespace Chummer
             foreach (KeyValuePair<string, StoryModule> objPersistentModule in _dicPersistentModules)
             {
                 if (objPersistentModule.Value.IsRandomlyGenerated)
+                {
                     lstPersistentKeysToRemove.Add(objPersistentModule.Key);
+                }
             }
 
             foreach (string strKey in lstPersistentKeysToRemove)
+            {
                 _dicPersistentModules.TryRemove(strKey, out StoryModule _);
+            }
 
             Parallel.ForEach(Modules, x =>
             {
@@ -159,7 +182,9 @@ namespace Chummer
         public string PrintStory(string strLanguage)
         {
             if (_blnNeedToRegeneratePersistents)
+            {
                 GeneratePersistents(strLanguage);
+            }
 
             object objOutputLock = new object();
             string[] strModuleOutputStrings = new string[Modules.Count];
@@ -167,7 +192,9 @@ namespace Chummer
             {
                 string strModuleOutput = Modules[i].PrintModule(strLanguage);
                 lock (objOutputLock)
+                {
                     strModuleOutputStrings[i] = strModuleOutput;
+                }
             });
             return string.Concat(strModuleOutputStrings);
         }

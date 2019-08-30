@@ -87,7 +87,10 @@ namespace Chummer
         public static void RebuildDataDirectoryInfo()
         {
             lock (s_SetFilesWithCachedDocsLock)
+            {
                 s_SetFilesWithCachedDocs.Clear();
+            }
+
             s_LstDataDirectories.Clear();
             s_LstDataDirectories.Add(Path.Combine(Utils.GetStartupPath, "data"));
             foreach (CustomDataDirectoryInfo objCustomDataDirectory in GlobalOptions.CustomDataDirectoryInfo.Where(x => x.Enabled))
@@ -123,12 +126,18 @@ namespace Chummer
             }
 
             lock (s_SetFilesWithCachedDocsLock)
+            {
                 if (!s_SetFilesWithCachedDocs.Contains(strFileName))
+                {
                     blnLoadFile = true;
+                }
+            }
 
             DateTime datDate = File.GetLastWriteTime(strPath);
             if (string.IsNullOrEmpty(strLanguage))
+            {
                 strLanguage = GlobalOptions.Language;
+            }
 
             // Look to see if this XmlDocument is already loaded.
             XmlReference objReference;
@@ -210,11 +219,15 @@ namespace Chummer
                     {
                         XmlNode xmlBaseChummerNode = objDoc.SelectSingleNode("/chummer");
                         using (XmlNodeList xmlTranslationTypeNodeList = objDataDoc.SelectNodes("/chummer/chummer[@file = " + strFileName.CleanXPath() + "]/*"))
+                        {
                             if (xmlTranslationTypeNodeList?.Count > 0)
+                            {
                                 foreach (XmlNode objType in xmlTranslationTypeNodeList)
                                 {
                                     AppendTranslations(objDoc, objType, xmlBaseChummerNode);
                                 }
+                            }
+                        }
                     }
                 }
 
@@ -223,12 +236,18 @@ namespace Chummer
                 objReference.FileName = strFileName;
                 objReference.Language = strLanguage;
                 if (GlobalOptions.LiveCustomData)
+                {
                     objReference.XmlContent = objDoc.Clone() as XmlDocument;
+                }
                 else
+                {
                     objReference.XmlContent = objDoc;
+                }
 
                 lock (s_SetFilesWithCachedDocsLock)
+                {
                     s_SetFilesWithCachedDocs.Add(strFileName);
+                }
             }
             else
             {
@@ -236,15 +255,24 @@ namespace Chummer
                 // (which we don't want and also results in multiple copies of each custom item).
                 // Pull the document from cache.
                 if (GlobalOptions.LiveCustomData)
+                {
                     objDoc = objReference.XmlContent.Clone() as XmlDocument;
+                }
                 else
+                {
                     objDoc = objReference.XmlContent;
+                }
             }
 
             if (objDoc == null)
+            {
                 objDoc = new XmlDocument();
+            }
+
             if (strFileName == "improvements.xml")
+            {
                 return objDoc;
+            }
 
             // Load any custom data files the user might have. Do not attempt this if we're loading the Improvements file.
             bool blnHasLiveCustomData = false;
@@ -308,20 +336,26 @@ namespace Chummer
                         {
                             string strItemName = xmlLoopNode["name"]?.InnerText ?? xmlLoopNode["stage"]?.InnerText ?? xmlLoopNode["category"]?.InnerText ?? strId;
                             if (!strId.IsGuid())
+                            {
                                 lstItemsWithMalformedIDs.Add(strItemName);
+                            }
                             else if (dicItemsWithIDs.TryGetValue(strId, out List<string> lstNamesList))
                             {
                                 if (!setDuplicateIDs.Contains(strId))
                                 {
                                     setDuplicateIDs.Add(strId);
                                     if (strItemName == strId)
+                                    {
                                         strItemName = string.Empty;
+                                    }
                                 }
 
                                 lstNamesList.Add(strItemName);
                             }
                             else
+                            {
                                 dicItemsWithIDs.Add(strId, new List<string> { strItemName });
+                            }
                         }
 
                         // Perform recursion so that nested elements that also have ids are also checked (e.g. Metavariants)
@@ -336,7 +370,10 @@ namespace Chummer
                 foreach (IEnumerable<string> lstDuplicateNames in dicItemsWithIDs.Where(x => setDuplicateIDs.Contains(x.Key)).Select(x => x.Value))
                 {
                     if (!string.IsNullOrEmpty(strDuplicatesNames))
+                    {
                         strDuplicatesNames += Environment.NewLine;
+                    }
+
                     strDuplicatesNames += string.Join(Environment.NewLine, lstDuplicateNames);
                 }
                 if (!Utils.IsUnitTest)
@@ -381,35 +418,51 @@ namespace Chummer
                 {
                     XmlNode xmlLoopNode = objChild["translate"];
                     if (xmlLoopNode != null)
+                    {
                         xmlItem.AppendChild(xmlDataDocument.ImportNode(xmlLoopNode, true));
+                    }
 
                     xmlLoopNode = objChild["altpage"];
                     if (xmlLoopNode != null)
+                    {
                         xmlItem.AppendChild(xmlDataDocument.ImportNode(xmlLoopNode, true));
+                    }
 
                     xmlLoopNode = objChild["altcode"];
                     if (xmlLoopNode != null)
+                    {
                         xmlItem.AppendChild(xmlDataDocument.ImportNode(xmlLoopNode, true));
+                    }
 
                     xmlLoopNode = objChild["altnotes"];
                     if (xmlLoopNode != null)
+                    {
                         xmlItem.AppendChild(xmlDataDocument.ImportNode(xmlLoopNode, true));
+                    }
 
                     xmlLoopNode = objChild["altadvantage"];
                     if (xmlLoopNode != null)
+                    {
                         xmlItem.AppendChild(xmlDataDocument.ImportNode(xmlLoopNode, true));
+                    }
 
                     xmlLoopNode = objChild["altdisadvantage"];
                     if (xmlLoopNode != null)
+                    {
                         xmlItem.AppendChild(xmlDataDocument.ImportNode(xmlLoopNode, true));
+                    }
 
                     xmlLoopNode = objChild["altnameonpage"];
                     if (xmlLoopNode != null)
+                    {
                         xmlItem.AppendChild(xmlDataDocument.ImportNode(xmlLoopNode, true));
+                    }
 
                     xmlLoopNode = objChild["alttexts"];
                     if (xmlLoopNode != null)
+                    {
                         xmlItem.AppendChild(xmlDataDocument.ImportNode(xmlLoopNode, true));
+                    }
 
                     string strTranslate = objChild.Attributes?["translate"]?.InnerXml;
                     if (!string.IsNullOrEmpty(strTranslate))
@@ -481,7 +534,9 @@ namespace Chummer
                     continue;
                 }
                 using (XmlNodeList xmlNodeList = xmlFile.SelectNodes("/chummer/*"))
+                {
                     if (xmlNodeList?.Count > 0)
+                    {
                         foreach (XmlNode objNode in xmlNodeList)
                         {
                             foreach (XmlNode objType in objNode.ChildNodes)
@@ -489,12 +544,16 @@ namespace Chummer
                                 string strFilter = string.Empty;
                                 XmlNode xmlIdNode = objType["id"];
                                 if (xmlIdNode != null)
+                                {
                                     strFilter = "id = " + xmlIdNode.InnerText.Replace("&amp;", "&").CleanXPath();
+                                }
                                 else
                                 {
                                     xmlIdNode = objType["name"];
                                     if (xmlIdNode != null)
+                                    {
                                         strFilter = "name = " + xmlIdNode.InnerText.Replace("&amp;", "&").CleanXPath();
+                                    }
                                 }
                                 // Child Nodes marked with "isidnode" serve as additional identifier nodes, in case something needs modifying that uses neither a name nor an ID.
                                 XmlNodeList objAmendingNodeExtraIds = objType.SelectNodes("child::*[@isidnode = \"True\"]");
@@ -503,7 +562,10 @@ namespace Chummer
                                     foreach (XmlNode objExtraId in objAmendingNodeExtraIds)
                                     {
                                         if (!string.IsNullOrEmpty(strFilter))
+                                        {
                                             strFilter += " and ";
+                                        }
+
                                         strFilter += objExtraId.Name + " = " + objExtraId.InnerText.Replace("&amp;", "&").CleanXPath();
                                     }
                                 }
@@ -519,6 +581,8 @@ namespace Chummer
                                 }
                             }
                         }
+                    }
+                }
             }
 
             // Load any custom data files the user might have. Do not attempt this if we're loading the Improvements file.
@@ -540,7 +604,9 @@ namespace Chummer
                     continue;
                 }
                 using (XmlNodeList xmlNodeList = xmlFile.SelectNodes("/chummer/*"))
+                {
                     if (xmlNodeList?.Count > 0)
+                    {
                         foreach (XmlNode objNode in xmlNodeList)
                         {
                             if (strFileName != "sheets.xml")
@@ -555,12 +621,18 @@ namespace Chummer
                                         string strFilter = string.Empty;
                                         XmlNode xmlIdNode = objChild["id"];
                                         if (xmlIdNode != null)
+                                        {
                                             strFilter = "id = " + xmlIdNode.InnerText.Replace("&amp;", "&").CleanXPath();
+                                        }
+
                                         XmlNode xmlNameNode = objChild["name"];
                                         if (xmlNameNode != null)
                                         {
                                             if (!string.IsNullOrEmpty(strFilter))
+                                            {
                                                 strFilter += " and ";
+                                            }
+
                                             strFilter += "name = " + xmlNameNode.InnerText.Replace("&amp;", "&").CleanXPath();
                                         }
 
@@ -571,7 +643,9 @@ namespace Chummer
                                                 "/chummer/" + objParentNode.Name + '/' + objChild.Name + '[' +
                                                 strFilter + ']');
                                             if (objItem != null)
+                                            {
                                                 lstDelete.Add(objChild);
+                                            }
                                         }
                                     }
                                 }
@@ -609,6 +683,8 @@ namespace Chummer
 
                             blnReturn = true;
                         }
+                    }
+                }
             }
 
             // Load any amending data we might have, i.e. rules that only amend items instead of replacing them. Do not attempt this if we're loading the Improvements file.
@@ -630,11 +706,15 @@ namespace Chummer
                     continue;
                 }
                 using (XmlNodeList xmlNodeList = xmlFile.SelectNodes("/chummer/*"))
+                {
                     if (xmlNodeList?.Count > 0)
+                    {
                         foreach (XmlNode objNode in xmlNodeList)
                         {
                             blnReturn = AmendNodeChildern(xmlDataDoc, objNode, "/chummer") || blnReturn;
                         }
+                    }
+                }
             }
 
             return blnReturn;
@@ -690,7 +770,10 @@ namespace Chummer
                             foreach (XmlNode objExtraId in xmlChildrenWithIds)
                             {
                                 if (!string.IsNullOrEmpty(strFilter))
+                                {
                                     strFilter += " and ";
+                                }
+
                                 strFilter += objExtraId.Name + " = " + objExtraId.InnerText.Replace("&amp;", "&").CleanXPath();
                             }
                         }
@@ -713,7 +796,9 @@ namespace Chummer
             }
 
             if (!string.IsNullOrEmpty(strFilter))
+            {
                 strFilter = '[' + strFilter + ']';
+            }
 
             // AddNode operation will always add this node in its current state.
             // This is almost the functionality of "custom_*" (exception: if a custom item already exists, it won't be replaced), but with all the extra bells and whistles of the amend system for targeting where to add the custom item
@@ -768,19 +853,29 @@ namespace Chummer
                 case "recurse":
                     // Operation only supported if we have children
                     if (lstElementChildren?.Count > 0)
+                    {
                         break;
+                    }
+
                     goto default;
                 // If no supported operation is specified, the default is...
                 default:
                     // ..."recurse" if we have children...
                     if (lstElementChildren?.Count > 0)
+                    {
                         strOperation = "recurse";
+                    }
                     // ..."append" if we don't have children and there's no target...
                     else if (objNodesToEdit?.Count == 0)
+                    {
                         strOperation = "append";
+                    }
                     // ..."replace" if we don't have children and there are one or more targets.
                     else
+                    {
                         strOperation = "replace";
+                    }
+
                     break;
             }
 
@@ -822,7 +917,9 @@ namespace Chummer
 
                                             // Skip adding comments, they're pointless for the purposes of Chummer5a's code
                                             if (eChildNodeType == XmlNodeType.Comment)
+                                            {
                                                 continue;
+                                            }
 
                                             // Text, Attributes, and CDATA should add their values to existing children of the same type if possible
                                             if (eChildNodeType == XmlNodeType.Text ||
@@ -846,7 +943,9 @@ namespace Chummer
                                                     }
                                                 }
                                                 if (blnItemFound)
+                                                {
                                                     continue;
+                                                }
                                             }
 
                                             StripAmendAttributesRecursively(xmlChild);
@@ -915,8 +1014,12 @@ namespace Chummer
             }
 
             if (xmlNodeToStrip.HasChildNodes)
+            {
                 foreach (XmlNode xmlChildNode in xmlNodeToStrip.ChildNodes)
+                {
                     StripAmendAttributesRecursively(xmlChildNode);
+                }
+            }
         }
 
         /// <summary>
@@ -927,7 +1030,10 @@ namespace Chummer
         public static void Verify(string strLanguage, List<string> lstBooks)
         {
             if (strLanguage == GlobalOptions.DefaultLanguage)
+            {
                 return;
+            }
+
             XmlDocument objLanguageDoc = new XmlDocument();
             string languageDirectoryPath = Path.Combine(Utils.GetStartupPath, "lang");
             string strFilePath = Path.Combine(languageDirectoryPath, strLanguage + "_data.xml");
@@ -988,7 +1094,9 @@ namespace Chummer
                     bool blnExists = false;
                     XPathNavigator objLanguageRoot = objLanguageNavigator.SelectSingleNode("/chummer/chummer[@file = " + strFileName.CleanXPath() + "]");
                     if (objLanguageRoot != null)
+                    {
                         blnExists = true;
+                    }
 
                     // <file name="x" needstobeadded="y">
                     objWriter.WriteStartElement("file");
@@ -1042,23 +1150,34 @@ namespace Chummer
                                                 if (objChild.HasChildren)
                                                 {
                                                     if (xmlNode.SelectSingleNode("translate") != null)
+                                                    {
                                                         blnTranslate = true;
+                                                    }
 
                                                     // Do not mark page as missing if the original does not have it.
                                                     if (objChild.SelectSingleNode("page") != null)
                                                     {
                                                         if (xmlNode.SelectSingleNode("altpage") != null)
+                                                        {
                                                             blnAltPage = true;
+                                                        }
                                                     }
                                                     else
+                                                    {
                                                         blnAltPage = true;
+                                                    }
 
                                                     if (strFile.EndsWith("mentors.xml") || strFile.EndsWith("paragons.xml"))
                                                     {
                                                         if (xmlNode.SelectSingleNode("altadvantage") != null)
+                                                        {
                                                             blnAdvantage = true;
+                                                        }
+
                                                         if (xmlNode.SelectSingleNode("altdisadvantage") != null)
+                                                        {
                                                             blnDisadvantage = true;
+                                                        }
                                                     }
                                                     else
                                                     {
@@ -1070,7 +1189,9 @@ namespace Chummer
                                                 {
                                                     blnAltPage = true;
                                                     if (xmlNode.SelectSingleNode("@translate") != null)
+                                                    {
                                                         blnTranslate = true;
+                                                    }
                                                 }
 
                                                 // At least one pice of data was missing so write out the result node.
@@ -1085,13 +1206,24 @@ namespace Chummer
                                                     objWriter.WriteStartElement(strChildName);
                                                     objWriter.WriteElementString("name", strChildNameElement);
                                                     if (!blnTranslate)
+                                                    {
                                                         objWriter.WriteElementString("missing", "translate");
+                                                    }
+
                                                     if (!blnAltPage)
+                                                    {
                                                         objWriter.WriteElementString("missing", "altpage");
+                                                    }
+
                                                     if (!blnAdvantage)
+                                                    {
                                                         objWriter.WriteElementString("missing", "altadvantage");
+                                                    }
+
                                                     if (!blnDisadvantage)
+                                                    {
                                                         objWriter.WriteElementString("missing", "altdisadvantage");
+                                                    }
                                                     // </results>
                                                     objWriter.WriteEndElement();
                                                 }
@@ -1139,9 +1271,15 @@ namespace Chummer
                                                                 objWriter.WriteStartElement("metavariant");
                                                                 objWriter.WriteElementString("name", strMetavariantName);
                                                                 if (!blnTranslate)
+                                                                {
                                                                     objWriter.WriteElementString("missing", "translate");
+                                                                }
+
                                                                 if (!blnAltPage)
+                                                                {
                                                                     objWriter.WriteElementString("missing", "altpage");
+                                                                }
+
                                                                 objWriter.WriteEndElement();
                                                                 // </result>
                                                                 objWriter.WriteEndElement();
@@ -1197,7 +1335,9 @@ namespace Chummer
                                                         objWriter.WriteStartElement(strChildName);
                                                         objWriter.WriteElementString("text", strChildTextElement);
                                                         if (!blnTranslate)
+                                                        {
                                                             objWriter.WriteElementString("missing", "translate");
+                                                        }
                                                         // </results>
                                                         objWriter.WriteEndElement();
                                                     }
@@ -1266,7 +1406,9 @@ namespace Chummer
                                 }
                             }
                             if (blnTypeWritten)
+                            {
                                 objWriter.WriteEndElement();
+                            }
                         }
 
                         // Now loop through the translation file and determine if there are any entries in there that are not part of the base content.
@@ -1295,7 +1437,9 @@ namespace Chummer
                         }
                     }
                     else
+                    {
                         objWriter.WriteAttributeString("needstobeadded", bool.TrueString);
+                    }
 
                     // </file>
                     objWriter.WriteEndElement();

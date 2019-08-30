@@ -36,7 +36,10 @@ namespace ChummerDataViewer.Model
                 while (true)
                 {
                     if (_objTimeoutStopwatch.ElapsedMilliseconds < _intCurrentTimeout)
+                    {
                         continue;
+                    }
+
                     try
                     {
                         //Scan 10 items. If middle of scan, pick up there
@@ -179,10 +182,7 @@ namespace ChummerDataViewer.Model
         public event StatusChangedEvent StatusChanged;
         public string Name => "DynamoDBConnection";
 
-        protected virtual void OnStatusChanged(StatusChangedEventArgs args)
-        {
-            StatusChanged?.Invoke(this, args);
-        }
+        protected virtual void OnStatusChanged(StatusChangedEventArgs args) => StatusChanged?.Invoke(this, args);
 
         #region IDisposable Support
         private bool disposedValue; // To detect redundant calls
@@ -200,10 +200,7 @@ namespace ChummerDataViewer.Model
             }
         }
 
-        public void Dispose()
-        {
-            Dispose(true);
-        }
+        public void Dispose() => Dispose(true);
         #endregion
     }
 

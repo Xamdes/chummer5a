@@ -29,7 +29,7 @@ namespace Chummer
 {
     internal static class XmlExtensions
     {
-        private static Logger Log = NLog.LogManager.GetCurrentClassLogger();
+        private static readonly Logger Log = NLog.LogManager.GetCurrentClassLogger();
         //QUESTION: TrySelectField<T> that uses SelectSingleNode instead of this[node]?
 
         public delegate bool TryParseFunction<T>(string input, out T result);
@@ -226,7 +226,9 @@ namespace Chummer
         public static bool ProcessFilterOperationNode(this XmlNode xmlParentNode, XmlNode xmlOperationNode, bool blnIsOrNode)
         {
             if (xmlOperationNode == null)
+            {
                 return false;
+            }
 
             using (XmlNodeList xmlOperationChildNodeList = xmlOperationNode.SelectNodes("*"))
             {
@@ -276,10 +278,12 @@ namespace Chummer
                                     if (objXmlTargetNode.SelectSingleNode("*") != null)
                                     {
                                         if (xmlOperationChildNode.SelectSingleNode("*") != null)
+                                        {
                                             boolSubNodeResult = ProcessFilterOperationNode(objXmlTargetNode,
                                                                     xmlOperationChildNode,
                                                                     xmlOperationChildNodeAttributes?["OR"] != null) !=
                                                                 blnInvert;
+                                        }
                                     }
                                     else
                                     {
@@ -299,6 +303,7 @@ namespace Chummer
                                         }
                                         // Note when adding more operation cases: XML does not like the "<" symbol as part of an attribute value
                                         else
+                                        {
                                             switch (strOperationType)
                                             {
                                                 case "doesnotequal":
@@ -349,6 +354,7 @@ namespace Chummer
                                                         blnInvert;
                                                     break;
                                             }
+                                        }
                                     }
 
                                     if (blnCheckAll)
@@ -370,9 +376,14 @@ namespace Chummer
                         }
 
                         if (blnIsOrNode && blnOperationChildNodeResult)
+                        {
                             return true;
+                        }
+
                         if (!blnIsOrNode && !blnOperationChildNodeResult)
+                        {
                             return false;
+                        }
                     }
                 }
             }
@@ -394,7 +405,10 @@ namespace Chummer
             }
             XmlAttribute objAttribute = node?.Attributes?[field];
             if (objAttribute == null)
+            {
                 return false;
+            }
+
             read = objAttribute.InnerText;
             return true;
         }
@@ -407,11 +421,20 @@ namespace Chummer
         {
             XmlElement objField = node?[field];
             if (objField == null)
+            {
                 return false;
+            }
+
             if (objCulture == null)
+            {
                 objCulture = GlobalOptions.InvariantCultureInfo;
+            }
+
             if (!int.TryParse(objField.InnerText, NumberStyles.Any, objCulture, out int intTmp))
+            {
                 return false;
+            }
+
             read = intTmp;
             return true;
         }
@@ -424,9 +447,15 @@ namespace Chummer
         {
             XmlElement objField = node?[field];
             if (objField == null)
+            {
                 return false;
+            }
+
             if (!bool.TryParse(objField.InnerText, out bool blnTmp))
+            {
                 return false;
+            }
+
             read = blnTmp;
             return true;
         }
@@ -439,11 +468,20 @@ namespace Chummer
         {
             XmlElement objField = node?[field];
             if (objField == null)
+            {
                 return false;
+            }
+
             if (objCulture == null)
+            {
                 objCulture = GlobalOptions.InvariantCultureInfo;
+            }
+
             if (!decimal.TryParse(objField.InnerText, NumberStyles.Any, objCulture, out decimal decTmp))
+            {
                 return false;
+            }
+
             read = decTmp;
             return true;
         }
@@ -456,11 +494,20 @@ namespace Chummer
         {
             XmlElement objField = node?[field];
             if (objField == null)
+            {
                 return false;
+            }
+
             if (objCulture == null)
+            {
                 objCulture = GlobalOptions.InvariantCultureInfo;
+            }
+
             if (!double.TryParse(objField.InnerText, NumberStyles.Any, objCulture, out double dblTmp))
+            {
                 return false;
+            }
+
             read = dblTmp;
             return true;
         }
@@ -473,11 +520,20 @@ namespace Chummer
         {
             XmlElement objField = node?[field];
             if (objField == null)
+            {
                 return false;
+            }
+
             if (objCulture == null)
+            {
                 objCulture = GlobalOptions.InvariantCultureInfo;
+            }
+
             if (!float.TryParse(objField.InnerText, NumberStyles.Any, objCulture, out float fltTmp))
+            {
                 return false;
+            }
+
             read = fltTmp;
             return true;
         }
@@ -494,9 +550,15 @@ namespace Chummer
         {
             XmlNode objField = node.SelectSingleNode(field);
             if (objField == null)
+            {
                 return false;
+            }
+
             if (!Guid.TryParse(objField.InnerText, out Guid fltTmp))
+            {
                 return false;
+            }
+
             if (fltTmp == Guid.Empty && falseIfEmpty)
             {
                 return false;
@@ -514,7 +576,10 @@ namespace Chummer
         public static bool NodeExists(this XmlNode xmlNode, string strName)
         {
             if (string.IsNullOrEmpty(strName))
+            {
                 return false;
+            }
+
             return xmlNode?.SelectSingleNode(strName) != null;
         }
     }

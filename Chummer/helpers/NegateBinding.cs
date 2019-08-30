@@ -55,16 +55,16 @@ namespace Chummer
             Binding binding = new Binding(eb.PropertyName, eb.DataSource, eb.DataMember, false,
                 DataSourceUpdateMode.OnPropertyChanged);
             if (!eb.Negate)
+            {
                 return binding;
+            }
+
             binding.Parse += NegateValue;
             binding.Format += NegateValue;
 
             return binding;
         }
 
-        private static void NegateValue(object sender, ConvertEventArgs e)
-        {
-            e.Value = !(bool)e.Value;
-        }
+        private static void NegateValue(object sender, ConvertEventArgs e) => e.Value = !(bool)e.Value;
     }
 }

@@ -27,7 +27,7 @@ namespace ChummerHub.Controllers.V1
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'ChummerController'
     {
         private readonly ILogger _logger;
-        private TelemetryClient tc;
+        private readonly TelemetryClient tc;
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'ChummerController._context'
         public ApplicationDbContext _context = null;
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'ChummerController._context'
@@ -111,7 +111,10 @@ namespace ChummerHub.Controllers.V1
             try
             {
                 if (string.IsNullOrEmpty(Hash))
+                {
                     throw new ArgumentException("hash is empty: " + Hash);
+                }
+
                 System.Collections.Generic.List<Models.V1.SINner> foundseq = (from a in _context.SINners where a.Hash == Hash select a).ToList();
                 if (!foundseq.Any())
                 {
@@ -127,8 +130,10 @@ namespace ChummerHub.Controllers.V1
                 _context.SaveChanges();
 #if DEBUG
                 if (Debugger.IsAttached)
+                {
                     foundseq = (from a in _context.SINners select a).Take(1).ToList();
-#endif 
+                }
+#endif
                 if (foundseq.Any())
                 {
                     Models.V1.SINner sinner = foundseq.FirstOrDefault();
@@ -138,7 +143,7 @@ namespace ChummerHub.Controllers.V1
                     string postbackUrl = "https://shadowsprawl.com/character/open";
                     sinner.LastDownload = DateTime.Now;
                     _context.SaveChanges();
-                    string mypath = $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}";
+                    string mypath = $"{Request.Scheme}://{Request.Host}{Request.PathBase}";
                     StringBuilder sb = new StringBuilder();
                     sb.Append("<html>");
                     sb.AppendFormat(@"<body onload='document.forms[""form""].submit()'>");
@@ -193,7 +198,10 @@ namespace ChummerHub.Controllers.V1
             try
             {
                 if (string.IsNullOrEmpty(Hash))
+                {
                     throw new ArgumentException("hash is empty: " + Hash);
+                }
+
                 System.Collections.Generic.List<Models.V1.SINner> foundseq = await (from a in _context.SINners where a.Hash == Hash select a).ToListAsync();
                 if (!foundseq.Any())
                 {

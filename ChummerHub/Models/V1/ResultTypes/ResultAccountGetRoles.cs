@@ -35,9 +35,13 @@ namespace ChummerHub.Models.V1
         {
             PossibleRoles = new List<string>();
             if (roles != null)
+            {
                 Roles = roles.ToList();
+            }
             else
+            {
                 Roles = new List<string>();
+            }
         }
 
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'ResultAccountGetRoles.ResultAccountGetRoles(IList<string>, IList<string>)'
@@ -47,9 +51,14 @@ namespace ChummerHub.Models.V1
             PossibleRoles = new List<string>();
             Roles = new List<string>();
             if (roles != null)
+            {
                 Roles = roles.ToList();
+            }
+
             if (possibleRoles != null)
+            {
                 PossibleRoles = possibleRoles.ToList();
+            }
         }
 
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'ResultAccountGetRoles.ResultAccountGetRoles(Exception)'

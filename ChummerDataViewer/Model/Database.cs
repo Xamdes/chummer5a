@@ -99,7 +99,9 @@ namespace ChummerDataViewer.Model
         public void SetKey(string key, string value)
         {
             if (key == null)
+            {
                 throw new ArgumentNullException(nameof(key));
+            }
 
             lock (_syncRoot)
             {
@@ -291,10 +293,7 @@ namespace ChummerDataViewer.Model
         {
             private readonly Database _db;
 
-            public DatabasePrivateApi(Database db)
-            {
-                _db = db;
-            }
+            public DatabasePrivateApi(Database db) => _db = db;
 
             public void SetZipFileLocation(Guid guid, string filePath) => _db.SetZipFileLocation(guid, filePath);
 
@@ -343,10 +342,7 @@ namespace ChummerDataViewer.Model
             }
         }
 
-        public void Dispose()
-        {
-            Dispose(true);
-        }
+        public void Dispose() => Dispose(true);
         #endregion
     }
 }

@@ -43,19 +43,13 @@ namespace Chummer
         /// <summary>
         /// Create a new HoverDisplayCordinator
         /// </summary>
-        public HoverDisplayCoordinator()
-        {
-            _controls = new List<Control>();
-        }
+        public HoverDisplayCoordinator() => _controls = new List<Control>();
 
         /// <summary>
         /// Create a new HoverDisplayCordinator
         /// </summary>
         /// <param name="collection">A collection of controls to include</param>
-        public HoverDisplayCoordinator(IEnumerable<Control> collection)
-        {
-            _controls = new List<Control>(collection);
-        }
+        public HoverDisplayCoordinator(IEnumerable<Control> collection) => _controls = new List<Control>(collection);
 
         /// <summary>
         /// Has the mouse allready left the group of controls once?
@@ -90,7 +84,9 @@ namespace Chummer
         {
             //If it have allready left we don't want to check again
             if (_left)
+            {
                 return;
+            }
 
             foreach (Control control in _controls)
             {

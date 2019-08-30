@@ -60,7 +60,9 @@ namespace Chummer
                     {
                         XPathNavigator xmlMetavariantNode = _xmlOptionalAIProgramsNode.SelectSingleNode("metavariants/metavariant[name = \"" + _objCharacter.Metavariant + "\"]");
                         if (xmlMetavariantNode != null)
+                        {
                             _xmlOptionalAIProgramsNode = xmlMetavariantNode;
+                        }
                     }
 
                     _xmlOptionalAIProgramsNode = _xmlOptionalAIProgramsNode.SelectSingleNode("optionalaiprograms");
@@ -75,9 +77,14 @@ namespace Chummer
             {
                 string strInnerText = objXmlCategory.Value;
                 if (_blnInherentProgram && strInnerText != "Common Programs" && strInnerText != "Hacking Programs")
+                {
                     continue;
+                }
+
                 if (!_blnAdvancedProgramAllowed && strInnerText == "Advanced Programs")
+                {
                     continue;
+                }
                 // Make sure it is not already in the Category list.
                 if (_lstCategory.All(objItem => objItem.Value.ToString() != strInnerText))
                 {
@@ -98,30 +105,25 @@ namespace Chummer
             cboCategory.EndUpdate();
 
             if (!string.IsNullOrEmpty(s_StrSelectedCategory))
+            {
                 cboCategory.SelectedValue = s_StrSelectedCategory;
+            }
 
             if (cboCategory.SelectedIndex == -1)
+            {
                 cboCategory.SelectedIndex = 0;
+            }
 
             _blnLoading = false;
 
             RefreshList();
         }
 
-        private void cboCategory_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            RefreshList();
-        }
+        private void cboCategory_SelectedIndexChanged(object sender, EventArgs e) => RefreshList();
 
-        private void chkLimitList_CheckedChanged(object sender, EventArgs e)
-        {
-            RefreshList();
-        }
+        private void chkLimitList_CheckedChanged(object sender, EventArgs e) => RefreshList();
 
-        private void lstAIPrograms_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            UpdateProgramInfo();
-        }
+        private void lstAIPrograms_SelectedIndexChanged(object sender, EventArgs e) => UpdateProgramInfo();
 
         private void cmdOK_Click(object sender, EventArgs e)
         {
@@ -135,10 +137,7 @@ namespace Chummer
             AcceptForm();
         }
 
-        private void cmdCancel_Click(object sender, EventArgs e)
-        {
-            DialogResult = DialogResult.Cancel;
-        }
+        private void cmdCancel_Click(object sender, EventArgs e) => DialogResult = DialogResult.Cancel;
 
         private void cmdOKAdd_Click(object sender, EventArgs e)
         {
@@ -146,10 +145,7 @@ namespace Chummer
             AcceptForm();
         }
 
-        private void txtSearch_TextChanged(object sender, EventArgs e)
-        {
-            RefreshList();
-        }
+        private void txtSearch_TextChanged(object sender, EventArgs e) => RefreshList();
 
         private void txtSearch_KeyDown(object sender, KeyEventArgs e)
         {
@@ -180,7 +176,9 @@ namespace Chummer
         private void txtSearch_KeyUp(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Up)
+            {
                 txtSearch.Select(txtSearch.Text.Length, 0);
+            }
         }
         #endregion
 
@@ -207,7 +205,9 @@ namespace Chummer
         private void UpdateProgramInfo()
         {
             if (_blnLoading)
+            {
                 return;
+            }
 
             string strSelectedId = lstAIPrograms.SelectedValue?.ToString();
             if (!string.IsNullOrEmpty(strSelectedId))
@@ -276,20 +276,26 @@ namespace Chummer
         private void RefreshList()
         {
             if (_blnLoading)
+            {
                 return;
+            }
 
             string strFilter = '(' + _objCharacter.Options.BookXPath() + ')';
 
             string strCategory = cboCategory.SelectedValue?.ToString();
             if (!string.IsNullOrEmpty(strCategory) && strCategory != "Show All" && (_objCharacter.Options.SearchInCategoryOnly || txtSearch.TextLength == 0))
+            {
                 strFilter += " and category = \"" + strCategory + '\"';
+            }
             else
             {
                 StringBuilder objCategoryFilter = new StringBuilder();
                 foreach (string strItem in _lstCategory.Select(x => x.Value))
                 {
                     if (!string.IsNullOrEmpty(strItem))
+                    {
                         objCategoryFilter.Append("category = \"" + strItem + "\" or ");
+                    }
                 }
                 if (objCategoryFilter.Length > 0)
                 {
@@ -313,7 +319,9 @@ namespace Chummer
             {
                 string strId = objXmlProgram.SelectSingleNode("id")?.Value;
                 if (string.IsNullOrEmpty(strId))
+                {
                     continue;
+                }
 
                 if (chkLimitList.Checked)
                 {
@@ -330,7 +338,9 @@ namespace Chummer
                             }
                         }
                         if (!blnAdd)
+                        {
                             continue;
+                        }
                     }
                 }
 
@@ -339,7 +349,9 @@ namespace Chummer
                 if (_xmlOptionalAIProgramsNode?.SelectSingleNode("program") != null)
                 {
                     if (_xmlOptionalAIProgramsNode.SelectSingleNode("program[text() = \"" + strName + "\"]") == null)
+                    {
                         continue;
+                    }
                 }
                 string strDisplayName = objXmlProgram.SelectSingleNode("translate")?.Value ?? strName;
                 if (!_objCharacter.Options.SearchInCategoryOnly && txtSearch.TextLength != 0)
@@ -376,7 +388,9 @@ namespace Chummer
             {
                 XPathNavigator xmlProgram = _xmlBaseChummerNode.SelectSingleNode("programs/program[id = \"" + strSelectedId + "\"]");
                 if (xmlProgram == null)
+                {
                     return;
+                }
 
                 // Check to make sure requirement is met
                 if (!xmlProgram.RequirementsMet(_objCharacter, null, LanguageManager.GetString("String_Program", GlobalOptions.Language)))
@@ -391,10 +405,7 @@ namespace Chummer
             }
         }
 
-        private void OpenSourceFromLabel(object sender, EventArgs e)
-        {
-            CommonFunctions.OpenPDFFromControl(sender, e);
-        }
+        private void OpenSourceFromLabel(object sender, EventArgs e) => CommonFunctions.OpenPDFFromControl(sender, e);
         #endregion
     }
 }

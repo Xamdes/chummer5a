@@ -21,7 +21,9 @@ namespace ChummerDataViewer.Model
         public static void Initialize(string id, string key, string bulkStoragePath)
         {
             if (Database != null)
+            {
                 return;
+            }
 
             Directory.CreateDirectory(DatabaseFolder);
 

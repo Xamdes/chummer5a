@@ -43,10 +43,7 @@ namespace Chummer
         }
 
         // Link processors to each other in a chain.
-        public TranslateExceptionTelemetryProcessor(ITelemetryProcessor next)
-        {
-            this.Next = next;
-        }
+        public TranslateExceptionTelemetryProcessor(ITelemetryProcessor next) => Next = next;
         public void Process(ITelemetry item)
         {
             // To filter out an item, just return
@@ -54,7 +51,7 @@ namespace Chummer
             // Modify the item if required
             ModifyItem(item);
 
-            this.Next.Process(item);
+            Next.Process(item);
         }
 
         // Example: replace with your own criteria.
@@ -62,7 +59,9 @@ namespace Chummer
         {
             ExceptionTelemetry exceptionTelemetry = item as ExceptionTelemetry;
             if (exceptionTelemetry == null)
+            {
                 return true;
+            }
 
             return false;
         }
@@ -72,22 +71,32 @@ namespace Chummer
         {
             ExceptionTelemetry exceptionTelemetry = item as ExceptionTelemetry;
             if (exceptionTelemetry == null)
+            {
                 return;
+            }
+
             CultureInfo translateCultureInfo = new CultureInfo("en");
             try
             {
                 string msg =
                     TranslateExceptionMessage(exceptionTelemetry.Exception, translateCultureInfo);
                 if (!exceptionTelemetry.Properties.ContainsKey("Translated"))
+                {
                     exceptionTelemetry.Properties.Add("Translated", msg);
+                }
             }
             catch (Exception ex)
             {
                 string msg = ex.ToString();
                 if (!exceptionTelemetry.Properties.ContainsKey("Message"))
+                {
                     exceptionTelemetry.Properties.Add("Message", ex.Message);
+                }
+
                 if (!exceptionTelemetry.Properties.ContainsKey("Translated"))
+                {
                     exceptionTelemetry.Properties.Add("Translated", msg);
+                }
             }
         }
 
@@ -103,7 +112,9 @@ namespace Chummer
             foreach (DictionaryEntry item in rsOriginal)
             {
                 if (!(item.Value is string message))
+                {
                     continue;
+                }
 
                 string translated = rsTranslated.GetString(item.Key.ToString(), false);
 

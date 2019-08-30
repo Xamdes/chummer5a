@@ -37,29 +37,14 @@ namespace Chummer
             get;
         }
 
-        public static bool operator ==(DependancyGraphNodeWithCondition<T> objFirstEdge, DependancyGraphNodeWithCondition<T> objSecondEdge)
-        {
-            return ((objFirstEdge.Node == null && objSecondEdge.Node == null) || objFirstEdge.Node?.Equals(objSecondEdge.Node) == true);
-        }
+        public static bool operator ==(DependancyGraphNodeWithCondition<T> objFirstEdge, DependancyGraphNodeWithCondition<T> objSecondEdge) => ((objFirstEdge.Node == null && objSecondEdge.Node == null) || objFirstEdge.Node?.Equals(objSecondEdge.Node) == true);
 
-        public static bool operator !=(DependancyGraphNodeWithCondition<T> objFirstEdge, DependancyGraphNodeWithCondition<T> objSecondEdge)
-        {
-            return !((objFirstEdge.Node == null && objSecondEdge.Node == null) || objFirstEdge.Node?.Equals(objSecondEdge.Node) == true);
-        }
+        public static bool operator !=(DependancyGraphNodeWithCondition<T> objFirstEdge, DependancyGraphNodeWithCondition<T> objSecondEdge) => !((objFirstEdge.Node == null && objSecondEdge.Node == null) || objFirstEdge.Node?.Equals(objSecondEdge.Node) == true);
 
-        public override bool Equals(object obj)
-        {
-            return obj is DependancyGraphNodeWithCondition<T> objOtherEdge && ((Node == null && objOtherEdge.Node == null) || Node?.Equals(objOtherEdge.Node) == true);
-        }
+        public override bool Equals(object obj) => obj is DependancyGraphNodeWithCondition<T> objOtherEdge && ((Node == null && objOtherEdge.Node == null) || Node?.Equals(objOtherEdge.Node) == true);
 
-        public override int GetHashCode()
-        {
-            return Node.GetHashCode();
-        }
+        public override int GetHashCode() => Node.GetHashCode();
 
-        public override string ToString()
-        {
-            return Node?.ToString() ?? string.Empty;
-        }
+        public override string ToString() => Node?.ToString() ?? string.Empty;
     }
 }

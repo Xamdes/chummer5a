@@ -74,20 +74,16 @@ namespace Chummer
             AcceptForm();
         }
 
-        private void cmdCancel_Click(object sender, EventArgs e)
-        {
-            DialogResult = DialogResult.Cancel;
-        }
+        private void cmdCancel_Click(object sender, EventArgs e) => DialogResult = DialogResult.Cancel;
 
-        private void lstMartialArts_DoubleClick(object sender, EventArgs e)
-        {
-            cmdOK_Click(sender, e);
-        }
+        private void lstMartialArts_DoubleClick(object sender, EventArgs e) => cmdOK_Click(sender, e);
 
         private void lstMartialArts_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (_blnLoading)
+            {
                 return;
+            }
 
             string strSelectedId = lstMartialArts.SelectedValue?.ToString();
             if (!string.IsNullOrEmpty(strSelectedId))
@@ -110,7 +106,9 @@ namespace Chummer
                             if (xmlTechniqueNode != null)
                             {
                                 if (objTechniqueStringBuilder.Length > 0)
+                                {
                                     objTechniqueStringBuilder.AppendLine(",");
+                                }
 
                                 objTechniqueStringBuilder.Append(GlobalOptions.Language != GlobalOptions.DefaultLanguage ? xmlTechniqueNode.SelectSingleNode("translate")?.Value ?? strLoopTechniqueName : strLoopTechniqueName);
                             }
@@ -155,10 +153,7 @@ namespace Chummer
             AcceptForm();
         }
 
-        private void txtSearch_TextChanged(object sender, EventArgs e)
-        {
-            RefreshArtList();
-        }
+        private void txtSearch_TextChanged(object sender, EventArgs e) => RefreshArtList();
         #endregion
 
         #region Properties
@@ -203,10 +198,7 @@ namespace Chummer
             }
         }
 
-        private void OpenSourceFromLabel(object sender, EventArgs e)
-        {
-            CommonFunctions.OpenPDFFromControl(sender, e);
-        }
+        private void OpenSourceFromLabel(object sender, EventArgs e) => CommonFunctions.OpenPDFFromControl(sender, e);
 
         /// <summary>
         /// Populate the Martial Arts list.
@@ -215,9 +207,14 @@ namespace Chummer
         {
             string strFilter = '(' + _objCharacter.Options.BookXPath() + ')';
             if (ShowQualities)
+            {
                 strFilter += " and isquality = \"" + bool.TrueString + "\"";
+            }
             else
+            {
                 strFilter += " and not(isquality = \"" + bool.TrueString + "\")";
+            }
+
             strFilter += CommonFunctions.GenerateSearchXPath(txtSearch.Text);
 
             XPathNodeIterator objArtList = _xmlBaseMartialArtsNode.Select("martialart[" + strFilter + "]");
@@ -240,9 +237,14 @@ namespace Chummer
             lstMartialArts.DataSource = lstMartialArt;
             _blnLoading = false;
             if (!string.IsNullOrEmpty(strOldSelected))
+            {
                 lstMartialArts.SelectedValue = strOldSelected;
+            }
             else
+            {
                 lstMartialArts.SelectedIndex = -1;
+            }
+
             lstMartialArts.EndUpdate();
         }
         #endregion

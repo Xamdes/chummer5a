@@ -27,10 +27,7 @@ namespace Chummer.Tests
     public static class AssemblyInitializer
     {
         [AssemblyInitialize]
-        public static void Initialize(TestContext context)
-        {
-            Utils.IsUnitTest = true;
-        }
+        public static void Initialize(TestContext context) => Utils.IsUnitTest = true;
     }
 
     [TestClass]

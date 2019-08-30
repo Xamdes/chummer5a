@@ -15,18 +15,10 @@ namespace ChummerHub.Models.V1
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'ResultAccountGetUserByAuthorization.MyApplicationUser'
 
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'ResultAccountGetUserByAuthorization.ResultAccountGetUserByAuthorization()'
-        public ResultAccountGetUserByAuthorization()
-#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'ResultAccountGetUserByAuthorization.ResultAccountGetUserByAuthorization()'
-        {
-            MyApplicationUser = null;
-        }
+        public ResultAccountGetUserByAuthorization() => MyApplicationUser = null;
 
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'ResultAccountGetUserByAuthorization.ResultAccountGetUserByAuthorization(ApplicationUser)'
-        public ResultAccountGetUserByAuthorization(ApplicationUser user)
-#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'ResultAccountGetUserByAuthorization.ResultAccountGetUserByAuthorization(ApplicationUser)'
-        {
-            MyApplicationUser = user;
-        }
+        public ResultAccountGetUserByAuthorization(ApplicationUser user) => MyApplicationUser = user;
 
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'ResultAccountGetUserByAuthorization.ResultAccountGetUserByAuthorization(Exception)'
         public ResultAccountGetUserByAuthorization(Exception e) : base(e)

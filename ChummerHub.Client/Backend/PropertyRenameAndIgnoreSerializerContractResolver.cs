@@ -20,16 +20,22 @@ namespace ChummerHub.Client.Backend
         public void IgnoreProperty(Type type, params string[] jsonPropertyNames)
         {
             if (!_ignores.ContainsKey(type))
+            {
                 _ignores[type] = new HashSet<string>();
+            }
 
             foreach (string prop in jsonPropertyNames)
+            {
                 _ignores[type].Add(prop);
+            }
         }
 
         public void RenameProperty(Type type, string propertyName, string newJsonPropertyName)
         {
             if (!_renames.ContainsKey(type))
+            {
                 _renames[type] = new Dictionary<string, string>();
+            }
 
             _renames[type][propertyName] = newJsonPropertyName;
         }
@@ -45,7 +51,9 @@ namespace ChummerHub.Client.Backend
             }
 
             if (IsRenamed(property.DeclaringType, property.PropertyName, out string newJsonPropertyName))
+            {
                 property.PropertyName = newJsonPropertyName;
+            }
 
             return property;
         }
@@ -53,16 +61,17 @@ namespace ChummerHub.Client.Backend
         private bool IsIgnored(Type type, string jsonPropertyName)
         {
             if (!_ignores.ContainsKey(type))
+            {
                 return false;
+            }
 
             return _ignores[type].Contains(jsonPropertyName);
         }
 
         private bool IsRenamed(Type type, string jsonPropertyName, out string newJsonPropertyName)
         {
-            Dictionary<string, string> renames;
 
-            if (!_renames.TryGetValue(type, out renames) || !renames.TryGetValue(jsonPropertyName, out newJsonPropertyName))
+            if (!_renames.TryGetValue(type, out Dictionary<string, string> renames) || !renames.TryGetValue(jsonPropertyName, out newJsonPropertyName))
             {
                 newJsonPropertyName = null;
                 return false;

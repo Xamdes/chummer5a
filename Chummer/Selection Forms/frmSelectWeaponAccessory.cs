@@ -91,7 +91,9 @@ namespace Chummer
             foreach (string strAllowedMount in _lstAllowedMounts)
             {
                 if (!string.IsNullOrEmpty(strAllowedMount))
+                {
                     strMount.Append(" or contains(mount, \"" + strAllowedMount + "\")");
+                }
             }
             strMount.Append(CommonFunctions.GenerateSearchXPath(txtSearch.Text));
             XPathNavigator xmlParentWeaponDataNode = _xmlBaseChummerNode.SelectSingleNode("weapons/weapon[id = \"" + _objParentWeapon.SourceIDString + "\"]");
@@ -99,7 +101,9 @@ namespace Chummer
             {
                 string strId = objXmlAccessory.SelectSingleNode("id")?.Value;
                 if (string.IsNullOrEmpty(strId))
+                {
                     continue;
+                }
 
                 XPathNavigator xmlExtraMountNode = objXmlAccessory.SelectSingleNode("extramount");
                 if (xmlExtraMountNode != null)
@@ -117,7 +121,9 @@ namespace Chummer
                 }
 
                 if (!objXmlAccessory.RequirementsMet(_objCharacter, _objParentWeapon, string.Empty, string.Empty))
+                {
                     continue;
+                }
 
                 XPathNavigator xmlTestNode = objXmlAccessory.SelectSingleNode("forbidden/weapondetails");
                 if (xmlTestNode != null)
@@ -140,7 +146,10 @@ namespace Chummer
 
                 decimal decCostMultiplier = 1 + (nudMarkup.Value / 100.0m);
                 if (_blnIsParentWeaponBlackMarketAllowed)
+                {
                     decCostMultiplier *= 0.9m;
+                }
+
                 if ((!chkHideOverAvailLimit.Checked || SelectionShared.CheckAvailRestriction(objXmlAccessory, _objCharacter) &&
                      (chkFreeItem.Checked || !chkShowOnlyAffordItems.Checked ||
                       SelectionShared.CheckNuyenRestriction(objXmlAccessory, _objCharacter.Nuyen, decCostMultiplier))))
@@ -160,16 +169,18 @@ NextItem:
             lstAccessory.DataSource = lstAccessories;
             _blnLoading = false;
             if (!string.IsNullOrEmpty(strOldSelected))
+            {
                 lstAccessory.SelectedValue = strOldSelected;
+            }
             else
+            {
                 lstAccessory.SelectedIndex = -1;
+            }
+
             lstAccessory.EndUpdate();
         }
 
-        private void lstAccessory_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            UpdateGearInfo();
-        }
+        private void lstAccessory_SelectedIndexChanged(object sender, EventArgs e) => UpdateGearInfo();
 
         private void cmdOK_Click(object sender, EventArgs e)
         {
@@ -177,10 +188,7 @@ NextItem:
             AcceptForm();
         }
 
-        private void cmdCancel_Click(object sender, EventArgs e)
-        {
-            DialogResult = DialogResult.Cancel;
-        }
+        private void cmdCancel_Click(object sender, EventArgs e) => DialogResult = DialogResult.Cancel;
 
         private void lstAccessory_DoubleClick(object sender, EventArgs e)
         {
@@ -197,48 +205,46 @@ NextItem:
         private void chkFreeItem_CheckedChanged(object sender, EventArgs e)
         {
             if (chkShowOnlyAffordItems.Checked)
+            {
                 BuildAccessoryList();
+            }
+
             UpdateGearInfo();
         }
 
-        private void chkBlackMarketDiscount_CheckedChanged(object sender, EventArgs e)
-        {
-            UpdateGearInfo();
-        }
+        private void chkBlackMarketDiscount_CheckedChanged(object sender, EventArgs e) => UpdateGearInfo();
 
         private void nudMarkup_ValueChanged(object sender, EventArgs e)
         {
             if (chkShowOnlyAffordItems.Checked && !chkFreeItem.Checked)
+            {
                 BuildAccessoryList();
+            }
+
             UpdateGearInfo();
         }
 
-        private void nudRating_ValueChanged(object sender, EventArgs e)
-        {
-            UpdateGearInfo();
-        }
+        private void nudRating_ValueChanged(object sender, EventArgs e) => UpdateGearInfo();
 
         private void cboMount_SelectedIndexChanged(object sender, EventArgs e)
         {
             UpdateMountFields(true);
             if (!string.IsNullOrEmpty(_objParentWeapon.DoubledCostModificationSlots))
+            {
                 UpdateGearInfo(false);
+            }
         }
 
         private void cboExtraMount_SelectedIndexChanged(object sender, EventArgs e)
         {
             UpdateMountFields(false);
             if (!string.IsNullOrEmpty(_objParentWeapon.DoubledCostModificationSlots))
+            {
                 UpdateGearInfo(false);
+            }
         }
-        private void chkHideOverAvailLimit_CheckedChanged(object sender, EventArgs e)
-        {
-            BuildAccessoryList();
-        }
-        private void chkShowOnlyAffordItems_CheckedChanged(object sender, EventArgs e)
-        {
-            BuildAccessoryList();
-        }
+        private void chkHideOverAvailLimit_CheckedChanged(object sender, EventArgs e) => BuildAccessoryList();
+        private void chkShowOnlyAffordItems_CheckedChanged(object sender, EventArgs e) => BuildAccessoryList();
         #endregion
 
         #region Properties
@@ -313,10 +319,7 @@ NextItem:
         #endregion
 
         #region Methods
-        private void txtSearch_TextChanged(object sender, EventArgs e)
-        {
-            BuildAccessoryList();
-        }
+        private void txtSearch_TextChanged(object sender, EventArgs e) => BuildAccessoryList();
 
         private void UpdateMountFields(bool boolChangeExtraMountFirst)
         {
@@ -324,15 +327,24 @@ NextItem:
                 && (cboMount.SelectedItem.ToString() == cboExtraMount.SelectedItem.ToString()))
             {
                 if (boolChangeExtraMountFirst)
+                {
                     cboExtraMount.SelectedIndex = 0;
+                }
                 else
+                {
                     cboMount.SelectedIndex = 0;
+                }
+
                 while (cboMount.SelectedItem.ToString() != "None" && cboExtraMount.SelectedItem.ToString() != "None" && cboMount.SelectedItem.ToString() == cboExtraMount.SelectedItem.ToString())
                 {
                     if (boolChangeExtraMountFirst)
+                    {
                         cboExtraMount.SelectedIndex += 1;
+                    }
                     else
+                    {
                         cboMount.SelectedIndex += 1;
+                    }
                 }
             }
         }
@@ -340,13 +352,18 @@ NextItem:
         private void UpdateGearInfo(bool blnUpdateMountCBOs = true)
         {
             if (_blnLoading)
+            {
                 return;
+            }
 
             XPathNavigator xmlAccessory = null;
             string strSelectedId = lstAccessory.SelectedValue?.ToString();
             // Retrieve the information for the selected Accessory.
             if (!string.IsNullOrEmpty(strSelectedId))
+            {
                 xmlAccessory = _xmlBaseChummerNode.SelectSingleNode("accessories/accessory[id = \"" + strSelectedId + "\"]");
+            }
+
             if (xmlAccessory == null)
             {
                 lblRC.Visible = false;
@@ -399,7 +416,10 @@ NextItem:
                 {
                     decimal decCostMultiplier = 1 + (nudMarkup.Value / 100.0m);
                     if (_setBlackMarketMaps.Contains(xmlAccessory.SelectSingleNode("category")?.Value))
+                    {
                         decCostMultiplier *= 0.9m;
+                    }
+
                     while (nudRating.Maximum > nudRating.Minimum && !SelectionShared.CheckNuyenRestriction(xmlAccessory, _objCharacter.Nuyen, decCostMultiplier, decimal.ToInt32(nudRating.Maximum)))
                     {
                         nudRating.Maximum -= 1;
@@ -481,7 +501,10 @@ NextItem:
                 cboExtraMount.SelectedIndex = 0;
                 if (cboMount.SelectedItem.ToString() != "None" && cboExtraMount.SelectedItem.ToString() != "None"
                                                                && cboMount.SelectedItem.ToString() == cboExtraMount.SelectedItem.ToString())
+                {
                     cboExtraMount.SelectedIndex += 1;
+                }
+
                 cboExtraMount.Visible = cboExtraMount.Enabled && cboExtraMount.SelectedItem.ToString() != "None";
                 lblExtraMountLabel.Visible = cboExtraMount.Visible;
             }
@@ -495,9 +518,12 @@ NextItem:
             {
                 string strCost = "0";
                 if (xmlAccessory.TryGetStringFieldQuickly("cost", ref strCost))
+                {
                     strCost = strCost.CheapReplace("Weapon Cost", () => _objParentWeapon.OwnCost.ToString(GlobalOptions.InvariantCultureInfo))
                         .CheapReplace("Weapon Total Cost", () => _objParentWeapon.MultipliableCost(null).ToString(GlobalOptions.InvariantCultureInfo))
                         .Replace("Rating", nudRating.Value.ToString(GlobalOptions.CultureInfo));
+                }
+
                 if (strCost.StartsWith("Variable("))
                 {
                     decimal decMin;
@@ -510,14 +536,18 @@ NextItem:
                         decimal.TryParse(strValues[1], NumberStyles.Any, GlobalOptions.InvariantCultureInfo, out decMax);
                     }
                     else
+                    {
                         decimal.TryParse(strCost.FastEscape('+'), NumberStyles.Any, GlobalOptions.InvariantCultureInfo, out decMin);
+                    }
 
                     if (decMax == decimal.MaxValue)
                     {
                         lblCost.Text = decMin.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + "¥+";
                     }
                     else
+                    {
                         lblCost.Text = decMin.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + " - " + decMax.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
+                    }
 
                     lblTest.Text = _objCharacter.AvailTest(decMax, lblAvail.Text);
                 }
@@ -530,7 +560,10 @@ NextItem:
                     decCost *= 1 + (nudMarkup.Value / 100.0m);
 
                     if (chkBlackMarketDiscount.Checked)
+                    {
                         decCost *= 0.9m;
+                    }
+
                     decCost *= _objParentWeapon.AccessoryMultiplier;
                     if (!string.IsNullOrEmpty(_objParentWeapon.DoubledCostModificationSlots))
                     {
@@ -577,10 +610,7 @@ NextItem:
             }
         }
 
-        private void OpenSourceFromLabel(object sender, EventArgs e)
-        {
-            CommonFunctions.OpenPDFFromControl(sender, e);
-        }
+        private void OpenSourceFromLabel(object sender, EventArgs e) => CommonFunctions.OpenPDFFromControl(sender, e);
         #endregion
     }
 }

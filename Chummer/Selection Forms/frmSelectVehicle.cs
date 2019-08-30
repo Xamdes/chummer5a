@@ -100,24 +100,25 @@ namespace Chummer
             _blnLoading = false;
             // Select the first Category in the list.
             if (string.IsNullOrEmpty(s_StrSelectCategory))
+            {
                 cboCategory.SelectedIndex = 0;
+            }
             else
+            {
                 cboCategory.SelectedValue = s_StrSelectCategory;
+            }
 
             if (cboCategory.SelectedIndex == -1)
+            {
                 cboCategory.SelectedIndex = 0;
+            }
+
             cboCategory.EndUpdate();
         }
 
-        private void cboCategory_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            RefreshList();
-        }
+        private void cboCategory_SelectedIndexChanged(object sender, EventArgs e) => RefreshList();
 
-        private void lstVehicle_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            UpdateSelectedVehicle();
-        }
+        private void lstVehicle_SelectedIndexChanged(object sender, EventArgs e) => UpdateSelectedVehicle();
 
         private void cmdOK_Click(object sender, EventArgs e)
         {
@@ -125,15 +126,9 @@ namespace Chummer
             AcceptForm();
         }
 
-        private void cmdCancel_Click(object sender, EventArgs e)
-        {
-            DialogResult = DialogResult.Cancel;
-        }
+        private void cmdCancel_Click(object sender, EventArgs e) => DialogResult = DialogResult.Cancel;
 
-        private void txtSearch_TextChanged(object sender, EventArgs e)
-        {
-            RefreshList();
-        }
+        private void txtSearch_TextChanged(object sender, EventArgs e) => RefreshList();
 
         private void lstVehicle_DoubleClick(object sender, EventArgs e)
         {
@@ -150,35 +145,44 @@ namespace Chummer
         private void chkUsedVehicle_CheckedChanged(object sender, EventArgs e)
         {
             if (chkShowOnlyAffordItems.Checked && !chkFreeItem.Checked)
+            {
                 RefreshList();
+            }
+
             UpdateSelectedVehicle();
         }
 
         private void nudUsedVehicleDiscount_ValueChanged(object sender, EventArgs e)
         {
             if (chkShowOnlyAffordItems.Checked && !chkFreeItem.Checked)
+            {
                 RefreshList();
+            }
+
             UpdateSelectedVehicle();
         }
 
         private void chkFreeItem_CheckedChanged(object sender, EventArgs e)
         {
             if (chkShowOnlyAffordItems.Checked)
+            {
                 RefreshList();
+            }
+
             UpdateSelectedVehicle();
         }
 
         private void nudMarkup_ValueChanged(object sender, EventArgs e)
         {
             if (chkShowOnlyAffordItems.Checked && !chkFreeItem.Checked)
+            {
                 RefreshList();
+            }
+
             UpdateSelectedVehicle();
         }
 
-        private void chkBlackMarketDiscount_CheckedChanged(object sender, EventArgs e)
-        {
-            UpdateSelectedVehicle();
-        }
+        private void chkBlackMarketDiscount_CheckedChanged(object sender, EventArgs e) => UpdateSelectedVehicle();
 
         private void txtSearch_KeyDown(object sender, KeyEventArgs e)
         {
@@ -209,18 +213,14 @@ namespace Chummer
         private void txtSearch_KeyUp(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Up)
+            {
                 txtSearch.Select(txtSearch.Text.Length, 0);
+            }
         }
 
-        private void chkHideOverAvailLimit_CheckedChanged(object sender, EventArgs e)
-        {
-            RefreshList();
-        }
+        private void chkHideOverAvailLimit_CheckedChanged(object sender, EventArgs e) => RefreshList();
 
-        private void chkShowOnlyAffordItems_CheckedChanged(object sender, EventArgs e)
-        {
-            RefreshList();
-        }
+        private void chkShowOnlyAffordItems_CheckedChanged(object sender, EventArgs e) => RefreshList();
         #endregion
 
         #region Properties
@@ -273,7 +273,9 @@ namespace Chummer
         private void UpdateSelectedVehicle()
         {
             if (_blnLoading)
+            {
                 return;
+            }
 
             string strSelectedId = lstVehicle.SelectedValue?.ToString();
             XPathNavigator objXmlVehicle = null;
@@ -314,7 +316,9 @@ namespace Chummer
 
             decimal decCostModifier = 1.0m;
             if (chkUsedVehicle.Checked)
+            {
                 decCostModifier -= (nudUsedVehicleDiscount.Value / 100.0m);
+            }
 
             lblVehicleHandling.Text = objXmlVehicle.SelectSingleNode("handling")?.Value;
             lblVehicleAccel.Text = objXmlVehicle.SelectSingleNode("accel")?.Value;
@@ -399,14 +403,18 @@ namespace Chummer
             string strCategory = cboCategory.SelectedValue?.ToString();
             string strFilter = '(' + _objCharacter.Options.BookXPath() + ')';
             if (!string.IsNullOrEmpty(strCategory) && strCategory != "Show All" && (_objCharacter.Options.SearchInCategoryOnly || txtSearch.TextLength == 0))
+            {
                 strFilter += " and category = \"" + strCategory + '\"';
+            }
             else
             {
                 StringBuilder objCategoryFilter = new StringBuilder();
                 foreach (string strItem in _lstCategory.Select(x => x.Value))
                 {
                     if (!string.IsNullOrEmpty(strItem))
+                    {
                         objCategoryFilter.Append("category = \"" + strItem + "\" or ");
+                    }
                 }
                 if (objCategoryFilter.Length > 0)
                 {
@@ -425,19 +433,33 @@ namespace Chummer
             foreach (XPathNavigator objXmlVehicle in objXmlVehicleList)
             {
                 if (chkHideOverAvailLimit.Checked && !SelectionShared.CheckAvailRestriction(objXmlVehicle, _objCharacter))
+                {
                     continue;
+                }
+
                 if (!chkFreeItem.Checked && chkShowOnlyAffordItems.Checked)
                 {
                     decimal decCostMultiplier = 1.0m;
                     if (chkUsedVehicle.Checked)
+                    {
                         decCostMultiplier -= (nudUsedVehicleDiscount.Value / 100.0m);
+                    }
+
                     decCostMultiplier *= 1 + (nudMarkup.Value / 100.0m);
                     if (_setBlackMarketMaps.Contains(objXmlVehicle.SelectSingleNode("category")?.Value))
+                    {
                         decCostMultiplier *= 0.9m;
+                    }
+
                     if (_setDealerConnectionMaps?.Any(set => objXmlVehicle.SelectSingleNode("category")?.Value.StartsWith(set) == true) == true)
+                    {
                         decCostMultiplier *= 0.9m;
+                    }
+
                     if (!SelectionShared.CheckNuyenRestriction(objXmlVehicle, _objCharacter.Nuyen, decCostMultiplier))
+                    {
                         continue;
+                    }
                 }
 
                 string strDisplayname = objXmlVehicle.SelectSingleNode("translate")?.Value ?? objXmlVehicle.SelectSingleNode("name")?.Value ?? LanguageManager.GetString("String_Unknown", GlobalOptions.Language);
@@ -465,9 +487,14 @@ namespace Chummer
             lstVehicle.DataSource = lstVehicles;
             _blnLoading = false;
             if (string.IsNullOrEmpty(strOldSelected))
+            {
                 lstVehicle.SelectedIndex = -1;
+            }
             else
+            {
                 lstVehicle.SelectedValue = strOldSelected;
+            }
+
             lstVehicle.EndUpdate();
         }
 
@@ -483,7 +510,9 @@ namespace Chummer
                 xmlVehicle = _xmlBaseVehicleDataNode.SelectSingleNode("vehicles/vehicle[id = \"" + strSelectedId + "\"]");
             }
             if (xmlVehicle == null)
+            {
                 return;
+            }
 
             if (chkUsedVehicle.Checked)
             {
@@ -503,10 +532,7 @@ namespace Chummer
             DialogResult = DialogResult.OK;
         }
 
-        private void OpenSourceFromLabel(object sender, EventArgs e)
-        {
-            CommonFunctions.OpenPDFFromControl(sender, e);
-        }
+        private void OpenSourceFromLabel(object sender, EventArgs e) => CommonFunctions.OpenPDFFromControl(sender, e);
 
         #endregion
     }

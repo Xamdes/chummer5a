@@ -19,10 +19,10 @@ namespace ChummerHub.Client.UI
     public partial class ucSINnersSearch : UserControl
     {
         public static CharacterExtended MySearchCharacter = null;
-        private static Logger Log = LogManager.GetCurrentClassLogger();
+        private static readonly Logger Log = LogManager.GetCurrentClassLogger();
 
         public SearchTag motherTag = null;
-        private Action<string> GetSelectedObjectCallback;
+        private readonly Action<string> GetSelectedObjectCallback;
 
         public string SelectedId
         {
@@ -35,13 +35,7 @@ namespace ChummerHub.Client.UI
             InitializeComponent();
         }
 
-        private void SINnersSearchSearch_Load(object sender, EventArgs e)
-        {
-            UpdateDialog();
-
-
-
-        }
+        private void SINnersSearchSearch_Load(object sender, EventArgs e) => UpdateDialog();
 
         private bool loading = false;
 
@@ -88,7 +82,7 @@ namespace ChummerHub.Client.UI
             }
             finally
             {
-                this.loading = false;
+                loading = false;
             }
 
             return null;
@@ -169,7 +163,10 @@ namespace ChummerHub.Client.UI
                         cb.SelectedValueChanged += (sender, e) =>
                         {
                             if (loading)
+                            {
                                 return;
+                            }
+
                             PropertyInfo info = stag.MyPropertyInfo as PropertyInfo;
                             info.SetValue(stag.MyParentTag.MyRuntimePropertyValue, cb.SelectedValue);
                             stag.TagValue = (cb.SelectedValue as Chummer.Backend.Uniques.Tradition).Name;
@@ -194,7 +191,9 @@ namespace ChummerHub.Client.UI
                 {
                     Type listtype = StaticUtils.GetListType(islist);
                     if (listtype != null)
+                    {
                         switchname = listtype.Name;
+                    }
                 }
             }
 
@@ -216,7 +215,10 @@ namespace ChummerHub.Client.UI
                             XmlNode objXmlSpell = objXmlDocument.SelectSingleNode("/chummer/spells/spell[id = \"" + frmPickSpell.SelectedSpell + "\"]");
                             Spell objSpell = new Spell(MySearchCharacter.MyCharacter);
                             if (string.IsNullOrEmpty(objSpell?.Name))
+                            {
                                 return;
+                            }
+
                             objSpell.Create(objXmlSpell, string.Empty, frmPickSpell.Limited, frmPickSpell.Extended, frmPickSpell.Alchemical);
                             MySearchCharacter.MyCharacter.Spells.Add(objSpell);
                             SearchTag spellsearch = new SearchTag(stag.MyPropertyInfo, stag.MyRuntimeHubClassTag)

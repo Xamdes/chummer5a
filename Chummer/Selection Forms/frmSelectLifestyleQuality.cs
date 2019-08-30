@@ -68,7 +68,9 @@ namespace Chummer
         {
             // Populate the Quality Category list.
             using (XmlNodeList objXmlCategoryList = _objXmlDocument.SelectNodes("/chummer/categories/category"))
+            {
                 if (objXmlCategoryList?.Count > 0)
+                {
                     foreach (XmlNode objXmlCategory in objXmlCategoryList)
                     {
                         string strCategory = objXmlCategory.InnerText;
@@ -77,6 +79,9 @@ namespace Chummer
                             _lstCategory.Add(new ListItem(strCategory, objXmlCategory.Attributes?["translate"]?.InnerText ?? strCategory));
                         }
                     }
+                }
+            }
+
             _lstCategory.Sort(CompareListItems.CompareNames);
 
             if (_lstCategory.Count > 0)
@@ -90,15 +95,22 @@ namespace Chummer
             cboCategory.Enabled = _lstCategory.Count > 1;
 
             if (!string.IsNullOrEmpty(s_StrSelectCategory))
+            {
                 cboCategory.SelectedValue = s_StrSelectCategory;
+            }
 
             if (cboCategory.SelectedIndex == -1)
+            {
                 cboCategory.SelectedIndex = 0;
+            }
+
             cboCategory.EndUpdate();
 
             // Change the BP Label to Karma if the character is being built with Karma instead (or is in Career Mode).
             if (_objCharacter.BuildMethod == CharacterBuildMethod.Karma || _objCharacter.BuildMethod == CharacterBuildMethod.LifeModule || _objCharacter.Created)
+            {
                 lblBPLabel.Text = LanguageManager.GetString("Label_LP", GlobalOptions.Language);
+            }
 
             _blnLoading = false;
 
@@ -108,13 +120,18 @@ namespace Chummer
         private void cboCategory_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (!_blnLoading)
+            {
                 BuildQualityList(cboCategory.SelectedValue?.ToString());
+            }
         }
 
         private void lstLifestyleQualities_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (_blnLoading)
+            {
                 return;
+            }
+
             string strSelectedLifestyleId = lstLifestyleQualities.SelectedValue?.ToString();
             if (string.IsNullOrEmpty(strSelectedLifestyleId))
             {
@@ -232,10 +249,7 @@ namespace Chummer
             AcceptForm();
         }
 
-        private void cmdCancel_Click(object sender, EventArgs e)
-        {
-            DialogResult = DialogResult.Cancel;
-        }
+        private void cmdCancel_Click(object sender, EventArgs e) => DialogResult = DialogResult.Cancel;
 
         private void lstLifestyleQualities_DoubleClick(object sender, EventArgs e)
         {
@@ -246,19 +260,25 @@ namespace Chummer
         private void chkLimitList_CheckedChanged(object sender, EventArgs e)
         {
             if (!_blnLoading)
+            {
                 BuildQualityList(cboCategory.SelectedValue?.ToString());
+            }
         }
 
         private void chkFree_CheckedChanged(object sender, EventArgs e)
         {
             if (!_blnLoading)
+            {
                 BuildQualityList(cboCategory.SelectedValue?.ToString());
+            }
         }
 
         private void txtSearch_TextChanged(object sender, EventArgs e)
         {
             if (!_blnLoading)
+            {
                 BuildQualityList(cboCategory.SelectedValue?.ToString());
+            }
         }
 
         private void txtSearch_KeyDown(object sender, KeyEventArgs e)
@@ -290,7 +310,9 @@ namespace Chummer
         private void txtSearch_KeyUp(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Up)
+            {
                 txtSearch.Select(txtSearch.Text.Length, 0);
+            }
         }
         #endregion
 
@@ -351,7 +373,9 @@ namespace Chummer
                 foreach (string strItem in _lstCategory.Select(x => x.Value))
                 {
                     if (!string.IsNullOrEmpty(strItem))
+                    {
                         objCategoryFilter.Append("category = \"" + strItem + "\" or ");
+                    }
                 }
                 if (objCategoryFilter.Length > 0)
                 {
@@ -368,19 +392,29 @@ namespace Chummer
 
             List<ListItem> lstLifestyleQuality = new List<ListItem>();
             using (XmlNodeList objXmlQualityList = _objXmlDocument.SelectNodes("/chummer/qualities/quality[" + strFilter + "]"))
+            {
                 if (objXmlQualityList?.Count > 0)
+                {
                     foreach (XmlNode objXmlQuality in objXmlQualityList)
                     {
                         string strId = objXmlQuality["id"]?.InnerText;
                         if (string.IsNullOrEmpty(strId))
+                        {
                             continue;
+                        }
+
                         if (!blnDoUIUpdate || !chkLimitList.Checked || RequirementMet(objXmlQuality, false))
                         {
                             lstLifestyleQuality.Add(new ListItem(strId, objXmlQuality["translate"]?.InnerText ?? objXmlQuality["name"]?.InnerText ?? LanguageManager.GetString("String_Unknown", GlobalOptions.Language)));
                             if (blnTerminateAfterFirst)
+                            {
                                 break;
+                            }
                         }
                     }
+                }
+            }
+
             if (blnDoUIUpdate)
             {
                 lstLifestyleQuality.Sort(CompareListItems.CompareNames);
@@ -393,9 +427,13 @@ namespace Chummer
                 lstLifestyleQualities.DataSource = lstLifestyleQuality;
                 _blnLoading = false;
                 if (string.IsNullOrEmpty(strOldSelectedQuality))
+                {
                     lstLifestyleQualities.SelectedIndex = -1;
+                }
                 else
+                {
                     lstLifestyleQualities.SelectedValue = strOldSelectedQuality;
+                }
 
                 lstLifestyleQualities.EndUpdate();
             }
@@ -410,10 +448,15 @@ namespace Chummer
         {
             string strSelectedSourceIDString = lstLifestyleQualities.SelectedValue?.ToString();
             if (string.IsNullOrEmpty(strSelectedSourceIDString))
+            {
                 return;
+            }
+
             XmlNode objNode = _objXmlDocument.SelectSingleNode("/chummer/qualities/quality[id = \"" + strSelectedSourceIDString + "\"]");
             if (objNode == null || !RequirementMet(objNode, true))
+            {
                 return;
+            }
 
             _strSelectedQuality = strSelectedSourceIDString;
             s_StrSelectCategory = (_objCharacter.Options.SearchInCategoryOnly || txtSearch.TextLength == 0) ? cboCategory.SelectedValue?.ToString() : objNode["category"]?.InnerText;
@@ -430,7 +473,9 @@ namespace Chummer
         {
             // Ignore the rules.
             if (_objCharacter.IgnoreRules)
+            {
                 return true;
+            }
 
             // See if the character already has this Quality and whether or not multiple copies are allowed.
             if (objXmlQuality["limit"]?.InnerText != bool.FalseString)
@@ -441,7 +486,10 @@ namespace Chummer
                     if (objXmlQuality["allowmultiple"] == null && objQuality.Name == objXmlQuality["name"].InnerText)
                     {
                         if (blnShowMessage)
+                        {
                             Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_SelectQuality_QualityLimit", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_SelectQuality_QualityLimit", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        }
+
                         return false;
                     }
                 }
@@ -537,7 +585,10 @@ namespace Chummer
                 if (blnRequirementForbidden)
                 {
                     if (blnShowMessage)
+                    {
                         Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_SelectQuality_QualityRestriction", GlobalOptions.Language) + strForbidden, LanguageManager.GetString("MessageTitle_SelectQuality_QualityRestriction", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+
                     return false;
                 }
             }
@@ -565,7 +616,9 @@ namespace Chummer
                                 foreach (LifestyleQuality objQuality in _lstExistingQualities)
                                 {
                                     if (objQuality.Name == objXmlRequired.InnerText)
+                                    {
                                         blnOneOfMet = true;
+                                    }
                                 }
 
                                 if (!blnOneOfMet)
@@ -583,7 +636,9 @@ namespace Chummer
                                 foreach (Quality objQuality in _objCharacter.Qualities)
                                 {
                                     if (objQuality.Name == objXmlRequired.InnerText)
+                                    {
                                         blnOneOfMet = true;
+                                    }
                                 }
 
                                 if (!blnOneOfMet)
@@ -597,7 +652,9 @@ namespace Chummer
                             case "metatype":
                                 // Check the Metatype requirement.
                                 if (objXmlRequired.InnerText == _objCharacter.Metatype)
+                                {
                                     blnOneOfMet = true;
+                                }
                                 else
                                 {
                                     XmlNode objNode = _objMetatypeDocument.SelectSingleNode("/chummer/metatypes/metatype[name = \"" + objXmlRequired.InnerText + "\"]") ??
@@ -610,7 +667,9 @@ namespace Chummer
                             case "metatypecategory":
                                 // Check the Metatype Category requirement.
                                 if (objXmlRequired.InnerText == _objCharacter.MetatypeCategory)
+                                {
                                     blnOneOfMet = true;
+                                }
                                 else
                                 {
                                     XmlNode objNode = _objMetatypeDocument.SelectSingleNode("/chummer/categories/category[. = \"" + objXmlRequired.InnerText + "\"]") ??
@@ -623,7 +682,9 @@ namespace Chummer
                             case "metavariant":
                                 // Check the Metavariant requirement.
                                 if (objXmlRequired.InnerText == _objCharacter.Metavariant)
+                                {
                                     blnOneOfMet = true;
+                                }
                                 else
                                 {
                                     XmlNode objNode = _objMetatypeDocument.SelectSingleNode("/chummer/metatypes/metatype/metavariants/metavariant[name = \"" + objXmlRequired.InnerText + "\"]") ??
@@ -639,9 +700,14 @@ namespace Chummer
                             case "careerkarma":
                                 // Check Career Karma requirement.
                                 if (_objCharacter.CareerKarma >= Convert.ToInt32(objXmlRequired.InnerText))
+                                {
                                     blnOneOfMet = true;
+                                }
                                 else
+                                {
                                     strThisRequirement = Environment.NewLine + '\t' + string.Format(LanguageManager.GetString("Message_SelectQuality_RequireKarma", GlobalOptions.Language), objXmlRequired.InnerText);
+                                }
+
                                 break;
                             case "ess":
                                 // Check Essence requirement.
@@ -649,13 +715,17 @@ namespace Chummer
                                 {
                                     // Essence must be less than the value.
                                     if (_objCharacter.Essence() < Convert.ToDecimal(objXmlRequired.InnerText.TrimStart('-'), GlobalOptions.InvariantCultureInfo))
+                                    {
                                         blnOneOfMet = true;
+                                    }
                                 }
                                 else
                                 {
                                     // Essence must be equal to or greater than the value.
                                     if (_objCharacter.Essence() >= Convert.ToDecimal(objXmlRequired.InnerText, GlobalOptions.InvariantCultureInfo))
+                                    {
                                         blnOneOfMet = true;
+                                    }
                                 }
                                 break;
                             case "skill":
@@ -674,7 +744,9 @@ namespace Chummer
                                 {
                                     // Make sure the Attribute's total value meets the requirement.
                                     if (objAttribute.TotalValue >= Convert.ToInt32(objXmlRequired["total"].InnerText))
+                                    {
                                         blnOneOfMet = true;
+                                    }
                                 }
                                 break;
                             case "attributetotal":
@@ -687,7 +759,10 @@ namespace Chummer
 
                                 object objProcess = CommonFunctions.EvaluateInvariantXPath(strAttributes, out bool blnIsSuccess);
                                 if ((blnIsSuccess ? Convert.ToInt32(objProcess) : 0) >= Convert.ToInt32(objXmlRequired["val"].InnerText))
+                                {
                                     blnOneOfMet = true;
+                                }
+
                                 break;
                             case "skillgrouptotal":
                                 {
@@ -707,12 +782,17 @@ namespace Chummer
                                     }
 
                                     if (intTotal >= Convert.ToInt32(objXmlRequired["val"].InnerText))
+                                    {
                                         blnOneOfMet = true;
+                                    }
                                 }
                                 break;
                             case "lifestyle":
                                 if (_strSelectedLifestyle == objXmlRequired.InnerText)
+                                {
                                     blnOneOfMet = true;
+                                }
+
                                 break;
                             case "cyberwares":
                                 {
@@ -804,18 +884,26 @@ namespace Chummer
                                     }
 
                                     if (intTotal >= Convert.ToInt32(objXmlRequired["count"].InnerText))
+                                    {
                                         blnOneOfMet = true;
+                                    }
                                 }
                                 break;
                             case "streetcredvsnotoriety":
                                 // Street Cred must be higher than Notoriety.
                                 if (_objCharacter.StreetCred >= _objCharacter.Notoriety)
+                                {
                                     blnOneOfMet = true;
+                                }
+
                                 break;
                             case "damageresistance":
                                 // Damage Resistance must be a particular value.
                                 if (_objCharacter.BOD.TotalValue + ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.DamageResistance) >= Convert.ToInt32(objXmlRequired.InnerText))
+                                {
                                     blnOneOfMet = true;
+                                }
+
                                 break;
                         }
                     }
@@ -844,7 +932,9 @@ namespace Chummer
                                 foreach (LifestyleQuality objQuality in _lstExistingQualities)
                                 {
                                     if (objQuality.Name == objXmlRequired.InnerText)
+                                    {
                                         blnFound = true;
+                                    }
                                 }
 
                                 if (!blnFound)
@@ -856,7 +946,9 @@ namespace Chummer
                             case "metatype":
                                 // Check the Metatype requirement.
                                 if (objXmlRequired.InnerText == _objCharacter.Metatype)
+                                {
                                     blnFound = true;
+                                }
                                 else
                                 {
                                     XmlNode objNode = _objMetatypeDocument.SelectSingleNode("/chummer/metatypes/metatype[name = \"" + objXmlRequired.InnerText + "\"]") ??
@@ -867,7 +959,9 @@ namespace Chummer
                             case "metatypecategory":
                                 // Check the Metatype Category requirement.
                                 if (objXmlRequired.InnerText == _objCharacter.MetatypeCategory)
+                                {
                                     blnFound = true;
+                                }
                                 else
                                 {
                                     XmlNode objNode = _objMetatypeDocument.SelectSingleNode("/chummer/categories/category[. = \"" + objXmlRequired.InnerText + "\"]") ??
@@ -878,7 +972,9 @@ namespace Chummer
                             case "metavariant":
                                 // Check the Metavariant requirement.
                                 if (objXmlRequired.InnerText == _objCharacter.Metavariant)
+                                {
                                     blnFound = true;
+                                }
                                 else
                                 {
                                     XmlNode objNode = _objMetatypeDocument.SelectSingleNode("/chummer/metatypes/metatype/metavariants/metavariant[name = \"" + objXmlRequired.InnerText + "\"]") ??
@@ -892,9 +988,14 @@ namespace Chummer
                             case "careerkarma":
                                 // Check Career Karma requirement.
                                 if (_objCharacter.CareerKarma >= Convert.ToInt32(objXmlRequired.InnerText))
+                                {
                                     blnFound = true;
+                                }
                                 else
+                                {
                                     strThisRequirement = Environment.NewLine + '\t' + string.Format(LanguageManager.GetString("Message_SelectQuality_RequireKarma", GlobalOptions.Language), objXmlRequired.InnerText);
+                                }
+
                                 break;
                             case "ess":
                                 // Check Essence requirement.
@@ -902,13 +1003,17 @@ namespace Chummer
                                 {
                                     // Essence must be less than the value.
                                     if (_objCharacter.Essence() < Convert.ToDecimal(objXmlRequired.InnerText.TrimStart('-'), GlobalOptions.InvariantCultureInfo))
+                                    {
                                         blnFound = true;
+                                    }
                                 }
                                 else
                                 {
                                     // Essence must be equal to or greater than the value.
                                     if (_objCharacter.Essence() >= Convert.ToDecimal(objXmlRequired.InnerText, GlobalOptions.InvariantCultureInfo))
+                                    {
                                         blnFound = true;
+                                    }
                                 }
                                 break;
                             case "skill":
@@ -927,7 +1032,9 @@ namespace Chummer
                                 {
                                     // Make sure the Attribute's total value meets the requirement.
                                     if (objAttribute.TotalValue >= Convert.ToInt32(objXmlRequired["total"].InnerText))
+                                    {
                                         blnFound = true;
+                                    }
                                 }
                                 break;
                             case "attributetotal":
@@ -940,7 +1047,10 @@ namespace Chummer
 
                                 object objProcess = CommonFunctions.EvaluateInvariantXPath(strAttributes, out bool blnIsSuccess);
                                 if ((blnIsSuccess ? Convert.ToInt32(objProcess) : 0) >= Convert.ToInt32(objXmlRequired["val"].InnerText))
+                                {
                                     blnFound = true;
+                                }
+
                                 break;
                             case "skillgrouptotal":
                                 {
@@ -960,12 +1070,17 @@ namespace Chummer
                                     }
 
                                     if (intTotal >= Convert.ToInt32(objXmlRequired["val"].InnerText))
+                                    {
                                         blnFound = true;
+                                    }
                                 }
                                 break;
                             case "lifestyle":
                                 if (_strSelectedLifestyle == objXmlRequired.InnerText)
+                                {
                                     blnFound = true;
+                                }
+
                                 break;
                             case "cyberwares":
                                 {
@@ -1051,24 +1166,34 @@ namespace Chummer
                                     }
 
                                     if (intTotal >= Convert.ToInt32(objXmlRequired["count"].InnerText))
+                                    {
                                         blnFound = true;
+                                    }
                                 }
                                 break;
                             case "streetcredvsnotoriety":
                                 // Street Cred must be higher than Notoriety.
                                 if (_objCharacter.StreetCred >= _objCharacter.Notoriety)
+                                {
                                     blnFound = true;
+                                }
+
                                 break;
                             case "damageresistance":
                                 // Damage Resistance must be a particular value.
                                 if (_objCharacter.BOD.TotalValue + ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.DamageResistance) >= Convert.ToInt32(objXmlRequired.InnerText))
+                                {
                                     blnFound = true;
+                                }
+
                                 break;
                         }
 
                         // If this item was not found, fail the AllOfMet condition.
                         if (!blnFound)
+                        {
                             blnAllOfMet = false;
+                        }
                     }
 
                     // Update the flag for requirements met.
@@ -1083,7 +1208,10 @@ namespace Chummer
                     strMessage += strRequirement;
 
                     if (blnShowMessage)
+                    {
                         Program.MainForm.ShowMessageBox(strMessage, LanguageManager.GetString("MessageTitle_SelectQuality_QualityRequirement", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+
                     return false;
                 }
             }
@@ -1091,10 +1219,7 @@ namespace Chummer
             return true;
         }
 
-        private void OpenSourceFromLabel(object sender, EventArgs e)
-        {
-            CommonFunctions.OpenPDFFromControl(sender, e);
-        }
+        private void OpenSourceFromLabel(object sender, EventArgs e) => CommonFunctions.OpenPDFFromControl(sender, e);
         #endregion
     }
 }

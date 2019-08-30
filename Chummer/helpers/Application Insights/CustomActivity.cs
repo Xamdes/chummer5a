@@ -65,26 +65,31 @@ namespace Chummer
             if (parentActivity != null)
             {
                 SetParent(operationName, parentActivity);
-                this.Start();
+                Start();
                 return;
 
             }
-            this.tc = new TelemetryClient();
-            this.Start();
+            tc = new TelemetryClient();
+            Start();
             switch (operationType)
             {
                 case OperationType.DependencyOperation:
                     MyDependencyTelemetry = new DependencyTelemetry(operationName, MyTelemetryTarget, null, null, DateTimeOffset.UtcNow, TimeSpan.Zero, "not disposed", true);
-                    MyDependencyTelemetry.Context.Operation.Id = this.Id;
+                    MyDependencyTelemetry.Context.Operation.Id = Id;
                     tc.Context.Operation.Id = MyDependencyTelemetry.Context.Operation.Id;
                     break;
                 case OperationType.RequestOperation:
                     MyRequestTelemetry = new RequestTelemetry(operationName, DateTimeOffset.UtcNow, TimeSpan.Zero, "not disposed", true);
-                    MyRequestTelemetry.Context.Operation.Id = this.Id;
+                    MyRequestTelemetry.Context.Operation.Id = Id;
                     tc.Context.Operation.Id = MyRequestTelemetry.Context.Operation.Id;
                     if (!string.IsNullOrEmpty(MyTelemetryTarget))
+                    {
                         if (Uri.TryCreate(MyTelemetryTarget, UriKind.Absolute, out Uri Uriresult))
+                        {
                             MyRequestTelemetry.Url = Uriresult;
+                        }
+                    }
+
                     break;
                 default:
 
@@ -98,21 +103,26 @@ namespace Chummer
             if (parentActivity != null)
             {
                 MyOperationType = parentActivity.MyOperationType;
-                this.SetParentId(parentActivity.Id);
-                this.tc = parentActivity.tc;
-                this.MyTelemetryTarget = parentActivity.MyTelemetryTarget;
+                SetParentId(parentActivity.Id);
+                tc = parentActivity.tc;
+                MyTelemetryTarget = parentActivity.MyTelemetryTarget;
                 switch (MyOperationType)
                 {
                     case OperationType.DependencyOperation:
                         MyDependencyTelemetry = new DependencyTelemetry(operationName, null, operationName, null, DateTimeOffset.UtcNow, TimeSpan.Zero, "not disposed", true);
-                        MyDependencyTelemetry.Context.Operation.ParentId = this.ParentId;
+                        MyDependencyTelemetry.Context.Operation.ParentId = ParentId;
                         break;
                     case OperationType.RequestOperation:
                         MyRequestTelemetry = new RequestTelemetry(operationName, DateTimeOffset.UtcNow, TimeSpan.Zero, "not disposed", true);
-                        MyRequestTelemetry.Context.Operation.ParentId = this.ParentId;
+                        MyRequestTelemetry.Context.Operation.ParentId = ParentId;
                         if (!string.IsNullOrEmpty(MyTelemetryTarget))
+                        {
                             if (Uri.TryCreate(MyTelemetryTarget, UriKind.Absolute, out Uri Uriresult))
+                            {
                                 MyRequestTelemetry.Url = new Uri(MyTelemetryTarget);
+                            }
+                        }
+
                         break;
                     default:
                         throw new NotImplementedException("Implement OperationType " + parentActivity.MyOperationType);
@@ -128,33 +138,44 @@ namespace Chummer
         public CustomActivity(string operationName, CustomActivity parentActivity) : base(operationName)
         {
             SetParent(operationName, parentActivity);
-            this.Start();
+            Start();
         }
 
         public void SetSuccess(bool success)
         {
             if (MyDependencyTelemetry != null)
+            {
                 MyDependencyTelemetry.Success = success;
+            }
+
             if (MyRequestTelemetry != null)
+            {
                 MyRequestTelemetry.Success = success;
+            }
         }
 
         public void Dispose()
         {
-            Timekeeper.Finish(this.OperationName);
-            this.Stop();
+            Timekeeper.Finish(OperationName);
+            Stop();
             switch (MyOperationType)
             {
                 case OperationType.DependencyOperation:
                     MyDependencyTelemetry.Duration = DateTimeOffset.UtcNow - MyDependencyTelemetry.Timestamp;
                     if (MyDependencyTelemetry.ResultCode == "not disposed")
+                    {
                         MyDependencyTelemetry.ResultCode = "OK";
+                    }
+
                     tc.TrackDependency(MyDependencyTelemetry);
                     break;
                 case OperationType.RequestOperation:
                     MyRequestTelemetry.Duration = DateTimeOffset.UtcNow - MyRequestTelemetry.Timestamp;
                     if (MyRequestTelemetry.ResponseCode == "not disposed")
+                    {
                         MyRequestTelemetry.ResponseCode = "OK";
+                    }
+
                     tc.TrackRequest(MyRequestTelemetry);
                     break;
                 default:

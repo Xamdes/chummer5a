@@ -48,9 +48,14 @@ namespace Chummer
             cboPower.DisplayMember = "Name";
             cboPower.DataSource = _lstPowerItems;
             if (_lstPowerItems.Count >= 1)
+            {
                 cboPower.SelectedIndex = 0;
+            }
             else
+            {
                 cmdOK.Enabled = false;
+            }
+
             cboPower.EndUpdate();
         }
 
@@ -67,13 +72,12 @@ namespace Chummer
         private void frmSelectOptionalPower_Load(object sender, EventArgs e)
         {
             if (_lstPowerItems.Count == 1)
+            {
                 cmdOK_Click(sender, e);
+            }
         }
 
-        private void cmdCancel_Click(object sender, EventArgs e)
-        {
-            DialogResult = DialogResult.Cancel;
-        }
+        private void cmdCancel_Click(object sender, EventArgs e) => DialogResult = DialogResult.Cancel;
         #endregion
 
         #region Properties

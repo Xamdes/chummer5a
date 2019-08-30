@@ -66,7 +66,9 @@ namespace Chummer
         public static bool ProcessFilterOperationNode(this XPathNavigator xmlParentNode, XPathNavigator xmlOperationNode, bool blnIsOrNode)
         {
             if (xmlOperationNode == null)
+            {
                 return false;
+            }
 
             foreach (XPathNavigator xmlOperationChildNode in xmlOperationNode.SelectChildren(XPathNodeType.Element))
             {
@@ -122,10 +124,12 @@ namespace Chummer
                             if (xmlTargetNode.SelectChildren(XPathNodeType.Element).Count > 0)
                             {
                                 if (xmlOperationChildNode.SelectChildren(XPathNodeType.Element).Count > 0)
+                                {
                                     boolSubNodeResult = ProcessFilterOperationNode(xmlTargetNode,
                                                             xmlOperationChildNode,
                                                             blnOperationChildNodeAttributeOr) !=
                                                         blnInvert;
+                                }
                             }
                             else
                             {
@@ -145,6 +149,7 @@ namespace Chummer
                                 }
                                 // Note when adding more operation cases: XML does not like the "<" symbol as part of an attribute value
                                 else
+                                {
                                     switch (strOperationType)
                                     {
                                         case "doesnotequal":
@@ -195,6 +200,7 @@ namespace Chummer
                                                 blnInvert;
                                             break;
                                     }
+                                }
                             }
 
                             if (blnCheckAll)
@@ -216,9 +222,14 @@ namespace Chummer
                 }
 
                 if (blnIsOrNode && blnOperationChildNodeResult)
+                {
                     return true;
+                }
+
                 if (!blnIsOrNode && !blnOperationChildNodeResult)
+                {
                     return false;
+                }
             }
 
             return !blnIsOrNode;
@@ -249,7 +260,10 @@ namespace Chummer
             if (objField != null)
             {
                 if (objCulture == null)
+                {
                     objCulture = GlobalOptions.InvariantCultureInfo;
+                }
+
                 if (int.TryParse(objField.Value, NumberStyles.Any, objCulture, out int intTmp))
                 {
                     read = intTmp;
@@ -287,7 +301,10 @@ namespace Chummer
             if (objField != null)
             {
                 if (objCulture == null)
+                {
                     objCulture = GlobalOptions.InvariantCultureInfo;
+                }
+
                 if (decimal.TryParse(objField.Value, NumberStyles.Any, objCulture, out decimal decTmp))
                 {
                     read = decTmp;
@@ -307,7 +324,10 @@ namespace Chummer
             if (objField != null)
             {
                 if (objCulture == null)
+                {
                     objCulture = GlobalOptions.InvariantCultureInfo;
+                }
+
                 if (double.TryParse(objField.Value, NumberStyles.Any, objCulture, out double dblTmp))
                 {
                     read = dblTmp;
@@ -327,7 +347,10 @@ namespace Chummer
             if (objField != null)
             {
                 if (objCulture == null)
+                {
                     objCulture = GlobalOptions.InvariantCultureInfo;
+                }
+
                 if (float.TryParse(objField.Value, NumberStyles.Any, objCulture, out float fltTmp))
                 {
                     read = fltTmp;
@@ -349,9 +372,15 @@ namespace Chummer
         {
             XPathNavigator objField = node.SelectSingleNode(field);
             if (objField == null)
+            {
                 return false;
+            }
+
             if (!Guid.TryParse(objField.Value, out Guid fltTmp))
+            {
                 return false;
+            }
+
             if (fltTmp == Guid.Empty && falseIfEmpty)
             {
                 return false;
@@ -369,7 +398,10 @@ namespace Chummer
         public static bool NodeExists(this XPathNavigator xmlNode, string strName)
         {
             if (string.IsNullOrEmpty(strName))
+            {
                 return false;
+            }
+
             return xmlNode?.SelectSingleNode(strName) != null;
         }
     }

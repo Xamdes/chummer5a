@@ -35,7 +35,9 @@ namespace Chummer
             {
                 strCode = strSourceString.Substring(0, intWhitespaceIndex);
                 if (intWhitespaceIndex + 1 < strSourceString.Length)
+                {
                     int.TryParse(strSourceString.Substring(intWhitespaceIndex + 1), out _intPage);
+                }
             }
 
             Code = CommonFunctions.LanguageBookShort(strCode, Language);
@@ -66,10 +68,7 @@ namespace Chummer
                                 _strCachedSpace + LanguageManager.GetString("String_Page", strLanguage) + _strCachedSpace + _intPage;
         }
 
-        public override string ToString()
-        {
-            return Code + _strCachedSpace + Page;
-        }
+        public override string ToString() => Code + _strCachedSpace + Page;
 
         /// <summary>
         /// Language code originally used to construct the source info (alters book code, possibly alters page numbers)
@@ -100,10 +99,7 @@ namespace Chummer
             get;
         }
 
-        public int CompareTo(object obj)
-        {
-            return CompareTo((SourceString)obj);
-        }
+        public int CompareTo(object obj) => CompareTo((SourceString)obj);
 
         public int CompareTo(SourceString strOther)
         {

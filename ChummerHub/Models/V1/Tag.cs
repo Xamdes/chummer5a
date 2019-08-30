@@ -141,32 +141,30 @@ namespace ChummerHub.Models.V1
         }
 
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'Tag.Tag()'
-        public Tag()
-#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'Tag.Tag()'
-        {
-            TagConstructor(null, null);
-        }
+        public Tag() => TagConstructor(null, null);
 
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'Tag.Tag(SINner, Tag)'
-        public Tag(SINner sinner, Tag parent)
-#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'Tag.Tag(SINner, Tag)'
-        {
-            TagConstructor(sinner, parent);
-        }
+        public Tag(SINner sinner, Tag parent) => TagConstructor(sinner, parent);
 
         private Tag TagConstructor(SINner sinner, Tag parent)
         {
             if (sinner != null)
-                this.SINnerId = sinner.Id;
-            this.ParentTag = parent;
-            this.TagName = "";
-            this.TagValue = "";
-            this.TagValueFloat = null;
-            this.ParentTagId = Guid.Empty;
+            {
+                SINnerId = sinner.Id;
+            }
+
+            ParentTag = parent;
+            TagName = "";
+            TagValue = "";
+            TagValueFloat = null;
+            ParentTagId = Guid.Empty;
             if (parent != null)
-                this.ParentTagId = parent.Id;
-            this.Tags = new List<Tag>();
-            this.TagType = TagValueEnum.unknown;
+            {
+                ParentTagId = parent.Id;
+            }
+
+            Tags = new List<Tag>();
+            TagType = TagValueEnum.unknown;
             IsUserGenerated = false;
             return this;
         }
@@ -188,9 +186,15 @@ namespace ChummerHub.Models.V1
                 {
                     string tempstr = tempParent.TagName;
                     if (!string.IsNullOrEmpty(tempParent.TagValue))
+                    {
                         tempstr += ": " + tempParent.TagValue;
+                    }
+
                     if (!string.IsNullOrEmpty(str))
+                    {
                         tempstr += " -> " + str;
+                    }
+
                     str = tempstr;
                     tempParent = tempParent.ParentTag;
                 }
@@ -201,9 +205,11 @@ namespace ChummerHub.Models.V1
 
         internal void SetSinnerIdRecursive(Guid? id)
         {
-            this.SINnerId = id;
-            foreach (Tag child in this.Tags)
+            SINnerId = id;
+            foreach (Tag child in Tags)
+            {
                 child.SetSinnerIdRecursive(id);
+            }
         }
     }
 }

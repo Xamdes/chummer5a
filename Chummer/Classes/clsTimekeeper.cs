@@ -27,15 +27,12 @@ namespace Chummer
 {
     public static class Timekeeper
     {
-        private static Logger Logger = NLog.LogManager.GetCurrentClassLogger();
+        private static readonly Logger Logger = NLog.LogManager.GetCurrentClassLogger();
         private static readonly Stopwatch s_Time = new Stopwatch();
         private static readonly ConcurrentDictionary<string, TimeSpan> s_DictionaryStarts = new ConcurrentDictionary<string, TimeSpan>();
         private static readonly ConcurrentDictionary<string, Tuple<TimeSpan, int>> s_DictionaryStatistics = new ConcurrentDictionary<string, Tuple<TimeSpan, int>>();
 
-        static Timekeeper()
-        {
-            s_Time.Start();
-        }
+        static Timekeeper() => s_Time.Start();
 
         public static CustomActivity StartSyncron(string taskname, CustomActivity parentActivity, CustomActivity.OperationType operationType, string target)
         {

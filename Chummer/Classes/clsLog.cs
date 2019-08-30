@@ -110,10 +110,7 @@ namespace Chummer
             [CallerMemberName] string method = "",
             [CallerLineNumber] int line = 0
 #endif
-        )
-        {
-            writeLog(new object[] { "Entering " + info }, file, method, line, LogLevel.Debug);
-        }
+        ) => writeLog(new object[] { "Entering " + info }, file, method, line, LogLevel.Debug);
 
         /// <summary>
         /// Log that the execution path is entering a method
@@ -136,10 +133,7 @@ namespace Chummer
             [CallerMemberName] string method = "",
             [CallerLineNumber] int line = 0
 #endif
-        )
-        {
-            writeLog(new object[] { "Exiting " + info }, file, method, line, LogLevel.Debug);
-        }
+        ) => writeLog(new object[] { "Exiting " + info }, file, method, line, LogLevel.Debug);
 
         /// <summary>
         /// Log that an error occoured
@@ -162,10 +156,7 @@ namespace Chummer
             [CallerMemberName] string method = "",
             [CallerLineNumber] int line = 0
 #endif
-            )
-        {
-            writeLog(info, file, method, line, LogLevel.Error);
-        }
+            ) => writeLog(info, file, method, line, LogLevel.Error);
 
         /// <summary>
         /// Log that an error occoured
@@ -188,10 +179,7 @@ namespace Chummer
             [CallerMemberName] string method = "",
             [CallerLineNumber] int line = 0
 #endif
-            )
-        {
-            writeLog(new[] { info }, file, method, line, LogLevel.Error);
-        }
+            ) => writeLog(new[] { info }, file, method, line, LogLevel.Error);
 
         /// <summary>
         /// Log something that could help with debug
@@ -214,10 +202,7 @@ namespace Chummer
             [CallerMemberName] string method = "",
             [CallerLineNumber] int line = 0
 #endif
-        )
-        {
-            writeLog(new[] { info }, file, method, line, LogLevel.Debug);
-        }
+        ) => writeLog(new[] { info }, file, method, line, LogLevel.Debug);
 
         /// <summary>
         /// Log a trace message (this should be off by default)
@@ -240,10 +225,7 @@ namespace Chummer
             [CallerMemberName] string method = "",
             [CallerLineNumber] int line = 0
 #endif
-        )
-        {
-            writeLog(new[] { info }, file, method, line, LogLevel.Trace);
-        }
+        ) => writeLog(new[] { info }, file, method, line, LogLevel.Trace);
 
         /// <summary>
         /// Log a trace message (this should be off by default)
@@ -268,10 +250,7 @@ namespace Chummer
             [CallerMemberName] string method = "",
             [CallerLineNumber] int line = 0
 #endif
-        )
-        {
-            writeLog(new[] { exception, info }, file, method, line, LogLevel.Trace);
-        }
+        ) => writeLog(new[] { exception, info }, file, method, line, LogLevel.Trace);
 
         /// <summary>
         /// Log an exception has occoured
@@ -282,7 +261,9 @@ namespace Chummer
         public static void Exception(Exception exception, string message = null)
         {
             if (!IsLoggerEnabled)
+            {
                 return;
+            }
 
             if (string.IsNullOrEmpty(message))
             {
@@ -325,10 +306,7 @@ namespace Chummer
             [CallerMemberName] string method = "",
             [CallerLineNumber] int line = 0
 #endif
-            )
-        {
-            writeLog(info, file, method, line, LogLevel.Warn);
-        }
+            ) => writeLog(info, file, method, line, LogLevel.Warn);
 
         /// <summary>
         /// Log a warning
@@ -351,10 +329,7 @@ namespace Chummer
             [CallerMemberName] string method = "",
             [CallerLineNumber] int line = 0
 #endif
-            )
-        {
-            writeLog(new[] { info }, file, method, line, LogLevel.Warn);
-        }
+            ) => writeLog(new[] { info }, file, method, line, LogLevel.Warn);
 
         /// <summary>
         /// Log some info
@@ -377,10 +352,7 @@ namespace Chummer
             [CallerMemberName] string method = "",
             [CallerLineNumber] int line = 0
 #endif
-            )
-        {
-            writeLog(info, file, method, line, LogLevel.Info);
-        }
+            ) => writeLog(info, file, method, line, LogLevel.Info);
 
         /// <summary>
         /// Log some info
@@ -403,10 +375,7 @@ namespace Chummer
             [CallerMemberName] string method = "",
             [CallerLineNumber] int line = 0
 #endif
-            )
-        {
-            writeLog(new object[] { info }, file, method, line, LogLevel.Info);
-        }
+            ) => writeLog(new object[] { info }, file, method, line, LogLevel.Info);
 
         public enum LogLevel
         {
@@ -422,7 +391,9 @@ namespace Chummer
         private static void writeLog(object[] info, string file, string method, int line, LogLevel loglevel)
         {
             if (!IsLoggerEnabled)
+            {
                 return;
+            }
 
             Stopwatch sw = Stopwatch.StartNew();
             //TODO: Add timestamp to logs
@@ -451,7 +422,10 @@ namespace Chummer
 
             string strTimeStamp = objTimeStamper.ToString();
             lock (s_LogWriterLock)
+            {
                 s_LogWriter?.WriteLine(strTimeStamp);
+            }
+
             sw.TaskEnd("filewrite");
             System.Diagnostics.Trace.WriteLine(strTimeStamp);
             sw.TaskEnd("screenwrite");
@@ -464,7 +438,9 @@ namespace Chummer
             if (IsLoggerEnabled)
             {
                 lock (s_LogWriterLock)
+                {
                     s_LogWriter?.WriteLine("First chance exception: " + e?.Exception);
+                }
             }
         }
     }

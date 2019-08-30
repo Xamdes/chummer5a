@@ -19,25 +19,25 @@ namespace SINners.Models
 
         public Tag(object myRuntimeObject, Chummer.HubTagAttribute hubTag)
         {
-            this.Id = Guid.NewGuid();
+            Id = Guid.NewGuid();
             MyRuntimeObject = myRuntimeObject;
             MyRuntimeHubTag = hubTag;
-            this.Tags = new List<Tag>();
+            Tags = new List<Tag>();
         }
 
         public Tag(bool isUserGenerated)
         {
-            this.Id = Guid.NewGuid();
-            this.IsUserGenerated = isUserGenerated;
-            this.Tags = new List<Tag>();
+            Id = Guid.NewGuid();
+            IsUserGenerated = isUserGenerated;
+            Tags = new List<Tag>();
         }
 
         public Tag(object myRuntimeObject, Chummer.HubClassTagAttribute hubClassTag)
         {
-            this.Id = Guid.NewGuid();
+            Id = Guid.NewGuid();
             MyRuntimeObject = myRuntimeObject;
             MyRuntimeHubClassTag = hubClassTag;
-            this.Tags = new List<Tag>();
+            Tags = new List<Tag>();
         }
 
         [IgnoreDataMember]
@@ -53,14 +53,23 @@ namespace SINners.Models
                 {
                     string tempstr = tempParent.TagName;
                     if (!string.IsNullOrEmpty(tempParent.TagValue))
+                    {
                         tempstr += ": " + tempParent.TagValue;
+                    }
+
                     if (!string.IsNullOrEmpty(str))
+                    {
                         tempstr += " -> " + str;
+                    }
+
                     str = tempstr;
                     tempParent = tempParent.MyParentTag;
                 }
-                if (!string.IsNullOrEmpty(this.TagComment))
-                    str += " (" + this.TagComment + ")";
+                if (!string.IsNullOrEmpty(TagComment))
+                {
+                    str += " (" + TagComment + ")";
+                }
+
                 return str;
             }
 
@@ -100,9 +109,11 @@ namespace SINners.Models
 
         internal void SetSinnerIdRecursive(Guid? id)
         {
-            this.SiNnerId = id;
-            foreach (Tag childtag in this.Tags)
+            SiNnerId = id;
+            foreach (Tag childtag in Tags)
+            {
                 childtag.SetSinnerIdRecursive(id);
+            }
         }
 
     }

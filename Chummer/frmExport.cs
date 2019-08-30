@@ -59,19 +59,20 @@ namespace Chummer
             }
 
             if (cboXSLT.Items.Count > 0)
+            {
                 cboXSLT.SelectedIndex = 0;
+            }
         }
 
-        private void cmdCancel_Click(object sender, EventArgs e)
-        {
-            DialogResult = DialogResult.Cancel;
-        }
+        private void cmdCancel_Click(object sender, EventArgs e) => DialogResult = DialogResult.Cancel;
 
         private void cmdOK_Click(object sender, EventArgs e)
         {
             string strXSLT = cboXSLT.Text;
             if (string.IsNullOrEmpty(strXSLT))
+            {
                 return;
+            }
 
             if (strXSLT == "Export JSON")
             {
@@ -87,7 +88,9 @@ namespace Chummer
         {
             string strXSLT = cboXSLT.Text;
             if (string.IsNullOrEmpty(strXSLT))
+            {
                 return;
+            }
 
             if (_dictCache.TryGetValue(strXSLT, out string strBoxText))
             {
@@ -104,15 +107,15 @@ namespace Chummer
             }
         }
 
-        private void rtbText_Leave(object sender, EventArgs e)
-        {
-            _blnSelected = false;
-        }
+        private void rtbText_Leave(object sender, EventArgs e) => _blnSelected = false;
 
         private void rtbText_MouseUp(object sender, MouseEventArgs e)
         {
             if (_blnSelected || rtbText.SelectionLength != 0)
+            {
                 return;
+            }
+
             _blnSelected = true;
             rtbText.SelectAll();
         }
@@ -120,10 +123,7 @@ namespace Chummer
         #endregion
 
         #region Methods
-        private void MoveControls()
-        {
-            cboXSLT.Left = lblExport.Left + lblExport.Width + 6;
-        }
+        private void MoveControls() => cboXSLT.Left = lblExport.Left + lblExport.Width + 6;
         #region XML
         private void ExportNormal()
         {
@@ -135,7 +135,9 @@ namespace Chummer
             while ((strLine = objFile.ReadLine()) != null)
             {
                 if (strLine.StartsWith("<!-- ext:"))
+                {
                     strExtension = strLine.TrimStartOnce("<!-- ext:", true).FastEscapeOnceFromEnd("-->").Trim();
+                }
             }
             objFile.Close();
 
@@ -145,7 +147,9 @@ namespace Chummer
             string strSaveFile = SaveFileDialog1.FileName;
 
             if (string.IsNullOrEmpty(strSaveFile))
+            {
                 return;
+            }
 
             File.WriteAllText(strSaveFile, rtbText.Text); // Change this to a proper path.
 
@@ -200,7 +204,9 @@ namespace Chummer
             SaveFileDialog1.ShowDialog();
 
             if (string.IsNullOrWhiteSpace(SaveFileDialog1.FileName))
+            {
                 return;
+            }
 
             File.WriteAllText(SaveFileDialog1.FileName, rtbText.Text, Encoding.UTF8);
 

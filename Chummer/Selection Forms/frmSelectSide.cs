@@ -52,11 +52,9 @@ namespace Chummer
             DialogResult = DialogResult.OK;
         }
 
-        private void frmSelectSide_Load(object sender, EventArgs e)
-        {
+        private void frmSelectSide_Load(object sender, EventArgs e) =>
             // Select the first item in the list.
             cboSide.SelectedIndex = 0;
-        }
         #endregion
 
         #region Properties
@@ -86,9 +84,6 @@ namespace Chummer
         }
         #endregion
 
-        private void cmdCancel_Click(object sender, EventArgs e)
-        {
-            DialogResult = DialogResult.Cancel;
-        }
+        private void cmdCancel_Click(object sender, EventArgs e) => DialogResult = DialogResult.Cancel;
     }
 }

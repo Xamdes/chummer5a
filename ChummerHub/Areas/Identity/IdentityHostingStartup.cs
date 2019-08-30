@@ -8,12 +8,8 @@ namespace ChummerHub.Areas.Identity
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'IdentityHostingStartup'
     {
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'IdentityHostingStartup.Configure(IWebHostBuilder)'
-        public void Configure(IWebHostBuilder builder)
-#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'IdentityHostingStartup.Configure(IWebHostBuilder)'
-        {
-            builder.ConfigureServices((context, services) =>
-            {
-            });
-        }
+        public void Configure(IWebHostBuilder builder) => builder.ConfigureServices((context, services) =>
+                                                        {
+                                                        });
     }
 }

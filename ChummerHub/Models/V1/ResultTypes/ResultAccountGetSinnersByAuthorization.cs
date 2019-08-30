@@ -14,18 +14,10 @@ namespace ChummerHub.Models.V1
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'ResultAccountGetSinnersByAuthorization.MySINSearchGroupResult'
 
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'ResultAccountGetSinnersByAuthorization.ResultAccountGetSinnersByAuthorization()'
-        public ResultAccountGetSinnersByAuthorization()
-#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'ResultAccountGetSinnersByAuthorization.ResultAccountGetSinnersByAuthorization()'
-        {
-            MySINSearchGroupResult = new SINSearchGroupResult();
-        }
+        public ResultAccountGetSinnersByAuthorization() => MySINSearchGroupResult = new SINSearchGroupResult();
 
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'ResultAccountGetSinnersByAuthorization.ResultAccountGetSinnersByAuthorization(SINSearchGroupResult)'
-        public ResultAccountGetSinnersByAuthorization(SINSearchGroupResult ssg)
-#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'ResultAccountGetSinnersByAuthorization.ResultAccountGetSinnersByAuthorization(SINSearchGroupResult)'
-        {
-            MySINSearchGroupResult = ssg;
-        }
+        public ResultAccountGetSinnersByAuthorization(SINSearchGroupResult ssg) => MySINSearchGroupResult = ssg;
 
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'ResultAccountGetSinnersByAuthorization.ResultAccountGetSinnersByAuthorization(Exception)'
         public ResultAccountGetSinnersByAuthorization(Exception e) : base(e)

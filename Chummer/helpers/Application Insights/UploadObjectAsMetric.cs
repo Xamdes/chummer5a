@@ -30,8 +30,9 @@ namespace Chummer
         public static bool UploadObject(TelemetryClient tc, object obj)
         {
             if (obj == null)
+            {
                 throw new ArgumentNullException(nameof(obj));
-
+            }
 
             List<PropertyInfo> allProperties = null;
             string name = null;
@@ -62,9 +63,13 @@ namespace Chummer
                 if (bool.TryParse(val.ToString(), out bool boolval))
                 {
                     if (boolval)
+                    {
                         metric.TrackValue(1);
+                    }
                     else
+                    {
                         metric.TrackValue(0);
+                    }
                 }
 
             }

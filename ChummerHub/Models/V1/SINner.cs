@@ -56,13 +56,13 @@ namespace ChummerHub.Models.V1
             get
             {
                 if (string.IsNullOrEmpty(Hash))
-                    Hash = string.Format("{0:X}", this.Id.ToString().GetHashCode());
+                {
+                    Hash = string.Format("{0:X}", Id.ToString().GetHashCode());
+                }
+
                 return Hash;
             }
-            set
-            {
-                Hash = value;
-            }
+            set => Hash = value;
         }
 
         [MaxLength(6)]
@@ -107,11 +107,11 @@ namespace ChummerHub.Models.V1
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'SINner.SINner()'
         {
             Id = Guid.NewGuid();
-            this.SINnerMetaData = new SINnerMetaData();
+            SINnerMetaData = new SINnerMetaData();
             //this.MyExtendedAttributes = new SINnerExtended(this);
-            this.DownloadUrl = "";
-            this.MyGroup = null;
-            this.Language = "";
+            DownloadUrl = "";
+            MyGroup = null;
+            Language = "";
             EditionNumber = "5e";
         }
 

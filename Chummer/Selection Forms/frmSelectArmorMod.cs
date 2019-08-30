@@ -71,10 +71,7 @@ namespace Chummer
             BuildModList();
         }
 
-        private void lstMod_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            UpdateSelectedArmor();
-        }
+        private void lstMod_SelectedIndexChanged(object sender, EventArgs e) => UpdateSelectedArmor();
 
         private void cmdOK_Click(object sender, EventArgs e)
         {
@@ -82,15 +79,9 @@ namespace Chummer
             AcceptForm();
         }
 
-        private void cmdCancel_Click(object sender, EventArgs e)
-        {
-            DialogResult = DialogResult.Cancel;
-        }
+        private void cmdCancel_Click(object sender, EventArgs e) => DialogResult = DialogResult.Cancel;
 
-        private void nudRating_ValueChanged(object sender, EventArgs e)
-        {
-            UpdateSelectedArmor();
-        }
+        private void nudRating_ValueChanged(object sender, EventArgs e) => UpdateSelectedArmor();
 
         private void lstMod_DoubleClick(object sender, EventArgs e)
         {
@@ -202,22 +193,24 @@ namespace Chummer
         #endregion
 
         #region Methods
-        private void chkBlackMarketDiscount_CheckedChanged(object sender, EventArgs e)
-        {
-            UpdateSelectedArmor();
-        }
+        private void chkBlackMarketDiscount_CheckedChanged(object sender, EventArgs e) => UpdateSelectedArmor();
         /// <summary>
         /// Update the information for the selected Armor Mod.
         /// </summary>
         private void UpdateSelectedArmor()
         {
             if (_blnLoading)
+            {
                 return;
+            }
 
             string strSelectedId = lstMod.SelectedValue?.ToString();
             XPathNavigator objXmlMod = null;
             if (!string.IsNullOrEmpty(strSelectedId))
+            {
                 objXmlMod = _xmlBaseDataNode.SelectSingleNode("/chummer/mods/mod[id = \"" + strSelectedId + "\"]");
+            }
+
             if (objXmlMod == null)
             {
                 lblALabel.Visible = false;
@@ -257,7 +250,10 @@ namespace Chummer
             {
                 decimal decCostMultiplier = 1 + (nudMarkup.Value / 100.0m);
                 if (_setBlackMarketMaps.Contains(objXmlMod.SelectSingleNode("category")?.Value))
+                {
                     decCostMultiplier *= 0.9m;
+                }
+
                 while (nudRating.Maximum > 1 && !SelectionShared.CheckNuyenRestriction(objXmlMod, _objCharacter.Nuyen, decCostMultiplier, decimal.ToInt32(nudRating.Maximum)))
                 {
                     nudRating.Maximum -= 1;
@@ -323,7 +319,9 @@ namespace Chummer
                         decMax = Convert.ToDecimal(strValues[1], GlobalOptions.InvariantCultureInfo);
                     }
                     else
+                    {
                         decMin = Convert.ToDecimal(strCost.FastEscape('+'), GlobalOptions.InvariantCultureInfo);
+                    }
 
                     lblCost.Text = decMax == decimal.MaxValue
                         ? $"{decMin.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo)}¥+"
@@ -356,7 +354,9 @@ namespace Chummer
 
             // Handle YNT Softweave
             if (_eCapacityStyle == CapacityStyle.Zero || string.IsNullOrEmpty(strCapacity))
+            {
                 lblCapacity.Text = "[0]";
+            }
             else
             {
                 if (strCapacity.StartsWith("FixedValues("))
@@ -369,13 +369,17 @@ namespace Chummer
                     .CheapReplace("Rating", () => nudRating.Value.ToString(GlobalOptions.InvariantCultureInfo));
                 bool blnSquareBrackets = strCapacity.StartsWith('[');
                 if (blnSquareBrackets)
+                {
                     strCapacity = strCapacity.Substring(1, strCapacity.Length - 2);
+                }
 
                 //Rounding is always 'up'. For items that generate capacity, this means making it a larger negative number.
                 objProcess = CommonFunctions.EvaluateInvariantXPath(strCapacity, out blnIsSuccess);
                 string strReturn = blnIsSuccess ? ((double)objProcess).ToString("#,0.##", GlobalOptions.CultureInfo) : strCapacity;
                 if (blnSquareBrackets)
+                {
                     strReturn = '[' + strReturn + ']';
+                }
 
                 lblCapacity.Text = strReturn;
             }
@@ -403,7 +407,10 @@ namespace Chummer
             for (int i = 0; i < strAllowed.Length; i++)
             {
                 if (!string.IsNullOrEmpty(strAllowed[i]))
+                {
                     strMount += "category = \"" + strAllowed[i] + '\"';
+                }
+
                 if (i < strAllowed.Length - 1 || !ExcludeGeneralCategory)
                 {
                     strMount += " or ";
@@ -419,6 +426,7 @@ namespace Chummer
                 _xmlBaseDataNode.Select("/chummer/mods/mod[" + strMount + " and (" + _objCharacter.Options.BookXPath() +
                                         ")]");
             if (objXmlModList?.Count > 0)
+            {
                 foreach (XPathNavigator objXmlMod in objXmlModList)
                 {
                     XPathNavigator xmlTestNode = objXmlMod.SelectSingleNode("forbidden/parentdetails");
@@ -441,10 +449,16 @@ namespace Chummer
                     }
                     string strId = objXmlMod.SelectSingleNode("id")?.Value;
                     if (string.IsNullOrEmpty(strId))
+                    {
                         continue;
+                    }
+
                     decimal decCostMultiplier = 1 + (nudMarkup.Value / 100.0m);
                     if (_setBlackMarketMaps.Contains(objXmlMod.SelectSingleNode("category")?.Value))
+                    {
                         decCostMultiplier *= 0.9m;
+                    }
+
                     if (!chkHideOverAvailLimit.Checked || SelectionShared.CheckAvailRestriction(objXmlMod, _objCharacter) &&
                         (chkFreeItem.Checked || !chkShowOnlyAffordItems.Checked ||
                          SelectionShared.CheckNuyenRestriction(objXmlMod, _objCharacter.Nuyen, decCostMultiplier)))
@@ -452,6 +466,8 @@ namespace Chummer
                         lstMods.Add(new ListItem(strId, objXmlMod.SelectSingleNode("translate")?.Value ?? objXmlMod.SelectSingleNode("name")?.Value ?? LanguageManager.GetString("String_Unknown", GlobalOptions.Language)));
                     }
                 }
+            }
+
             lstMods.Sort(CompareListItems.CompareNames);
             string strOldSelected = lstMod.SelectedValue?.ToString();
             _blnLoading = true;
@@ -461,9 +477,14 @@ namespace Chummer
             lstMod.DataSource = lstMods;
             _blnLoading = false;
             if (!string.IsNullOrEmpty(strOldSelected))
+            {
                 lstMod.SelectedValue = strOldSelected;
+            }
             else
+            {
                 lstMod.SelectedIndex = -1;
+            }
+
             lstMod.EndUpdate();
         }
 
@@ -482,20 +503,11 @@ namespace Chummer
             }
         }
 
-        private void OpenSourceFromLabel(object sender, EventArgs e)
-        {
-            CommonFunctions.OpenPDFFromControl(sender, e);
-        }
+        private void OpenSourceFromLabel(object sender, EventArgs e) => CommonFunctions.OpenPDFFromControl(sender, e);
         #endregion
 
-        private void chkHideOverAvailLimit_CheckedChanged(object sender, EventArgs e)
-        {
-            BuildModList();
-        }
+        private void chkHideOverAvailLimit_CheckedChanged(object sender, EventArgs e) => BuildModList();
 
-        private void txtSearch_TextChanged(object sender, EventArgs e)
-        {
-            BuildModList();
-        }
+        private void txtSearch_TextChanged(object sender, EventArgs e) => BuildModList();
     }
 }

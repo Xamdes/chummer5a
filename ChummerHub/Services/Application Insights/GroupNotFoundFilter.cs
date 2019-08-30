@@ -24,10 +24,7 @@ namespace ChummerHub.Services.Application_Insights
         /// 
         /// </summary>
         /// <param name="next"></param>
-        public GroupNotFoundFilter(ITelemetryProcessor next)
-        {
-            this.Next = next;
-        }
+        public GroupNotFoundFilter(ITelemetryProcessor next) => Next = next;
 
         /// <summary>
         /// 
@@ -44,7 +41,7 @@ namespace ChummerHub.Services.Application_Insights
             // Modify the item if required
             ModifyItem(item);
 
-            this.Next.Process(item);
+            Next.Process(item);
         }
 
         // Example: replace with your own criteria.
@@ -53,7 +50,9 @@ namespace ChummerHub.Services.Application_Insights
             if (item is RequestTelemetry requestTelemetry && int.Parse(requestTelemetry.ResponseCode) == (int)HttpStatusCode.NotFound)
             {
                 if (requestTelemetry.Context?.Operation?.Name.Contains("GetSINnerGroupFromSINerById") == true)
+                {
                     return false;
+                }
             }
 
             return true;
@@ -67,7 +66,7 @@ namespace ChummerHub.Services.Application_Insights
                 requestTelemetry.Success = true;
             }
 
-            this.Next.Process(item);
+            Next.Process(item);
         }
     }
 }

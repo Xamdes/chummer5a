@@ -38,18 +38,26 @@ namespace Chummer
         {
             int intExistingIndex = IndexOf(item);
             if (intExistingIndex == -1)
+            {
                 base.Add(item);
+            }
             else
+            {
                 MoveItem(intExistingIndex, Count);
+            }
         }
 
         protected override void InsertItem(int index, T item)
         {
             int intExistingIndex = IndexOf(item);
             if (intExistingIndex == -1)
+            {
                 base.InsertItem(index, item);
+            }
             else
+            {
                 MoveItem(intExistingIndex, index);
+            }
         }
     }
 }

@@ -14,18 +14,10 @@ namespace ChummerHub.Models.V1
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'ResultGroupPostGroup.MyGroup'
 
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'ResultGroupPostGroup.ResultGroupPostGroup()'
-        public ResultGroupPostGroup()
-#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'ResultGroupPostGroup.ResultGroupPostGroup()'
-        {
-            MyGroup = new SINnerGroup();
-        }
+        public ResultGroupPostGroup() => MyGroup = new SINnerGroup();
 
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'ResultGroupPostGroup.ResultGroupPostGroup(SINnerGroup)'
-        public ResultGroupPostGroup(SINnerGroup group)
-#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'ResultGroupPostGroup.ResultGroupPostGroup(SINnerGroup)'
-        {
-            MyGroup = group;
-        }
+        public ResultGroupPostGroup(SINnerGroup group) => MyGroup = group;
 
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'ResultGroupPostGroup.ResultGroupPostGroup(Exception)'
         public ResultGroupPostGroup(Exception e) : base(e)

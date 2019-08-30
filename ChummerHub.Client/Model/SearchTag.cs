@@ -41,14 +41,14 @@ namespace SINners.Models
         {
             MyPropertyInfo = myPropertyInfo;
             MyRuntimeHubTag = hubTag;
-            this.SearchTags = new List<SearchTag>();
+            SearchTags = new List<SearchTag>();
         }
 
         public SearchTag(PropertyInfo myPropertyInfo, Chummer.HubClassTagAttribute hubClassTag)
         {
             MyPropertyInfo = myPropertyInfo;
             MyRuntimeHubClassTag = hubClassTag;
-            this.SearchTags = new List<SearchTag>();
+            SearchTags = new List<SearchTag>();
         }
 
         [IgnoreDataMember]
@@ -75,12 +75,6 @@ namespace SINners.Models
             get; set;
         }
 
-        public string DisplayText
-        {
-            get
-            {
-                return this.TagName + " " + this.SearchOpterator + " " + this.TagValue;
-            }
-        }
+        public string DisplayText => TagName + " " + SearchOpterator + " " + TagValue;
     }
 }

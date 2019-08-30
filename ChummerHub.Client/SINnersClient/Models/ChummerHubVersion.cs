@@ -18,10 +18,7 @@ namespace SINners.Models
         /// <summary>
         /// Initializes a new instance of the ChummerHubVersion class.
         /// </summary>
-        public ChummerHubVersion(string assemblyVersion = default(string))
-        {
-            AssemblyVersion = assemblyVersion;
-        }
+        public ChummerHubVersion(string assemblyVersion = default(string)) => AssemblyVersion = assemblyVersion;
 
         /// <summary>
         /// </summary>

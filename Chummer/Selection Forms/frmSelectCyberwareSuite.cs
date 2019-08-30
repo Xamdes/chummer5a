@@ -44,7 +44,9 @@ namespace Chummer
             LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
 
             if (_eSource == Improvement.ImprovementSource.Cyberware)
+            {
                 _strType = "cyberware";
+            }
             else
             {
                 _strType = "bioware";
@@ -56,30 +58,25 @@ namespace Chummer
             _objXmlDocument = XmlManager.Load(_strType + ".xml", string.Empty, true);
         }
 
-        private void cmdOK_Click(object sender, EventArgs e)
-        {
-            AcceptForm();
-        }
+        private void cmdOK_Click(object sender, EventArgs e) => AcceptForm();
 
-        private void cmdCancel_Click(object sender, EventArgs e)
-        {
-            DialogResult = DialogResult.Cancel;
-        }
+        private void cmdCancel_Click(object sender, EventArgs e) => DialogResult = DialogResult.Cancel;
 
-        private void lstCyberware_DoubleClick(object sender, EventArgs e)
-        {
-            AcceptForm();
-        }
+        private void lstCyberware_DoubleClick(object sender, EventArgs e) => AcceptForm();
 
         private void frmSelectCyberwareSuite_Load(object sender, EventArgs e)
         {
             if (_objCharacter.IsAI)
+            {
                 return;
+            }
 
             IList<Grade> lstGrades = _objCharacter.GetGradeList(_eSource);
 
             using (XmlNodeList xmlSuiteList = _objXmlDocument.SelectNodes("/chummer/suites/suite"))
+            {
                 if (xmlSuiteList?.Count > 0)
+                {
                     foreach (XmlNode objXmlSuite in xmlSuiteList)
                     {
                         string strName = objXmlSuite["name"]?.InnerText;
@@ -91,10 +88,16 @@ namespace Chummer
                                                                        ((_eSource == Improvement.ImprovementSource.Cyberware && x.ImproveType == Improvement.ImprovementType.DisableBiowareGrade) ||
                                                                         (_eSource == Improvement.ImprovementSource.Bioware && x.ImproveType == Improvement.ImprovementType.DisableCyberwareGrade))
                                                                        && strGrade.Contains(x.ImprovedName) && x.Enabled)))
+                            {
                                 continue;
+                            }
+
                             lstCyberware.Items.Add(new ListItem(objXmlSuite["id"]?.InnerText ?? strName, strName));
                         }
                     }
+                }
+            }
+
             lstCyberware.ValueMember = "Value";
             lstCyberware.DisplayMember = "Name";
         }
@@ -225,7 +228,9 @@ namespace Chummer
         {
             // Run through all of the items in the Suite list.
             using (XmlNodeList xmlChildrenList = xmlSuite.SelectNodes(_strType + "s/" + _strType))
+            {
                 if (xmlChildrenList?.Count > 0)
+                {
                     foreach (XmlNode xmlChildItem in xmlChildrenList)
                     {
                         int intRating = 0;
@@ -246,6 +251,8 @@ namespace Chummer
 
                         ParseNode(xmlChildItem, objGrade, objCyberware.Children);
                     }
+                }
+            }
         }
 
         /// <summary>
@@ -257,12 +264,16 @@ namespace Chummer
         private void WriteList(StringBuilder objCyberwareLabelString, Cyberware objCyberware, int intDepth)
         {
             for (int i = 0; i <= intDepth; ++i)
+            {
                 objCyberwareLabelString.Append("   ");
+            }
 
             objCyberwareLabelString.AppendLine(objCyberware.DisplayName(GlobalOptions.Language));
 
             foreach (Cyberware objPlugin in objCyberware.Children)
+            {
                 WriteList(objCyberwareLabelString, objPlugin, intDepth + 1);
+            }
         }
         #endregion
     }

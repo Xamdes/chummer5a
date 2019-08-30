@@ -29,7 +29,7 @@ namespace Chummer
 {
     public partial class frmCreateCustomDrug : Form
     {
-        private static Logger Log = NLog.LogManager.GetCurrentClassLogger();
+        private static readonly Logger Log = NLog.LogManager.GetCurrentClassLogger();
         private readonly Dictionary<string, DrugComponent> _dicDrugComponents = new Dictionary<string, DrugComponent>();
         private readonly List<clsNodeData> _lstSelectedDrugComponents;
         private readonly List<ListItem> _lstGrade = new List<ListItem>();
@@ -173,6 +173,7 @@ namespace Chummer
             }
 
             if (!string.IsNullOrEmpty(txtDrugName.Text))
+            {
 
                 //prevent adding same component twice
                 if (_lstSelectedDrugComponents.Any(c => c.DrugComponent.Name == objNodeData.DrugComponent.Name))
@@ -180,6 +181,7 @@ namespace Chummer
                     Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_DuplicateDrugComponentWarning"));
                     return;
                 }
+            }
 
             //drug can have only one foundation
             if (objNodeData.DrugComponent.Category == "Foundation")
@@ -199,7 +201,10 @@ namespace Chummer
                 foreach (clsNodeData objFoundationNodeData in _lstSelectedDrugComponents)
                 {
                     if (objFoundationNodeData.DrugComponent.Category != "Foundation")
+                    {
                         continue;
+                    }
+
                     Dictionary<string, int> dctFoundationAttributes = objFoundationNodeData.DrugComponent.DrugEffects[0].Attributes;
                     Dictionary<string, int> dctBlockAttributes = objNodeData.DrugComponent.DrugEffects[objNodeData.Level].Attributes;
                     foreach (KeyValuePair<string, int> objItem in dctFoundationAttributes)
@@ -223,7 +228,10 @@ namespace Chummer
 
             string strNodeText = objNodeData.DrugComponent.CurrentDisplayName;
             if (objNodeData.DrugComponent.Level <= 0 && objNodeData.DrugComponent.DrugEffects.Count > 1)
+            {
                 strNodeText += strSpaceString + '(' + LanguageManager.GetString("String_Level") + strSpaceString + (objNodeData.Level + 1).ToString(GlobalOptions.CultureInfo) + ")";
+            }
+
             TreeNode objNewNode = nodCategoryNode.Nodes.Add(strNodeText);
             objNewNode.Tag = objNodeData;
             objNewNode.EnsureVisible();
@@ -251,15 +259,9 @@ namespace Chummer
             }
         }
 
-        private void btnAddComponent_Click(object sender, EventArgs e)
-        {
-            AddSelectedComponent();
-        }
+        private void btnAddComponent_Click(object sender, EventArgs e) => AddSelectedComponent();
 
-        private void treAvailableComponents_NodeMouseDoubleClick(object sender, TreeNodeMouseClickEventArgs e)
-        {
-            AddSelectedComponent();
-        }
+        private void treAvailableComponents_NodeMouseDoubleClick(object sender, TreeNodeMouseClickEventArgs e) => AddSelectedComponent();
 
         private void btnRemoveComponent_Click(object sender, EventArgs e)
         {
@@ -280,10 +282,7 @@ namespace Chummer
             lblDrugDescription.Text = _objDrug.GenerateDescription(0);
         }
 
-        private void btnOk_Click(object sender, EventArgs e)
-        {
-            AcceptForm();
-        }
+        private void btnOk_Click(object sender, EventArgs e) => AcceptForm();
 
         private void btnCancel_Click(object sender, EventArgs e)
         {
@@ -295,15 +294,23 @@ namespace Chummer
         private void cboGrade_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (cboGrade.SelectedValue == null)
+            {
                 return;
+            }
 
             // Update the Essence and Cost multipliers based on the Grade that has been selected.
             // Retrieve the information for the selected Grade.
             XmlNode objXmlGrade = _objXmlDocument.SelectSingleNode("/chummer/grades/grade[name = \"" + cboGrade.SelectedValue + "\"]");
             if (!objXmlGrade.TryGetDoubleFieldQuickly("cost", ref _dblCostMultiplier))
+            {
                 _dblCostMultiplier = 1.0;
+            }
+
             if (!objXmlGrade.TryGetInt32FieldQuickly("addictionthreshold", ref _intAddictionThreshold))
+            {
                 _intAddictionThreshold = 0;
+            }
+
             UpdateCustomDrugStats();
             lblDrugDescription.Text = _objDrug.GenerateDescription(0);
         }

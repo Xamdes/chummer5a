@@ -44,10 +44,7 @@ namespace Translator
         private bool _blnQueueStringsLoaderRun;
 
         [Obsolete("This constructor is for use by form designers only.", true)]
-        public frmTranslate()
-        {
-            InitializeComponent();
-        }
+        public frmTranslate() => InitializeComponent();
 
         public frmTranslate(string strLanguage)
         {
@@ -76,13 +73,17 @@ namespace Translator
             if (_blnQueueSectionLoaderRun)
             {
                 if (!_workerSectionLoader.IsBusy)
+                {
                     _workerSectionLoader.RunWorkerAsync();
+                }
             }
 
             if (_blnQueueStringsLoaderRun)
             {
                 if (!_workerStringsLoader.IsBusy)
+                {
                     _workerStringsLoader.RunWorkerAsync();
+                }
             }
         }
 
@@ -93,9 +94,14 @@ namespace Translator
             Application.Idle -= RunQueuedWorkers;
 
             if (_workerSectionLoader.IsBusy)
+            {
                 _workerSectionLoader.CancelAsync();
+            }
+
             if (_workerStringsLoader.IsBusy)
+            {
                 _workerStringsLoader.CancelAsync();
+            }
 
             Program.MainForm.OpenTranslateWindows.Remove(this);
             Dispose(true);
@@ -186,21 +192,23 @@ namespace Translator
             _blnLoading = false;
         }
 
-        private void cboSection_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            LoadSection();
-        }
+        private void cboSection_SelectedIndexChanged(object sender, EventArgs e) => LoadSection();
 
         private void dgvSection_CellMouseUp(object sender, DataGridViewCellMouseEventArgs e)
         {
             if ((e.ColumnIndex == 4) && (e.RowIndex != -1))
+            {
                 dgvSection.EndEdit();
+            }
         }
 
         private void dgvSection_CellValueChanged(object sender, DataGridViewCellEventArgs e)
         {
             if (_blnLoading || (e.RowIndex < 0))
+            {
                 return;
+            }
+
             DataGridViewRow item = dgvSection.Rows[e.RowIndex];
             bool flag = Convert.ToBoolean(item.Cells["Translated?"].Value);
             TranslatedIndicator(item);
@@ -209,7 +217,10 @@ namespace Translator
             string strId = item.Cells["Id"].Value.ToString();
             string strSection = cboSection.Text;
             if (strSection == "[Show All Sections]")
+            {
                 strSection = "*";
+            }
+
             string strBaseXPath = "/chummer/chummer[@file=\"" + cboFile.Text + "\"]/" + strSection + '/';
             if (cboFile.Text == "tips.xml")
             {
@@ -217,15 +228,21 @@ namespace Translator
                                        _objDataDoc.SelectSingleNode(strBaseXPath + "/text[text()=\"" + strEnglish + "\"]/..");
                 XmlElement element = xmlNodeLocal["translate"];
                 if (element != null)
+                {
                     element.InnerText = strTranslated;
+                }
 
                 XmlAttribute objAttrib = xmlNodeLocal.Attributes?["translated"];
                 if (objAttrib != null)
                 {
                     if (!flag)
+                    {
                         xmlNodeLocal.Attributes.Remove(objAttrib);
+                    }
                     else
+                    {
                         objAttrib.InnerText = bool.TrueString;
+                    }
                 }
                 else if (flag)
                 {
@@ -251,9 +268,13 @@ namespace Translator
                         if (objAttrib != null)
                         {
                             if (!flag)
+                            {
                                 xmlNodeLocal.Attributes.Remove(objAttrib);
+                            }
                             else
+                            {
                                 objAttrib.InnerText = bool.TrueString;
+                            }
                         }
                         else if (flag)
                         {
@@ -267,10 +288,16 @@ namespace Translator
                 {
                     XmlElement element = xmlNodeLocal["translate"];
                     if (element != null)
+                    {
                         element.InnerText = strTranslated;
+                    }
+
                     element = xmlNodeLocal.Name == "book" ? xmlNodeLocal["altcode"] : xmlNodeLocal["altpage"];
                     if (element != null)
+                    {
                         element.InnerText = strPage;
+                    }
+
                     if (blnHasNameOnPage)
                     {
                         element = xmlNodeLocal["altnameonpage"];
@@ -295,9 +322,13 @@ namespace Translator
                     if (objAttrib != null)
                     {
                         if (!flag)
+                        {
                             xmlNodeLocal.Attributes.Remove(objAttrib);
+                        }
                         else
+                        {
                             objAttrib.InnerText = bool.TrueString;
+                        }
                     }
                     else if (flag)
                     {
@@ -331,7 +362,9 @@ namespace Translator
             }
 
             if ((e.KeyCode == Keys.F) && (e.Modifiers == Keys.Control))
+            {
                 txtSearch.Focus();
+            }
         }
 
         private void dgvSection_Sorted(object sender, EventArgs e)
@@ -345,7 +378,10 @@ namespace Translator
         private void dgvTranslate_CellValueChanged(object sender, DataGridViewCellEventArgs e)
         {
             if (_blnLoading || (e.RowIndex < 0))
+            {
                 return;
+            }
+
             DataGridViewRow item = dgvTranslate.Rows[e.RowIndex];
             TranslatedIndicator(item);
             string strText = item.Cells["Text"].Value.ToString();
@@ -355,7 +391,9 @@ namespace Translator
             {
                 XmlElement xmlElement = xmlNodeLocal["text"];
                 if (xmlElement != null)
+                {
                     xmlElement.InnerText = strText;
+                }
             }
             else
             {
@@ -387,7 +425,9 @@ namespace Translator
             }
 
             if ((e.KeyCode == Keys.F) && (e.Modifiers == Keys.Control))
+            {
                 txtSearch.Focus();
+            }
         }
 
         private void dgvTranslate_Sorted(object sender, EventArgs e)
@@ -407,7 +447,9 @@ namespace Translator
             }
 
             if ((e.KeyCode == Keys.F) && (e.Modifiers == Keys.Control))
+            {
                 txtSearch.Focus();
+            }
         }
 
         private void frmTranslate_Load(object sender, EventArgs e)
@@ -419,7 +461,9 @@ namespace Translator
             List<string> strs = (from XmlNode xmlNodeLocal in _objDataDoc.SelectNodes("/chummer/chummer") where xmlNodeLocal.Attributes?["file"] != null select xmlNodeLocal.Attributes["file"].InnerText).ToList();
             strs.Sort();
             foreach (string str in strs)
+            {
                 cboFile.Items.Add(str);
+            }
 
             Application.Idle += RunQueuedWorkers;
         }
@@ -432,7 +476,9 @@ namespace Translator
         private void txtSearch_KeyPressed(object sender, KeyPressEventArgs e)
         {
             if ((e.KeyChar == '\r') && !txtSearch.AcceptsReturn)
+            {
                 btnSearch.PerformClick();
+            }
         }
 
         #endregion
@@ -493,14 +539,21 @@ namespace Translator
                         {
                             object[] objArray = { strKey, strEnglish, strTranslated, blnTranslated };
                             lock (arrayRowsToDisplayLock)
+                            {
                                 arrayRowsToDisplay[i] = objArray;
+                            }
                         }
 
                         lock (intSegmentsProcessedLock)
+                        {
                             intSegmentsProcessed += 1;
+                        }
+
                         _workerStringsLoader.ReportProgress(intSegmentsProcessed * 100 / intSegmentsToProcess);
                         if (_workerStringsLoader.CancellationPending)
+                        {
                             throw new OperationCanceledException();
+                        }
                     });
                 }
                 catch (OperationCanceledException)
@@ -519,7 +572,9 @@ namespace Translator
                 foreach (object[] objArray in arrayRowsToDisplay)
                 {
                     if (objArray != null)
+                    {
                         objDataTableRows.Add(objArray);
+                    }
                 }
 
                 DataSet dataSet = new DataSet("strings");
@@ -583,9 +638,15 @@ namespace Translator
 
             dataTable.Columns.Add("Translated?");
             if (blnHasNameOnPage)
+            {
                 dataTable.Columns.Add("NameOnPage");
+            }
+
             if (strSection == "[Show All Sections]")
+            {
                 strSection = "*";
+            }
+
             if (_workerSectionLoader.CancellationPending)
             {
                 e.Cancel = true;
@@ -599,7 +660,9 @@ namespace Translator
                 foreach (XmlNode xmlNodeToShow in xmlBaseList)
                 {
                     if (xmlNodeToShow.HasChildNodes)
+                    {
                         intSegmentsToProcess += xmlNodeToShow.ChildNodes.Count;
+                    }
                 }
 
                 int intSegmentsProcessed = 0;
@@ -635,7 +698,9 @@ namespace Translator
                                 {
                                     object[] objArray = new object[] { strId, strText, strTranslated, blnTranslated };
                                     lock (arrayRowsToDisplayLock)
+                                    {
                                         arrayRowsToDisplay[i] = objArray;
+                                    }
                                 }
                             }
                             else
@@ -660,12 +725,17 @@ namespace Translator
                                         ? xmlDocument.SelectSingleNode("/chummer/" + strSection + "/*[id=\"" + strId + "\"]")
                                         : xmlDocument.SelectSingleNode("/chummer/" + strSection + "/*[name=\"" + strName + "\"]");
                                     if (xmlNodeLocal == null)
+                                    {
                                         MessageBox.Show(strName);
+                                    }
+
                                     strSource = xmlNodeLocal?["source"]?.InnerText ?? string.Empty;
                                     strTranslated = xmlChildNode["translate"]?.InnerText ?? string.Empty;
                                     blnTranslated = strName != strTranslated || xmlChildNode.Attributes?["translated"]?.InnerText == bool.TrueString;
                                     if (blnHasNameOnPage)
+                                    {
                                         strNameOnPage = xmlChildNode["altnameonpage"]?.InnerText ?? string.Empty;
+                                    }
                                 }
 
                                 if (!blnTranslated || !chkOnlyTranslation.Checked)
@@ -674,15 +744,22 @@ namespace Translator
                                         ? new object[] { strId, strName, strTranslated, strSource, strPage, blnTranslated, strNameOnPage }
                                         : new object[] { strId, strName, strTranslated, strSource, strPage, blnTranslated };
                                     lock (arrayRowsToDisplayLock)
+                                    {
                                         arrayRowsToDisplay[i] = objArray;
+                                    }
                                 }
                             }
 
                             lock (intSegmentsProcessedLock)
+                            {
                                 intSegmentsProcessed += 1;
+                            }
+
                             _workerSectionLoader.ReportProgress(intSegmentsProcessed * 100 / intSegmentsToProcess);
                             if (_workerStringsLoader.CancellationPending)
+                            {
                                 throw new OperationCanceledException();
+                            }
                         });
                     }
                     catch (OperationCanceledException)
@@ -701,7 +778,9 @@ namespace Translator
                     foreach (object[] objArray in arrayRowsToDisplay)
                     {
                         if (objArray != null)
+                        {
                             objDataTableRows.Add(objArray);
+                        }
                     }
                 }
 
@@ -714,13 +793,12 @@ namespace Translator
                 }
             }
             else
+            {
                 e.Cancel = true;
+            }
         }
 
-        private void RefreshProgressBar(object sender, ProgressChangedEventArgs e)
-        {
-            pbTranslateProgressBar.Value = (e.ProgressPercentage * pbTranslateProgressBar.Maximum) / 100;
-        }
+        private void RefreshProgressBar(object sender, ProgressChangedEventArgs e) => pbTranslateProgressBar.Value = (e.ProgressPercentage * pbTranslateProgressBar.Maximum) / 100;
 
         private void FinishLoadingSection(object sender, RunWorkerCompletedEventArgs e)
         {
@@ -765,10 +843,14 @@ namespace Translator
         private void LoadSection()
         {
             if (_blnLoading || cboSection.SelectedIndex < 0)
+            {
                 return;
+            }
 
             if (_workerSectionLoader.IsBusy)
+            {
                 _workerSectionLoader.CancelAsync();
+            }
 
             Cursor = Cursors.WaitCursor;
             pbTranslateProgressBar.Value = 0;
@@ -801,18 +883,27 @@ namespace Translator
             cboSection.BeginUpdate();
             cboSection.Items.Clear();
             if (lstSectionStrings != null)
+            {
                 foreach (string strSection in lstSectionStrings)
+                {
                     cboSection.Items.Add(strSection);
+                }
+            }
+
             cboSection.EndUpdate();
             _blnLoading = false;
 
             if (string.IsNullOrEmpty(strOldSelected))
+            {
                 cboSection.SelectedValue = -1;
+            }
             else
             {
                 cboSection.SelectedValue = strOldSelected;
                 if (cboSection.SelectedIndex == -1 && cboSection.Items.Count > 0)
+                {
                     cboSection.SelectedIndex = 0;
+                }
             }
 
             Cursor = Cursors.Default;
@@ -821,7 +912,9 @@ namespace Translator
         private void LoadStrings()
         {
             if (_workerStringsLoader.IsBusy)
+            {
                 _workerStringsLoader.CancelAsync();
+            }
 
             Cursor = Cursors.WaitCursor;
             pbTranslateProgressBar.Value = 0;

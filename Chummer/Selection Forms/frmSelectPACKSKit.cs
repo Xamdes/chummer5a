@@ -95,10 +95,15 @@ namespace Chummer
 
             // Select the first Category in the list.
             if (!string.IsNullOrEmpty(s_StrSelectCategory))
+            {
                 cboCategory.SelectedValue = s_StrSelectCategory;
+            }
 
             if (cboCategory.SelectedIndex == -1)
+            {
                 cboCategory.SelectedIndex = 0;
+            }
+
             cboCategory.EndUpdate();
         }
 
@@ -110,14 +115,18 @@ namespace Chummer
             string strFilter = "not(hide)";
             string strCategory = cboCategory.SelectedValue?.ToString();
             if (!string.IsNullOrEmpty(strCategory) && strCategory != "Show All")
+            {
                 strFilter += " and category = \"" + cboCategory.SelectedValue + '\"';
+            }
             else
             {
                 StringBuilder objCategoryFilter = new StringBuilder();
                 foreach (string strItem in _lstCategory.Select(x => x.Value))
                 {
                     if (!string.IsNullOrEmpty(strItem))
+                    {
                         objCategoryFilter.Append("category = \"" + strItem + "\" or ");
+                    }
                 }
                 if (objCategoryFilter.Length > 0)
                 {
@@ -141,7 +150,9 @@ namespace Chummer
             lstKits.EndUpdate();
 
             if (lstKit.Count == 0)
+            {
                 treContents.Nodes.Clear();
+            }
 
             cmdDelete.Visible = false;
         }
@@ -168,7 +179,10 @@ namespace Chummer
             foreach (XPathNavigator objXmlItem in objXmlPack.SelectChildren(XPathNodeType.Element))
             {
                 if (objXmlItem.SelectSingleNode("hide") != null)
+                {
                     continue;
+                }
+
                 TreeNode objParent = new TreeNode();
                 switch (objXmlItem.Name)
                 {
@@ -178,7 +192,10 @@ namespace Chummer
                         foreach (XPathNavigator objXmlAttribute in objXmlItem.SelectChildren(XPathNodeType.Element))
                         {
                             if (objXmlAttribute.SelectSingleNode("hide") != null)
+                            {
                                 continue;
+                            }
+
                             string strNameUpper = objXmlAttribute.Name.ToUpper();
                             TreeNode objChild = new TreeNode
                             {
@@ -196,10 +213,16 @@ namespace Chummer
                         foreach (XPathNavigator objXmlQuality in objXmlItem.Select("positive/quality"))
                         {
                             if (objXmlQuality.SelectSingleNode("hide") != null)
+                            {
                                 continue;
+                            }
+
                             XPathNavigator objNode = _xmlQualitiesBaseQualitiesNode.SelectSingleNode("quality[(" + _objCharacter.Options.BookXPath() + ") and name = " + objXmlQuality.Value.CleanXPath() + "]");
                             if (objNode == null)
+                            {
                                 continue;
+                            }
+
                             TreeNode objChild = new TreeNode
                             {
                                 Text = objNode.SelectSingleNode("translate")?.Value ?? objXmlQuality.Value
@@ -207,7 +230,10 @@ namespace Chummer
 
                             string strSelect = objXmlQuality.SelectSingleNode("@select")?.Value;
                             if (!string.IsNullOrEmpty(strSelect))
+                            {
                                 objChild.Text += $" ({LanguageManager.TranslateExtra(strSelect, GlobalOptions.Language)})";
+                            }
+
                             objParent.Nodes.Add(objChild);
                             objParent.Expand();
                         }
@@ -216,10 +242,16 @@ namespace Chummer
                         foreach (XPathNavigator objXmlQuality in objXmlItem.Select("negative/quality"))
                         {
                             if (objXmlQuality.SelectSingleNode("hide") != null)
+                            {
                                 continue;
+                            }
+
                             XPathNavigator objNode = _xmlQualitiesBaseQualitiesNode.SelectSingleNode("quality[(" + _objCharacter.Options.BookXPath() + ") and name = \"" + objXmlQuality.Value + "\"]");
                             if (objNode == null)
+                            {
                                 continue;
+                            }
+
                             TreeNode objChild = new TreeNode
                             {
                                 Text = objNode.SelectSingleNode("translate")?.Value ?? objXmlQuality.Value
@@ -227,7 +259,10 @@ namespace Chummer
 
                             string strSelect = objXmlQuality.SelectSingleNode("@select")?.Value;
                             if (!string.IsNullOrEmpty(strSelect))
+                            {
                                 objChild.Text += $" ({LanguageManager.TranslateExtra(strSelect, GlobalOptions.Language)})";
+                            }
+
                             objParent.Nodes.Add(objChild);
                             objParent.Expand();
                         }
@@ -248,11 +283,17 @@ namespace Chummer
                         foreach (XPathNavigator objXmlSkill in objXmlItem.Select("skill"))
                         {
                             if (objXmlSkill.SelectSingleNode("hide") != null)
+                            {
                                 continue;
+                            }
+
                             string strName = objXmlSkill.SelectSingleNode("name").Value;
                             XPathNavigator objNode = _xmlSkillsBaseChummerNode.SelectSingleNode("skills/skill[name = " + strName.CleanXPath() + "]");
                             if (objNode.SelectSingleNode("hide") != null)
+                            {
                                 continue;
+                            }
+
                             TreeNode objChild = new TreeNode
                             {
                                 Text = objNode.SelectSingleNode("translate")?.Value ?? strName
@@ -261,18 +302,27 @@ namespace Chummer
 
                             string strSpec = objXmlSkill.SelectSingleNode("spec")?.Value;
                             if (!string.IsNullOrEmpty(strSpec))
+                            {
                                 objChild.Text += strSpaceCharacter + '(' + strSpec + ')';
+                            }
+
                             objParent.Nodes.Add(objChild);
                             objParent.Expand();
                         }
                         foreach (XPathNavigator objXmlSkill in objXmlItem.Select("skillgroup"))
                         {
                             if (objXmlSkill.SelectSingleNode("hide") != null)
+                            {
                                 continue;
+                            }
+
                             string strName = objXmlSkill.SelectSingleNode("name").Value;
                             XPathNavigator objNode = _xmlSkillsBaseChummerNode.SelectSingleNode("skillgroups/name[. = \"" + strName + "\"]");
                             if (objNode.SelectSingleNode("hide") != null)
+                            {
                                 continue;
+                            }
+
                             TreeNode objChild = new TreeNode
                             {
                                 Text = objNode.SelectSingleNode("@translate")?.Value ?? strName
@@ -281,7 +331,10 @@ namespace Chummer
 
                             string strSpec = objXmlSkill.SelectSingleNode("spec")?.Value;
                             if (!string.IsNullOrEmpty(strSpec))
+                            {
                                 objChild.Text += strSpaceCharacter + '(' + strSpec + ')';
+                            }
+
                             objParent.Nodes.Add(objChild);
                             objParent.Expand();
                         }
@@ -292,21 +345,30 @@ namespace Chummer
                         foreach (XPathNavigator objXmlSkill in objXmlItem.Select("skill"))
                         {
                             if (objXmlSkill.SelectSingleNode("hide") != null)
+                            {
                                 continue;
+                            }
+
                             TreeNode objChild = new TreeNode();
                             string strName = objXmlSkill.SelectSingleNode("name").Value;
                             if (!string.IsNullOrEmpty(strName))
                             {
                                 XPathNavigator objNode = _xmlSkillsBaseChummerNode.SelectSingleNode("knowledgeskills/skill[name = " + strName.CleanXPath() + "]");
                                 if (objNode.SelectSingleNode("hide") != null)
+                                {
                                     continue;
+                                }
+
                                 objChild.Text = objNode?.SelectSingleNode("translate")?.Value ?? strName;
                             }
                             objChild.Text += strSpaceCharacter + objXmlSkill.SelectSingleNode("rating")?.Value;
 
                             string strSpec = objXmlSkill.SelectSingleNode("spec")?.Value;
                             if (!string.IsNullOrEmpty(strSpec))
+                            {
                                 objChild.Text += strSpaceCharacter + '(' + strSpec + ')';
+                            }
+
                             objParent.Nodes.Add(objChild);
                             objParent.Expand();
                         }
@@ -333,11 +395,17 @@ namespace Chummer
                         foreach (XPathNavigator objXmlArt in objXmlItem.Select("martialart"))
                         {
                             if (objXmlArt.SelectSingleNode("hide") != null)
+                            {
                                 continue;
+                            }
+
                             string strName = objXmlArt.SelectSingleNode("name").Value;
                             XPathNavigator objNode = _xmlMartialArtsBaseChummerNode.SelectSingleNode("martialarts/martialart[(" + _objCharacter.Options.BookXPath() + ") and name = " + strName.CleanXPath() + "]");
                             if (objNode == null)
+                            {
                                 continue;
+                            }
+
                             TreeNode objChild = new TreeNode
                             {
                                 Text = objNode.SelectSingleNode("translate")?.Value ?? strName
@@ -348,11 +416,17 @@ namespace Chummer
                             foreach (XPathNavigator objXmlAdvantage in objXmlArt.Select("techniques/technique"))
                             {
                                 if (objXmlAdvantage.SelectSingleNode("hide") != null)
+                                {
                                     continue;
+                                }
+
                                 string strAdvantageName = objXmlAdvantage.SelectSingleNode("name").Value;
                                 XPathNavigator objChildNode = _xmlMartialArtsBaseChummerNode.SelectSingleNode("techniques/technique[(" + _objCharacter.Options.BookXPath() + ") and name = " + strAdvantageName.CleanXPath() + "]");
                                 if (objNode == null)
+                                {
                                     continue;
+                                }
+
                                 TreeNode objChildChild = new TreeNode
                                 {
                                     Text = objChildNode.SelectSingleNode("@translate")?.Value ?? strAdvantageName
@@ -369,11 +443,17 @@ namespace Chummer
                         foreach (XPathNavigator objXmlManeuver in objXmlItem.Select("maneuver"))
                         {
                             if (objXmlManeuver.SelectSingleNode("hide") != null)
+                            {
                                 continue;
+                            }
+
                             string strAdvantageName = objXmlManeuver.SelectSingleNode("name").Value;
                             XPathNavigator objNode = _xmlMartialArtsBaseChummerNode.SelectSingleNode("maneuvers/maneuver[(" + _objCharacter.Options.BookXPath() + ") and name = " + strAdvantageName.CleanXPath() + "]");
                             if (objNode == null)
+                            {
                                 continue;
+                            }
+
                             TreeNode objChild = new TreeNode
                             {
                                 Text = objNode.SelectSingleNode("translate")?.Value ?? strAdvantageName
@@ -391,11 +471,17 @@ namespace Chummer
                             foreach (XPathNavigator objXmlPower in objXmlItem.Select("power"))
                             {
                                 if (objXmlPower.SelectSingleNode("hide") != null)
+                                {
                                     continue;
+                                }
+
                                 string strName = objXmlPower.SelectSingleNode("name").Value;
                                 XPathNavigator objNode = _xmlPowersBasePowersNode.SelectSingleNode("power[(" + _objCharacter.Options.BookXPath() + ") and name = " + strName.CleanXPath() + "]");
                                 if (objNode == null)
+                                {
                                     continue;
+                                }
+
                                 TreeNode objChild = new TreeNode
                                 {
                                     Text = objNode.SelectSingleNode("translate")?.Value ?? strName
@@ -403,10 +489,16 @@ namespace Chummer
 
                                 string strSelect = objXmlPower.SelectSingleNode("name/@select")?.Value ?? string.Empty;
                                 if (!string.IsNullOrEmpty(strSelect))
+                                {
                                     objChild.Text += strSpaceCharacter + '(' + strSelect + ')';
+                                }
+
                                 string strRating = objXmlPower.SelectSingleNode("rating")?.Value;
                                 if (!string.IsNullOrEmpty(strRating))
+                                {
                                     objChild.Text += strSpaceCharacter + strRating;
+                                }
+
                                 objParent.Nodes.Add(objChild);
                                 objParent.Expand();
                             }
@@ -418,11 +510,17 @@ namespace Chummer
                         foreach (XPathNavigator objXmlProgram in objXmlItem.Select("program"))
                         {
                             if (objXmlProgram.SelectSingleNode("hide") != null)
+                            {
                                 continue;
+                            }
+
                             string strName = objXmlProgram.SelectSingleNode("name").Value;
                             XPathNavigator objNode = _xmlComplexFormsBaseChummerNode.SelectSingleNode("complexforms/complexform[(" + _objCharacter.Options.BookXPath() + ") and name = " + strName.CleanXPath() + "]");
                             if (objNode == null)
+                            {
                                 continue;
+                            }
+
                             TreeNode objChild = new TreeNode
                             {
                                 Text = objNode.SelectSingleNode("translate")?.Value ?? strName
@@ -433,11 +531,17 @@ namespace Chummer
                             foreach (XPathNavigator objXmlOption in objXmlProgram.Select("options/option"))
                             {
                                 if (objXmlOption.SelectSingleNode("hide") != null)
+                                {
                                     continue;
+                                }
+
                                 string strOptionName = objXmlOption.SelectSingleNode("name").Value;
                                 XPathNavigator objChildNode = _xmlComplexFormsBaseChummerNode.SelectSingleNode("options/option[(" + _objCharacter.Options.BookXPath() + ") and name = " + strOptionName.CleanXPath() + "]");
                                 if (objNode == null)
+                                {
                                     continue;
+                                }
+
                                 TreeNode objChildChild = new TreeNode
                                 {
                                     Text = objChildNode.SelectSingleNode("translate")?.Value ?? strOptionName
@@ -445,7 +549,10 @@ namespace Chummer
 
                                 string strRating = objXmlOption.SelectSingleNode("rating")?.Value;
                                 if (!string.IsNullOrEmpty(strRating))
+                                {
                                     objChildChild.Text += strSpaceCharacter + strRating;
+                                }
+
                                 objChild.Nodes.Add(objChildChild);
                                 objChild.Expand();
                             }
@@ -460,11 +567,17 @@ namespace Chummer
                         foreach (XPathNavigator objXmlSpell in objXmlItem.Select("spell"))
                         {
                             if (objXmlSpell.SelectSingleNode("hide") != null)
+                            {
                                 continue;
+                            }
+
                             string strName = objXmlSpell.Value;
                             XPathNavigator objNode = _xmlSpellsBaseSpellsNode.SelectSingleNode("spell[(" + _objCharacter.Options.BookXPath() + ") and name = " + strName.CleanXPath() + "]");
                             if (objNode.SelectSingleNode("hide") == null)
+                            {
                                 continue;
+                            }
+
                             TreeNode objChild = new TreeNode
                             {
                                 Text = objNode.SelectSingleNode("translate")?.Value ?? strName
@@ -472,7 +585,10 @@ namespace Chummer
 
                             string strSelect = objXmlSpell.SelectSingleNode("@select")?.Value;
                             if (!string.IsNullOrEmpty(strSelect))
+                            {
                                 objChild.Text += strSpaceCharacter + '(' + strSelect + ')';
+                            }
+
                             objParent.Nodes.Add(objChild);
                             objParent.Expand();
                         }
@@ -484,7 +600,10 @@ namespace Chummer
                         foreach (XPathNavigator objXmlSpirit in objXmlItem.Select("spirit"))
                         {
                             if (objXmlSpirit.SelectSingleNode("hide") != null)
+                            {
                                 continue;
+                            }
+
                             TreeNode objChild = new TreeNode
                             {
                                 Text = objXmlSpirit.SelectSingleNode("name").Value + strSpaceCharacter + '(' +
@@ -502,11 +621,16 @@ namespace Chummer
                         foreach (XPathNavigator objXmlLifestyle in objXmlItem.Select("lifestyle"))
                         {
                             if (objXmlLifestyle.SelectSingleNode("hide") != null)
+                            {
                                 continue;
+                            }
 
                             string strIncrement = objXmlLifestyle.SelectSingleNode("increment")?.Value;
                             if (objXmlLifestyle.SelectSingleNode("type")?.Value.ToLower() == "safehouse")
+                            {
                                 strIncrement = "week";
+                            }
+
                             string strIncrementString;
                             int intPermanentAmount;
                             switch (strIncrement)
@@ -538,7 +662,10 @@ namespace Chummer
                             foreach (XPathNavigator objXmlQuality in objXmlLifestyle.Select("qualities/quality"))
                             {
                                 if (objXmlQuality.SelectSingleNode("hide") != null)
+                                {
                                     continue;
+                                }
+
                                 TreeNode objChildChild = new TreeNode
                                 {
                                     Text = objXmlQuality.Value
@@ -557,11 +684,17 @@ namespace Chummer
                         foreach (XPathNavigator objXmlCyberware in objXmlItem.Select("cyberware"))
                         {
                             if (objXmlCyberware.SelectSingleNode("hide") != null)
+                            {
                                 continue;
+                            }
+
                             string strName = objXmlCyberware.SelectSingleNode("name").Value;
                             XPathNavigator objNode = _xmlCyberwareBaseChummerNode.SelectSingleNode("cyberwares/cyberware[(" + _objCharacter.Options.BookXPath() + ") and name = " + strName.CleanXPath() + "]");
                             if (objNode == null)
+                            {
                                 continue;
+                            }
+
                             TreeNode objChild = new TreeNode
                             {
                                 Text = objNode.SelectSingleNode("translate")?.Value ?? strName
@@ -569,18 +702,27 @@ namespace Chummer
 
                             string strRating = objXmlCyberware.SelectSingleNode("rating")?.Value;
                             if (!string.IsNullOrEmpty(strRating))
+                            {
                                 objChild.Text += strSpaceCharacter + LanguageManager.GetString("String_Rating", GlobalOptions.Language) + strSpaceCharacter + strRating;
+                            }
+
                             objChild.Text += strSpaceCharacter + '(' + objXmlCyberware.SelectSingleNode("grade").Value + ')';
 
                             // Check for children.
                             foreach (XPathNavigator objXmlChild in objXmlCyberware.Select("cyberwares/cyberware"))
                             {
                                 if (objXmlChild.SelectSingleNode("hide") != null)
+                                {
                                     continue;
+                                }
+
                                 string strChildName = objXmlChild.SelectSingleNode("name").Value;
                                 XPathNavigator objChildNode = _xmlCyberwareBaseChummerNode.SelectSingleNode("cyberwares/cyberware[(" + _objCharacter.Options.BookXPath() + ") and name = " + strChildName.CleanXPath() + "]");
                                 if (objChildNode == null)
+                                {
                                     continue;
+                                }
+
                                 TreeNode objChildChild = new TreeNode
                                 {
                                     Text = objChildNode.SelectSingleNode("translate")?.Value ?? strChildName
@@ -588,10 +730,15 @@ namespace Chummer
 
                                 strRating = objXmlChild.SelectSingleNode("rating")?.Value;
                                 if (!string.IsNullOrEmpty(strRating))
+                                {
                                     objChildChild.Text += strSpaceCharacter + LanguageManager.GetString("String_Rating", GlobalOptions.Language) + strSpaceCharacter + strRating;
+                                }
 
                                 foreach (XPathNavigator objXmlGearNode in objXmlChild.Select("gears/gear"))
+                                {
                                     WriteGear(objXmlGearNode, objChildChild);
+                                }
+
                                 objChild.Expand();
 
                                 objChild.Nodes.Add(objChildChild);
@@ -599,7 +746,10 @@ namespace Chummer
                             }
 
                             foreach (XPathNavigator objXmlGearNode in objXmlCyberware.Select("gears/gear"))
+                            {
                                 WriteGear(objXmlGearNode, objChild);
+                            }
+
                             objChild.Expand();
 
                             objParent.Nodes.Add(objChild);
@@ -612,11 +762,17 @@ namespace Chummer
                         foreach (XPathNavigator objXmlBioware in objXmlItem.Select("bioware"))
                         {
                             if (objXmlBioware.SelectSingleNode("hide") != null)
+                            {
                                 continue;
+                            }
+
                             string strName = objXmlBioware.SelectSingleNode("name").Value;
                             XPathNavigator objNode = _xmlBiowareBaseChummerNode.SelectSingleNode("biowares/bioware[(" + _objCharacter.Options.BookXPath() + ") and name = " + strName.CleanXPath() + "]");
                             if (objNode == null)
+                            {
                                 continue;
+                            }
+
                             TreeNode objChild = new TreeNode
                             {
                                 Text = objNode.SelectSingleNode("translate")?.Value ?? strName
@@ -624,18 +780,27 @@ namespace Chummer
 
                             string strRating = objXmlBioware.SelectSingleNode("rating")?.Value;
                             if (!string.IsNullOrEmpty(strRating))
+                            {
                                 objChild.Text += strSpaceCharacter + LanguageManager.GetString("String_Rating", GlobalOptions.Language) + strSpaceCharacter + strRating;
+                            }
+
                             objChild.Text += strSpaceCharacter + '(' + objXmlBioware.SelectSingleNode("grade").Value + ')';
 
                             // Check for children.
                             foreach (XPathNavigator objXmlChild in objXmlBioware.Select("biowares/bioware"))
                             {
                                 if (objXmlChild.SelectSingleNode("hide") != null)
+                                {
                                     continue;
+                                }
+
                                 string strChildName = objXmlChild.SelectSingleNode("name").Value;
                                 XPathNavigator objChildNode = _xmlBiowareBaseChummerNode.SelectSingleNode("biowares/bioware[(" + _objCharacter.Options.BookXPath() + ") and name = " + strChildName.CleanXPath() + "]");
                                 if (objChildNode == null)
+                                {
                                     continue;
+                                }
+
                                 TreeNode objChildChild = new TreeNode
                                 {
                                     Text = objChildNode.SelectSingleNode("translate")?.Value ?? strChildName
@@ -643,10 +808,15 @@ namespace Chummer
 
                                 strRating = objXmlChild.SelectSingleNode("rating")?.Value;
                                 if (!string.IsNullOrEmpty(strRating))
+                                {
                                     objChildChild.Text += strSpaceCharacter + LanguageManager.GetString("String_Rating", GlobalOptions.Language) + strSpaceCharacter + strRating;
+                                }
 
                                 foreach (XPathNavigator objXmlGearNode in objXmlChild.Select("gears/gear"))
+                                {
                                     WriteGear(objXmlGearNode, objChildChild);
+                                }
+
                                 objChild.Expand();
 
                                 objChild.Nodes.Add(objChildChild);
@@ -654,7 +824,10 @@ namespace Chummer
                             }
 
                             foreach (XPathNavigator objXmlGearNode in objXmlBioware.Select("gears/gear"))
+                            {
                                 WriteGear(objXmlGearNode, objChild);
+                            }
+
                             objChild.Expand();
 
                             objParent.Nodes.Add(objChild);
@@ -667,11 +840,17 @@ namespace Chummer
                         foreach (XPathNavigator objXmlArmor in objXmlItem.Select("armor"))
                         {
                             if (objXmlArmor.SelectSingleNode("hide") != null)
+                            {
                                 continue;
+                            }
+
                             string strName = objXmlArmor.SelectSingleNode("name").Value;
                             XPathNavigator objNode = _xmlArmorBaseChummerNode.SelectSingleNode("armors/armor[(" + _objCharacter.Options.BookXPath() + ") and name = " + strName.CleanXPath() + "]");
                             if (objNode == null)
+                            {
                                 continue;
+                            }
+
                             TreeNode objChild = new TreeNode
                             {
                                 Text = objNode.SelectSingleNode("translate")?.Value ?? strName
@@ -681,11 +860,17 @@ namespace Chummer
                             foreach (XPathNavigator objXmlChild in objXmlArmor.Select("mods/mod"))
                             {
                                 if (objXmlChild.SelectSingleNode("hide") != null)
+                                {
                                     continue;
+                                }
+
                                 string strChildName = objXmlChild.SelectSingleNode("name").Value;
                                 XPathNavigator objChildNode = _xmlArmorBaseChummerNode.SelectSingleNode("mods/mod[(" + _objCharacter.Options.BookXPath() + ") and name = " + strChildName.CleanXPath() + "]");
                                 if (objChildNode == null)
+                                {
                                     continue;
+                                }
+
                                 TreeNode objChildChild = new TreeNode
                                 {
                                     Text = objChildNode.SelectSingleNode("translate")?.Value ?? strChildName
@@ -693,17 +878,24 @@ namespace Chummer
 
                                 string strRating = objXmlChild.SelectSingleNode("rating")?.Value;
                                 if (!string.IsNullOrEmpty(strRating))
+                                {
                                     objChildChild.Text += strSpaceCharacter + LanguageManager.GetString("String_Rating", GlobalOptions.Language) + strSpaceCharacter + strRating;
+                                }
 
                                 foreach (XPathNavigator objXmlGearNode in objXmlChild.Select("gears/gear"))
+                                {
                                     WriteGear(objXmlGearNode, objChildChild);
+                                }
 
                                 objChild.Nodes.Add(objChildChild);
                                 objChild.Expand();
                             }
 
                             foreach (XPathNavigator objXmlGearNode in objXmlArmor.Select("gears/gear"))
+                            {
                                 WriteGear(objXmlGearNode, objChild);
+                            }
+
                             objChild.Expand();
 
                             objParent.Nodes.Add(objChild);
@@ -716,11 +908,17 @@ namespace Chummer
                         foreach (XPathNavigator objXmlWeapon in objXmlItem.Select("weapon"))
                         {
                             if (objXmlWeapon.SelectSingleNode("hide") != null)
+                            {
                                 continue;
+                            }
+
                             string strName = objXmlWeapon.SelectSingleNode("name").Value;
                             XPathNavigator objNode = _xmlWeaponsBaseChummerNode.SelectSingleNode("weapons/weapon[(" + _objCharacter.Options.BookXPath() + ") and name = " + strName.CleanXPath() + "]");
                             if (objNode == null)
+                            {
                                 continue;
+                            }
+
                             TreeNode objChild = new TreeNode
                             {
                                 Text = objNode.SelectSingleNode("translate")?.Value ?? strName
@@ -730,11 +928,17 @@ namespace Chummer
                             foreach (XPathNavigator objXmlAccessory in objXmlWeapon.Select("accessories/accessory"))
                             {
                                 if (objXmlAccessory.SelectSingleNode("hide") != null)
+                                {
                                     continue;
+                                }
+
                                 strName = objXmlAccessory.SelectSingleNode("name").Value;
                                 XPathNavigator objChildNode = _xmlWeaponsBaseChummerNode.SelectSingleNode("accessories/accessory[(" + _objCharacter.Options.BookXPath() + ") and name = " + strName.CleanXPath() + "]");
                                 if (objChildNode == null)
+                                {
                                     continue;
+                                }
+
                                 TreeNode objChildChild = new TreeNode
                                 {
                                     Text = objChildNode.SelectSingleNode("translate")?.Value ?? strName
@@ -742,10 +946,15 @@ namespace Chummer
 
                                 string strRating = objXmlAccessory.SelectSingleNode("rating")?.Value;
                                 if (!string.IsNullOrEmpty(strRating))
+                                {
                                     objChildChild.Text += strSpaceCharacter + LanguageManager.GetString("String_Rating", GlobalOptions.Language) + strSpaceCharacter + strRating;
+                                }
 
                                 foreach (XPathNavigator objXmlGearNode in objXmlAccessory.Select("gears/gear"))
+                                {
                                     WriteGear(objXmlGearNode, objChildChild);
+                                }
+
                                 objChildChild.Expand();
 
                                 objChild.Nodes.Add(objChildChild);
@@ -757,11 +966,16 @@ namespace Chummer
                             if (!string.IsNullOrEmpty(strName))
                             {
                                 if (objXmlWeapon.SelectSingleNode("hide") != null)
+                                {
                                     continue;
+                                }
 
                                 XPathNavigator objChildNode = _xmlWeaponsBaseChummerNode.SelectSingleNode("weapons/weapon[(" + _objCharacter.Options.BookXPath() + ") and name = " + strName.CleanXPath() + "]");
                                 if (objChildNode == null)
+                                {
                                     continue;
+                                }
+
                                 TreeNode objChildChild = new TreeNode
                                 {
                                     Text = objChildNode.SelectSingleNode("translate")?.Value ?? strName
@@ -781,7 +995,10 @@ namespace Chummer
                         foreach (XPathNavigator objXmlGear in objXmlItem.Select("gear"))
                         {
                             if (objXmlGear.SelectSingleNode("hide") != null)
+                            {
                                 continue;
+                            }
+
                             WriteGear(objXmlGear, objParent);
                             objParent.Expand();
                         }
@@ -792,11 +1009,17 @@ namespace Chummer
                         foreach (XPathNavigator objXmlVehicle in objXmlItem.Select("vehicle"))
                         {
                             if (objXmlVehicle.SelectSingleNode("hide") != null)
+                            {
                                 continue;
+                            }
+
                             string strName = objXmlVehicle.SelectSingleNode("name").Value;
                             XPathNavigator objNode = _xmlVehiclesBaseChummerNode.SelectSingleNode("vehicles/vehicle[(" + _objCharacter.Options.BookXPath() + ") and name = " + strName.CleanXPath() + "]");
                             if (objNode == null)
+                            {
                                 continue;
+                            }
+
                             TreeNode objChild = new TreeNode
                             {
                                 Text = objNode.SelectSingleNode("translate")?.Value ?? strName
@@ -806,11 +1029,17 @@ namespace Chummer
                             foreach (XPathNavigator objXmlMod in objXmlVehicle.Select("mods/mod"))
                             {
                                 if (objXmlMod.SelectSingleNode("hide") != null)
+                                {
                                     continue;
+                                }
+
                                 strName = objXmlMod.SelectSingleNode("name").Value;
                                 XPathNavigator objChildNode = _xmlVehiclesBaseChummerNode.SelectSingleNode("mods/mod[(" + _objCharacter.Options.BookXPath() + ") and name = " + strName.CleanXPath() + "]");
                                 if (objChildNode == null)
+                                {
                                     continue;
+                                }
+
                                 TreeNode objChildChild = new TreeNode
                                 {
                                     Text = objChildNode.SelectSingleNode("translate")?.Value ?? strName
@@ -818,7 +1047,10 @@ namespace Chummer
 
                                 string strRating = objXmlMod.SelectSingleNode("rating")?.Value;
                                 if (!string.IsNullOrEmpty(strRating))
+                                {
                                     objChildChild.Text += strSpaceCharacter + LanguageManager.GetString("String_Rating", GlobalOptions.Language) + strSpaceCharacter + strRating;
+                                }
+
                                 objChild.Nodes.Add(objChildChild);
                                 objChild.Expand();
                             }
@@ -827,7 +1059,10 @@ namespace Chummer
                             foreach (XPathNavigator objXmlChild in objXmlVehicle.Select("gears/gear"))
                             {
                                 if (objXmlChild.SelectSingleNode("hide") != null)
+                                {
                                     continue;
+                                }
+
                                 WriteGear(objXmlChild, objChild);
                                 objChild.Expand();
                             }
@@ -836,11 +1071,17 @@ namespace Chummer
                             foreach (XPathNavigator objXmlWeapon in objXmlVehicle.Select("weapons/weapon"))
                             {
                                 if (objXmlWeapon.SelectSingleNode("hide") != null)
+                                {
                                     continue;
+                                }
+
                                 strName = objXmlWeapon.SelectSingleNode("name").Value;
                                 XPathNavigator objChildNode = _xmlWeaponsBaseChummerNode.SelectSingleNode("weapons/weapon[(" + _objCharacter.Options.BookXPath() + ") and name = " + strName.CleanXPath() + "]");
                                 if (objChildNode == null)
+                                {
                                     continue;
+                                }
+
                                 TreeNode objChildChild = new TreeNode
                                 {
                                     Text = objChildNode.SelectSingleNode("translate")?.Value ?? strName
@@ -864,10 +1105,7 @@ namespace Chummer
             AcceptForm();
         }
 
-        private void cmdCancel_Click(object sender, EventArgs e)
-        {
-            DialogResult = DialogResult.Cancel;
-        }
+        private void cmdCancel_Click(object sender, EventArgs e) => DialogResult = DialogResult.Cancel;
 
         private void lstKits_DoubleClick(object sender, EventArgs e)
         {
@@ -885,11 +1123,15 @@ namespace Chummer
         {
             string strSelectedKit = lstKits.SelectedValue?.ToString();
             if (string.IsNullOrEmpty(strSelectedKit))
+            {
                 return;
+            }
 
             if (MessageBox.Show(string.Format(LanguageManager.GetString("Message_DeletePACKSKit", GlobalOptions.Language), strSelectedKit),
                     LanguageManager.GetString("MessageTitle_Delete", GlobalOptions.Language), MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2) == DialogResult.No)
+            {
                 return;
+            }
 
             // Delete the selectec custom PACKS Kit.
             // Find a custom PACKS Kit with the name. This is done without the XmlManager since we need to check each file individually.
@@ -932,7 +1174,9 @@ namespace Chummer
 
                     // If this is not a new file, write out the current contents.
                     using (XmlNodeList objXmlNodeList = xmlDocumentBasePacksNode.SelectNodes("*"))
+                    {
                         if (objXmlNodeList?.Count > 0)
+                        {
                             foreach (XmlNode objXmlNode in objXmlNodeList)
                             {
                                 if (objXmlNode["name"]?.InnerText != strSelectedKit)
@@ -944,6 +1188,8 @@ namespace Chummer
                                     objWriter.WriteEndElement();
                                 }
                             }
+                        }
+                    }
 
                     // </packs>
                     objWriter.WriteEndElement();
@@ -987,7 +1233,10 @@ namespace Chummer
         {
             string strSelectedKit = lstKits.SelectedValue?.ToString();
             if (string.IsNullOrEmpty(strSelectedKit))
+            {
                 return;
+            }
+
             string[] objSelectedKit = strSelectedKit.Split('<');
             _strSelectedKit = objSelectedKit[0];
             s_StrSelectCategory = objSelectedKit[1];
@@ -1013,13 +1262,21 @@ namespace Chummer
 
                 string strExtra = xmlNameNode?.SelectSingleNode("@select")?.Value;
                 if (!string.IsNullOrEmpty(strExtra))
+                {
                     objChild.Text += strSpaceCharacter + '(' + strExtra + ')';
+                }
+
                 strExtra = objXmlGear.SelectSingleNode("rating")?.Value;
                 if (!string.IsNullOrEmpty(strExtra))
+                {
                     objChild.Text += strSpaceCharacter + LanguageManager.GetString("String_Rating", GlobalOptions.Language) + strSpaceCharacter + strExtra;
+                }
+
                 strExtra = objXmlGear.SelectSingleNode("qty")?.Value;
                 if (!string.IsNullOrEmpty(strExtra))
+                {
                     objChild.Text += strSpaceCharacter + 'x' + strExtra;
+                }
 
                 objParent.Nodes.Add(objChild);
 

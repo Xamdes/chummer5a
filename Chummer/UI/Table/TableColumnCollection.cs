@@ -29,21 +29,14 @@ namespace Chummer.UI.Table
         private readonly List<TableColumn<T>> _lstColumns = new List<TableColumn<T>>();
         private readonly TableView<T> _table;
 
-        internal TableColumnCollection(TableView<T> table)
-        {
-            _table = table;
-        }
+        internal TableColumnCollection(TableView<T> table) => _table = table;
 
         /// <summary>
         /// Access column by index
         /// </summary>
         /// <param name="index"></param>
         /// <returns></returns>
-        public TableColumn<T> this[int index]
-        {
-            get => _lstColumns[index];
-            //set => _lstColumns[index] = value;
-        }
+        public TableColumn<T> this[int index] => _lstColumns[index];
 
         public int Count => _lstColumns.Count;
 
@@ -58,14 +51,8 @@ namespace Chummer.UI.Table
             _table.ColumnAdded(objColumn);
         }
 
-        public IEnumerator<TableColumn<T>> GetEnumerator()
-        {
-            return _lstColumns.GetEnumerator();
-        }
+        public IEnumerator<TableColumn<T>> GetEnumerator() => _lstColumns.GetEnumerator();
 
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return _lstColumns.GetEnumerator();
-        }
+        IEnumerator IEnumerable.GetEnumerator() => _lstColumns.GetEnumerator();
     }
 }

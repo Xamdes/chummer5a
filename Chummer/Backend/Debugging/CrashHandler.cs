@@ -166,7 +166,9 @@ namespace Chummer.Backend
                 }
 
                 if (!_dicCapturedFiles.TryAdd(strFileName, strContents))
+                {
                     _dicCapturedFiles[strFileName] = strContents;
+                }
             }
 
             public void GetObjectData(SerializationInfo info, StreamingContext context)
@@ -174,11 +176,19 @@ namespace Chummer.Backend
                 info.AddValue("procesid", _intProcessId);
                 info.AddValue("threadid", _uintThreadId);
                 foreach (KeyValuePair<string, string> objLoopKeyValuePair in _dicAttributes)
+                {
                     info.AddValue(objLoopKeyValuePair.Key, objLoopKeyValuePair.Value);
+                }
+
                 foreach (KeyValuePair<string, string> objLoopKeyValuePair in _dicPretendFiles)
+                {
                     info.AddValue(objLoopKeyValuePair.Key, objLoopKeyValuePair.Value);
+                }
+
                 foreach (KeyValuePair<string, string> objLoopKeyValuePair in _dicCapturedFiles)
+                {
                     info.AddValue(objLoopKeyValuePair.Key, objLoopKeyValuePair.Value);
+                }
             }
         }
 
@@ -207,7 +217,9 @@ namespace Chummer.Backend
                         foreach (DictionaryEntry d in ex.Data)
                         {
                             if ((d.Key != null) && (d.Value != null))
+                            {
                                 et.Properties.Add(d.Key.ToString(), d.Value.ToString());
+                            }
                         }
                         Program.TelemetryClient.TrackException(et);
                         Program.TelemetryClient.Flush();

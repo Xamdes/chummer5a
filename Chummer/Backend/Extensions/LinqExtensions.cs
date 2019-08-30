@@ -53,10 +53,7 @@ namespace Chummer
         /// <summary>
         /// Similar to Linq's Aggregate(), but deep searches the list, applying the aggregator to the parents, the parents' children, their children's children, etc.
         /// </summary>
-        public static TResult DeepAggregate<TSource, TAccumulate, TResult>(this IEnumerable<TSource> objParentList, Func<TSource, IEnumerable<TSource>> funcGetChildrenMethod, TAccumulate seed, Func<TAccumulate, TSource, TAccumulate> funcAggregate, Func<TAccumulate, TResult> resultSelector)
-        {
-            return resultSelector(objParentList.DeepAggregate(funcGetChildrenMethod, seed, funcAggregate));
-        }
+        public static TResult DeepAggregate<TSource, TAccumulate, TResult>(this IEnumerable<TSource> objParentList, Func<TSource, IEnumerable<TSource>> funcGetChildrenMethod, TAccumulate seed, Func<TAccumulate, TSource, TAccumulate> funcAggregate, Func<TAccumulate, TResult> resultSelector) => resultSelector(objParentList.DeepAggregate(funcGetChildrenMethod, seed, funcAggregate));
 
         /// <summary>
         /// Deep searches two collections to make sure matching elements between the two fulfill some predicate. Each item in the target list can only be matched once.
@@ -68,7 +65,10 @@ namespace Chummer
         public static bool DeepMatch<T>(this ICollection<T> objParentList, ICollection<T> objTargetList, Func<T, ICollection<T>> funcGetChildrenMethod, Func<T, T, bool> predicate)
         {
             if (objParentList.Count != objTargetList.Count)
+            {
                 return false;
+            }
+
             HashSet<T> lstExclude = new HashSet<T>();
             foreach (T objLoopChild in objParentList)
             {
@@ -96,7 +96,9 @@ NextItem:
             foreach (T objLoopChild in objParentList)
             {
                 if (!predicate(objLoopChild) || !funcGetChildrenMethod(objLoopChild).DeepAll(funcGetChildrenMethod, predicate))
+                {
                     return false;
+                }
             }
             return true;
         }
@@ -109,7 +111,9 @@ NextItem:
             foreach (T objLoopChild in objParentList)
             {
                 if (predicate(objLoopChild) || funcGetChildrenMethod(objLoopChild).DeepAny(funcGetChildrenMethod, predicate))
+                {
                     return true;
+                }
             }
             return false;
         }
@@ -123,7 +127,10 @@ NextItem:
             foreach (T objLoopChild in objParentList)
             {
                 if (predicate(objLoopChild))
+                {
                     intReturn += 1;
+                }
+
                 intReturn += funcGetChildrenMethod(objLoopChild).DeepCount(funcGetChildrenMethod, predicate);
             }
             return intReturn;
@@ -150,10 +157,15 @@ NextItem:
             foreach (T objLoopChild in objParentList)
             {
                 if (predicate(objLoopChild))
+                {
                     return objLoopChild;
+                }
+
                 T objReturn = funcGetChildrenMethod(objLoopChild).DeepFirstOrDefault(funcGetChildrenMethod, predicate);
                 if (objReturn?.Equals(default(T)) == false)
+                {
                     return objReturn;
+                }
             }
             throw new InvalidOperationException();
         }
@@ -166,10 +178,15 @@ NextItem:
             foreach (T objLoopChild in objParentList)
             {
                 if (predicate(objLoopChild))
+                {
                     return objLoopChild;
+                }
+
                 T objReturn = funcGetChildrenMethod(objLoopChild).DeepFirstOrDefault(funcGetChildrenMethod, predicate);
                 if (objReturn?.Equals(default(T)) == false)
+                {
                     return objReturn;
+                }
             }
             return default(T);
         }
@@ -181,7 +198,10 @@ NextItem:
         {
             T objReturn = objParentList.DeepLastOrDefault(funcGetChildrenMethod, predicate);
             if (objReturn?.Equals(default(T)) == false)
+            {
                 return objReturn;
+            }
+
             throw new InvalidOperationException();
         }
 
@@ -194,10 +214,15 @@ NextItem:
             foreach (T objLoopChild in objParentList)
             {
                 if (predicate(objLoopChild))
+                {
                     objReturn = objLoopChild;
+                }
+
                 T objTemp = funcGetChildrenMethod(objLoopChild).DeepLastOrDefault(funcGetChildrenMethod, predicate);
                 if (objTemp?.Equals(default(T)) == false)
+                {
                     objReturn = objTemp;
+                }
             }
             return objReturn;
         }
@@ -209,7 +234,10 @@ NextItem:
         {
             T objReturn = objParentList.DeepLastOrDefault(funcGetChildrenMethod);
             if (objReturn?.Equals(default(T)) == false)
+            {
                 return objReturn;
+            }
+
             throw new InvalidOperationException();
         }
 
@@ -223,7 +251,9 @@ NextItem:
             {
                 T objTemp = funcGetChildrenMethod(objReturn).DeepLastOrDefault(funcGetChildrenMethod);
                 if (objTemp?.Equals(default(T)) == false)
+                {
                     return objTemp;
+                }
             }
             return objReturn;
         }
@@ -236,10 +266,14 @@ NextItem:
             foreach (T objLoopChild in objParentList)
             {
                 if (predicate(objLoopChild))
+                {
                     yield return objLoopChild;
+                }
 
                 foreach (T objLoopSubchild in funcGetChildrenMethod(objLoopChild).DeepWhere(funcGetChildrenMethod, predicate))
+                {
                     yield return objLoopSubchild;
+                }
             }
         }
 
@@ -253,7 +287,9 @@ NextItem:
                 yield return objLoopChild;
 
                 foreach (T objLoopSubchild in funcGetChildrenMethod(objLoopChild).GetAllDescendants(funcGetChildrenMethod))
+                {
                     yield return objLoopSubchild;
+                }
             }
         }
     }

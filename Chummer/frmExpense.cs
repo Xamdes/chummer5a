@@ -55,10 +55,7 @@ namespace Chummer
             }
         }
 
-        private void cmdCancel_Click(object sender, EventArgs e)
-        {
-            DialogResult = DialogResult.Cancel;
-        }
+        private void cmdCancel_Click(object sender, EventArgs e) => DialogResult = DialogResult.Cancel;
         #endregion
 
         #region Properties
@@ -71,15 +68,24 @@ namespace Chummer
             {
                 decimal decReturn = nudAmount.Value;
                 if (_objMode == ExpenseType.Nuyen)
+                {
                     decReturn *= (nudPercent.Value / 100.0m);
+                }
+
                 return decReturn;
             }
             set
             {
                 if (value < 0)
+                {
                     nudAmount.Minimum = value;
+                }
+
                 if (value == 0)
+                {
                     nudAmount.Minimum = 0;
+                }
+
                 nudAmount.Value = value;
             }
         }
@@ -159,7 +165,9 @@ namespace Chummer
             chkRefund.Enabled = false;
 
             if (blnEditAmount && nudAmount.Minimum < 0)
+            {
                 nudAmount.Minimum = nudAmount.Maximum * -1;
+            }
         }
         #endregion
 

@@ -36,9 +36,9 @@ namespace ChummerHub.Controllers.V1
     {
         private readonly ApplicationDbContext _context;
         private readonly ILogger _logger;
-        private SignInManager<ApplicationUser> _signInManager = null;
-        private UserManager<ApplicationUser> _userManager = null;
-        private TelemetryClient tc;
+        private readonly SignInManager<ApplicationUser> _signInManager = null;
+        private readonly UserManager<ApplicationUser> _userManager = null;
+        private readonly TelemetryClient tc;
 
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'SINnerGroupController.SINnerGroupController(ApplicationDbContext, ILogger<SINnerController>, SignInManager<ApplicationUser>, UserManager<ApplicationUser>, TelemetryClient)'
         public SINnerGroupController(ApplicationDbContext context,
@@ -51,7 +51,7 @@ namespace ChummerHub.Controllers.V1
             _signInManager = signInManager;
             _context = context;
             _logger = logger;
-            this.tc = telemetry;
+            tc = telemetry;
         }
 
 
@@ -162,9 +162,14 @@ namespace ChummerHub.Controllers.V1
                 if (parentGroup != null)
                 {
                     if (parentGroup.MyGroups == null)
+                    {
                         parentGroup.MyGroups = new List<SINnerGroup>();
+                    }
+
                     if (!parentGroup.MyGroups.Contains(myGroup))
+                    {
                         parentGroup.MyGroups.Add(myGroup);
+                    }
                 }
                 else
                 {
@@ -413,10 +418,12 @@ namespace ChummerHub.Controllers.V1
                     if (mygroup?.Id != null)
                     {
                         if (user.FavoriteGroups.All(a => a.FavoriteGuid != mygroup.Id.Value))
+                        {
                             user.FavoriteGroups.Add(new ApplicationUserFavoriteGroup()
                             {
                                 FavoriteGuid = mygroup.Id.Value
                             });
+                        }
                     }
 
                     if (SinnerId != null)
@@ -450,7 +457,10 @@ namespace ChummerHub.Controllers.V1
                                 if (sinur.EMail.ToLowerInvariant() == user.Email.ToLowerInvariant())
                                 {
                                     if (sinur.CanEdit == true)
+                                    {
                                         found = true;
+                                    }
+
                                     break;
                                 }
                             }
@@ -660,15 +670,18 @@ namespace ChummerHub.Controllers.V1
                     if ((MyTargetGroup?.Id != null) && (user != null))
                     {
                         if (user.FavoriteGroups.All(a => a.FavoriteGuid != MyTargetGroup.Id.Value))
+                        {
                             user.FavoriteGroups.Add(new ApplicationUserFavoriteGroup()
                             {
                                 FavoriteGuid = MyTargetGroup.Id.Value
                             });
+                        }
                     }
                 }
                 if (user != null)
+                {
                     user.FavoriteGroups = user.FavoriteGroups.GroupBy(a => a.FavoriteGuid).Select(b => b.First()).ToList();
-
+                }
 
                 List<SINner> sinnerseq = await (from a in context.SINners
                         .Include(a => a.MyGroup)
@@ -692,7 +705,9 @@ namespace ChummerHub.Controllers.V1
                     if (sin != null)
                     {
                         if (string.IsNullOrEmpty(sin.DownloadUrl))
+                        {
                             throw new ArgumentException("Sinner " + sin.Alias + " does not have a DownloadURL!");
+                        }
                         //if (String.IsNullOrEmpty(sin.MyExtendedAttributes?.JsonSummary))
                         //    throw new ArgumentException("Sinner " + sin.Alias + " does not have a valid JsonSummary!");
                         sin.MyGroup = MyTargetGroup;
@@ -718,7 +733,10 @@ namespace ChummerHub.Controllers.V1
                 try
                 {
                     if (tc == null)
+                    {
                         tc = new Microsoft.ApplicationInsights.TelemetryClient();
+                    }
+
                     Microsoft.ApplicationInsights.DataContracts.ExceptionTelemetry telemetry =
                         new Microsoft.ApplicationInsights.DataContracts.ExceptionTelemetry(e);
                     telemetry.Properties.Add("User", user?.Email);
@@ -933,7 +951,9 @@ namespace ChummerHub.Controllers.V1
         {
             StringBuilder sb = new StringBuilder();
             foreach (byte b in GetHash(inputString))
+            {
                 sb.Append(b.ToString("X2"));
+            }
 
             return sb.ToString();
         }
@@ -962,7 +982,10 @@ namespace ChummerHub.Controllers.V1
                     //check for the password
                     SINnerGroup group = await _context.SINnerGroups.FindAsync(groupid);
                     if (group == null)
+                    {
                         continue;
+                    }
+
                     if (group.HasPassword)
                     {
                         string pwhash = GetHashString(password);
@@ -1101,7 +1124,10 @@ namespace ChummerHub.Controllers.V1
                     _logger.LogError(ex.ToString());
                 }
                 if (e is HubException)
+                {
                     return BadRequest(e);
+                }
+
                 HubException hue = new HubException("Exception in DeleteLeaveGroup: " + e.Message, e);
                 return BadRequest(hue);
             }
@@ -1143,7 +1169,10 @@ namespace ChummerHub.Controllers.V1
                     _logger.LogError(ex.ToString());
                 }
                 if (e is HubException)
+                {
                     return BadRequest(e);
+                }
+
                 HubException hue = new HubException("Exception in DeleteLeaveGroup: " + e.Message, e);
                 return BadRequest(hue);
             }
@@ -1152,19 +1181,26 @@ namespace ChummerHub.Controllers.V1
         private async Task<SINnerGroup> DeleteGroupInternal(Guid? groupid)
         {
             if ((groupid == null) || (groupid == Guid.Empty))
+            {
                 throw new ArgumentNullException(nameof(groupid));
+            }
+
             List<SINnerGroup> groupbyidseq = await (from a in _context.SINnerGroups
                      .Include(a => a.MyGroups)
                                                     where a.Id == groupid
                                                     select a).Take(1).ToListAsync();
             if (!groupbyidseq.Any())
+            {
                 return null;
+            }
 
             SINnerGroup mygroup = groupbyidseq.FirstOrDefault();
 
             ApplicationUser user = await _signInManager.UserManager.GetUserAsync(User);
             if (user == null)
+            {
                 throw new NoUserRightException("Could not verify ApplicationUser!");
+            }
 
 #pragma warning disable CS0219 // The variable 'candelete' is assigned but its value is never used
             bool candelete = false;
@@ -1214,9 +1250,14 @@ namespace ChummerHub.Controllers.V1
         private async Task<ActionResult<bool>> DeleteLeaveGroupInternal(Guid groupid, Guid sinnerid)
         {
             if ((groupid == null) || (groupid == Guid.Empty))
+            {
                 throw new ArgumentNullException(nameof(groupid));
+            }
+
             if ((sinnerid == null) || (sinnerid == Guid.Empty))
+            {
                 throw new ArgumentNullException(nameof(sinnerid));
+            }
 
             List<SINnerGroup> groupbyidseq = await (from a in _context.SINnerGroups
                     .Include(a => a.MyGroups)
@@ -1224,7 +1265,9 @@ namespace ChummerHub.Controllers.V1
                                                     select a).Take(1).ToListAsync();
 
             if (!groupbyidseq.Any())
+            {
                 return NotFound(groupid);
+            }
 
             SINnerGroup group = groupbyidseq.FirstOrDefault();
 
@@ -1234,7 +1277,9 @@ namespace ChummerHub.Controllers.V1
                                             where a.Id == sinnerid
                                             select a).Take(1).ToListAsync();
             if (!sinnerseq.Any())
+            {
                 return NotFound(sinnerid);
+            }
 
             SINner sinner = sinnerseq.FirstOrDefault();
 
@@ -1267,7 +1312,10 @@ namespace ChummerHub.Controllers.V1
                     }, TransactionScopeAsyncFlowOption.Enabled))
                 {
                     if (User != null)
+                    {
                         user = await _signInManager.UserManager.GetUserAsync(User);
+                    }
+
                     if (!ModelState.IsValid)
                     {
                         List<Microsoft.AspNetCore.Mvc.ModelBinding.ModelErrorCollection> errors = ModelState.Select(x => x.Value.Errors)
@@ -1367,16 +1415,24 @@ namespace ChummerHub.Controllers.V1
                                 }
 
                                 if (ssg == null)
+                                {
                                     ssg = new SINnerSearchGroup(sin.MyGroup);
+                                }
 
                                 SINnerSearchGroupMember ssgm = new SINnerSearchGroupMember
                                 {
                                     MySINner = sin
                                 };
                                 if (byemailuser != null)
+                                {
                                     ssgm.Username = byemailuser?.UserName;
+                                }
+
                                 if (bynameuser != null)
+                                {
                                     ssgm.Username = bynameuser?.UserName;
+                                }
+
                                 ssg.MyMembers.Add(ssgm);
                             }
                         }
@@ -1399,7 +1455,9 @@ namespace ChummerHub.Controllers.V1
                         List<SINner> mySinners;
                         IList<string> roles = await _userManager.GetRolesAsync(user);
                         if (!roles.Contains("SeeAllSInners"))
+                        {
                             mySinners = await SINner.GetSINnersFromUser(user, _context, true);
+                        }
                         else
                         {
                             mySinners = await _context.SINners.Include(a => a.MyGroup)
@@ -1428,7 +1486,9 @@ namespace ChummerHub.Controllers.V1
                             if (sin.MyGroup != null)
                             {
                                 if (!usergroups.Contains(sin.MyGroup.Id))
+                                {
                                     usergroups.Add(sin.MyGroup.Id);
+                                }
                             }
                         }
 
@@ -1488,7 +1548,10 @@ namespace ChummerHub.Controllers.V1
             try
             {
                 if (User != null)
+                {
                     user = await _signInManager.UserManager.GetUserAsync(User);
+                }
+
                 if (!ModelState.IsValid)
                 {
                     List<Microsoft.AspNetCore.Mvc.ModelBinding.ModelErrorCollection> errors = ModelState.Select(x => x.Value.Errors)
@@ -1537,7 +1600,10 @@ namespace ChummerHub.Controllers.V1
         private static List<SINnerSearchGroup> RemovePWHashRecursive(List<SINnerSearchGroup> sINGroups)
         {
             if (sINGroups == null)
+            {
                 return new List<SINnerSearchGroup>();
+            }
+
             foreach (SINnerSearchGroup group in sINGroups)
             {
                 if (!string.IsNullOrEmpty(group.PasswordHash))
@@ -1553,7 +1619,10 @@ namespace ChummerHub.Controllers.V1
         private static List<SINnerGroup> RemovePWHashRecursive(List<SINnerGroup> sINGroups)
         {
             if (sINGroups == null)
+            {
                 return new List<SINnerGroup>();
+            }
+
             foreach (SINnerGroup group in sINGroups)
             {
                 group.PasswordHash = "";
@@ -1566,7 +1635,10 @@ namespace ChummerHub.Controllers.V1
             bool addTags = false)
         {
             if ((groupid == null) || (groupid == Guid.Empty))
+            {
                 throw new ArgumentNullException(nameof(groupid));
+            }
+
             using (TransactionScope t = new TransactionScope(TransactionScopeOption.Required,
                 new TransactionOptions
                 {
@@ -1576,7 +1648,10 @@ namespace ChummerHub.Controllers.V1
             {
                 ApplicationUser user = null;
                 if (User != null)
+                {
                     user = await _signInManager.UserManager.GetUserAsync(User);
+                }
+
                 SINnerSearchGroup ssg = null;
                 List<SINnerGroup> groupbyidseq = await (from a in _context.SINnerGroups
                         //.Include(a => a.MyParentGroup)
@@ -1591,7 +1666,10 @@ namespace ChummerHub.Controllers.V1
                 foreach (SINnerGroup group in groupbyidseq)
                 {
                     if (group.MyGroups == null)
+                    {
                         group.MyGroups = new List<SINnerGroup>();
+                    }
+
                     ssg = new SINnerSearchGroup(group);
 
                     List<SINner> members = await ssg.GetGroupMembers(_context, addTags);

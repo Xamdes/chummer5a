@@ -130,10 +130,7 @@ namespace Chummer
             DialogResult = DialogResult.OK;
         }
 
-        private void cmdCancel_Click(object sender, EventArgs e)
-        {
-            DialogResult = DialogResult.Cancel;
-        }
+        private void cmdCancel_Click(object sender, EventArgs e) => DialogResult = DialogResult.Cancel;
 
         private void treModules_AfterSelect(object sender, TreeViewEventArgs e)
         {
@@ -204,7 +201,9 @@ namespace Chummer
                     };
 
                     using (XmlNodeList xmlNodes = _xmlDocument.SelectNodes("/chummer/stages/stage"))
+                    {
                         if (xmlNodes != null)
+                        {
                             foreach (XmlNode xnode in xmlNodes)
                             {
                                 string strOrder = xnode.Attributes?["order"]?.Value;
@@ -213,6 +212,8 @@ namespace Chummer
                                     Stages.Add(new ListItem(strOrder, xnode.InnerText));
                                 }
                             }
+                        }
+                    }
 
                     //Sort based on integer value of key
                     Stages.Sort((x, y) =>
@@ -242,8 +243,9 @@ namespace Chummer
 
                 ListItem selectedItem = ((List<ListItem>)cboStage.DataSource).Find(x => x.Value.ToString() == _intStage.ToString());
                 if (!string.IsNullOrEmpty(selectedItem.Name))
+                {
                     cboStage.SelectedItem = selectedItem;
-
+                }
             }
             else
             {

@@ -4,9 +4,6 @@ namespace ChummerHub.Client.UI
 {
     public partial class frmSINnerSearch : Form
     {
-        public frmSINnerSearch()
-        {
-            InitializeComponent();
-        }
+        public frmSINnerSearch() => InitializeComponent();
     }
 }

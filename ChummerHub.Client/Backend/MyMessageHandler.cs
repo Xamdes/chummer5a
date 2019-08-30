@@ -11,7 +11,7 @@ namespace ChummerHub.Client.Backend
 {
     public class MyMessageHandler : DelegatingHandler
     {
-        private Logger Log = NLog.LogManager.GetCurrentClassLogger();
+        private readonly Logger Log = NLog.LogManager.GetCurrentClassLogger();
         public MyMessageHandler()
         {
 
@@ -28,7 +28,7 @@ namespace ChummerHub.Client.Backend
             httpClientHandler.UseDefaultCredentials = true;
             httpClientHandler.Credentials = System.Net.CredentialCache.DefaultCredentials;
 
-            this.InnerHandler = httpClientHandler;
+            InnerHandler = httpClientHandler;
         }
 
         public static int requestCounter = 0;

@@ -23,8 +23,8 @@ namespace Chummer
 {
     public class CursorWait : IDisposable
     {
-        private UserControl _control = null;
-        private Form _form = null;
+        private readonly UserControl _control = null;
+        private readonly Form _form = null;
         public CursorWait(bool appStarting = false, UserControl control = null)
         {
             // Wait
@@ -33,9 +33,13 @@ namespace Chummer
             Program.MainForm.DoThreadSafe(() =>
             {
                 if (_control == null)
+                {
                     Application.UseWaitCursor = true;
+                }
                 else
+                {
                     _control.Cursor = Cursor.Current;
+                }
             });
 
 
@@ -60,26 +64,31 @@ namespace Chummer
             Program.MainForm.DoThreadSafe(() =>
             {
                 if (_form == null)
+                {
                     Application.UseWaitCursor = true;
+                }
                 else
+                {
                     _form.Cursor = Cursor.Current;
+                }
             });
 
         }
 
-        public void Dispose()
-        {
-            Program.MainForm.DoThreadSafe(() =>
-            {
-                // Reset
-                Cursor.Current = Cursors.Default;
-                Application.UseWaitCursor = false;
-                if (_control != null)
-                    _control.Cursor = Cursors.Default;
-                if (_form != null)
-                    _form.Cursor = Cursors.Default;
-            });
+        public void Dispose() => Program.MainForm.DoThreadSafe(() =>
+                               {
+                                   // Reset
+                                   Cursor.Current = Cursors.Default;
+                                   Application.UseWaitCursor = false;
+                                   if (_control != null)
+                                   {
+                                       _control.Cursor = Cursors.Default;
+                                   }
 
-        }
+                                   if (_form != null)
+                                   {
+                                       _form.Cursor = Cursors.Default;
+                                   }
+                               });
     }
 }

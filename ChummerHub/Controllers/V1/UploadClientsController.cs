@@ -24,22 +24,14 @@ namespace ChummerHub.Controllers.V1
         private readonly ApplicationDbContext _context;
 
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'UploadClientsController.UploadClientsController(ApplicationDbContext)'
-        public UploadClientsController(ApplicationDbContext context)
-#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'UploadClientsController.UploadClientsController(ApplicationDbContext)'
-        {
-            _context = context;
-        }
+        public UploadClientsController(ApplicationDbContext context) => _context = context;
 
         //GET: api/UploadClients
         [HttpGet]
         [Authorize(Roles = "Administrator")]
         [Swashbuckle.AspNetCore.Annotations.SwaggerOperation("ClientGetTestClients")]
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'UploadClientsController.GetSomeTestUploadClients()'
-        public IEnumerable<UploadClient> GetSomeTestUploadClients()
-#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'UploadClientsController.GetSomeTestUploadClients()'
-        {
-            return _context.UploadClients.Take(20);
-        }
+        public IEnumerable<UploadClient> GetSomeTestUploadClients() => _context.UploadClients.Take(20);
 
         //GET: api/UploadClients/5
         [HttpGet("{id}")]
@@ -85,7 +77,10 @@ namespace ChummerHub.Controllers.V1
             }
             List<bool> list = await _context.SINners.Select(a => a.UploadClientId == id).ToListAsync();
             if (!list.Any())
+            {
                 return NotFound(id);
+            }
+
             return Ok(list);
         }
     }

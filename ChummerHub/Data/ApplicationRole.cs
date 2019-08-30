@@ -18,8 +18,8 @@ namespace ChummerHub.Data
         public ApplicationRole()
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'ApplicationRole.ApplicationRole()'
         {
-            this.MyRole = "default";
-            this.Name = "default";
+            MyRole = "default";
+            Name = "default";
         }
 
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'ApplicationRole.ApplicationRole(string)'
@@ -27,8 +27,8 @@ namespace ChummerHub.Data
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'ApplicationRole.ApplicationRole(string)'
         {
             this.MyRole = MyRole;
-            this.Name = MyRole;
-            this.Id = Guid.NewGuid();
+            Name = MyRole;
+            Id = Guid.NewGuid();
         }
     }
 }

@@ -27,10 +27,7 @@ namespace Chummer
         private readonly Dictionary<T, T> _back = new Dictionary<T, T>();
         private readonly string _strLanguage;
 
-        public TranslatedField(string strLanguage)
-        {
-            _strLanguage = strLanguage;
-        }
+        public TranslatedField(string strLanguage) => _strLanguage = strLanguage;
 
         public string Language => _strLanguage;
 
@@ -59,7 +56,9 @@ namespace Chummer
             else
             {
                 if (translated != null)
+                {
                     return translated;
+                }
 
                 if (orginal != null && _translate.TryGetValue(orginal, out translated))
                 {
@@ -86,7 +85,9 @@ namespace Chummer
             else
             {
                 if (value != null && !_back.TryGetValue(value, out orginal))
+                {
                     orginal = value;
+                }
 
                 translated = value;
             }

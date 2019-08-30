@@ -7,29 +7,23 @@ namespace ChummerHub.Client.UI
     {
         public SINners.Models.SINnerVisibility MyVisibility
         {
-            get
-            {
-                return this.ucSINnerVisibility1.MyVisibility;
-            }
-            set
-            {
-                this.ucSINnerVisibility1.MyVisibility = value;
-            }
+            get => ucSINnerVisibility1.MyVisibility;
+            set => ucSINnerVisibility1.MyVisibility = value;
         }
 
         public frmSINnerVisibility()
         {
             InitializeComponent();
-            this.DialogResult = DialogResult.Ignore;
-            this.AcceptButton = bOk;
+            DialogResult = DialogResult.Ignore;
+            AcceptButton = bOk;
         }
 
 
 
         private void BOk_Click(object sender, EventArgs e)
         {
-            this.DialogResult = DialogResult.OK;
-            this.Close();
+            DialogResult = DialogResult.OK;
+            Close();
         }
     }
 }

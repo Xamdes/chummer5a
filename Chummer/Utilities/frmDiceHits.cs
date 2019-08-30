@@ -39,10 +39,7 @@ namespace Chummer
             nudDiceResult.Minimum = 0;
         }
 
-        private void cmdOK_Click(object sender, EventArgs e)
-        {
-            DialogResult = DialogResult.OK;
-        }
+        private void cmdOK_Click(object sender, EventArgs e) => DialogResult = DialogResult.OK;
         #endregion
 
         #region Properties

@@ -131,7 +131,9 @@ namespace Chummer
                             foreach (DictionaryEntry d in myException.Data)
                             {
                                 if ((d.Key != null) && (d.Value != null))
+                                {
                                     et.Properties.Add(d.Key.ToString(), d.Value.ToString());
+                                }
                             }
                             Program.TelemetryClient.TrackException(myException);
                             Program.TelemetryClient.Flush();
@@ -180,7 +182,9 @@ namespace Chummer
                         {
                             //only change the loglevel, if it's off - otherwise it has been changed manually
                             if (rule.Levels.Count == 0)
+                            {
                                 rule.EnableLoggingForLevels(LogLevel.Debug, LogLevel.Fatal);
+                            }
                         }
                     }
 
@@ -234,7 +238,9 @@ namespace Chummer
                         TelemetryConfiguration.Active.DisableTelemetry = true;
                     }
                     if (Utils.IsUnitTest)
+                    {
                         TelemetryConfiguration.Active.DisableTelemetry = true;
+                    }
 
                     Log.Info(strInfo);
                     Log.Info("Logging options are set to " + GlobalOptions.UseLogging + " and Upload-Options are set to " + GlobalOptions.UseLoggingApplicationInsights + " (Installation-Id: " + Chummer.Properties.Settings.Default.UploadClientId + ").");
@@ -326,7 +332,9 @@ namespace Chummer
                             }
                         });
                         if (!loopResult.IsCompleted)
+                        {
                             Debugger.Break();
+                        }
                     }
                     catch (Exception e)
                     {
@@ -394,17 +402,16 @@ namespace Chummer
             foreach (string dir in dirs)
             {
                 if (!UnblockPath(dir))
+                {
                     allUnblocked = false;
+                }
             }
 
             return allUnblocked;
 
         }
 
-        public static bool UnblockFile(string fileName)
-        {
-            return DeleteFile(fileName + ":Zone.Identifier");
-        }
+        public static bool UnblockFile(string fileName) => DeleteFile(fileName + ":Zone.Identifier");
 
 
         /// <summary>

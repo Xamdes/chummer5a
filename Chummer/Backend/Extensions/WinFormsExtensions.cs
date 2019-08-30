@@ -29,7 +29,7 @@ namespace Chummer
 {
     public static class WinFormsExtensions
     {
-        private static Logger Log = NLog.LogManager.GetCurrentClassLogger();
+        private static readonly Logger Log = NLog.LogManager.GetCurrentClassLogger();
         #region Controls Extensions
         /// <summary>
         /// Runs code on a WinForms control in a thread-safe manner.
@@ -43,9 +43,13 @@ namespace Chummer
             {
                 Control myControlCopy = objControl; //to have the Object for sure, regardless of other threads
                 if (myControlCopy?.InvokeRequired == true)
+                {
                     myControlCopy.Invoke(funcToRun);
+                }
                 else
+                {
                     funcToRun.Invoke();
+                }
             }
             catch (ObjectDisposedException)
             {
@@ -100,10 +104,7 @@ namespace Chummer
         #endregion
 
         #region ComboBox Extensions
-        public static bool IsInitalized(this ComboBox cboThis, bool isLoading)
-        {
-            return (isLoading || string.IsNullOrEmpty(cboThis?.SelectedValue?.ToString()));
-        }
+        public static bool IsInitalized(this ComboBox cboThis, bool isLoading) => (isLoading || string.IsNullOrEmpty(cboThis?.SelectedValue?.ToString()));
         #endregion
 
         #region TreeNode Extensions
@@ -111,7 +112,10 @@ namespace Chummer
         {
             TreeNode objReturn = objThis;
             while (objReturn.Parent != null)
+            {
                 objReturn = objReturn.Parent;
+            }
+
             return objReturn;
         }
 
@@ -124,17 +128,27 @@ namespace Chummer
         public static TreeNode FindNode(this TreeNode objNode, string strGuid, bool blnDeep = true)
         {
             if (objNode == null || string.IsNullOrEmpty(strGuid) || strGuid.IsEmptyGuid())
+            {
                 return null;
+            }
+
             foreach (TreeNode objChild in objNode.Nodes)
             {
                 if (objChild.Tag is IHasInternalId idNode && idNode.InternalId == strGuid || objChild.Tag is string s && s == strGuid)
+                {
                     return objChild;
+                }
 
                 if (!blnDeep)
+                {
                     continue;
+                }
+
                 TreeNode objFound = objChild.FindNode(strGuid);
                 if (objFound != null)
+                {
                     return objFound;
+                }
             }
             return null;
         }
@@ -152,13 +166,17 @@ namespace Chummer
                 foreach (TreeNode objChild in objNode.Nodes)
                 {
                     if (objChild.Tag == objTag)
+                    {
                         return objChild;
+                    }
 
                     if (blnDeep)
                     {
                         TreeNode objFound = objChild.FindNodeByTag(objTag);
                         if (objFound != null)
+                        {
                             return objFound;
+                        }
                     }
                 }
             }
@@ -180,7 +198,9 @@ namespace Chummer
             {
                 int intLoopEdge = objChild.GetRightMostEdge();
                 if (intLoopEdge > intReturn)
+                {
                     intReturn = intLoopEdge;
+                }
             }
             return intReturn;
         }
@@ -197,9 +217,15 @@ namespace Chummer
         {
             TreeNodeCollection lstTreeViewNodes = treView?.Nodes;
             if (lstTreeViewNodes == null)
+            {
                 return;
+            }
+
             if (string.IsNullOrEmpty(strSelectedNodeTag))
+            {
                 strSelectedNodeTag = (treView.SelectedNode?.Tag as IHasInternalId)?.InternalId;
+            }
+
             for (int i = 0; i < lstTreeViewNodes.Count; ++i)
             {
                 TreeNode objLoopNode = lstTreeViewNodes[i];
@@ -219,7 +245,9 @@ namespace Chummer
 
             TreeNode objSelectedNode = treView.FindNode(strSelectedNodeTag);
             if (objSelectedNode != null)
+            {
                 treView.SelectedNode = objSelectedNode;
+            }
         }
 
         /// <summary>
@@ -231,9 +259,15 @@ namespace Chummer
         {
             TreeNodeCollection lstTreeViewNodes = treView?.Nodes;
             if (lstTreeViewNodes == null)
+            {
                 return;
+            }
+
             if (objSelectedNodeTag == null)
+            {
                 objSelectedNodeTag = treView.SelectedNode?.Tag;
+            }
+
             for (int i = 0; i < lstTreeViewNodes.Count; ++i)
             {
                 TreeNode objLoopNode = lstTreeViewNodes[i];
@@ -253,7 +287,9 @@ namespace Chummer
 
             TreeNode objSelectedNode = treView.FindNodeByTag(objSelectedNodeTag);
             if (objSelectedNode != null)
+            {
                 treView.SelectedNode = objSelectedNode;
+            }
         }
 
         /// <summary>
@@ -273,7 +309,9 @@ namespace Chummer
             // Reselect whatever was selected before
             TreeNode objSelectedNode = treView.FindNode(strSelectedNodeTag);
             if (objSelectedNode != null)
+            {
                 treView.SelectedNode = objSelectedNode;
+            }
         }
 
         /// <summary>
@@ -292,9 +330,14 @@ namespace Chummer
 
                 // Sort any non-sortables first
                 if (lhs == null)
+                {
                     return -1;
+                }
+
                 if (rhs == null)
+                {
                     return 1;
+                }
 
                 return lhs.SortOrder.CompareTo(rhs.SortOrder);
             }
@@ -305,10 +348,7 @@ namespace Chummer
         /// ICanSort objects, allowing them to retain the order after a load
         /// </summary>
         /// <param name="treView"></param>
-        public static void CacheSortOrder(this TreeView treView)
-        {
-            CacheSortOrderRecursive(treView?.Nodes);
-        }
+        public static void CacheSortOrder(this TreeView treView) => CacheSortOrderRecursive(treView?.Nodes);
 
         /// <summary>
         /// Does a breadth-first recursion to set the sorting property of any ICanSorts in the tree
@@ -321,7 +361,9 @@ namespace Chummer
             lstEnumerable.Where(n => n?.Tag is ICanSort).ToList().ForEach(n =>
                 {
                     if (n.Tag is ICanSort objSortable)
+                    {
                         objSortable.SortOrder = n.Index;
+                    }
                 });
             lstEnumerable.ForEach(n => CacheSortOrderRecursive(n.Nodes));
         }
@@ -331,10 +373,7 @@ namespace Chummer
         /// </summary>
         /// <param name="treView">Base TreeView whose nodes should get their background color cleared.</param>
         /// <param name="objHighlighted">TreeNode that is currently being hovered over.</param>
-        public static void ClearNodeBackground(this TreeView treView, TreeNode objHighlighted)
-        {
-            treView?.Nodes.ClearNodeBackground(objHighlighted);
-        }
+        public static void ClearNodeBackground(this TreeView treView, TreeNode objHighlighted) => treView?.Nodes.ClearNodeBackground(objHighlighted);
 
         /// <summary>
         /// Find a TreeNode in a TreeView based on its Tag.
@@ -345,17 +384,27 @@ namespace Chummer
         public static TreeNode FindNode(this TreeView treTree, string strGuid, bool blnDeep = true)
         {
             if (treTree == null || string.IsNullOrEmpty(strGuid) || strGuid.IsEmptyGuid())
+            {
                 return null;
+            }
+
             foreach (TreeNode objNode in treTree.Nodes)
             {
                 if (objNode?.Tag != null && objNode.Tag is IHasInternalId node && node.InternalId == strGuid || objNode?.Tag?.ToString() == strGuid)
+                {
                     return objNode;
+                }
 
                 if (!blnDeep)
+                {
                     continue;
+                }
+
                 TreeNode objFound = objNode.FindNode(strGuid);
                 if (objFound != null)
+                {
                     return objFound;
+                }
             }
             return null;
         }
@@ -373,13 +422,17 @@ namespace Chummer
                 foreach (TreeNode objNode in treTree.Nodes)
                 {
                     if (objNode.Tag == objTag)
+                    {
                         return objNode;
+                    }
 
                     if (blnDeep)
                     {
                         TreeNode objFound = objNode.FindNodeByTag(objTag);
                         if (objFound != null)
+                        {
                             return objFound;
+                        }
                     }
                 }
             }
@@ -402,7 +455,9 @@ namespace Chummer
             {
                 int intLoopEdge = objChild.GetRightMostEdge();
                 if (intLoopEdge > intReturn)
+                {
                     intReturn = intLoopEdge;
+                }
             }
             return intReturn;
         }
@@ -419,7 +474,10 @@ namespace Chummer
             foreach (TreeNode objChild in objNodes)
             {
                 if (objChild != objHighlighted)
+                {
                     objChild.BackColor = SystemColors.Window;
+                }
+
                 objChild.Nodes.ClearNodeBackground(objHighlighted);
             }
         }

@@ -93,7 +93,9 @@ namespace Chummer
         private void lstArt_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (_blnLoading)
+            {
                 return;
+            }
 
             string strSelected = lstArt.SelectedValue?.ToString();
             if (string.IsNullOrEmpty(strSelected))
@@ -120,30 +122,15 @@ namespace Chummer
             lblSource.SetToolTip(CommonFunctions.LanguageBookLong(strSource, GlobalOptions.Language) + strSpaceCharacter + LanguageManager.GetString("String_Page", GlobalOptions.Language) + ' ' + strPage);
         }
 
-        private void cmdOK_Click(object sender, EventArgs e)
-        {
-            AcceptForm();
-        }
+        private void cmdOK_Click(object sender, EventArgs e) => AcceptForm();
 
-        private void cmdCancel_Click(object sender, EventArgs e)
-        {
-            DialogResult = DialogResult.Cancel;
-        }
+        private void cmdCancel_Click(object sender, EventArgs e) => DialogResult = DialogResult.Cancel;
 
-        private void lstArt_DoubleClick(object sender, EventArgs e)
-        {
-            AcceptForm();
-        }
+        private void lstArt_DoubleClick(object sender, EventArgs e) => AcceptForm();
 
-        private void chkLimitList_CheckedChanged(object sender, EventArgs e)
-        {
-            BuildList();
-        }
+        private void chkLimitList_CheckedChanged(object sender, EventArgs e) => BuildList();
 
-        private void txtSearch_TextChanged(object sender, EventArgs e)
-        {
-            BuildList();
-        }
+        private void txtSearch_TextChanged(object sender, EventArgs e) => BuildList();
 
         #region Properties
         /// <summary>
@@ -160,7 +147,9 @@ namespace Chummer
         private void BuildList()
         {
             if (_blnLoading)
+            {
                 return;
+            }
 
             List<ListItem> lstArts = new List<ListItem>();
             foreach (XPathNavigator objXmlMetamagic in _objXmlDocument.Select(_strBaseXPath + '[' + _strXPathFilter + CommonFunctions.GenerateSearchXPath(txtSearch.Text) + ']'))
@@ -183,9 +172,14 @@ namespace Chummer
             lstArt.DataSource = lstArts;
             _blnLoading = false;
             if (!string.IsNullOrEmpty(strOldSelected))
+            {
                 lstArt.SelectedValue = strOldSelected;
+            }
             else
+            {
                 lstArt.SelectedIndex = -1;
+            }
+
             lstArt.EndUpdate();
         }
 
@@ -203,7 +197,9 @@ namespace Chummer
                 if (objXmlMetamagic != null)
                 {
                     if (!objXmlMetamagic.RequirementsMet(_objCharacter, null, _strLocalName))
+                    {
                         return;
+                    }
 
                     _strSelectedItem = strSelectedItem;
 
@@ -212,10 +208,7 @@ namespace Chummer
             }
         }
 
-        private void OpenSourceFromLabel(object sender, EventArgs e)
-        {
-            CommonFunctions.OpenPDFFromControl(sender, e);
-        }
+        private void OpenSourceFromLabel(object sender, EventArgs e) => CommonFunctions.OpenPDFFromControl(sender, e);
         #endregion
     }
 }

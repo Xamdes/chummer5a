@@ -98,7 +98,9 @@ namespace Chummer
             {
                 cboGamePlay.SelectedValue = _objCharacter.GameplayOption;
                 if (cboGamePlay.SelectedIndex == -1)
+                {
                     cboGamePlay.SelectedValue = _strDefaultOption;
+                }
 
                 cboBuildMethod.Enabled = false;
                 cboBuildMethod.SelectedValue = _objCharacter.BuildMethod.ToString();
@@ -158,16 +160,26 @@ namespace Chummer
             {
                 _objCharacter.BannedWareGrades.Clear();
                 foreach (XPathNavigator xmlNode in xmlGameplayOption.Select("bannedwaregrades/grade"))
+                {
                     _objCharacter.BannedWareGrades.Add(xmlNode.Value);
+                }
 
                 int intTemp = 0;
                 if (!_objCharacter.Options.FreeContactsMultiplierEnabled && xmlGameplayOption.TryGetInt32FieldQuickly("contactmultiplier", ref intTemp))
+                {
                     _objCharacter.ContactMultiplier = intTemp;
+                }
+
                 if (xmlGameplayOption.TryGetInt32FieldQuickly("karma", ref intTemp))
+                {
                     _objCharacter.GameplayOptionQualityLimit = _objCharacter.MaxKarma = intTemp;
+                }
+
                 decimal decTemp = 0;
                 if (xmlGameplayOption.TryGetDecFieldQuickly("maxnuyen", ref decTemp))
+                {
                     _objCharacter.MaxNuyen = decTemp;
+                }
             }
             _objCharacter.BuildKarma = decimal.ToInt32(nudKarma.Value);
             _objCharacter.GameplayOption = strSelectedGameplayOption;
@@ -234,10 +246,7 @@ namespace Chummer
             }
         }
 
-        private void frmSelectBuildMethod_Load(object sender, EventArgs e)
-        {
-            cboBuildMethod_SelectedIndexChanged(this, e);
-        }
+        private void frmSelectBuildMethod_Load(object sender, EventArgs e) => cboBuildMethod_SelectedIndexChanged(this, e);
 
         private void cboGamePlay_SelectedIndexChanged(object sender, EventArgs e)
         {

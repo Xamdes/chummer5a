@@ -10,10 +10,12 @@ namespace SINners.Models
             set
             {
                 if (!string.IsNullOrEmpty(value))
-                    this.PasswordHash = GetHashString(value);
+                {
+                    PasswordHash = GetHashString(value);
+                }
                 else
                 {
-                    this.PasswordHash = null;
+                    PasswordHash = null;
                 }
             }
         }
@@ -37,7 +39,9 @@ namespace SINners.Models
         {
             StringBuilder sb = new StringBuilder();
             foreach (byte b in GetHash(inputString))
+            {
                 sb.Append(b.ToString("X2"));
+            }
 
             return sb.ToString();
         }

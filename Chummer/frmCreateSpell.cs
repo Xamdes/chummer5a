@@ -49,12 +49,17 @@ namespace Chummer
 
             // Populate the list of Spell Categories.
             using (XmlNodeList objXmlCategoryList = _objXmlDocument.SelectNodes("/chummer/categories/category"))
+            {
                 if (objXmlCategoryList != null)
+                {
                     foreach (XmlNode objXmlCategory in objXmlCategoryList)
                     {
                         string strInnerText = objXmlCategory.InnerText;
                         lstCategory.Add(new ListItem(strInnerText, objXmlCategory.Attributes?["translate"]?.InnerText ?? strInnerText));
                     }
+                }
+            }
+
             cboCategory.BeginUpdate();
             cboType.BeginUpdate();
             cboRange.BeginUpdate();
@@ -114,32 +119,27 @@ namespace Chummer
                 chkArea.Enabled = false;
             }
             else
+            {
                 chkArea.Enabled = true;
+            }
 
             ChangeModifiers();
             CalculateDrain();
         }
 
-        private void cboType_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            CalculateDrain();
-        }
+        private void cboType_SelectedIndexChanged(object sender, EventArgs e) => CalculateDrain();
 
-        private void cboRange_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            CalculateDrain();
-        }
+        private void cboRange_SelectedIndexChanged(object sender, EventArgs e) => CalculateDrain();
 
-        private void cboDuration_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            CalculateDrain();
-        }
+        private void cboDuration_SelectedIndexChanged(object sender, EventArgs e) => CalculateDrain();
 
         private void chkModifier_CheckedChanged(object sender, EventArgs e)
         {
             cboType.Enabled = true;
             if (_blnSkipRefresh)
+            {
                 return;
+            }
 
             if (cboCategory.SelectedValue.ToString() == "Combat")
             {
@@ -379,7 +379,9 @@ namespace Chummer
             CalculateDrain();
             txtRestriction.Enabled = chkRestricted.Checked || chkVeryRestricted.Checked;
             if (!txtRestriction.Enabled)
+            {
                 txtRestriction.Text = string.Empty;
+            }
         }
 
         private void chkVeryRestricted_CheckedChanged(object sender, EventArgs e)
@@ -389,28 +391,18 @@ namespace Chummer
             CalculateDrain();
             txtRestriction.Enabled = chkRestricted.Checked || chkVeryRestricted.Checked;
             if (!txtRestriction.Enabled)
+            {
                 txtRestriction.Text = string.Empty;
+            }
         }
 
-        private void nudNumberOfEffects_ValueChanged(object sender, EventArgs e)
-        {
-            CalculateDrain();
-        }
+        private void nudNumberOfEffects_ValueChanged(object sender, EventArgs e) => CalculateDrain();
 
-        private void chkArea_CheckedChanged(object sender, EventArgs e)
-        {
-            CalculateDrain();
-        }
+        private void chkArea_CheckedChanged(object sender, EventArgs e) => CalculateDrain();
 
-        private void cmdOK_Click(object sender, EventArgs e)
-        {
-            AcceptForm();
-        }
+        private void cmdOK_Click(object sender, EventArgs e) => AcceptForm();
 
-        private void cmdCancel_Click(object sender, EventArgs e)
-        {
-            DialogResult = DialogResult.Cancel;
-        }
+        private void cmdCancel_Click(object sender, EventArgs e) => DialogResult = DialogResult.Cancel;
         #endregion
 
         #region Methods
@@ -553,9 +545,13 @@ namespace Chummer
             if (nudNumberOfEffects.Visible)
             {
                 if (cboCategory.SelectedValue.ToString() == "Combat")
+                {
                     nudNumberOfEffects.Left = chkModifier3.Left + chkModifier3.Width + 6;
+                }
                 else if (cboCategory.SelectedValue.ToString() == "Manipulation")
+                {
                     nudNumberOfEffects.Left = chkModifier6.Left + chkModifier6.Width + 6;
+                }
             }
         }
 
@@ -565,15 +561,21 @@ namespace Chummer
         private string CalculateDrain()
         {
             if (_blnLoading)
+            {
                 return string.Empty;
+            }
 
             int intDV = 0;
 
             // Type DV.
             if (cboType.SelectedValue.ToString() == "M")
+            {
                 intDV += 0;
+            }
             else
+            {
                 intDV += 1;
+            }
 
             // Range DV.
             switch (cboRange.SelectedValue.ToString())
@@ -587,25 +589,38 @@ namespace Chummer
                     break;
             }
             if (chkArea.Checked)
+            {
                 intDV += 2;
+            }
 
             // Restriction DV.
             if (chkRestricted.Checked)
+            {
                 intDV -= 1;
+            }
+
             if (chkVeryRestricted.Checked)
+            {
                 intDV -= 2;
+            }
 
             // Duration DV.
             if (cboDuration.SelectedValue.ToString() == "P")
             {
                 // Curative Health Spells do not have a modifier for Permanant duration.
                 if (cboCategory.SelectedValue.ToString() == "Health" && chkModifier1.Checked)
+                {
                     intDV += 0;
+                }
                 else
+                {
                     intDV += 2;
+                }
             }
             else
+            {
                 intDV += 0;
+            }
 
             // Include any checked modifiers.
             foreach (CheckBox chkModifier in flpModifiers.Controls.OfType<CheckBox>())
@@ -613,11 +628,17 @@ namespace Chummer
                 if (chkModifier.Visible && chkModifier.Checked)
                 {
                     if (chkModifier == chkModifier3 && cboCategory.SelectedValue.ToString() == "Combat")
+                    {
                         intDV += (Convert.ToInt32(chkModifier.Tag.ToString()) * decimal.ToInt32(nudNumberOfEffects.Value));
+                    }
                     else if (chkModifier == chkModifier6 && cboCategory.SelectedValue.ToString() == "Manipulation")
+                    {
                         intDV += (Convert.ToInt32(chkModifier.Tag.ToString()) * decimal.ToInt32(nudNumberOfEffects.Value));
+                    }
                     else
+                    {
                         intDV += Convert.ToInt32(chkModifier.Tag.ToString());
+                    }
                 }
             }
             foreach (Panel panChild in flpModifiers.Controls.OfType<Panel>())
@@ -627,11 +648,17 @@ namespace Chummer
                     if (chkModifier.Visible && chkModifier.Checked)
                     {
                         if (chkModifier == chkModifier3 && cboCategory.SelectedValue.ToString() == "Combat")
+                        {
                             intDV += (Convert.ToInt32(chkModifier.Tag.ToString()) * decimal.ToInt32(nudNumberOfEffects.Value));
+                        }
                         else if (chkModifier == chkModifier6 && cboCategory.SelectedValue.ToString() == "Manipulation")
+                        {
                             intDV += (Convert.ToInt32(chkModifier.Tag.ToString()) * decimal.ToInt32(nudNumberOfEffects.Value));
+                        }
                         else
+                        {
                             intDV += Convert.ToInt32(chkModifier.Tag.ToString());
+                        }
                     }
                 }
             }
@@ -650,9 +677,15 @@ namespace Chummer
 
             string strDV = intDV.ToString();
             if (intDV > 0)
+            {
                 strDV = '+' + strDV;
+            }
+
             if (intDV == 0)
+            {
                 strDV = string.Empty;
+            }
+
             lblDV.Text = (strBase + strDV).Replace('/', '÷')
                 .CheapReplace("F", () => LanguageManager.GetString("String_SpellForce", GlobalOptions.Language))
                 .CheapReplace("Damage Value", () => LanguageManager.GetString("String_SpellDamageValue", GlobalOptions.Language));
@@ -670,7 +703,10 @@ namespace Chummer
             if (string.IsNullOrWhiteSpace(txtName.Text))
             {
                 if (!string.IsNullOrEmpty(strMessage))
+                {
                     strMessage += Environment.NewLine;
+                }
+
                 strMessage += LanguageManager.GetString("Message_SpellName", GlobalOptions.Language);
             }
 
@@ -678,7 +714,10 @@ namespace Chummer
             if (txtRestriction.Enabled && string.IsNullOrWhiteSpace(txtRestriction.Text))
             {
                 if (!string.IsNullOrEmpty(strMessage))
+                {
                     strMessage += Environment.NewLine;
+                }
+
                 strMessage += LanguageManager.GetString("Message_SpellRestricted", GlobalOptions.Language);
             }
 
@@ -689,7 +728,10 @@ namespace Chummer
                 if (!chkModifier1.Checked && !chkModifier2.Checked)
                 {
                     if (!string.IsNullOrEmpty(strMessage))
+                    {
                         strMessage += Environment.NewLine;
+                    }
+
                     strMessage += LanguageManager.GetString("Message_CombatSpellRequirement1", GlobalOptions.Language);
                 }
 
@@ -697,7 +739,10 @@ namespace Chummer
                 if (!chkModifier4.Checked && !chkModifier5.Checked)
                 {
                     if (!string.IsNullOrEmpty(strMessage))
+                    {
                         strMessage += Environment.NewLine;
+                    }
+
                     strMessage += LanguageManager.GetString("Message_CombatSpellRequirement2", GlobalOptions.Language);
                 }
             }
@@ -707,7 +752,10 @@ namespace Chummer
                 if (!chkModifier1.Checked && !chkModifier2.Checked && !chkModifier3.Checked)
                 {
                     if (!string.IsNullOrEmpty(strMessage))
+                    {
                         strMessage += Environment.NewLine;
+                    }
+
                     strMessage += LanguageManager.GetString("Message_DetectionSpellRequirement1", GlobalOptions.Language);
                 }
 
@@ -715,7 +763,10 @@ namespace Chummer
                 if (!chkModifier4.Checked && !chkModifier5.Checked)
                 {
                     if (!string.IsNullOrEmpty(strMessage))
+                    {
                         strMessage += Environment.NewLine;
+                    }
+
                     strMessage += LanguageManager.GetString("Message_DetectionSpellRequirement2", GlobalOptions.Language);
                 }
             }
@@ -729,7 +780,10 @@ namespace Chummer
                 if (!chkModifier1.Checked && !chkModifier2.Checked)
                 {
                     if (!string.IsNullOrEmpty(strMessage))
+                    {
                         strMessage += Environment.NewLine;
+                    }
+
                     strMessage += LanguageManager.GetString("Message_IllusionSpellRequirement1", GlobalOptions.Language);
                 }
 
@@ -737,7 +791,10 @@ namespace Chummer
                 if (!chkModifier3.Checked && !chkModifier4.Checked)
                 {
                     if (!string.IsNullOrEmpty(strMessage))
+                    {
                         strMessage += Environment.NewLine;
+                    }
+
                     strMessage += LanguageManager.GetString("Message_IllusionSpellRequirement2", GlobalOptions.Language);
                 }
             }
@@ -747,7 +804,10 @@ namespace Chummer
                 if (!chkModifier1.Checked && !chkModifier2.Checked && !chkModifier3.Checked)
                 {
                     if (!string.IsNullOrEmpty(strMessage))
+                    {
                         strMessage += Environment.NewLine;
+                    }
+
                     strMessage += LanguageManager.GetString("Message_ManipulationSpellRequirement1", GlobalOptions.Language);
                 }
 
@@ -755,7 +815,10 @@ namespace Chummer
                 if (!chkModifier4.Checked && !chkModifier5.Checked)
                 {
                     if (!string.IsNullOrEmpty(strMessage))
+                    {
                         strMessage += Environment.NewLine;
+                    }
+
                     strMessage += LanguageManager.GetString("Message_ManipulationSpellRequirement2", GlobalOptions.Language);
                 }
             }
@@ -773,69 +836,134 @@ namespace Chummer
             {
                 case "Detection":
                     if (chkModifier4.Checked)
+                    {
                         strDescriptors += "Active, ";
+                    }
+
                     if (chkModifier5.Checked)
+                    {
                         strDescriptors += "Passive, ";
+                    }
+
                     if (chkModifier1.Checked)
+                    {
                         strDescriptors += "Directional, ";
+                    }
+
                     if (chkModifier3.Checked)
+                    {
                         strDescriptors += "Psychic, ";
+                    }
+
                     if (chkModifier2.Checked)
                     {
                         if (!chkModifier14.Checked)
+                        {
                             strDescriptors += "Area, ";
+                        }
                         else
+                        {
                             strDescriptors += "Extended Area";
+                        }
                     }
                     break;
                 case "Health":
                     if (chkModifier4.Checked)
+                    {
                         strDescriptors += "Negative, ";
+                    }
+
                     break;
                 case "Illusion":
                     if (chkModifier1.Checked)
+                    {
                         strDescriptors += "Obvious, ";
+                    }
+
                     if (chkModifier2.Checked)
+                    {
                         strDescriptors += "Realistic, ";
+                    }
+
                     if (chkModifier3.Checked)
+                    {
                         strDescriptors += "Single-Sense, ";
+                    }
+
                     if (chkModifier4.Checked)
+                    {
                         strDescriptors += "Multi-Sense, ";
+                    }
+
                     if (chkArea.Checked)
+                    {
                         strDescriptors += "Area, ";
+                    }
+
                     break;
                 case "Manipulation":
                     if (chkModifier1.Checked)
+                    {
                         strDescriptors += "Environmental, ";
+                    }
+
                     if (chkModifier2.Checked)
+                    {
                         strDescriptors += "Mental, ";
+                    }
+
                     if (chkModifier3.Checked)
+                    {
                         strDescriptors += "Physical, ";
+                    }
+
                     if (chkArea.Checked)
+                    {
                         strDescriptors += "Area, ";
+                    }
+
                     break;
                 default:
                     // Combat.
                     if (chkModifier1.Checked)
+                    {
                         strDescriptors += "Direct, ";
+                    }
+
                     if (chkModifier2.Checked)
+                    {
                         strDescriptors += "Indirect, ";
+                    }
+
                     if (cboRange.SelectedValue.ToString() == "T")
+                    {
                         strDescriptors += "Touch, ";
+                    }
+
                     if (cboRange.SelectedValue.ToString() == "A")
+                    {
                         strDescriptors += "Area, ";
+                    }
+
                     if (chkModifier3.Checked)
+                    {
                         strDescriptors += "Elemental, ";
+                    }
+
                     break;
             }
 
             string strRange = cboRange.SelectedValue.ToString();
             if (chkArea.Checked)
+            {
                 strRange += " (A)";
+            }
 
             // Remove the trailing ", " from the Descriptors string.
             if (!string.IsNullOrEmpty(strDescriptors))
+            {
                 strDescriptors = strDescriptors.Substring(0, strDescriptors.Length - 2);
+            }
 
             _objSpell.Name = txtName.Text;
             _objSpell.Source = "SM";
@@ -851,7 +979,10 @@ namespace Chummer
             }
             _objSpell.DV = CalculateDrain();
             if (!string.IsNullOrEmpty(txtRestriction.Text))
+            {
                 _objSpell.Extra = txtRestriction.Text;
+            }
+
             _objSpell.Duration = cboDuration.SelectedValue.ToString();
 
             DialogResult = DialogResult.OK;

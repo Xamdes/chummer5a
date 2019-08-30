@@ -26,10 +26,7 @@ namespace Chummer
     {
         public static string EmptyGuid { get; } = Guid.Empty.ToString("D");
 
-        public static bool IsEmptyGuid(this string strInput)
-        {
-            return strInput == EmptyGuid;
-        }
+        public static bool IsEmptyGuid(this string strInput) => strInput == EmptyGuid;
 
         /// <summary>
         /// Method to quickly remove all instances of a char from a string (much faster than using Replace() with an empty string)
@@ -40,10 +37,16 @@ namespace Chummer
         public static string FastEscape(this string strInput, char chrToDelete)
         {
             if (strInput == null)
+            {
                 return string.Empty;
+            }
+
             int intLength = strInput.Length;
             if (intLength == 0)
+            {
                 return strInput;
+            }
+
             char[] achrNewChars = new char[intLength];
             // What we're going here is copying the string-as-CharArray char-by-char into a new CharArray, but skipping over any instance of chrToDelete...
             int intCurrent = 0;
@@ -51,7 +54,9 @@ namespace Chummer
             {
                 char chrLoop = strInput[i];
                 if (chrLoop != chrToDelete)
+                {
                     achrNewChars[intCurrent++] = chrLoop;
+                }
             }
             // ... then we create a new string from the new CharArray, but only up to the number of characters that actually ended up getting copied
             return new string(achrNewChars, 0, intCurrent);
@@ -66,13 +71,22 @@ namespace Chummer
         public static string FastEscape(this string strInput, params char[] achrToDelete)
         {
             if (strInput == null)
+            {
                 return string.Empty;
+            }
+
             int intDeleteLength = achrToDelete.Length;
             if (intDeleteLength == 0)
+            {
                 return strInput;
+            }
+
             int intLength = strInput.Length;
             if (intLength == 0)
+            {
                 return strInput;
+            }
+
             char[] achrNewChars = new char[intLength];
             // What we're going here is copying the string-as-CharArray char-by-char into a new CharArray, but skipping over any instance of chars in achrToDelete...
             int intCurrent = 0;
@@ -104,22 +118,38 @@ SkipChar:
         public static string FastEscape(this string strInput, string strSubstringToDelete, StringComparison eComparison = StringComparison.Ordinal)
         {
             if (strSubstringToDelete == null)
+            {
                 return strInput;
+            }
+
             int intToDeleteLength = strSubstringToDelete.Length;
             if (intToDeleteLength == 0)
+            {
                 return strInput;
+            }
+
             if (intToDeleteLength == 1)
+            {
                 return strInput.FastEscape(strSubstringToDelete[0]);
+            }
+
             if (strInput == null)
+            {
                 return string.Empty;
+            }
+
             int intLength = strInput.Length;
             if (intLength < intToDeleteLength)
+            {
                 return strInput;
+            }
 
             // Quickly exit if no instance of the substring is found
             int intCurrentEnd = strInput.IndexOf(strSubstringToDelete, 0, eComparison);
             if (intCurrentEnd == -1)
+            {
                 return strInput;
+            }
 
             // Create CharArray in which we will store the new string
             char[] achrNewChars = new char[intLength];
@@ -160,14 +190,25 @@ SkipChar:
         public static string FastEscapeOnceFromStart(this string strInput, string strSubstringToDelete, int intStartIndex = 0, StringComparison eComparison = StringComparison.Ordinal)
         {
             if (strSubstringToDelete == null)
+            {
                 return strInput;
+            }
+
             int intToDeleteLength = strSubstringToDelete.Length;
             if (intToDeleteLength == 0)
+            {
                 return strInput;
+            }
+
             if (strInput == null)
+            {
                 return string.Empty;
+            }
+
             if (strInput.Length < intToDeleteLength)
+            {
                 return strInput;
+            }
 
             int intIndexToBeginRemove = strInput.IndexOf(strSubstringToDelete, intStartIndex, eComparison);
             return intIndexToBeginRemove == -1 ? strInput : strInput.Remove(intIndexToBeginRemove, intToDeleteLength);
@@ -184,16 +225,30 @@ SkipChar:
         public static string FastEscapeOnceFromEnd(this string strInput, string strSubstringToDelete, int intStartIndex = -1, StringComparison eComparison = StringComparison.Ordinal)
         {
             if (strSubstringToDelete == null)
+            {
                 return strInput;
+            }
+
             int intToDeleteLength = strSubstringToDelete.Length;
             if (intToDeleteLength == 0)
+            {
                 return strInput;
+            }
+
             if (strInput == null)
+            {
                 return string.Empty;
+            }
+
             if (intStartIndex < 0)
+            {
                 intStartIndex += strInput.Length;
+            }
+
             if (intStartIndex < intToDeleteLength - 1)
+            {
                 return strInput;
+            }
 
             int intIndexToBeginRemove = strInput.LastIndexOf(strSubstringToDelete, intStartIndex, eComparison);
             return intIndexToBeginRemove == -1 ? strInput : strInput.Remove(intIndexToBeginRemove, intToDeleteLength);
@@ -206,10 +261,7 @@ SkipChar:
         /// <param name="anyOf">Array of characters to match with IndexOfAny</param>
         /// <returns></returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static int IndexOfAny(this string strHaystack, params char[] anyOf)
-        {
-            return strHaystack.IndexOfAny(anyOf);
-        }
+        public static int IndexOfAny(this string strHaystack, params char[] anyOf) => strHaystack.IndexOfAny(anyOf);
 
         /// <summary>
         /// Syntactic sugar for string::Split that uses one separator char in its argument in addition to StringSplitOptions.
@@ -219,10 +271,7 @@ SkipChar:
         /// <param name="eSplitOptions">String split options.</param>
         /// <returns></returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static string[] Split(this string strInput, char chrSeparator, StringSplitOptions eSplitOptions)
-        {
-            return strInput.Split(new[] { chrSeparator }, eSplitOptions);
-        }
+        public static string[] Split(this string strInput, char chrSeparator, StringSplitOptions eSplitOptions) => strInput.Split(new[] { chrSeparator }, eSplitOptions);
 
         /// <summary>
         /// Syntactic sugar for a version of Contains(char) for strings that is faster than messing with Linq
@@ -231,10 +280,7 @@ SkipChar:
         /// <param name="chrNeedle">Character for which to look.</param>
         /// <returns></returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool Contains(this string strHaystack, char chrNeedle)
-        {
-            return strHaystack.IndexOf(chrNeedle) != -1;
-        }
+        public static bool Contains(this string strHaystack, char chrNeedle) => strHaystack.IndexOf(chrNeedle) != -1;
 
         /// <summary>
         /// Normalises whitespace for a given textblock, removing extra spaces and trimming the string in the process.
@@ -246,12 +292,21 @@ SkipChar:
         public static string NormalizeWhiteSpace(this string strInput, char chrWhiteSpace = ' ', Func<char, bool> funcIsWhiteSpace = null)
         {
             if (strInput == null)
+            {
                 return string.Empty;
+            }
+
             int intLength = strInput.Length;
             if (intLength == 0)
+            {
                 return strInput;
+            }
+
             if (funcIsWhiteSpace == null)
+            {
                 funcIsWhiteSpace = char.IsWhiteSpace;
+            }
+
             char[] achrNewChars = new char[intLength];
             // What we're going here is copying the string-as-CharArray char-by-char into a new CharArray, but processing whitespace characters differently...
             int intCurrent = 0;
@@ -264,7 +319,10 @@ SkipChar:
                 if (funcIsWhiteSpace(chrLoop))
                 {
                     if (!blnLastCharWasWhiteSpace)
+                    {
                         achrNewChars[intCurrent++] = chrWhiteSpace;
+                    }
+
                     blnLastCharWasWhiteSpace = true;
                 }
                 else
@@ -289,13 +347,22 @@ SkipChar:
         public static bool IsLegalCharsOnly(this string strInput, bool blnWhitelist, params char[] achrChars)
         {
             if (strInput == null)
+            {
                 return false;
+            }
+
             int intLength = strInput.Length;
             if (intLength == 0)
+            {
                 return true;
+            }
+
             int intLegalCharsLength = achrChars.Length;
             if (intLegalCharsLength == 0)
+            {
                 return true;
+            }
+
             for (int i = 0; i < intLength; ++i)
             {
                 char chrLoop = strInput[i];
@@ -310,7 +377,9 @@ SkipChar:
                 }
 
                 if (blnCharIsInList != blnWhitelist)
+                {
                     return false;
+                }
             }
             return true;
         }
@@ -326,14 +395,21 @@ SkipChar:
         public static string TrimStart(this string strInput, string strToTrim, StringComparison eComparison = StringComparison.Ordinal)
         {
             if (string.IsNullOrEmpty(strInput) || string.IsNullOrEmpty(strToTrim))
+            {
                 return strInput;
+            }
+
             int intTrimLength = strToTrim.Length;
             if (intTrimLength == 1)
+            {
                 return strInput.TrimStart(strToTrim[0]);
+            }
 
             int i = strInput.IndexOf(strToTrim, eComparison);
             if (i == -1)
+            {
                 return strInput;
+            }
 
             int intAmountToTrim = 0;
             do
@@ -356,14 +432,21 @@ SkipChar:
         public static string TrimEnd(this string strInput, string strToTrim, StringComparison eComparison = StringComparison.Ordinal)
         {
             if (string.IsNullOrEmpty(strInput) || string.IsNullOrEmpty(strToTrim))
+            {
                 return strInput;
+            }
+
             int intTrimLength = strToTrim.Length;
             if (intTrimLength == 1)
+            {
                 return strInput.TrimEnd(strToTrim[0]);
+            }
 
             int i = strInput.LastIndexOf(strToTrim, eComparison);
             if (i == -1)
+            {
                 return strInput;
+            }
 
             int intInputLastIndex = strInput.Length - 1;
             int intAmountToTrim = 0;
@@ -429,7 +512,10 @@ SkipChar:
         public static string TrimStartOnce(this string strInput, params string[] astrToTrim)
         {
             if (strInput == null)
+            {
                 return string.Empty;
+            }
+
             if (!string.IsNullOrEmpty(strInput) && astrToTrim != null)
             {
                 // Without this we could trim a smaller string just because it was found first, this makes sure we find the largest one
@@ -447,7 +533,9 @@ SkipChar:
                 }
 
                 if (intHowMuchToTrim > 0)
+                {
                     return strInput.Substring(intHowMuchToTrim);
+                }
             }
             return strInput;
         }
@@ -462,7 +550,10 @@ SkipChar:
         public static string TrimEndOnce(this string strInput, params string[] astrToTrim)
         {
             if (strInput == null)
+            {
                 return string.Empty;
+            }
+
             if (!string.IsNullOrEmpty(strInput) && astrToTrim != null)
             {
                 // Without this we could trim a smaller string just because it was found first, this makes sure we find the largest one
@@ -480,7 +571,9 @@ SkipChar:
                 }
 
                 if (intHowMuchToTrim > 0)
+                {
                     return strInput.Substring(0, strInput.Length - intHowMuchToTrim);
+                }
             }
             return strInput;
         }
@@ -514,7 +607,9 @@ SkipChar:
             {
                 int intLength = strInput.Length;
                 if (strInput[intLength - 1] == chrToTrim)
+                {
                     return strInput.Substring(0, intLength - 1);
+                }
             }
             return strInput;
         }
@@ -529,7 +624,10 @@ SkipChar:
         public static string TrimStartOnce(this string strInput, params char[] achrToTrim)
         {
             if (strInput.StartsWith(achrToTrim))
+            {
                 return strInput.Substring(1, strInput.Length - 1);
+            }
+
             return strInput;
         }
 
@@ -543,7 +641,10 @@ SkipChar:
         public static string TrimEndOnce(this string strInput, params char[] achrToTrim)
         {
             if (strInput.EndsWith(achrToTrim))
+            {
                 return strInput.Substring(0, strInput.Length - 1);
+            }
+
             return strInput;
         }
 
@@ -554,10 +655,7 @@ SkipChar:
         /// <param name="chrToCheck">Char to check.</param>
         /// <returns>True if string has a non-zero length and begins with the char, false otherwise.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool StartsWith(this string strInput, char chrToCheck)
-        {
-            return (strInput?.Length > 0 && strInput[0] == chrToCheck);
-        }
+        public static bool StartsWith(this string strInput, char chrToCheck) => (strInput?.Length > 0 && strInput[0] == chrToCheck);
 
         /// <summary>
         /// Determines whether the last char of this string instance matches the specified char.
@@ -569,7 +667,10 @@ SkipChar:
         public static bool EndsWith(this string strInput, char chrToCheck)
         {
             if (strInput == null)
+            {
                 return false;
+            }
+
             int intLength = strInput.Length;
             return (intLength > 0 && strInput[intLength - 1] == chrToCheck);
         }
@@ -584,15 +685,23 @@ SkipChar:
         public static bool StartsWith(this string strInput, params char[] achrToCheck)
         {
             if (strInput == null || achrToCheck == null)
+            {
                 return false;
+            }
+
             if (strInput.Length == 0)
+            {
                 return false;
+            }
+
             char chrCharToCheck = strInput[0];
             int intParamsLength = achrToCheck.Length;
             for (int i = 0; i < intParamsLength; ++i)
             {
                 if (chrCharToCheck == achrToCheck[i])
+                {
                     return true;
+                }
             }
             return false;
         }
@@ -607,16 +716,24 @@ SkipChar:
         public static bool EndsWith(this string strInput, params char[] achrToCheck)
         {
             if (strInput == null || achrToCheck == null)
+            {
                 return false;
+            }
+
             int intLength = strInput.Length;
             if (intLength == 0)
+            {
                 return false;
+            }
+
             char chrCharToCheck = strInput[intLength - 1];
             int intParamsLength = achrToCheck.Length;
             for (int i = 0; i < intParamsLength; ++i)
             {
                 if (chrCharToCheck == achrToCheck[i])
+                {
                     return true;
+                }
             }
             return false;
         }
@@ -679,11 +796,16 @@ SkipChar:
         public static string CheapReplace(this string strInput, string strOldValue, Func<string> funcNewValueFactory, bool ToLowerInvariant = false)
         {
             if (strInput?.Contains(strOldValue) == true)
+            {
                 return strInput.Replace(strOldValue, funcNewValueFactory.Invoke());
+            }
+
             if (ToLowerInvariant)
             {
                 if (strInput?.ToLowerInvariant().Contains(strOldValue.ToLowerInvariant()) == true)
+                {
                     return strInput.ToLowerInvariant().Replace(strOldValue.ToLowerInvariant(), funcNewValueFactory.Invoke());
+                }
             }
 
             return strInput;
@@ -697,10 +819,7 @@ SkipChar:
         /// <param name="funcNewValueFactory">Function to generate the string that replaces the pattern in the base string.</param>
         /// <returns>The result of a StringBuilder::Replace() method if a replacement is made, the original string otherwise.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void CheapReplace(this StringBuilder strbldInput, string strOldValue, Func<string> funcNewValueFactory)
-        {
-            strbldInput.CheapReplace(strbldInput.ToString(), strOldValue, funcNewValueFactory);
-        }
+        public static void CheapReplace(this StringBuilder strbldInput, string strOldValue, Func<string> funcNewValueFactory) => strbldInput.CheapReplace(strbldInput.ToString(), strOldValue, funcNewValueFactory);
 
         /// <summary>
         /// Like StringBuilder::Replace(), but if the string does not contain any instances of the pattern to replace, then the (potentially expensive) method to generate a replacement is not run.
@@ -714,7 +833,9 @@ SkipChar:
         public static void CheapReplace(this StringBuilder strbldInput, string strOriginal, string strOldValue, Func<string> funcNewValueFactory)
         {
             if (strOriginal?.Contains(strOldValue) == true)
+            {
                 strbldInput.Replace(strOldValue, funcNewValueFactory.Invoke());
+            }
         }
 
         /// <summary>
@@ -723,10 +844,7 @@ SkipChar:
         /// <param name="strGuid">String to test.</param>
         /// <returns>True if string is a Guid, false if not.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool IsGuid(this string strGuid)
-        {
-            return Guid.TryParse(strGuid, out Guid _);
-        }
+        public static bool IsGuid(this string strGuid) => Guid.TryParse(strGuid, out Guid _);
 
         /// <summary>
         /// Word wraps the given text to fit within the specified width.
@@ -738,9 +856,14 @@ SkipChar:
         {
             // Lucidity checks
             if (string.IsNullOrEmpty(strText))
+            {
                 return strText;
+            }
+
             if (intWidth >= strText.Length)
+            {
                 return strText;
+            }
 
             int intNextPosition;
             StringBuilder objReturn = new StringBuilder(strText.Length);
@@ -751,9 +874,13 @@ SkipChar:
                 // Find end of line
                 int intEndOfLinePosition = strText.IndexOf(strNewLine, intCurrentPosition, StringComparison.Ordinal);
                 if (intEndOfLinePosition == -1)
+                {
                     intNextPosition = intEndOfLinePosition = strText.Length;
+                }
                 else
+                {
                     intNextPosition = intEndOfLinePosition + strNewLine.Length;
+                }
 
                 // Copy this line of text, breaking into smaller lines as needed
                 if (intEndOfLinePosition > intCurrentPosition)
@@ -762,19 +889,26 @@ SkipChar:
                     {
                         int intLengthToRead = intEndOfLinePosition - intCurrentPosition;
                         if (intLengthToRead > intWidth)
+                        {
                             intLengthToRead = strText.BreakLine(intCurrentPosition, intWidth);
+                        }
+
                         objReturn.Append(strText, intCurrentPosition, intLengthToRead);
                         objReturn.Append(strNewLine);
 
                         // Trim whitespace following break
                         intCurrentPosition += intLengthToRead;
                         while (intCurrentPosition < intEndOfLinePosition && char.IsWhiteSpace(strText[intCurrentPosition]))
+                        {
                             intCurrentPosition += 1;
+                        }
                     }
                     while (intEndOfLinePosition > intCurrentPosition);
                 }
                 else
+                {
                     objReturn.Append(strNewLine); // Empty line
+                }
             }
             return objReturn.ToString();
         }
@@ -790,9 +924,14 @@ SkipChar:
         private static int BreakLine(this string strText, int intPosition, int intMax)
         {
             if (strText == null)
+            {
                 return intMax;
+            }
+
             if (intMax + intPosition >= strText.Length)
+            {
                 return intMax;
+            }
             // Find last whitespace in line
             for (int i = intMax; i >= 0; --i)
             {
@@ -815,7 +954,10 @@ SkipChar:
         public static string CleanXPath(this string strSearch)
         {
             if (string.IsNullOrEmpty(strSearch))
+            {
                 return null;
+            }
+
             int intQuotePos = strSearch.IndexOf('"');
             if (intQuotePos == -1)
             {
@@ -840,9 +982,7 @@ SkipChar:
         /// </summary>
         /// <param name="strToClean">String to clean.</param>
         /// <returns>Copy of input string with the characters "&", the greater than sign, and the lesser than sign escaped for HTML.</returns>
-        public static string CleanForHTML(this string strToClean)
-        {
-            return strToClean
+        public static string CleanForHTML(this string strToClean) => strToClean
                 .CheapReplace("<br />", () => "\n")
                 .CheapReplace("&", () => "&amp;")
                 .CheapReplace("&amp;amp;", () => "&amp;")
@@ -851,6 +991,5 @@ SkipChar:
                 .CheapReplace("\n\r", () => "<br />")
                 .CheapReplace("\n", () => "<br />")
                 .CheapReplace("\r", () => "<br />");
-        }
     }
 }

@@ -116,9 +116,15 @@ namespace Chummer
             if (objXmlCurrentDocument != null)
             {
                 using (XmlNodeList objXmlNodeList = objXmlCurrentDocument.SelectNodes("/chummer/*"))
+                {
                     if (objXmlNodeList?.Count > 0)
+                    {
                         foreach (XmlNode objXmlNode in objXmlNodeList)
+                        {
                             objXmlNode.WriteContentTo(objWriter);
+                        }
+                    }
+                }
             }
 
             // <pack>
@@ -159,12 +165,19 @@ namespace Chummer
                 {
                     objWriter.WriteElementString("mag", intMAG.ToString());
                     if (_objCharacter.Options.MysAdeptSecondMAGAttribute && _objCharacter.IsMysticAdept)
+                    {
                         objWriter.WriteElementString("magadept", intMAGAdept.ToString());
+                    }
                 }
                 if (_objCharacter.RESEnabled)
+                {
                     objWriter.WriteElementString("res", intRES.ToString());
+                }
+
                 if (_objCharacter.DEPEnabled)
+                {
                     objWriter.WriteElementString("dep", intDEP.ToString());
+                }
                 // </attributes>
                 objWriter.WriteEndElement();
             }
@@ -178,11 +191,19 @@ namespace Chummer
                 foreach (Quality objQuality in _objCharacter.Qualities)
                 {
                     if (objQuality.Type == QualityType.Positive)
+                    {
                         blnPositive = true;
+                    }
+
                     if (objQuality.Type == QualityType.Negative)
+                    {
                         blnNegative = true;
+                    }
+
                     if (blnPositive && blnNegative)
+                    {
                         break;
+                    }
                 }
                 // <qualities>
                 objWriter.WriteStartElement("qualities");
@@ -198,7 +219,10 @@ namespace Chummer
                         {
                             objWriter.WriteStartElement("quality");
                             if (!string.IsNullOrEmpty(objQuality.Extra))
+                            {
                                 objWriter.WriteAttributeString("select", objQuality.Extra);
+                            }
+
                             objWriter.WriteValue(objQuality.Name);
                             objWriter.WriteEndElement();
                         }
@@ -218,7 +242,10 @@ namespace Chummer
                         {
                             objWriter.WriteStartElement("quality");
                             if (!string.IsNullOrEmpty(objQuality.Extra))
+                            {
                                 objWriter.WriteAttributeString("select", objQuality.Extra);
+                            }
+
                             objWriter.WriteValue(objQuality.Name);
                             objWriter.WriteEndElement();
                         }
@@ -236,7 +263,10 @@ namespace Chummer
             {
                 decimal decNuyenBP = _objCharacter.NuyenBP;
                 if (_objCharacter.BuildMethod == CharacterBuildMethod.Karma)
+                {
                     decNuyenBP /= 2.0m;
+                }
+
                 objWriter.WriteElementString("nuyenbp", decNuyenBP.ToString(GlobalOptions.InvariantCultureInfo));
             }
 
@@ -292,7 +322,10 @@ namespace Chummer
                     objWriter.WriteElementString("name", objSkill.Name);
                     objWriter.WriteElementString("rating", objSkill.Rating.ToString());
                     if (!string.IsNullOrEmpty(objSkill.Specialization))
+                    {
                         objWriter.WriteElementString("spec", objSkill.Specialization);
+                    }
+
                     objWriter.WriteElementString("category", objSkill.SkillCategory);
                     // </skill>
                     objWriter.WriteEndElement();
@@ -317,7 +350,9 @@ namespace Chummer
                         // <advantages>
                         objWriter.WriteStartElement("advantages");
                         foreach (MartialArtTechnique objAdvantage in objArt.Techniques)
+                        {
                             objWriter.WriteElementString("advantage", objAdvantage.Name);
+                        }
                         // </advantages>
                         objWriter.WriteEndElement();
                     }
@@ -342,7 +377,10 @@ namespace Chummer
                     objWriter.WriteStartElement("spell");
                     objWriter.WriteStartElement("name");
                     if (!string.IsNullOrEmpty(objSpell.Extra))
+                    {
                         objWriter.WriteAttributeString("select", objSpell.Extra);
+                    }
+
                     objWriter.WriteValue(objSpell.Name);
                     objWriter.WriteEndElement();
                     objWriter.WriteElementString("category", objSpell.Category);
@@ -363,7 +401,10 @@ namespace Chummer
                     objWriter.WriteStartElement("complexform");
                     objWriter.WriteStartElement("name");
                     if (!string.IsNullOrEmpty(objComplexForm.Extra))
+                    {
                         objWriter.WriteAttributeString("select", objComplexForm.Extra);
+                    }
+
                     objWriter.WriteValue(objComplexForm.Name);
                     objWriter.WriteEndElement();
                     objWriter.WriteEndElement();
@@ -382,11 +423,19 @@ namespace Chummer
                 foreach (Cyberware objCharacterCyberware in _objCharacter.Cyberware)
                 {
                     if (objCharacterCyberware.SourceType == Improvement.ImprovementSource.Bioware)
+                    {
                         blnBioware = true;
+                    }
+
                     if (objCharacterCyberware.SourceType == Improvement.ImprovementSource.Cyberware)
+                    {
                         blnCyberware = true;
+                    }
+
                     if (blnCyberware && blnBioware)
+                    {
                         break;
+                    }
                 }
 
                 if (blnCyberware)
@@ -401,7 +450,10 @@ namespace Chummer
                             objWriter.WriteStartElement("cyberware");
                             objWriter.WriteElementString("name", objCyberware.Name);
                             if (objCyberware.Rating > 0)
+                            {
                                 objWriter.WriteElementString("rating", objCyberware.Rating.ToString());
+                            }
+
                             objWriter.WriteElementString("grade", objCyberware.Grade.Name);
                             if (objCyberware.Children.Count > 0)
                             {
@@ -415,10 +467,14 @@ namespace Chummer
                                         objWriter.WriteStartElement("cyberware");
                                         objWriter.WriteElementString("name", objChildCyberware.Name);
                                         if (objChildCyberware.Rating > 0)
+                                        {
                                             objWriter.WriteElementString("rating", objChildCyberware.Rating.ToString());
+                                        }
 
                                         if (objChildCyberware.Gear.Count > 0)
+                                        {
                                             WriteGear(objWriter, objChildCyberware.Gear);
+                                        }
                                         // </cyberware>
                                         objWriter.WriteEndElement();
                                     }
@@ -428,7 +484,9 @@ namespace Chummer
                             }
 
                             if (objCyberware.Gear.Count > 0)
+                            {
                                 WriteGear(objWriter, objCyberware.Gear);
+                            }
 
                             // </cyberware>
                             objWriter.WriteEndElement();
@@ -450,11 +508,16 @@ namespace Chummer
                             objWriter.WriteStartElement("bioware");
                             objWriter.WriteElementString("name", objCyberware.Name);
                             if (objCyberware.Rating > 0)
+                            {
                                 objWriter.WriteElementString("rating", objCyberware.Rating.ToString());
+                            }
+
                             objWriter.WriteElementString("grade", objCyberware.Grade.ToString());
 
                             if (objCyberware.Gear.Count > 0)
+                            {
                                 WriteGear(objWriter, objCyberware.Gear);
+                            }
                             // </bioware>
                             objWriter.WriteEndElement();
                         }
@@ -487,7 +550,9 @@ namespace Chummer
                             // <qualities>
                             objWriter.WriteStartElement("qualities");
                             foreach (LifestyleQuality objQuality in objLifestyle.LifestyleQualities)
+                            {
                                 objWriter.WriteElementString("quality", objQuality.Name);
+                            }
                             // </qualities>
                             objWriter.WriteEndElement();
                         }
@@ -519,7 +584,9 @@ namespace Chummer
                             objWriter.WriteStartElement("mod");
                             objWriter.WriteElementString("name", objMod.Name);
                             if (objMod.Rating > 0)
+                            {
                                 objWriter.WriteElementString("rating", objMod.Rating.ToString());
+                            }
                             // </mod>
                             objWriter.WriteEndElement();
                         }
@@ -528,7 +595,9 @@ namespace Chummer
                     }
 
                     if (objArmor.Gear.Count > 0)
+                    {
                         WriteGear(objWriter, objArmor.Gear);
+                    }
 
                     // </armor>
                     objWriter.WriteEndElement();
@@ -568,7 +637,9 @@ namespace Chummer
                                     objWriter.WriteElementString("extramount", objAccessory.ExtraMount);
 
                                     if (objAccessory.Gear.Count > 0)
+                                    {
                                         WriteGear(objWriter, objAccessory.Gear);
+                                    }
 
                                     // </accessory>
                                     objWriter.WriteEndElement();
@@ -584,7 +655,9 @@ namespace Chummer
                             foreach (Weapon objUnderbarrelWeapon in objWeapon.UnderbarrelWeapons)
                             {
                                 if (!objUnderbarrelWeapon.IncludedInWeapon)
+                                {
                                     objWriter.WriteElementString("underbarrel", objUnderbarrelWeapon.Name);
+                                }
                             }
                         }
 
@@ -626,19 +699,25 @@ namespace Chummer
                                 objWriter.WriteStartElement("mod");
                                 objWriter.WriteElementString("name", objVehicleMod.Name);
                                 if (objVehicleMod.Rating > 0)
+                                {
                                     objWriter.WriteElementString("rating", objVehicleMod.Rating.ToString());
+                                }
                                 // </mod>
                                 objWriter.WriteEndElement();
 
                                 // See if this is a Weapon Mount with Weapons.
                                 if (objVehicleMod.Weapons.Count > 0)
+                                {
                                     blnWeapons = true;
+                                }
                             }
                             else
                             {
                                 // See if this is a Weapon Mount with Weapons.
                                 if (objVehicleMod.Weapons.Count > 0)
+                                {
                                     blnWeapons = true;
+                                }
                             }
                         }
                         // </mods>
@@ -685,7 +764,9 @@ namespace Chummer
                                 if (objWeapon.UnderbarrelWeapons.Count > 0)
                                 {
                                     foreach (Weapon objUnderbarrelWeapon in objWeapon.UnderbarrelWeapons)
+                                    {
                                         objWriter.WriteElementString("underbarrel", objUnderbarrelWeapon.Name);
+                                    }
                                 }
 
                                 // </weapon>
@@ -723,10 +804,7 @@ namespace Chummer
             DialogResult = DialogResult.OK;
         }
 
-        private void cmdCancel_Click(object sender, EventArgs e)
-        {
-            DialogResult = DialogResult.Cancel;
-        }
+        private void cmdCancel_Click(object sender, EventArgs e) => DialogResult = DialogResult.Cancel;
         #endregion
 
         #region Methods
@@ -748,16 +826,27 @@ namespace Chummer
                     objWriter.WriteStartElement("gear");
                     objWriter.WriteStartElement("name");
                     if (!string.IsNullOrEmpty(objGear.Extra))
+                    {
                         objWriter.WriteAttributeString("select", objGear.Extra);
+                    }
+
                     objWriter.WriteValue(objGear.Name);
                     objWriter.WriteEndElement();
                     objWriter.WriteElementString("category", objGear.Category);
                     if (objGear.Rating > 0)
+                    {
                         objWriter.WriteElementString("rating", objGear.Rating.ToString());
+                    }
+
                     if (objGear.Quantity != 1)
+                    {
                         objWriter.WriteElementString("qty", objGear.Quantity.ToString(GlobalOptions.InvariantCultureInfo));
+                    }
+
                     if (objGear.Children.Count > 0)
+                    {
                         WriteGear(objWriter, objGear.Children);
+                    }
                     // </gear>
                     objWriter.WriteEndElement();
                 }

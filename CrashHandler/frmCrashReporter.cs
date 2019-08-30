@@ -24,15 +24,9 @@ namespace CrashHandler
             _strDefaultUserStory = Md5Hash(txtUserStory.Text);
         }
 
-        private void frmCrashReporter_Load(object sender, EventArgs e)
-        {
-            _dumper.StartCollecting();
-        }
+        private void frmCrashReporter_Load(object sender, EventArgs e) => _dumper.StartCollecting();
 
-        private void DumperOnCrashDumperProgressChanged(object sender, CrashDumperProgressChangedEventArgs args)
-        {
-            Invoke(new ChangeDesc(ChangeProgress), args.Progress, args.Progress.GetDescription());
-        }
+        private void DumperOnCrashDumperProgressChanged(object sender, CrashDumperProgressChangedEventArgs args) => Invoke(new ChangeDesc(ChangeProgress), args.Progress, args.Progress.GetDescription());
 
         private void ChangeProgress(CrashDumperProgress progress, string desc)
         {
@@ -102,10 +96,7 @@ namespace CrashHandler
             fs.Flush(true);
         }
 
-        private void frmCrashReporter_FormClosing(object sender, FormClosingEventArgs e)
-        {
-            _dumper.CrashDumperProgressChanged -= DumperOnCrashDumperProgressChanged;
-        }
+        private void frmCrashReporter_FormClosing(object sender, FormClosingEventArgs e) => _dumper.CrashDumperProgressChanged -= DumperOnCrashDumperProgressChanged;
 
         private void cmdSubmitIssue_Click(object sender, EventArgs e)
         {

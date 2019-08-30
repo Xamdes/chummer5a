@@ -37,7 +37,7 @@ namespace ChummerHub.Models.V1
         public SINnerMetaData()
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'SINnerMetaData.SINnerMetaData()'
         {
-            this.Tags = new List<Tag>();
+            Tags = new List<Tag>();
             Visibility = new SINnerVisibility();
         }
 

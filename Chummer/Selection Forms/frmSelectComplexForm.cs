@@ -55,7 +55,9 @@ namespace Chummer
                     {
                         XPathNavigator xmlMetavariantNode = _xmlOptionalComplexFormNode.SelectSingleNode("metavariants/metavariant[name = \"" + _objCharacter.Metavariant + "\"]");
                         if (xmlMetavariantNode != null)
+                        {
                             _xmlOptionalComplexFormNode = xmlMetavariantNode;
+                        }
                     }
 
                     _xmlOptionalComplexFormNode = _xmlOptionalComplexFormNode.SelectSingleNode("optionalcomplexforms");
@@ -175,10 +177,7 @@ namespace Chummer
             AcceptForm();
         }
 
-        private void cmdCancel_Click(object sender, EventArgs e)
-        {
-            DialogResult = DialogResult.Cancel;
-        }
+        private void cmdCancel_Click(object sender, EventArgs e) => DialogResult = DialogResult.Cancel;
 
         private void cmdOKAdd_Click(object sender, EventArgs e)
         {
@@ -186,40 +185,51 @@ namespace Chummer
             AcceptForm();
         }
 
-        private void txtSearch_TextChanged(object sender, EventArgs e)
-        {
-            BuildComplexFormList();
-        }
+        private void txtSearch_TextChanged(object sender, EventArgs e) => BuildComplexFormList();
 
         private void txtSearch_KeyDown(object sender, KeyEventArgs e)
         {
             if (lstComplexForms.SelectedIndex == -1)
             {
                 if (lstComplexForms.Items.Count > 0)
+                {
                     lstComplexForms.SelectedIndex = 0;
+                }
             }
             if (e.KeyCode == Keys.Down)
             {
                 int intNewIndex = lstComplexForms.SelectedIndex + 1;
                 if (intNewIndex >= lstComplexForms.Items.Count)
+                {
                     intNewIndex = 0;
+                }
+
                 if (lstComplexForms.Items.Count > 0)
+                {
                     lstComplexForms.SelectedIndex = intNewIndex;
+                }
             }
             if (e.KeyCode == Keys.Up)
             {
                 int intNewIndex = lstComplexForms.SelectedIndex - 1;
                 if (intNewIndex <= 0)
+                {
                     intNewIndex = lstComplexForms.Items.Count - 1;
+                }
+
                 if (lstComplexForms.Items.Count > 0)
+                {
                     lstComplexForms.SelectedIndex = intNewIndex;
+                }
             }
         }
 
         private void txtSearch_KeyUp(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Up)
+            {
                 txtSearch.Select(txtSearch.Text.Length, 0);
+            }
         }
         #endregion
 
@@ -240,7 +250,9 @@ namespace Chummer
         private void BuildComplexFormList()
         {
             if (_blnLoading)
+            {
                 return;
+            }
 
             string strFilter = "(" + _objCharacter.Options.BookXPath() + ')';
 
@@ -252,17 +264,23 @@ namespace Chummer
             {
                 string strId = xmlComplexForm.SelectSingleNode("id")?.Value;
                 if (string.IsNullOrEmpty(strId))
+                {
                     continue;
+                }
 
                 if (!xmlComplexForm.RequirementsMet(_objCharacter))
+                {
                     continue;
+                }
 
                 string strName = xmlComplexForm.SelectSingleNode("name")?.Value ?? LanguageManager.GetString("String_Unknown", GlobalOptions.Language);
                 // If this is a Sprite with Optional Complex Forms, see if this Complex Form is allowed.
                 if (_xmlOptionalComplexFormNode?.SelectSingleNode("complexform") != null)
                 {
                     if (_xmlOptionalComplexFormNode.SelectSingleNode("complexform[text() = \"" + strName + "\"]") == null)
+                    {
                         continue;
+                    }
                 }
 
                 lstComplexFormItems.Add(new ListItem(strId, xmlComplexForm.SelectSingleNode("translate")?.Value ?? strName));
@@ -277,9 +295,14 @@ namespace Chummer
             lstComplexForms.DataSource = lstComplexFormItems;
             _blnLoading = false;
             if (!string.IsNullOrEmpty(strOldSelected))
+            {
                 lstComplexForms.SelectedValue = strOldSelected;
+            }
             else
+            {
                 lstComplexForms.SelectedIndex = -1;
+            }
+
             lstComplexForms.EndUpdate();
         }
 
@@ -296,10 +319,7 @@ namespace Chummer
             }
         }
 
-        private void OpenSourceFromLabel(object sender, EventArgs e)
-        {
-            CommonFunctions.OpenPDFFromControl(sender, e);
-        }
+        private void OpenSourceFromLabel(object sender, EventArgs e) => CommonFunctions.OpenPDFFromControl(sender, e);
         #endregion
     }
 }

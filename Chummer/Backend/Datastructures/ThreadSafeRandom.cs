@@ -28,26 +28,20 @@ namespace Chummer
         private readonly Random _objRandom;
         private readonly object _objLock = new object();
 
-        public ThreadSafeRandom()
-        {
-            _objRandom = new Random();
-        }
+        public ThreadSafeRandom() => _objRandom = new Random();
 
-        public ThreadSafeRandom(int Seed)
-        {
-            _objRandom = new Random(Seed);
-        }
+        public ThreadSafeRandom(int Seed) => _objRandom = new Random(Seed);
 
-        public ThreadSafeRandom(Random objRandom)
-        {
-            _objRandom = objRandom;
-        }
+        public ThreadSafeRandom(Random objRandom) => _objRandom = objRandom;
 
         public override int Next()
         {
             int intReturn;
             lock (_objLock)
+            {
                 intReturn = _objRandom.Next();
+            }
+
             return intReturn;
         }
 
@@ -55,7 +49,10 @@ namespace Chummer
         {
             int intReturn;
             lock (_objLock)
+            {
                 intReturn = _objRandom.Next(minValue, maxValue);
+            }
+
             return intReturn;
         }
 
@@ -63,27 +60,32 @@ namespace Chummer
         {
             int intReturn;
             lock (_objLock)
+            {
                 intReturn = _objRandom.Next(maxValue);
+            }
+
             return intReturn;
         }
 
         public override void NextBytes(byte[] buffer)
         {
             lock (_objLock)
+            {
                 _objRandom.NextBytes(buffer);
+            }
         }
 
         public override double NextDouble()
         {
             double dblReturn;
             lock (_objLock)
+            {
                 dblReturn = _objRandom.NextDouble();
+            }
+
             return dblReturn;
         }
 
-        protected override double Sample()
-        {
-            return NextDouble();
-        }
+        protected override double Sample() => NextDouble();
     }
 }

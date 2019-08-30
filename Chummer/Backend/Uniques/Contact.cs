@@ -80,15 +80,12 @@ namespace Chummer
         private bool _blnFree;
         private readonly List<Image> _lstMugshots = new List<Image>();
         private int _intMainMugshotIndex = -1;
-        private int _intKarmaMinimum = 2;
+        private readonly int _intKarmaMinimum = 2;
 
         public event PropertyChangedEventHandler PropertyChanged;
 
         [NotifyPropertyChangedInvocator]
-        public void OnPropertyChanged([CallerMemberName] string strPropertyName = null)
-        {
-            OnMultiplePropertyChanged(strPropertyName);
-        }
+        public void OnPropertyChanged([CallerMemberName] string strPropertyName = null) => OnMultiplePropertyChanged(strPropertyName);
 
         public void OnMultiplePropertyChanged(params string[] lstPropertyNames)
         {
@@ -96,16 +93,22 @@ namespace Chummer
             foreach (string strPropertyName in lstPropertyNames)
             {
                 if (lstNamesOfChangedProperties == null)
+                {
                     lstNamesOfChangedProperties = ContactDependencyGraph.GetWithAllDependants(strPropertyName);
+                }
                 else
                 {
                     foreach (string strLoopChangedProperty in ContactDependencyGraph.GetWithAllDependants(strPropertyName))
+                    {
                         lstNamesOfChangedProperties.Add(strLoopChangedProperty);
+                    }
                 }
             }
 
             if ((lstNamesOfChangedProperties?.Count > 0) != true)
+            {
                 return;
+            }
 
             if (lstNamesOfChangedProperties.Contains(nameof(ForcedLoyalty)))
             {
@@ -197,7 +200,10 @@ namespace Chummer
         public static ContactType ConvertToContactType(string strValue)
         {
             if (string.IsNullOrEmpty(strValue))
+            {
                 return default(ContactType);
+            }
+
             switch (strValue)
             {
                 case "Contact":
@@ -221,7 +227,9 @@ namespace Chummer
         private void CharacterObjectOnPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(Character.Created) || e.PropertyName == nameof(Character.FriendsInHighPlaces))
+            {
                 OnPropertyChanged(nameof(ConnectionMaximum));
+            }
         }
 
         /// <summary>
@@ -256,7 +264,9 @@ namespace Chummer
             objWriter.WriteElementString("groupenabled", _blnGroupEnabled.ToString());
 
             if (_blnReadOnly)
+            {
                 objWriter.WriteElementString("readonly", string.Empty);
+            }
 
             if (_strUnique != null)
             {
@@ -293,7 +303,10 @@ namespace Chummer
             objNode.TryGetStringFieldQuickly("personallife", ref _strPersonalLife);
             string strTemp = string.Empty;
             if (objNode.TryGetStringFieldQuickly("type", ref strTemp))
+            {
                 _eContactType = ConvertToContactType(strTemp);
+            }
+
             objNode.TryGetStringFieldQuickly("file", ref _strFileName);
             objNode.TryGetStringFieldQuickly("notes", ref _strNotes);
             objNode.TryGetStringFieldQuickly("groupname", ref _strGroupName);
@@ -306,7 +319,9 @@ namespace Chummer
             {
                 int intTmp = _objColour.ToArgb();
                 if (objNode.TryGetInt32FieldQuickly("colour", ref intTmp))
+                {
                     _objColour = Color.FromArgb(intTmp);
+                }
             }
 
             _blnReadOnly = objNode.SelectSingleNode("readonly") != null;
@@ -335,9 +350,14 @@ namespace Chummer
             objWriter.WriteElementString("role", DisplayRoleMethod(strLanguageToPrint));
             objWriter.WriteElementString("location", Location);
             if (!IsGroup)
+            {
                 objWriter.WriteElementString("connection", Connection.ToString(objCulture));
+            }
             else
+            {
                 objWriter.WriteElementString("connection", LanguageManager.GetString("String_Group", strLanguageToPrint) + "(" + Connection.ToString(objCulture) + ')');
+            }
+
             objWriter.WriteElementString("loyalty", Loyalty.ToString(objCulture));
             objWriter.WriteElementString("metatype", DisplayMetatypeMethod(strLanguageToPrint));
             objWriter.WriteElementString("sex", DisplaySexMethod(strLanguageToPrint));
@@ -351,7 +371,9 @@ namespace Chummer
             objWriter.WriteElementString("blackmail", Blackmail.ToString());
             objWriter.WriteElementString("family", Family.ToString());
             if (CharacterObject.Options.PrintNotes)
+            {
                 objWriter.WriteElementString("notes", Notes);
+            }
 
             PrintMugshots(objWriter);
 
@@ -373,12 +395,21 @@ namespace Chummer
             get
             {
                 if (Free)
+                {
                     return 0;
+                }
+
                 int intReturn = Connection + Loyalty;
                 if (Family)
+                {
                     intReturn += 1;
+                }
+
                 if (Blackmail)
+                {
                     intReturn += 2;
+                }
+
                 intReturn +=
                     ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.ContactKarmaDiscount);
                 intReturn = Math.Max(intReturn,
@@ -395,7 +426,10 @@ namespace Chummer
             get
             {
                 if (LinkedCharacter != null)
+                {
                     return LinkedCharacter.CharacterName;
+                }
+
                 return _strName;
             }
             set
@@ -411,7 +445,9 @@ namespace Chummer
         public string DisplayRoleMethod(string strLanguage)
         {
             if (strLanguage == GlobalOptions.DefaultLanguage)
+            {
                 return Role;
+            }
 
             return XmlManager.Load("contacts.xml", strLanguage).SelectSingleNode("/chummer/contacts/contact[text() = \"" + Role + "\"]/@translate")?.InnerText ?? Role;
         }
@@ -479,9 +515,15 @@ namespace Chummer
             get
             {
                 if (ForcedLoyalty > 0)
+                {
                     return ForcedLoyalty;
+                }
+
                 if (IsGroup)
+                {
                     return 1;
+                }
+
                 return _intLoyalty;
             }
             set
@@ -521,7 +563,10 @@ namespace Chummer
                 }
             }
             else
+            {
                 strReturn = LanguageManager.TranslateExtra(strReturn, strLanguage);
+            }
+
             return strReturn;
         }
 
@@ -563,7 +608,9 @@ namespace Chummer
         public string DisplaySexMethod(string strLanguage)
         {
             if (strLanguage == GlobalOptions.DefaultLanguage)
+            {
                 return Sex;
+            }
 
             return XmlManager.Load("contacts.xml", strLanguage).SelectSingleNode("/chummer/sexes/sex[text() = \"" + Sex + "\"]/@translate")?.InnerText ?? Sex;
         }
@@ -582,7 +629,10 @@ namespace Chummer
             get
             {
                 if (LinkedCharacter != null)
+                {
                     return LinkedCharacter.Sex;
+                }
+
                 return _strSex;
             }
             set
@@ -598,7 +648,9 @@ namespace Chummer
         public string DisplayAgeMethod(string strLanguage)
         {
             if (strLanguage == GlobalOptions.DefaultLanguage)
+            {
                 return Age;
+            }
 
             return XmlManager.Load("contacts.xml", strLanguage).SelectSingleNode("/chummer/ages/age[text() = \"" + Age + "\"]/@translate")?.InnerText ?? Age;
         }
@@ -617,7 +669,10 @@ namespace Chummer
             get
             {
                 if (LinkedCharacter != null)
+                {
                     return LinkedCharacter.Age;
+                }
+
                 return _strAge;
             }
             set
@@ -633,7 +688,9 @@ namespace Chummer
         public string DisplayTypeMethod(string strLanguage)
         {
             if (strLanguage == GlobalOptions.DefaultLanguage)
+            {
                 return Type;
+            }
 
             return XmlManager.Load("contacts.xml", strLanguage).SelectSingleNode("/chummer/types/type[text() = \"" + Type + "\"]/@translate")?.InnerText ?? Type;
         }
@@ -663,7 +720,9 @@ namespace Chummer
         public string DisplayPreferredPaymentMethod(string strLanguage)
         {
             if (strLanguage == GlobalOptions.DefaultLanguage)
+            {
                 return PreferredPayment;
+            }
 
             return XmlManager.Load("contacts.xml", strLanguage).SelectSingleNode("/chummer/preferredpayments/preferredpayment[text() = \"" + PreferredPayment + "\"]/@translate")?.InnerText ?? PreferredPayment;
         }
@@ -693,7 +752,9 @@ namespace Chummer
         public string DisplayHobbiesViceMethod(string strLanguage)
         {
             if (strLanguage == GlobalOptions.DefaultLanguage)
+            {
                 return HobbiesVice;
+            }
 
             return XmlManager.Load("contacts.xml", strLanguage).SelectSingleNode("/chummer/hobbiesvices/hobbyvice[text() = \"" + HobbiesVice + "\"]/@translate")?.InnerText ?? HobbiesVice;
         }
@@ -723,7 +784,9 @@ namespace Chummer
         public string DisplayPersonalLifeMethod(string strLanguage)
         {
             if (strLanguage == GlobalOptions.DefaultLanguage)
+            {
                 return PersonalLife;
+            }
 
             return XmlManager.Load("contacts.xml", strLanguage).SelectSingleNode("/chummer/personallives/personallife[text() = \"" + PersonalLife + "\"]/@translate")?.InnerText ?? PersonalLife;
         }
@@ -880,7 +943,9 @@ namespace Chummer
             get
             {
                 if (_blnFree)
+                {
                     return _blnFree;
+                }
 
                 if (_intCachedFreeFromImprovement < 0)
                 {
@@ -950,7 +1015,9 @@ namespace Chummer
             get
             {
                 if (_intCachedForcedLoyalty != int.MinValue)
+                {
                     return _intCachedForcedLoyalty;
+                }
 
                 int intMaxForcedLoyalty = 0;
                 foreach (Improvement objImprovement in CharacterObject.Improvements)
@@ -983,11 +1050,17 @@ namespace Chummer
             {
                 // If the file doesn't exist, use the relative path if one is available.
                 if (string.IsNullOrEmpty(RelativeFileName))
+                {
                     blnError = true;
+                }
                 else if (!File.Exists(Path.GetFullPath(RelativeFileName)))
+                {
                     blnError = true;
+                }
                 else
+                {
                     blnUseRelative = true;
+                }
 
                 if (blnError && blnShowError)
                 {
@@ -1003,7 +1076,9 @@ namespace Chummer
                     Character objOpenCharacter = Program.MainForm.OpenCharacters.FirstOrDefault(x => x.FileName == strFile);
                     _objLinkedCharacter = objOpenCharacter ?? (await Program.MainForm.LoadCharacter(strFile, string.Empty, false, false));
                     if (_objLinkedCharacter != null)
+                    {
                         CharacterObject.LinkedCharacters.Add(_objLinkedCharacter);
+                    }
                 }
             }
             if (_objLinkedCharacter != objOldLinkedCharacter)
@@ -1020,13 +1095,24 @@ namespace Chummer
                 if (_objLinkedCharacter != null)
                 {
                     if (string.IsNullOrEmpty(_strName) && Name != LanguageManager.GetString("String_UnnamedCharacter", GlobalOptions.Language))
+                    {
                         _strName = Name;
+                    }
+
                     if (string.IsNullOrEmpty(_strAge) && !string.IsNullOrEmpty(Age))
+                    {
                         _strAge = Age;
+                    }
+
                     if (string.IsNullOrEmpty(_strSex) && !string.IsNullOrEmpty(Sex))
+                    {
                         _strSex = Sex;
+                    }
+
                     if (string.IsNullOrEmpty(_strMetatype) && !string.IsNullOrEmpty(Metatype))
+                    {
                         _strMetatype = Metatype;
+                    }
 
                     _objLinkedCharacter.PropertyChanged += LinkedCharacterOnPropertyChanged;
                 }
@@ -1037,19 +1123,33 @@ namespace Chummer
         private void LinkedCharacterOnPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(Character.Name))
+            {
                 OnPropertyChanged(nameof(Name));
+            }
             else if (e.PropertyName == nameof(Character.Age))
+            {
                 OnPropertyChanged(nameof(Age));
+            }
             else if (e.PropertyName == nameof(Character.Sex))
+            {
                 OnPropertyChanged(nameof(Sex));
+            }
             else if (e.PropertyName == nameof(Character.Metatype) || e.PropertyName == nameof(Character.Metavariant))
+            {
                 OnPropertyChanged(nameof(Metatype));
+            }
             else if (e.PropertyName == nameof(Character.Mugshots))
+            {
                 OnPropertyChanged(nameof(Mugshots));
+            }
             else if (e.PropertyName == nameof(Character.MainMugshot))
+            {
                 OnPropertyChanged(nameof(MainMugshot));
+            }
             else if (e.PropertyName == nameof(Character.MainMugshotIndex))
+            {
                 OnPropertyChanged(nameof(MainMugshotIndex));
+            }
         }
         #endregion
 
@@ -1062,7 +1162,9 @@ namespace Chummer
             get
             {
                 if (LinkedCharacter != null)
+                {
                     return LinkedCharacter.Mugshots;
+                }
 
                 return _lstMugshots;
             }
@@ -1076,15 +1178,23 @@ namespace Chummer
             get
             {
                 if (LinkedCharacter != null)
+                {
                     return LinkedCharacter.MainMugshot;
+                }
+
                 if (MainMugshotIndex >= Mugshots.Count || MainMugshotIndex < 0)
+                {
                     return null;
+                }
+
                 return Mugshots[MainMugshotIndex];
             }
             set
             {
                 if (LinkedCharacter != null)
+                {
                     LinkedCharacter.MainMugshot = value;
+                }
                 else
                 {
                     if (value == null)
@@ -1114,18 +1224,25 @@ namespace Chummer
             get
             {
                 if (LinkedCharacter != null)
+                {
                     return LinkedCharacter.MainMugshotIndex;
+                }
 
                 return _intMainMugshotIndex;
             }
             set
             {
                 if (LinkedCharacter != null)
+                {
                     LinkedCharacter.MainMugshotIndex = value;
+                }
                 else
                 {
                     if (value >= _lstMugshots.Count || value < -1)
+                    {
                         value = -1;
+                    }
+
                     if (_intMainMugshotIndex != value)
                     {
                         _intMainMugshotIndex = value;
@@ -1179,7 +1296,9 @@ namespace Chummer
         public void PrintMugshots(XmlTextWriter objWriter)
         {
             if (LinkedCharacter != null)
+            {
                 LinkedCharacter.PrintMugshots(objWriter);
+            }
             else if (Mugshots.Count > 0)
             {
                 // Since IE is retarded and can't handle base64 images before IE9, we need to dump the image to a temporary directory and re-write the information.
@@ -1214,7 +1333,10 @@ namespace Chummer
                 for (int i = 0; i < Mugshots.Count; ++i)
                 {
                     if (i == MainMugshotIndex)
+                    {
                         continue;
+                    }
+
                     Image imgMugshot = Mugshots[i];
                     objWriter.WriteStartElement("mugshot");
 

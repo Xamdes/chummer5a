@@ -105,19 +105,13 @@ namespace Chummer
         /// Convert a string to a KarmaExpenseType.
         /// </summary>
         /// <param name="strValue">String value to convert.</param>
-        public static KarmaExpenseType ConvertToKarmaExpenseType(string strValue)
-        {
-            return Enum.TryParse(strValue, out KarmaExpenseType result) ? result : KarmaExpenseType.ManualAdd;
-        }
+        public static KarmaExpenseType ConvertToKarmaExpenseType(string strValue) => Enum.TryParse(strValue, out KarmaExpenseType result) ? result : KarmaExpenseType.ManualAdd;
 
         /// <summary>
         /// Convert a string to a NuyenExpenseType.
         /// </summary>
         /// <param name="strValue">String value to convert.</param>
-        public static NuyenExpenseType ConvertToNuyenExpenseType(string strValue)
-        {
-            return Enum.TryParse(strValue, out NuyenExpenseType result) ? result : NuyenExpenseType.ManualAdd;
-        }
+        public static NuyenExpenseType ConvertToNuyenExpenseType(string strValue) => Enum.TryParse(strValue, out NuyenExpenseType result) ? result : NuyenExpenseType.ManualAdd;
         #endregion
 
         #region Constructor, Create, Save, and Load Methods
@@ -171,11 +165,20 @@ namespace Chummer
         public void Load(XmlNode objNode)
         {
             if (objNode == null)
+            {
                 return;
+            }
+
             if (objNode["karmatype"] != null)
+            {
                 KarmaType = ConvertToKarmaExpenseType(objNode["karmatype"].InnerText);
+            }
+
             if (objNode["nuyentype"] != null)
+            {
                 NuyenType = ConvertToNuyenExpenseType(objNode["nuyentype"].InnerText);
+            }
+
             objNode.TryGetStringFieldQuickly("objectid", ref _strObjectId);
             objNode.TryGetDecFieldQuickly("qty", ref _decQty);
             objNode.TryGetStringFieldQuickly("extra", ref _strExtra);
@@ -322,9 +325,15 @@ namespace Chummer
             DateTime.TryParse(objNode["date"]?.InnerText, GlobalOptions.InvariantCultureInfo, DateTimeStyles.None, out _datDate);
             objNode.TryGetDecFieldQuickly("amount", ref _decAmount);
             if (objNode.TryGetStringFieldQuickly("reason", ref _strReason))
+            {
                 _strReason = _strReason.TrimEndOnce(" (" + LanguageManager.GetString("String_Expense_Refund", GlobalOptions.Language) + ')').Replace("🡒", "->");
+            }
+
             if (objNode["type"] != null)
+            {
                 _objExpenseType = ConvertToExpenseType(objNode["type"].InnerText);
+            }
+
             objNode.TryGetBoolFieldQuickly("refund", ref _blnRefund);
 
             if (objNode["undo"] != null)
@@ -382,7 +391,9 @@ namespace Chummer
                 {
                     _decAmount = value;
                     if (!Refund)
+                    {
                         _objCharacter?.OnPropertyChanged(Type == ExpenseType.Nuyen ? nameof(Character.CareerNuyen) : nameof(Character.CareerKarma));
+                    }
                 }
             }
         }
@@ -402,7 +413,10 @@ namespace Chummer
         public string DisplayReason(string strLanguage)
         {
             if (Refund)
+            {
                 return Reason + LanguageManager.GetString("String_Space", strLanguage) + '(' + LanguageManager.GetString("String_Expense_Refund", strLanguage) + ')';
+            }
+
             return Reason;
         }
 
@@ -418,7 +432,9 @@ namespace Chummer
                 {
                     _objExpenseType = value;
                     if (Amount > 0 && !Refund)
+                    {
                         _objCharacter?.OnMultiplePropertyChanged(nameof(Character.CareerNuyen), nameof(Character.CareerKarma));
+                    }
                 }
             }
         }
@@ -435,7 +451,9 @@ namespace Chummer
                 {
                     _blnRefund = value;
                     if (Amount > 0)
+                    {
                         _objCharacter?.OnPropertyChanged(Type == ExpenseType.Nuyen ? nameof(Character.CareerNuyen) : nameof(Character.CareerKarma));
+                    }
                 }
             }
         }

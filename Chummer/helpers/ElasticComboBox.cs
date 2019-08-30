@@ -35,7 +35,9 @@ namespace Chummer
                 {
                     _strToolTipText = value;
                     if (!string.IsNullOrEmpty(value))
+                    {
                         _tt.SetToolTip(this, value);
+                    }
                 }
             }
         }
@@ -64,10 +66,7 @@ namespace Chummer
                 _tt.Show(TooltipText, Parent);
             }
         }
-        private void Label_MouseLeave(object sender, EventArgs ea)
-        {
-            _tt.Hide(this);
-        }
+        private void Label_MouseLeave(object sender, EventArgs ea) => _tt.Hide(this);
 
         public new object DataSource
         {
@@ -113,12 +112,20 @@ namespace Chummer
             {
                 string strItemText = string.Empty;
                 if (objItem is ListItem objListItem)
+                {
                     strItemText = objListItem.Name;
+                }
+
                 if (string.IsNullOrEmpty(strItemText))
+                {
                     strItemText = GetItemText(objItem);
+                }
+
                 float fltLoopItemWidth = TextRenderer.MeasureText(strItemText, Font).Width;
                 if (fltLoopItemWidth > fltMaxItemWidth)
+                {
                     fltMaxItemWidth = fltLoopItemWidth;
+                }
             }
             DropDownWidth = Convert.ToInt32(Math.Ceiling(fltMaxItemWidth));
         }

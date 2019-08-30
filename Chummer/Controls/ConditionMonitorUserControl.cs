@@ -62,33 +62,42 @@ namespace Chummer
         }
         #endregion
 
-        public ConditionMonitorUserControl()
-        {
-            InitializeComponent();
-        }
+        public ConditionMonitorUserControl() => InitializeComponent();
 
         private void _btnPhysical_Click(object sender, EventArgs e)
         {
             int val = decimal.ToInt32(_nudPhysical.Value);
             if (val + _progressBarPhysical.Value < 0)
+            {
                 _progressBarPhysical.Value = 0;
+            }
             else if (val + _progressBarPhysical.Value > _progressBarPhysical.Maximum)
+            {
                 _progressBarPhysical.Value = _progressBarPhysical.Maximum;
+            }
             else
+            {
                 _progressBarPhysical.Value += val > _progressBarPhysical.Maximum ?
                     _progressBarPhysical.Maximum : val;
+            }
         }
 
         private void _btnApplyStun_Click(object sender, EventArgs e)
         {
             int val = decimal.ToInt32(nudStun.Value);
             if (val + _progressBarStun.Value < 0)
+            {
                 _progressBarStun.Value = 0;
+            }
             else if (val + _progressBarStun.Value > _progressBarStun.Value)
+            {
                 _progressBarStun.Value = _progressBarStun.Maximum;
+            }
             else
+            {
                 _progressBarStun.Value += val > _progressBarStun.Maximum ?
                     _progressBarStun.Maximum : val;
+            }
         }
 
     }

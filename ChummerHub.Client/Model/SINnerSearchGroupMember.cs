@@ -6,9 +6,12 @@ namespace SINners.Models
         {
             get
             {
-                string display = this.MySINner.Alias;
+                string display = MySINner.Alias;
                 if (!string.IsNullOrEmpty(Username))
-                    display += " " + this.Username;
+                {
+                    display += " " + Username;
+                }
+
                 return display;
             }
         }

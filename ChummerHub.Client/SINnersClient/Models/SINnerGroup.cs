@@ -139,23 +139,23 @@ namespace SINners.Models
         /// </summary>
         public virtual void Validate()
         {
-            if (this.Groupname != null)
+            if (Groupname != null)
             {
-                if (this.Groupname.Length > 64)
+                if (Groupname.Length > 64)
                 {
                     throw new ValidationException(ValidationRules.MaxLength, "Groupname", 64);
                 }
             }
-            if (this.Language != null)
+            if (Language != null)
             {
-                if (this.Language.Length > 6)
+                if (Language.Length > 6)
                 {
                     throw new ValidationException(ValidationRules.MaxLength, "Language", 6);
                 }
             }
-            if (this.MyGroups != null)
+            if (MyGroups != null)
             {
-                foreach (SINnerGroup element in this.MyGroups)
+                foreach (SINnerGroup element in MyGroups)
                 {
                     if (element != null)
                     {
@@ -163,9 +163,9 @@ namespace SINners.Models
                     }
                 }
             }
-            if (this.MyAdminIdentityRole != null)
+            if (MyAdminIdentityRole != null)
             {
-                if (this.MyAdminIdentityRole.Length > 64)
+                if (MyAdminIdentityRole.Length > 64)
                 {
                     throw new ValidationException(ValidationRules.MaxLength, "MyAdminIdentityRole", 64);
                 }

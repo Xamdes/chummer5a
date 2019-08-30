@@ -29,10 +29,7 @@ namespace Chummer.Backend.Skills
         {
         }
 
-        public void Load(XmlNode node)
-        {
-            node.TryGetStringFieldQuickly("specific", ref _strSpecific);
-        }
+        public void Load(XmlNode node) => node.TryGetStringFieldQuickly("specific", ref _strSpecific);
 
         public override bool AllowDelete => !CharacterObject.Created;
 
@@ -89,14 +86,13 @@ namespace Chummer.Backend.Skills
         public string DisplaySpecific(string strLanguage)
         {
             if (strLanguage == GlobalOptions.DefaultLanguage)
+            {
                 return Specific;
+            }
 
             return LanguageManager.TranslateExtra(Specific, strLanguage);
         }
 
-        public override string DisplaySpecializationMethod(string strLanguage)
-        {
-            return DisplaySpecific(strLanguage);
-        }
+        public override string DisplaySpecializationMethod(string strLanguage) => DisplaySpecific(strLanguage);
     }
 }

@@ -47,9 +47,14 @@ namespace Chummer
             cboLimit.DisplayMember = "Name";
             cboLimit.DataSource = lstLimitItems;
             if (lstLimitItems.Count >= 1)
+            {
                 cboLimit.SelectedIndex = 0;
+            }
             else
+            {
                 cmdOK.Enabled = false;
+            }
+
             cboLimit.EndUpdate();
 
             if (objLimitModifier != null)
@@ -77,10 +82,7 @@ namespace Chummer
             }
         }
 
-        private void cmdCancel_Click(object sender, EventArgs e)
-        {
-            DialogResult = DialogResult.Cancel;
-        }
+        private void cmdCancel_Click(object sender, EventArgs e) => DialogResult = DialogResult.Cancel;
         #endregion
 
         #region Properties
@@ -105,9 +107,6 @@ namespace Chummer
         public string SelectedLimitType => _strLimitType;
         #endregion
 
-        private void ToggleOKEnabled(object sender, EventArgs e)
-        {
-            cmdOK.Enabled = cboLimit.Items.Count > 0 && txtName.TextLength > 0 && !string.IsNullOrEmpty(cboLimit.SelectedValue?.ToString());
-        }
+        private void ToggleOKEnabled(object sender, EventArgs e) => cmdOK.Enabled = cboLimit.Items.Count > 0 && txtName.TextLength > 0 && !string.IsNullOrEmpty(cboLimit.SelectedValue?.ToString());
     }
 }

@@ -58,7 +58,9 @@ namespace Chummer
                 }
             }
             else
+            {
                 objReturn.Add(objKey);
+            }
 
             return objReturn;
         }
@@ -131,12 +133,17 @@ namespace Chummer
                 {
                     bool blnTempLoopValueInitializing = objLoopValue?.Initializing == false;
                     if (blnTempLoopValueInitializing)
+                    {
                         objLoopValue.Initializing = true;
+                    }
+
                     DependancyGraphNode<T> objDownStreamNodeCopy = TryAddCopyToDictionary(objDownStreamNode.Node);
                     objExistingValue.DownStreamNodes.Add(new DependancyGraphNodeWithCondition<T>(objDownStreamNodeCopy, objDownStreamNode.DependancyCondition));
                     objDownStreamNodeCopy.UpStreamNodes.Add(new DependancyGraphNodeWithCondition<T>(objExistingValue, objDownStreamNode.DependancyCondition));
                     if (blnTempLoopValueInitializing)
+                    {
                         objLoopValue.Initializing = false;
+                    }
                 }
             }
 
@@ -147,12 +154,17 @@ namespace Chummer
                 {
                     bool blnTempLoopValueInitializing = objLoopValue?.Initializing == false;
                     if (blnTempLoopValueInitializing)
+                    {
                         objLoopValue.Initializing = true;
+                    }
+
                     DependancyGraphNode<T> objUpStreamNodeCopy = TryAddCopyToDictionary(objUpStreamNode.Node);
                     objExistingValue.UpStreamNodes.Add(new DependancyGraphNodeWithCondition<T>(objUpStreamNodeCopy, objUpStreamNode.DependancyCondition));
                     objUpStreamNodeCopy.DownStreamNodes.Add(new DependancyGraphNodeWithCondition<T>(objExistingValue, objUpStreamNode.DependancyCondition));
                     if (blnTempLoopValueInitializing)
+                    {
                         objLoopValue.Initializing = false;
+                    }
                 }
             }
 

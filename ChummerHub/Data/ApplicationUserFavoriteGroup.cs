@@ -25,10 +25,6 @@ namespace ChummerHub.Data
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'ApplicationUserFavoriteGroup.FavoriteGuid'
 
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'ApplicationUserFavoriteGroup.ApplicationUserFavoriteGroup()'
-        public ApplicationUserFavoriteGroup()
-#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'ApplicationUserFavoriteGroup.ApplicationUserFavoriteGroup()'
-        {
-            FavoriteGuid = Guid.Empty;
-        }
+        public ApplicationUserFavoriteGroup() => FavoriteGuid = Guid.Empty;
     }
 }

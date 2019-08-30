@@ -74,7 +74,7 @@ namespace ChummerHub.Models.V1
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'SINnerSearchGroup.SINnerSearchGroup()'
         {
             MyMembers = new List<SINnerSearchGroupMember>();
-            this.MyGroups = new List<SINnerGroup>();
+            MyGroups = new List<SINnerGroup>();
             MySINSearchGroups = new List<SINnerSearchGroup>();
         }
 
@@ -82,18 +82,21 @@ namespace ChummerHub.Models.V1
         public SINnerSearchGroup(SINnerGroup groupbyname)
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'SINnerSearchGroup.SINnerSearchGroup(SINnerGroup)'
         {
-            this.MyParentGroupId = groupbyname?.MyParentGroupId;
-            this.Id = groupbyname?.Id;
+            MyParentGroupId = groupbyname?.MyParentGroupId;
+            Id = groupbyname?.Id;
             if (groupbyname != null)
-                this.IsPublic = groupbyname.IsPublic;
-            this.Groupname = groupbyname?.Groupname;
+            {
+                IsPublic = groupbyname.IsPublic;
+            }
+
+            Groupname = groupbyname?.Groupname;
             MyMembers = new List<SINnerSearchGroupMember>();
-            this.MyGroups = new List<SINnerGroup>();
+            MyGroups = new List<SINnerGroup>();
             MySINSearchGroups = new List<SINnerSearchGroup>();
-            this.MyAdminIdentityRole = groupbyname?.MyAdminIdentityRole;
-            this.Language = groupbyname?.Language;
-            this.PasswordHash = groupbyname?.PasswordHash;
-            this.MySettings = groupbyname?.MySettings;
+            MyAdminIdentityRole = groupbyname?.MyAdminIdentityRole;
+            Language = groupbyname?.Language;
+            PasswordHash = groupbyname?.PasswordHash;
+            MySettings = groupbyname?.MySettings;
         }
 
     }
@@ -117,11 +120,7 @@ namespace ChummerHub.Models.V1
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'SINnerSearchGroupMember.Username'
 
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'SINnerSearchGroupMember.SINnerSearchGroupMember()'
-        public SINnerSearchGroupMember()
-#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'SINnerSearchGroupMember.SINnerSearchGroupMember()'
-        {
-            MySINner = new SINner();
-        }
+        public SINnerSearchGroupMember() => MySINner = new SINner();
 
     }
 

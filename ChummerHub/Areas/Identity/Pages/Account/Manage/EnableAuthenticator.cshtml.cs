@@ -181,13 +181,10 @@ namespace ChummerHub.Areas.Identity.Pages.Account.Manage
             return result.ToString().ToLowerInvariant();
         }
 
-        private string GenerateQrCodeUri(string email, string unformattedKey)
-        {
-            return string.Format(
+        private string GenerateQrCodeUri(string email, string unformattedKey) => string.Format(
                 AuthenticatorUriFormat,
                 _urlEncoder.Encode("ChummerHub"),
                 _urlEncoder.Encode(email),
                 unformattedKey);
-        }
     }
 }

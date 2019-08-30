@@ -53,7 +53,9 @@ namespace Chummer
                 {
                     XPathNavigator xmlMetavariantNode = _xmlMetatypeDataNode.SelectSingleNode("/metavariants/metavariant[name = \"" + _objCharacter.Metavariant + "\"]");
                     if (xmlMetavariantNode != null)
+                    {
                         _xmlMetatypeDataNode = xmlMetavariantNode;
+                    }
                 }
             }
             if (_xmlMetatypeDataNode == null)
@@ -63,7 +65,9 @@ namespace Chummer
                 {
                     XPathNavigator xmlMetavariantNode = _xmlMetatypeDataNode.SelectSingleNode("/metavariants/metavariant[name = \"" + _objCharacter.Metavariant + "\"]");
                     if (xmlMetavariantNode != null)
+                    {
                         _xmlMetatypeDataNode = xmlMetavariantNode;
+                    }
                 }
             }
         }
@@ -164,7 +168,10 @@ namespace Chummer
                 foreach (ListItem objItem in _lstCategory)
                 {
                     if (objItem.Value.ToString() == "Drake")
+                    {
                         continue;
+                    }
+
                     _lstCategory.Remove(objItem);
                     break;
                 }
@@ -185,14 +192,18 @@ namespace Chummer
 
             // Select the first Category in the list.
             if (string.IsNullOrEmpty(s_StrSelectCategory))
+            {
                 cboCategory.SelectedIndex = 0;
+            }
             else if (cboCategory.Items.Contains(s_StrSelectCategory))
             {
                 cboCategory.SelectedValue = s_StrSelectCategory;
             }
 
             if (cboCategory.SelectedIndex == -1)
+            {
                 cboCategory.SelectedIndex = 0;
+            }
         }
 
         private void cmdOK_Click(object sender, EventArgs e)
@@ -201,10 +212,7 @@ namespace Chummer
             AcceptForm();
         }
 
-        private void cmdCancel_Click(object sender, EventArgs e)
-        {
-            DialogResult = DialogResult.Cancel;
-        }
+        private void cmdCancel_Click(object sender, EventArgs e) => DialogResult = DialogResult.Cancel;
 
         private void trePowers_AfterSelect(object sender, TreeViewEventArgs e)
         {
@@ -331,7 +339,9 @@ namespace Chummer
             if (xmlOptionalPowers != null)
             {
                 foreach (XPathNavigator xmlNode in xmlOptionalPowers.Select("power"))
+                {
                     lstPowerWhitelist.Add(xmlNode.Value);
+                }
 
                 // Determine if the Critter has a physical presence Power (Materialization, Possession, or Inhabitation).
                 bool blnPhysicalPresence = _objCharacter.CritterPowers.Any(x => x.Name == "Materialization" || x.Name == "Possession" || x.Name == "Inhabitation");
@@ -369,11 +379,18 @@ namespace Chummer
                                 foreach (string strCheckPower in lstPowerWhitelist)
                                 {
                                     if (strCheckPower == "Possession")
+                                    {
                                         blnFoundPossession = true;
+                                    }
                                     else if (strCheckPower == "Inhabitation")
+                                    {
                                         blnFoundInhabitation = true;
+                                    }
+
                                     if (blnFoundInhabitation && blnFoundPossession)
+                                    {
                                         break;
+                                    }
                                 }
                                 if (!blnFoundPossession)
                                 {
@@ -393,9 +410,13 @@ namespace Chummer
             if (!string.IsNullOrEmpty(strCategory) && strCategory != "Show All")
             {
                 if (strCategory == "Toxic Critter Powers")
+                {
                     strFilter += " and (category = \"" + strCategory + "\" or toxic = \"True\")";
+                }
                 else
+                {
                     strFilter += " and category = \"" + strCategory + '\"';
+                }
             }
             else
             {
@@ -418,7 +439,9 @@ namespace Chummer
                     strFilter += " and (" + objCategoryFilter.ToString().TrimEndOnce(" or ") + ')';
                 }
                 if (!blnHasToxic)
+                {
                     strFilter += " and (not(toxic) or toxic != \"True\")";
+                }
             }
 
             strFilter += CommonFunctions.GenerateSearchXPath(txtSearch.Text);
@@ -426,9 +449,15 @@ namespace Chummer
             {
                 string strPowerName = objXmlPower.SelectSingleNode("name")?.Value ?? LanguageManager.GetString("String_Unknown", GlobalOptions.Language);
                 if (!lstPowerWhitelist.Contains(strPowerName) && lstPowerWhitelist.Count != 0)
+                {
                     continue;
+                }
+
                 if (!objXmlPower.RequirementsMet(_objCharacter, string.Empty, string.Empty))
+                {
                     continue;
+                }
+
                 TreeNode objNode = new TreeNode
                 {
                     Tag = objXmlPower.SelectSingleNode("id")?.Value ?? string.Empty,
@@ -451,10 +480,7 @@ namespace Chummer
             AcceptForm();
         }
 
-        private void txtSearch_TextChanged(object sender, EventArgs e)
-        {
-            cboCategory_SelectedIndexChanged(sender, e);
-        }
+        private void txtSearch_TextChanged(object sender, EventArgs e) => cboCategory_SelectedIndexChanged(sender, e);
         #endregion
 
         #region Methods
@@ -465,14 +491,20 @@ namespace Chummer
         {
             string strSelectedPower = trePowers.SelectedNode?.Tag.ToString();
             if (string.IsNullOrEmpty(strSelectedPower))
+            {
                 return;
+            }
 
             XPathNavigator objXmlPower = _xmlBaseCritterPowerDataNode.SelectSingleNode("powers/power[id = \"" + strSelectedPower + "\"]");
             if (objXmlPower == null)
+            {
                 return;
+            }
 
             if (nudCritterPowerRating.Visible)
+            {
                 _intSelectedRating = decimal.ToInt32(nudCritterPowerRating.Value);
+            }
 
             s_StrSelectCategory = cboCategory.SelectedValue?.ToString() ?? string.Empty;
             _strSelectedPower = strSelectedPower;
@@ -482,16 +514,15 @@ namespace Chummer
             {
                 XPathNavigator objXmlOptionalPowerCost = _xmlMetatypeDataNode.SelectSingleNode("optionalpowers/power[. = \"" + objXmlPower.SelectSingleNode("name")?.Value + "\"]/@cost");
                 if (objXmlOptionalPowerCost != null)
+                {
                     _decPowerPoints = Convert.ToDecimal(objXmlOptionalPowerCost.Value, GlobalOptions.InvariantCultureInfo);
+                }
             }
 
             DialogResult = DialogResult.OK;
         }
 
-        private void OpenSourceFromLabel(object sender, EventArgs e)
-        {
-            CommonFunctions.OpenPDFFromControl(sender, e);
-        }
+        private void OpenSourceFromLabel(object sender, EventArgs e) => CommonFunctions.OpenPDFFromControl(sender, e);
         #endregion
 
         #region Properties

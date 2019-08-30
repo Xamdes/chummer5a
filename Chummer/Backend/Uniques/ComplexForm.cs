@@ -36,7 +36,7 @@ namespace Chummer
     [DebuggerDisplay("{DisplayNameShort(GlobalOptions.DefaultLanguage)}")]
     public class ComplexForm : IHasInternalId, IHasName, IHasXmlNode, IHasNotes, ICanRemove, IHasSource
     {
-        private static Logger Log = NLog.LogManager.GetCurrentClassLogger();
+        private static readonly Logger Log = NLog.LogManager.GetCurrentClassLogger();
         private Guid _guiID;
         private Guid _guiSourceID = Guid.Empty;
         private string _strName = string.Empty;
@@ -77,7 +77,10 @@ namespace Chummer
             objXmlComplexFormNode.TryGetStringFieldQuickly("duration", ref _strDuration);
             objXmlComplexFormNode.TryGetStringFieldQuickly("fv", ref _strFV);
             if (!objXmlComplexFormNode.TryGetStringFieldQuickly("altnotes", ref _strNotes))
+            {
                 objXmlComplexFormNode.TryGetStringFieldQuickly("notes", ref _strNotes);
+            }
+
             _strExtra = strExtra;
 
             /*
@@ -113,7 +116,9 @@ namespace Chummer
             objWriter.WriteEndElement();
 
             if (Grade >= 0)
+            {
                 _objCharacter.SourceProcess(_strSource);
+            }
         }
 
         /// <summary>
@@ -160,7 +165,10 @@ namespace Chummer
             objWriter.WriteElementString("source", CommonFunctions.LanguageBookShort(Source, strLanguageToPrint));
             objWriter.WriteElementString("page", Page(strLanguageToPrint));
             if (_objCharacter.Options.PrintNotes)
+            {
                 objWriter.WriteElementString("notes", Notes);
+            }
+
             objWriter.WriteEndElement();
         }
         #endregion
@@ -175,7 +183,10 @@ namespace Chummer
             set
             {
                 if (_guiSourceID == value)
+                {
                     return;
+                }
+
                 _guiSourceID = value;
                 _objCachedMyXmlNode = null;
             }
@@ -200,7 +211,10 @@ namespace Chummer
             set
             {
                 if (_strName != value)
+                {
                     _objCachedMyXmlNode = null;
+                }
+
                 _strName = value;
             }
         }
@@ -233,13 +247,18 @@ namespace Chummer
             string strReturn = _strName;
             // Get the translated name if applicable.
             if (strLanguage != GlobalOptions.DefaultLanguage)
+            {
                 strReturn = GetNode(strLanguage)?["translate"]?.InnerText ?? _strName;
+            }
 
             if (!string.IsNullOrEmpty(Extra))
             {
                 string strExtra = Extra;
                 if (strLanguage != GlobalOptions.DefaultLanguage)
+                {
                     strExtra = LanguageManager.TranslateExtra(Extra, strLanguage);
+                }
+
                 strReturn += LanguageManager.GetString("String_Space", strLanguage) + '(' + strExtra + ')';
             }
             return strReturn;
@@ -319,7 +338,10 @@ namespace Chummer
 
                         // Fading cannot be lower than 2.
                         if (intFV < 2)
+                        {
                             intFV = 2;
+                        }
+
                         strTip.Append(Environment.NewLine + LanguageManager.GetString("String_Level", GlobalOptions.Language) + strSpaceCharacter + i.ToString(GlobalOptions.CultureInfo) +
                                       LanguageManager.GetString("String_Colon", GlobalOptions.Language) + strSpaceCharacter + intFV.ToString(GlobalOptions.CultureInfo));
                     }
@@ -451,7 +473,9 @@ namespace Chummer
         {
             // Get the translated name if applicable.
             if (strLanguage == GlobalOptions.DefaultLanguage)
+            {
                 return _strPage;
+            }
 
             return GetNode(strLanguage)?["altpage"]?.InnerText ?? _strPage;
         }
@@ -480,7 +504,9 @@ namespace Chummer
                     intReturn = Skill.PoolOtherAttribute(_objCharacter.RES.TotalValue, "RES");
                     // Add any Specialization bonus if applicable.
                     if (Skill.HasSpecialization(DisplayName))
+                    {
                         intReturn += 2;
+                    }
                 }
 
                 // Include any Improvements to Threading.
@@ -520,10 +546,7 @@ namespace Chummer
         private XmlNode _objCachedMyXmlNode;
         private string _strCachedXmlNodeLanguage = string.Empty;
 
-        public XmlNode GetNode()
-        {
-            return GetNode(GlobalOptions.Language);
-        }
+        public XmlNode GetNode() => GetNode(GlobalOptions.Language);
 
         public XmlNode GetNode(string strLanguage)
         {
@@ -544,7 +567,9 @@ namespace Chummer
         public TreeNode CreateTreeNode(ContextMenuStrip cmsComplexForm)
         {
             if (Grade != 0 && !string.IsNullOrEmpty(Source) && !_objCharacter.Options.BookEnabled(Source))
+            {
                 return null;
+            }
 
             TreeNode objNode = new TreeNode
             {
@@ -582,7 +607,9 @@ namespace Chummer
             {
                 if (!characterObject.ConfirmDelete(LanguageManager.GetString("Message_DeleteComplexForm",
                     GlobalOptions.Language)))
+                {
                     return false;
+                }
             }
 
             ImprovementManager.RemoveImprovements(characterObject, Improvement.ImprovementSource.ComplexForm, InternalId);
@@ -593,7 +620,10 @@ namespace Chummer
         public void SetSourceDetail(Control sourceControl)
         {
             if (_objCachedSourceDetail?.Language != GlobalOptions.Language)
+            {
                 _objCachedSourceDetail = null;
+            }
+
             SourceDetail.SetControl(sourceControl);
         }
     }

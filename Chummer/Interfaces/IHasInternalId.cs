@@ -37,11 +37,15 @@ namespace Chummer
         public static void RefreshChildrenGears(this IHasInternalId objParent, TreeView treGear, ContextMenuStrip cmsGear, Func<int> funcOffset, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
         {
             if (notifyCollectionChangedEventArgs == null)
+            {
                 return;
+            }
 
             TreeNode nodParent = treGear.FindNodeByTag(objParent);
             if (nodParent == null)
+            {
                 return;
+            }
 
             switch (notifyCollectionChangedEventArgs.Action)
             {
@@ -49,7 +53,10 @@ namespace Chummer
                     {
                         int intNewIndex = notifyCollectionChangedEventArgs.NewStartingIndex;
                         if (funcOffset != null)
+                        {
                             intNewIndex += funcOffset.Invoke();
+                        }
+
                         foreach (Gear objGear in notifyCollectionChangedEventArgs.NewItems)
                         {
                             AddToTree(objGear, intNewIndex);
@@ -77,7 +84,10 @@ namespace Chummer
                         }
                         int intNewIndex = notifyCollectionChangedEventArgs.NewStartingIndex;
                         if (funcOffset != null)
+                        {
                             intNewIndex += funcOffset.Invoke();
+                        }
+
                         foreach (Gear objGear in notifyCollectionChangedEventArgs.NewItems)
                         {
                             AddToTree(objGear, intNewIndex);
@@ -96,7 +106,10 @@ namespace Chummer
                         }
                         int intNewIndex = notifyCollectionChangedEventArgs.NewStartingIndex;
                         if (funcOffset != null)
+                        {
                             intNewIndex += funcOffset.Invoke();
+                        }
+
                         foreach (Gear objGear in notifyCollectionChangedEventArgs.NewItems)
                         {
                             AddToTree(objGear, intNewIndex);
@@ -116,13 +129,21 @@ namespace Chummer
             {
                 TreeNode objNode = objGear.CreateTreeNode(cmsGear);
                 if (objNode == null)
+                {
                     return;
+                }
+
                 if (objGear.Location == null)
                 {
                     if (intIndex >= 0)
+                    {
                         nodParent.Nodes.Insert(intIndex, objNode);
+                    }
                     else
+                    {
                         nodParent.Nodes.Add(objNode);
+                    }
+
                     nodParent.Expand();
                 }
                 else
@@ -131,34 +152,50 @@ namespace Chummer
                     if (nodLocation != null)
                     {
                         if (intIndex >= 0)
+                        {
                             nodLocation.Nodes.Insert(intIndex, objNode);
+                        }
                         else
+                        {
                             nodLocation.Nodes.Add(objNode);
+                        }
+
                         nodLocation.Expand();
                     }
                     // Location Updating should be part of a separate method, so just add to parent instead
                     else
                     {
                         if (intIndex >= 0)
+                        {
                             nodParent.Nodes.Insert(intIndex, objNode);
+                        }
                         else
+                        {
                             nodParent.Nodes.Add(objNode);
+                        }
+
                         nodParent.Expand();
                     }
                 }
                 if (blnSingleAdd)
+                {
                     treGear.SelectedNode = objNode;
+                }
             }
         }
 
         public static void RefreshChildrenCyberware(this IHasInternalId objParent, TreeView treCyberware, ContextMenuStrip cmsCyberware, ContextMenuStrip cmsCyberwareGear, Func<int> funcOffset, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
         {
             if (notifyCollectionChangedEventArgs == null)
+            {
                 return;
+            }
 
             TreeNode nodParent = treCyberware.FindNodeByTag(objParent);
             if (nodParent == null)
+            {
                 return;
+            }
 
             switch (notifyCollectionChangedEventArgs.Action)
             {
@@ -166,7 +203,10 @@ namespace Chummer
                     {
                         int intNewIndex = notifyCollectionChangedEventArgs.NewStartingIndex;
                         if (funcOffset != null)
+                        {
                             intNewIndex += funcOffset.Invoke();
+                        }
+
                         foreach (Cyberware objCyberware in notifyCollectionChangedEventArgs.NewItems)
                         {
                             AddToTree(objCyberware, intNewIndex);
@@ -194,7 +234,10 @@ namespace Chummer
                         }
                         int intNewIndex = notifyCollectionChangedEventArgs.NewStartingIndex;
                         if (funcOffset != null)
+                        {
                             intNewIndex += funcOffset.Invoke();
+                        }
+
                         foreach (Cyberware objCyberware in notifyCollectionChangedEventArgs.NewItems)
                         {
                             AddToTree(objCyberware, intNewIndex);
@@ -213,7 +256,10 @@ namespace Chummer
                         }
                         int intNewIndex = notifyCollectionChangedEventArgs.NewStartingIndex;
                         if (funcOffset != null)
+                        {
                             intNewIndex += funcOffset.Invoke();
+                        }
+
                         foreach (Cyberware objCyberware in notifyCollectionChangedEventArgs.NewItems)
                         {
                             AddToTree(objCyberware, intNewIndex);
@@ -233,26 +279,39 @@ namespace Chummer
             {
                 TreeNode objNode = objCyberware.CreateTreeNode(cmsCyberware, cmsCyberwareGear);
                 if (objNode == null)
+                {
                     return;
+                }
 
                 if (intIndex >= 0)
+                {
                     nodParent.Nodes.Insert(intIndex, objNode);
+                }
                 else
+                {
                     nodParent.Nodes.Add(objNode);
+                }
+
                 nodParent.Expand();
                 if (blnSingleAdd)
+                {
                     treCyberware.SelectedNode = objNode;
+                }
             }
         }
 
         public static void RefreshChildrenWeapons(this IHasInternalId objParent, TreeView treWeapons, ContextMenuStrip cmsWeapon, ContextMenuStrip cmsWeaponAccessory, ContextMenuStrip cmsWeaponAccessoryGear, Func<int> funcOffset, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
         {
             if (notifyCollectionChangedEventArgs == null)
+            {
                 return;
+            }
 
             TreeNode nodParent = treWeapons.FindNode(objParent.InternalId);
             if (nodParent == null)
+            {
                 return;
+            }
 
             switch (notifyCollectionChangedEventArgs.Action)
             {
@@ -260,7 +319,10 @@ namespace Chummer
                     {
                         int intNewIndex = notifyCollectionChangedEventArgs.NewStartingIndex;
                         if (funcOffset != null)
+                        {
                             intNewIndex += funcOffset.Invoke();
+                        }
+
                         foreach (Weapon objWeapon in notifyCollectionChangedEventArgs.NewItems)
                         {
                             AddToTree(objWeapon, intNewIndex);
@@ -288,7 +350,10 @@ namespace Chummer
                         }
                         int intNewIndex = notifyCollectionChangedEventArgs.NewStartingIndex;
                         if (funcOffset != null)
+                        {
                             intNewIndex += funcOffset.Invoke();
+                        }
+
                         foreach (Weapon objWeapon in notifyCollectionChangedEventArgs.NewItems)
                         {
                             AddToTree(objWeapon, intNewIndex);
@@ -325,25 +390,39 @@ namespace Chummer
             {
                 TreeNode objNode = objWeapon.CreateTreeNode(cmsWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear);
                 if (objNode == null)
+                {
                     return;
+                }
+
                 if (intIndex >= 0)
+                {
                     nodParent.Nodes.Insert(intIndex, objNode);
+                }
                 else
+                {
                     nodParent.Nodes.Add(objNode);
+                }
+
                 nodParent.Expand();
                 if (blnSingleAdd)
+                {
                     treWeapons.SelectedNode = objNode;
+                }
             }
         }
 
         public static void RefreshWeaponAccessories(this IHasInternalId objParent, TreeView treWeapons, ContextMenuStrip cmsWeaponAccessory, ContextMenuStrip cmsWeaponAccessoryGear, Func<int> funcOffset, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
         {
             if (notifyCollectionChangedEventArgs == null)
+            {
                 return;
+            }
 
             TreeNode nodParent = treWeapons.FindNode(objParent.InternalId);
             if (nodParent == null)
+            {
                 return;
+            }
 
             switch (notifyCollectionChangedEventArgs.Action)
             {
@@ -351,13 +430,19 @@ namespace Chummer
                     {
                         int intNewIndex = notifyCollectionChangedEventArgs.NewStartingIndex;
                         if (funcOffset != null)
+                        {
                             intNewIndex += funcOffset.Invoke();
+                        }
+
                         foreach (WeaponAccessory objWeaponAccessory in notifyCollectionChangedEventArgs.NewItems)
                         {
                             AddToTree(objWeaponAccessory, intNewIndex);
                             objWeaponAccessory.Gear.AddTaggedCollectionChanged(treWeapons, (x, y) => objWeaponAccessory.RefreshChildrenGears(treWeapons, cmsWeaponAccessoryGear, null, y));
                             foreach (Gear objGear in objWeaponAccessory.Gear)
+                            {
                                 objGear.SetupChildrenGearsCollectionChanged(true, treWeapons, cmsWeaponAccessoryGear);
+                            }
+
                             intNewIndex += 1;
                         }
                     }
@@ -368,7 +453,10 @@ namespace Chummer
                         {
                             objWeaponAccessory.Gear.RemoveTaggedCollectionChanged(treWeapons);
                             foreach (Gear objGear in objWeaponAccessory.Gear)
+                            {
                                 objGear.SetupChildrenGearsCollectionChanged(false, treWeapons);
+                            }
+
                             nodParent.FindNode(objWeaponAccessory.InternalId)?.Remove();
                         }
                     }
@@ -380,18 +468,27 @@ namespace Chummer
                         {
                             objWeaponAccessory.Gear.RemoveTaggedCollectionChanged(treWeapons);
                             foreach (Gear objGear in objWeaponAccessory.Gear)
+                            {
                                 objGear.SetupChildrenGearsCollectionChanged(false, treWeapons);
+                            }
+
                             nodParent.FindNode(objWeaponAccessory.InternalId)?.Remove();
                         }
                         int intNewIndex = notifyCollectionChangedEventArgs.NewStartingIndex;
                         if (funcOffset != null)
+                        {
                             intNewIndex += funcOffset.Invoke();
+                        }
+
                         foreach (WeaponAccessory objWeaponAccessory in notifyCollectionChangedEventArgs.NewItems)
                         {
                             AddToTree(objWeaponAccessory, intNewIndex);
                             objWeaponAccessory.Gear.AddTaggedCollectionChanged(treWeapons, (x, y) => objWeaponAccessory.RefreshChildrenGears(treWeapons, cmsWeaponAccessoryGear, null, y));
                             foreach (Gear objGear in objWeaponAccessory.Gear)
+                            {
                                 objGear.SetupChildrenGearsCollectionChanged(true, treWeapons, cmsWeaponAccessoryGear);
+                            }
+
                             intNewIndex += 1;
                         }
                         treWeapons.SelectedNode = treWeapons.FindNode(strSelectedId);
@@ -406,7 +503,10 @@ namespace Chummer
                         }
                         int intNewIndex = notifyCollectionChangedEventArgs.NewStartingIndex;
                         if (funcOffset != null)
+                        {
                             intNewIndex += funcOffset.Invoke();
+                        }
+
                         foreach (WeaponAccessory objWeaponAccessory in notifyCollectionChangedEventArgs.NewItems)
                         {
                             AddToTree(objWeaponAccessory, intNewIndex);
@@ -426,14 +526,24 @@ namespace Chummer
             {
                 TreeNode objNode = objWeaponAccessory.CreateTreeNode(cmsWeaponAccessory, cmsWeaponAccessoryGear);
                 if (objNode == null)
+                {
                     return;
+                }
+
                 if (intIndex >= 0)
+                {
                     nodParent.Nodes.Insert(intIndex, objNode);
+                }
                 else
+                {
                     nodParent.Nodes.Add(objNode);
+                }
+
                 nodParent.Expand();
                 if (blnSingleAdd)
+                {
                     treWeapons.SelectedNode = objNode;
+                }
             }
         }
     }
