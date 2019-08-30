@@ -3,6 +3,7 @@ using ChummerHub.Client.Backend;
 using ChummerHub.Client.Model;
 using ChummerHub.Client.UI;
 using Microsoft.ApplicationInsights.Channel;
+using Microsoft.Rest;
 using Newtonsoft.Json;
 using NLog;
 using SINners;
@@ -105,13 +106,10 @@ namespace Chummer.Plugins
             {
                 case "Load":
                     return HandleLoadCommand(argument);
-                    break;
                 default:
                     Log.Warn("Unknown command line parameter: " + parameter);
                     return true;
-                    break;
             }
-            return true;
         }
 
         void IPlugin.Dispose()

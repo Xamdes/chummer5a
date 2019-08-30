@@ -5,6 +5,7 @@
 namespace SINners
 {
     using Microsoft.Rest;
+    using Microsoft.Rest.Serialization;
     using Models;
     using Newtonsoft.Json;
     using System;

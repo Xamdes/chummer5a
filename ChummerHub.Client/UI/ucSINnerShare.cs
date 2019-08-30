@@ -2,6 +2,8 @@ using Chummer;
 using Chummer.Plugins;
 using ChummerHub.Client.Backend;
 using ChummerHub.Client.Model;
+using Microsoft.Rest;
+using NLog;
 using SINners;
 using SINners.Models;
 using System;
@@ -16,7 +18,7 @@ namespace ChummerHub.Client.UI
 {
     public partial class ucSINnerShare : UserControl
     {
-        private NLog.Logger Log = LogManager.GetCurrentClassLogger();
+        private Logger Log = LogManager.GetCurrentClassLogger();
         public frmSINnerShare MyFrmSINnerShare;
 
         public frmCharacterRoster.CharacterCache MyCharacterCache

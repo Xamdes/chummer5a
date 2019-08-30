@@ -1,3 +1,4 @@
+using Microsoft.Rest;
 using NLog;
 using System;
 using System.Diagnostics;

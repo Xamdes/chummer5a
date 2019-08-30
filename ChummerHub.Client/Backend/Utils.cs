@@ -2,6 +2,8 @@ using Chummer;
 using Chummer.Plugins;
 using ChummerHub.Client.Model;
 using ChummerHub.Client.UI;
+using Microsoft.ApplicationInsights;
+using Microsoft.ApplicationInsights.DataContracts;
 using Microsoft.Rest;
 using Newtonsoft.Json;
 using NLog;
@@ -256,7 +258,8 @@ namespace ChummerHub.Client.Backend
                 throw;
 
             }
-            return cookieData.ToString().Replace(';', ',');
+            //unreachable so commented out
+            //return cookieData.ToString().Replace(';', ',');
         }
 
 

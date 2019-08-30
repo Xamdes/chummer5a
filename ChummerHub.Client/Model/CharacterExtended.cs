@@ -2,6 +2,7 @@ using Chummer;
 using Chummer.Plugins;
 using ChummerHub.Client.Backend;
 using ChummerHub.Client.UI;
+using Microsoft.Rest;
 using Newtonsoft.Json;
 using NLog;
 using SINners.Models;
