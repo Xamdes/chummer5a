@@ -235,7 +235,6 @@ namespace ChummerHub.Client.UI
                 Log.Error(e);
                 throw;
             }
-            return null;
         }
 
 

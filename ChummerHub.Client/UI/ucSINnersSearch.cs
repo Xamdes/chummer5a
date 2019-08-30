@@ -262,7 +262,6 @@ namespace ChummerHub.Client.UI
                         });
                         return button;
                     }
-                    break;
                 default:
                     break;
             }

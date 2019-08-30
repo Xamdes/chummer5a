@@ -890,7 +890,7 @@ namespace Chummer
                     switch (t.Parent.Tag?.ToString())
                     {
                         case "Recent":
-                            GlobalOptions.MostRecentlyUsedCharacters.Remove(this.FilePath);
+                           GlobalOptions.MostRecentlyUsedCharacters.Remove(this.FilePath);
                             break;
                         case "Favourite":
                             GlobalOptions.FavoritedCharacters.Remove(this.FilePath);
