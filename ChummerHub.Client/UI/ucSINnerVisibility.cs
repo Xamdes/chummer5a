@@ -1,5 +1,6 @@
 using Chummer;
 using Chummer.Plugins;
+using NLog;
 using SINners.Models;
 using System;
 using System.Collections.Generic;

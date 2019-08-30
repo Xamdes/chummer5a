@@ -2,7 +2,9 @@ using Chummer;
 using Chummer.Plugins;
 using ChummerHub.Client.Model;
 using ChummerHub.Client.UI;
+using Microsoft.Rest;
 using Newtonsoft.Json;
+using NLog;
 using SINners;
 using SINners.Models;
 using System;
@@ -220,7 +222,7 @@ namespace ChummerHub.Client.Backend
         private const int InternetCookieHttponly = 0x2000;
 
         [DllImport("wininet.dll", CharSet = CharSet.Auto, SetLastError = true)]
-        private static bool InternetSetCookie(string lpszUrlName, string lpszCookieName, string lpszCookieData);
+        private static extern bool InternetSetCookie(string lpszUrlName, string lpszCookieName, string lpszCookieData);
 
         /// <summary>
         /// Gets the actual Cookie data

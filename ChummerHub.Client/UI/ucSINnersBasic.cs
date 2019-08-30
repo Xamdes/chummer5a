@@ -1,6 +1,7 @@
 using Chummer;
 using Chummer.Plugins;
 using ChummerHub.Client.Backend;
+using NLog;
 using SINners;
 using SINners.Models;
 using System;

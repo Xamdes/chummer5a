@@ -1,6 +1,7 @@
 using Chummer;
 using Chummer.Plugins;
 using ChummerHub.Client.Model;
+using NLog;
 using System;
 using System.Drawing;
 using System.Windows.Forms;

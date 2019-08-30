@@ -1,3 +1,5 @@
+using Microsoft.Rest;
+
 namespace ChummerHub.Client.Backend
 {
     internal class MyCredentials : ServiceClientCredentials

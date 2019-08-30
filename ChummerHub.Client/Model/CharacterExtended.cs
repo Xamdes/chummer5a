@@ -3,6 +3,7 @@ using Chummer.Plugins;
 using ChummerHub.Client.Backend;
 using ChummerHub.Client.UI;
 using Newtonsoft.Json;
+using NLog;
 using SINners.Models;
 using System;
 using System.Collections.Generic;

@@ -104,11 +104,11 @@ namespace Chummer
         //The SendMessage function sends a message to a window or windows.
 
         [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = false)]
-        private static IntPtr SendMessage(IntPtr hWnd, uint Msg, int wParam, int lParam);
+        private static extern IntPtr SendMessage(IntPtr hWnd, uint Msg, int wParam, int lParam);
 
         //ReleaseCapture releases a mouse capture
 
-        [DllImportAttribute("user32.dll", CharSet = CharSet.Auto, SetLastError = false)]
+        [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = false)]
 
         public static extern bool ReleaseCapture();
 

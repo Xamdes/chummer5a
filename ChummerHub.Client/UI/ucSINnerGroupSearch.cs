@@ -2,6 +2,7 @@ using Chummer;
 using Chummer.Plugins;
 using ChummerHub.Client.Backend;
 using ChummerHub.Client.Model;
+using NLog;
 using SINners.Models;
 using System;
 using System.Collections.Generic;
