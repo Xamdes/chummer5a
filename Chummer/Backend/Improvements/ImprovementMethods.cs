@@ -16,9 +16,9 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
-using Chummer.Classes;
 using System;
 using System.Xml;
+using Chummer.Classes;
 // ReSharper disable StringLiteralTypo
 
 namespace Chummer
@@ -34,6 +34,7 @@ namespace Chummer
         public static Action<XmlNode> GetMethod(string strMethodName, [Annotations.NotNull] AddImprovementCollection objImprovementAdder)
         {
             // Switch-cases get compiled as hashes, so this is as close as you can get to a compile-time Dictionary
+
             switch (strMethodName)
             {
                 case "QUALITYLEVEL":
