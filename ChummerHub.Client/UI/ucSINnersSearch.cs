@@ -124,7 +124,6 @@ namespace ChummerHub.Client.UI
                             UpdateDialog();
                         };
                         return rdb;
-                        break;
                     }
                 case "System.String":
                     {
@@ -140,7 +139,6 @@ namespace ChummerHub.Client.UI
                         };
                         flp.Controls.Add(b);
                         return flp;
-                        break;
                     }
                 case "System.Int32":
                     {
@@ -157,7 +155,6 @@ namespace ChummerHub.Client.UI
                         };
                         flp.Controls.Add(b);
                         return flp;
-                        break;
                     }
                 case "Chummer.Backend.Uniques.Tradition":
                     {
@@ -181,7 +178,6 @@ namespace ChummerHub.Client.UI
                         };
                         flp.Controls.Add(cb);
                         return flp;
-                        break;
                     }
                 default:
                     break;
@@ -235,7 +231,6 @@ namespace ChummerHub.Client.UI
                             UpdateDialog();
                         });
                         return button;
-                        break;
                     }
                 case "Quality":
                     {
@@ -266,7 +261,6 @@ namespace ChummerHub.Client.UI
                             UpdateDialog();
                         });
                         return button;
-                        break;
                     }
                     break;
                 default:
