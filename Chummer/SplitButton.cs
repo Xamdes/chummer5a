@@ -28,23 +28,17 @@ using System.Windows.Forms.VisualStyles;
 
 public class SplitButton : Button
 {
-    PushButtonState _state;
-
-
-    const int SplitSectionWidth = 18;
+    private PushButtonState _state;
+    private const int SplitSectionWidth = 18;
 
     private static readonly int BorderSize = SystemInformation.Border3DSize.Width * 2;
-    bool _skipNextOpen;
-    Rectangle _dropDownRectangle;
-    bool _showSplit;
-
-    bool _isSplitMenuVisible;
-
-
-    ContextMenuStrip m_SplitMenuStrip;
-    ContextMenu m_SplitMenu;
-
-    TextFormatFlags _textFormatFlags = TextFormatFlags.Default;
+    private bool _skipNextOpen;
+    private Rectangle _dropDownRectangle;
+    private bool _showSplit;
+    private bool _isSplitMenuVisible;
+    private ContextMenuStrip m_SplitMenuStrip;
+    private ContextMenu m_SplitMenu;
+    private TextFormatFlags _textFormatFlags = TextFormatFlags.Default;
 
     /*
     public sealed override bool AutoSize
@@ -227,7 +221,7 @@ public class SplitButton : Button
         }
     }
 
-    bool isMouseEntered;
+    private bool isMouseEntered;
 
     protected override void OnMouseEnter(EventArgs e)
     {
@@ -771,12 +765,12 @@ public class SplitButton : Button
         }
     }
 
-    void SplitMenuStrip_Opening(object sender, CancelEventArgs e)
+    private void SplitMenuStrip_Opening(object sender, CancelEventArgs e)
     {
         _isSplitMenuVisible = true;
     }
 
-    void SplitMenuStrip_Closing(object sender, ToolStripDropDownClosingEventArgs e)
+    private void SplitMenuStrip_Closing(object sender, ToolStripDropDownClosingEventArgs e)
     {
         _isSplitMenuVisible = false;
 
@@ -788,8 +782,7 @@ public class SplitButton : Button
         }
     }
 
-
-    void SplitMenu_Popup(object sender, EventArgs e)
+    private void SplitMenu_Popup(object sender, EventArgs e)
     {
         _isSplitMenuVisible = true;
     }

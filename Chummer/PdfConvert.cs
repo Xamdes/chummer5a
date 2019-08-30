@@ -17,14 +17,13 @@
  *  https://github.com/chummer5a/chummer5a
  */
 using System;
-using System.Diagnostics;
-using System.Text;
-using System.IO;
-using System.Web;
-using System.Threading;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Diagnostics;
+using System.IO;
 using System.Runtime.Serialization;
+using System.Text;
+using System.Threading;
 
 namespace Codaxy.WkHtmlToPdf
 {
@@ -48,43 +47,109 @@ namespace Codaxy.WkHtmlToPdf
 
     public class PdfOutput
     {
-        public string OutputFilePath { get; set; }
-        public Stream OutputStream { get; set; }
-        public Action<PdfDocument, byte[]> OutputCallback { get; set; }
+        public string OutputFilePath
+        {
+            get; set;
+        }
+        public Stream OutputStream
+        {
+            get; set;
+        }
+        public Action<PdfDocument, byte[]> OutputCallback
+        {
+            get; set;
+        }
     }
 
     public class PdfDocument
     {
-        public string Url { get; set; }
-        public string Html { get; set; }
-        public string HeaderUrl { get; set; }
-        public string FooterUrl { get; set; }
-        public string HeaderLeft { get; set; }
-        public string HeaderCenter { get; set; }
-        public string HeaderRight { get; set; }
-        public string FooterLeft { get; set; }
-        public string FooterCenter { get; set; }
-        public string FooterRight { get; set; }
-        public object State { get; set; }
+        public string Url
+        {
+            get; set;
+        }
+        public string Html
+        {
+            get; set;
+        }
+        public string HeaderUrl
+        {
+            get; set;
+        }
+        public string FooterUrl
+        {
+            get; set;
+        }
+        public string HeaderLeft
+        {
+            get; set;
+        }
+        public string HeaderCenter
+        {
+            get; set;
+        }
+        public string HeaderRight
+        {
+            get; set;
+        }
+        public string FooterLeft
+        {
+            get; set;
+        }
+        public string FooterCenter
+        {
+            get; set;
+        }
+        public string FooterRight
+        {
+            get; set;
+        }
+        public object State
+        {
+            get; set;
+        }
         public IDictionary<string, string> Cookies { get; } = new Dictionary<string, string>();
         public IDictionary<string, string> ExtraParams { get; } = new Dictionary<string, string>();
-        public string HeaderFontSize { get; set; }
-        public string FooterFontSize { get; set; }
-        public string HeaderFontName { get; set; }
-        public string FooterFontName { get; set; }
+        public string HeaderFontSize
+        {
+            get; set;
+        }
+        public string FooterFontSize
+        {
+            get; set;
+        }
+        public string HeaderFontName
+        {
+            get; set;
+        }
+        public string FooterFontName
+        {
+            get; set;
+        }
     }
 
     public class PdfConvertEnvironment
     {
-        public string TempFolderPath { get; set; }
-        public string WkHtmlToPdfPath { get; set; }
-        public int Timeout { get; set; }
-        public bool Debug { get; set; }
+        public string TempFolderPath
+        {
+            get; set;
+        }
+        public string WkHtmlToPdfPath
+        {
+            get; set;
+        }
+        public int Timeout
+        {
+            get; set;
+        }
+        public bool Debug
+        {
+            get; set;
+        }
     }
 
     public static class PdfConvert
     {
-        static PdfConvertEnvironment s_E;
+        private static PdfConvertEnvironment s_E;
 
         public static PdfConvertEnvironment Environment => s_E ?? (s_E = new PdfConvertEnvironment
         {
@@ -198,10 +263,10 @@ namespace Codaxy.WkHtmlToPdf
                 strbldParamsBuilder.AppendFormat("--footer-font-name \"{0}\" ", document.FooterFontName);
 
 
-            foreach (var extraParam in document.ExtraParams)
+            foreach (KeyValuePair<string, string> extraParam in document.ExtraParams)
                 strbldParamsBuilder.AppendFormat("--{0} {1} ", extraParam.Key, extraParam.Value);
 
-            foreach (var cookie in document.Cookies)
+            foreach (KeyValuePair<string, string> cookie in document.Cookies)
                 strbldParamsBuilder.AppendFormat("--cookie {0} {1} ", cookie.Key, cookie.Value);
 
             strbldParamsBuilder.AppendFormat("\"{0}\" \"{1}\"", document.Url, strOutputPdfFilePath);

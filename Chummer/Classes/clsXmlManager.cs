@@ -22,7 +22,6 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Xml;
-using System.Windows.Forms;
 using System.Xml.XPath;
 
 namespace Chummer
@@ -38,7 +37,10 @@ namespace Chummer
             /// <summary>
             /// Date/Time stamp on the XML file.
             /// </summary>
-            public DateTime FileDate { get; set; }
+            public DateTime FileDate
+            {
+                get; set;
+            }
 
             /// <summary>
             /// Name of the XML file.
@@ -53,7 +55,10 @@ namespace Chummer
             /// <summary>
             /// Whether or not the XML file has been successfully checked for duplicate guids.
             /// </summary>
-            public bool DuplicatesChecked { get; set; }
+            public bool DuplicatesChecked
+            {
+                get; set;
+            }
 
             /// <summary>
             /// XmlDocument that is created by merging the base data file and data translation file. Does not include custom content since this must be loaded each time.
@@ -316,7 +321,7 @@ namespace Chummer
                                 lstNamesList.Add(strItemName);
                             }
                             else
-                                dicItemsWithIDs.Add(strId, new List<string> {strItemName});
+                                dicItemsWithIDs.Add(strId, new List<string> { strItemName });
                         }
 
                         // Perform recursion so that nested elements that also have ids are also checked (e.g. Metavariants)
@@ -352,7 +357,7 @@ namespace Chummer
                     , strMalformedIdNames));
             }
         }
-        
+
         private static void AppendTranslations(XmlDocument xmlDataDocument, XmlNode xmlTranslationListParentNode, XmlNode xmlDataParentNode)
         {
             foreach (XmlNode objChild in xmlTranslationListParentNode.ChildNodes)
@@ -755,8 +760,8 @@ namespace Chummer
             {
                 // These operations are supported
                 case "remove":
-                    // Replace operation without "addifnotfound" offers identical functionality to "override_*", but with all the extra bells and whistles of the amend system for targeting what to override
-                    // Replace operation with "addifnotfound" offers identical functionality to "custom_*", but with all the extra bells and whistles of the amend system for targeting where to replace/add the item
+                // Replace operation without "addifnotfound" offers identical functionality to "override_*", but with all the extra bells and whistles of the amend system for targeting what to override
+                // Replace operation with "addifnotfound" offers identical functionality to "custom_*", but with all the extra bells and whistles of the amend system for targeting where to replace/add the item
                 case "replace":
                 case "append":
                     break;

@@ -18,9 +18,6 @@
  */
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Chummer
 {
@@ -49,21 +46,43 @@ namespace Chummer
             //_ListName = ListName;
             _ListInstanceNameFromProperty = listInstanceNameFromProperty;
             _DeleteEmptyTags = deleteEmptyTags;
-            if(!String.IsNullOrEmpty(commentProperties))
+            if (!string.IsNullOrEmpty(commentProperties))
                 _CommentProperties = new List<string>(commentProperties.Split(';'));
-            if(!String.IsNullOrEmpty(extraProperties))
+            if (!string.IsNullOrEmpty(extraProperties))
                 _ExtraProperties = new List<string>(extraProperties.Split(';'));
         }
 
-        public List<string> ListCommentProperties { get { return _CommentProperties; } }
+        public List<string> ListCommentProperties
+        {
+            get
+            {
+                return _CommentProperties;
+            }
+        }
 
-        public List<string> ListExtraProperties { get { return _ExtraProperties; } }
+        public List<string> ListExtraProperties
+        {
+            get
+            {
+                return _ExtraProperties;
+            }
+        }
 
 
         public string ListInstanceNameFromProperty
-        { get { return _ListInstanceNameFromProperty; } }
+        {
+            get
+            {
+                return _ListInstanceNameFromProperty;
+            }
+        }
         public bool DeleteEmptyTags
-        { get { return _DeleteEmptyTags; } }
+        {
+            get
+            {
+                return _DeleteEmptyTags;
+            }
+        }
 
     }
 
@@ -114,16 +133,36 @@ namespace Chummer
         }
 
         public string TagName
-        { get { return _TagName; } }
+        {
+            get
+            {
+                return _TagName;
+            }
+        }
 
         public string TagNameFromProperty
-        { get { return _TagNameFromProperty; } }
+        {
+            get
+            {
+                return _TagNameFromProperty;
+            }
+        }
 
         public string TagValueFromProperty
-        { get { return _TagValueFromProperty; } }
+        {
+            get
+            {
+                return _TagValueFromProperty;
+            }
+        }
 
         public bool DeleteIfEmpty
-        { get { return _deleteIfEmpty; } }
+        {
+            get
+            {
+                return _deleteIfEmpty;
+            }
+        }
 
 
 

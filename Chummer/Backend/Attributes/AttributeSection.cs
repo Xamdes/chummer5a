@@ -16,6 +16,7 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
+using Chummer.Annotations;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -26,14 +27,13 @@ using System.Runtime.CompilerServices;
 using System.Windows.Forms;
 using System.Xml;
 using System.Xml.XPath;
-using Chummer.Annotations;
 
 namespace Chummer.Backend.Attributes
 {
 
-	public class AttributeSection : INotifyMultiplePropertyChanged
-	{
-		public event PropertyChangedEventHandler PropertyChanged;
+    public class AttributeSection : INotifyMultiplePropertyChanged
+    {
+        public event PropertyChangedEventHandler PropertyChanged;
 
         [NotifyPropertyChangedInvocator]
         public void OnPropertyChanged([CallerMemberName] string strPropertyName = null)
@@ -68,8 +68,9 @@ namespace Chummer.Backend.Attributes
             new DependancyGraph<string>(
             );
 
-	    private ObservableCollection<CharacterAttrib> _colAttributes;
-        public ObservableCollection<CharacterAttrib> Attributes {
+        private ObservableCollection<CharacterAttrib> _colAttributes;
+        public ObservableCollection<CharacterAttrib> Attributes
+        {
             get
             {
                 if (_colAttributes != null)
@@ -109,101 +110,101 @@ namespace Chummer.Backend.Attributes
             internal set => _colAttributes = value;
         }
 
-	    private static readonly string[] s_LstAttributeStrings = { "BOD", "AGI", "REA", "STR", "CHA", "INT", "LOG", "WIL", "EDG", "MAG", "MAGAdept", "RES", "ESS", "DEP" };
+        private static readonly string[] s_LstAttributeStrings = { "BOD", "AGI", "REA", "STR", "CHA", "INT", "LOG", "WIL", "EDG", "MAG", "MAGAdept", "RES", "ESS", "DEP" };
         public static ReadOnlyCollection<string> AttributeStrings => Array.AsReadOnly(s_LstAttributeStrings);
 
-	    private static readonly string[] s_LstPhysicalAttributes = { "BOD", "AGI", "REA", "STR" };
+        private static readonly string[] s_LstPhysicalAttributes = { "BOD", "AGI", "REA", "STR" };
         public static ReadOnlyCollection<string> PhysicalAttributes => Array.AsReadOnly(s_LstPhysicalAttributes);
 
-	    private static readonly string[] s_LstMentalAttributes = { "CHA", "INT", "LOG", "WIL" };
+        private static readonly string[] s_LstMentalAttributes = { "CHA", "INT", "LOG", "WIL" };
         public static ReadOnlyCollection<string> MentalAttributes => Array.AsReadOnly(s_LstMentalAttributes);
 
-	    public static string GetAttributeEnglishName(string strAbbrev)
-	    {
-	        switch (strAbbrev)
-	        {
+        public static string GetAttributeEnglishName(string strAbbrev)
+        {
+            switch (strAbbrev)
+            {
                 case "BOD":
                     return "Body";
                 case "AGI":
                     return "Agility";
-	            case "REA":
-	                return "Reaction";
-	            case "STR":
-	                return "Strength";
-	            case "CHA":
-	                return "Charisma";
-	            case "INT":
-	                return "Intuition";
-	            case "LOG":
-	                return "Logic";
-	            case "WIL":
-	                return "Willpower";
-	            case "EDG":
-	                return "Edge";
-	            case "MAG":
-	                return "Magic";
-	            case "MAGAdept":
-	                return "Magic (Adept)";
-	            case "RES":
-	                return "Resonance";
-	            case "ESS":
-	                return "Essence";
-	            case "DEP":
-	                return "Depth";
+                case "REA":
+                    return "Reaction";
+                case "STR":
+                    return "Strength";
+                case "CHA":
+                    return "Charisma";
+                case "INT":
+                    return "Intuition";
+                case "LOG":
+                    return "Logic";
+                case "WIL":
+                    return "Willpower";
+                case "EDG":
+                    return "Edge";
+                case "MAG":
+                    return "Magic";
+                case "MAGAdept":
+                    return "Magic (Adept)";
+                case "RES":
+                    return "Resonance";
+                case "ESS":
+                    return "Essence";
+                case "DEP":
+                    return "Depth";
                 default:
                     return string.Empty;
             }
-	    }
-
-        private readonly Dictionary<string, BindingSource> _dicBindings = new Dictionary<string, BindingSource>(AttributeStrings.Count);
-		private readonly Character _objCharacter;
-		private CharacterAttrib.AttributeCategory _eAttributeCategory = CharacterAttrib.AttributeCategory.Standard;
-
-	    #region Constructor, Save, Load, Print Methods
-        public AttributeSection(Character character)
-		{
-			_objCharacter = character;
         }
 
-		private void BuildBindingList()
-		{
-			_dicBindings.Clear();
+        private readonly Dictionary<string, BindingSource> _dicBindings = new Dictionary<string, BindingSource>(AttributeStrings.Count);
+        private readonly Character _objCharacter;
+        private CharacterAttrib.AttributeCategory _eAttributeCategory = CharacterAttrib.AttributeCategory.Standard;
+
+        #region Constructor, Save, Load, Print Methods
+        public AttributeSection(Character character)
+        {
+            _objCharacter = character;
+        }
+
+        private void BuildBindingList()
+        {
+            _dicBindings.Clear();
             foreach (string strAttributeString in AttributeStrings)
             {
                 _dicBindings.Add(strAttributeString, new BindingSource { DataSource = GetAttributeByName(strAttributeString) });
             }
-		}
+        }
 
-	    public void UnbindAttributeSection()
-	    {
-	        _dicBindings.Clear();
-	        foreach (CharacterAttrib objAttribute in AttributeList.Concat(SpecialAttributeList))
-	            objAttribute.UnbindAttribute();
-	        AttributeList.Clear();
-	        SpecialAttributeList.Clear();
-	    }
+        public void UnbindAttributeSection()
+        {
+            _dicBindings.Clear();
+            foreach (CharacterAttrib objAttribute in AttributeList.Concat(SpecialAttributeList))
+                objAttribute.UnbindAttribute();
+            AttributeList.Clear();
+            SpecialAttributeList.Clear();
+        }
 
         internal void Save(XmlTextWriter objWriter)
-		{
-			foreach (CharacterAttrib objAttribute in AttributeList)
-			{
-				objAttribute.Save(objWriter);
-			}
-			foreach (CharacterAttrib objAttribute in SpecialAttributeList)
-			{
-				objAttribute.Save(objWriter);
-			}
-		}
+        {
+            foreach (CharacterAttrib objAttribute in AttributeList)
+            {
+                objAttribute.Save(objWriter);
+            }
+            foreach (CharacterAttrib objAttribute in SpecialAttributeList)
+            {
+                objAttribute.Save(objWriter);
+            }
+        }
 
-	    public async void Create(XmlNode charNode, int intValue, int intMinModifier = 0, int intMaxModifier = 0)
+        public async void Create(XmlNode charNode, int intValue, int intMinModifier = 0, int intMaxModifier = 0)
         {
             if (charNode == null)
                 return;
-            using (var op_create_char_attrib = Timekeeper.StartSyncron("create_char_attrib", null, CustomActivity.OperationType.RequestOperation, charNode?.InnerText))
+            using (CustomActivity op_create_char_attrib = Timekeeper.StartSyncron("create_char_attrib", null, CustomActivity.OperationType.RequestOperation, charNode?.InnerText))
             {
                 int intOldBODBase = _objCharacter.BOD.Base;
                 int intOldBODKarma = _objCharacter.BOD.Karma;
-                int intOldAGIBase= _objCharacter.AGI.Base;
+                int intOldAGIBase = _objCharacter.AGI.Base;
                 int intOldAGIKarma = _objCharacter.AGI.Karma;
                 int intOldREABase = _objCharacter.REA.Base;
                 int intOldREAKarma = _objCharacter.REA.Karma;
@@ -388,13 +389,13 @@ namespace Chummer.Backend.Attributes
             }
         }
 
-		public void Load(XmlNode xmlSavedCharacterNode)
-		{
-			//Timekeeper.Start("load_char_attrib");
+        public void Load(XmlNode xmlSavedCharacterNode)
+        {
+            //Timekeeper.Start("load_char_attrib");
             foreach (CharacterAttrib objAttribute in AttributeList.Concat(SpecialAttributeList))
                 objAttribute.UnbindAttribute();
             AttributeList.Clear();
-			SpecialAttributeList.Clear();
+            SpecialAttributeList.Clear();
             XmlDocument objXmlDocument = XmlManager.Load(_objCharacter.IsCritter ? "critters.xml" : "metatypes.xml");
             XmlNode xmlMetatypeNode = objXmlDocument.SelectSingleNode("/chummer/metatypes/metatype[name = \"" + _objCharacter.Metatype + "\"]");
             XmlNode xmlCharNode = xmlMetatypeNode?.SelectSingleNode("metavariants/metavariant[name = \"" + _objCharacter.Metavariant + "\"]") ?? xmlMetatypeNode;
@@ -421,7 +422,8 @@ namespace Chummer.Backend.Attributes
                             break;
                     }
 
-                    if (xmlCharNodeAnimalForm == null) continue;
+                    if (xmlCharNodeAnimalForm == null)
+                        continue;
                     objAttribute = new CharacterAttrib(_objCharacter, strAttribute, CharacterAttrib.AttributeCategory.Shapeshifter);
                     objAttribute = RemakeAttribute(objAttribute, xmlCharNodeAnimalForm);
                     switch (CharacterAttrib.ConvertToAttributeCategory(objAttribute.Abbrev))
@@ -456,13 +458,13 @@ namespace Chummer.Backend.Attributes
                 }
             }
             ResetBindings();
-		    _objCharacter.RefreshAttributeBindings();
+            _objCharacter.RefreshAttributeBindings();
             //Timekeeper.Finish("load_char_attrib");
-		}
+        }
 
-	    public async void LoadFromHeroLab(XmlNode xmlStatBlockBaseNode, CustomActivity parentActivity)
-	    {
-            using (var op_load_char_attrib = Timekeeper.StartSyncron("load_char_attrib", parentActivity))
+        public async void LoadFromHeroLab(XmlNode xmlStatBlockBaseNode, CustomActivity parentActivity)
+        {
+            using (CustomActivity op_load_char_attrib = Timekeeper.StartSyncron("load_char_attrib", parentActivity))
             {
                 foreach (CharacterAttrib objAttribute in AttributeList.Concat(SpecialAttributeList))
                     objAttribute.UnbindAttribute();
@@ -531,7 +533,8 @@ namespace Chummer.Backend.Attributes
                         int.TryParse(xmlAttributeBaseNode.InnerText, out int intHeroLabAttributeBaseValue))
                     {
                         int intAttributeMinimumValue = GetAttributeByName(strAttribute).MetatypeMinimum;
-                        if (intHeroLabAttributeBaseValue == intAttributeMinimumValue) continue;
+                        if (intHeroLabAttributeBaseValue == intAttributeMinimumValue)
+                            continue;
                         if (objAttribute != null)
                             objAttribute.Karma = intHeroLabAttributeBaseValue - intAttributeMinimumValue;
                     }
@@ -716,127 +719,127 @@ namespace Chummer.Backend.Attributes
             return objNewAttribute;
         }
 
-		internal void Print(XmlTextWriter objWriter, CultureInfo objCulture, string strLanguageToPrint)
-		{
-		    if (_objCharacter.MetatypeCategory == "Shapeshifter")
-		    {
-		        XmlDocument xmlMetatypesDoc = XmlManager.Load("metatypes.xml", strLanguageToPrint);
-		        XmlNode xmlNode = xmlMetatypesDoc.SelectSingleNode($"/chummer/metatypes/metatype[name = \"{_objCharacter.Metatype}\"]");
+        internal void Print(XmlTextWriter objWriter, CultureInfo objCulture, string strLanguageToPrint)
+        {
+            if (_objCharacter.MetatypeCategory == "Shapeshifter")
+            {
+                XmlDocument xmlMetatypesDoc = XmlManager.Load("metatypes.xml", strLanguageToPrint);
+                XmlNode xmlNode = xmlMetatypesDoc.SelectSingleNode($"/chummer/metatypes/metatype[name = \"{_objCharacter.Metatype}\"]");
 
-		        xmlNode = xmlNode?.SelectSingleNode($"metavariants/metavariant[name = \"{_objCharacter.Metavariant}\"]/name/@translate");
+                xmlNode = xmlNode?.SelectSingleNode($"metavariants/metavariant[name = \"{_objCharacter.Metavariant}\"]/name/@translate");
 
-		        if (AttributeCategory == CharacterAttrib.AttributeCategory.Standard)
-		        {
-		            objWriter.WriteElementString("attributecategory", xmlNode?.SelectSingleNode("name/@translate")?.InnerText ?? _objCharacter.Metatype);
+                if (AttributeCategory == CharacterAttrib.AttributeCategory.Standard)
+                {
+                    objWriter.WriteElementString("attributecategory", xmlNode?.SelectSingleNode("name/@translate")?.InnerText ?? _objCharacter.Metatype);
                 }
-		        else
-		        {
-		            xmlNode = xmlNode?.SelectSingleNode($"metavariants/metavariant[name = \"{_objCharacter.Metavariant}\"]/name/@translate");
+                else
+                {
+                    xmlNode = xmlNode?.SelectSingleNode($"metavariants/metavariant[name = \"{_objCharacter.Metavariant}\"]/name/@translate");
                     objWriter.WriteElementString("attributecategory", xmlNode?.InnerText ?? _objCharacter.Metavariant);
                 }
-		    }
-		    objWriter.WriteElementString("attributecategory_english", AttributeCategory.ToString());
+            }
+            objWriter.WriteElementString("attributecategory_english", AttributeCategory.ToString());
             foreach (CharacterAttrib att in AttributeList)
-			{
-				att.Print(objWriter, objCulture, strLanguageToPrint);
-			}
-			foreach (CharacterAttrib att in SpecialAttributeList)
-			{
-				att.Print(objWriter, objCulture, strLanguageToPrint);
-			}
-		}
-		#endregion
+            {
+                att.Print(objWriter, objCulture, strLanguageToPrint);
+            }
+            foreach (CharacterAttrib att in SpecialAttributeList)
+            {
+                att.Print(objWriter, objCulture, strLanguageToPrint);
+            }
+        }
+        #endregion
 
-		#region Methods
-		public CharacterAttrib GetAttributeByName(string abbrev)
-		{
+        #region Methods
+        public CharacterAttrib GetAttributeByName(string abbrev)
+        {
             bool blnGetShifterAttribute = _objCharacter.MetatypeCategory == "Shapeshifter" && _objCharacter.Created && _objCharacter.AttributeSection.AttributeCategory == CharacterAttrib.AttributeCategory.Shapeshifter;
             CharacterAttrib objReturn = AttributeList.FirstOrDefault(att => att.Abbrev == abbrev && (att.MetatypeCategory == CharacterAttrib.AttributeCategory.Shapeshifter) == blnGetShifterAttribute) ?? SpecialAttributeList.FirstOrDefault(att => att.Abbrev == abbrev);
-		    return objReturn;
-		}
+            return objReturn;
+        }
 
-		public BindingSource GetAttributeBindingByName(string abbrev)
-		{
+        public BindingSource GetAttributeBindingByName(string abbrev)
+        {
             if (_dicBindings.TryGetValue(abbrev, out BindingSource objAttributeBinding))
                 return objAttributeBinding;
             return null;
-		}
+        }
 
-		internal void ForceAttributePropertyChangedNotificationAll(params string[] lstNames)
-		{
-			foreach (CharacterAttrib att in AttributeList)
-			{
-				att.OnMultiplePropertyChanged(lstNames);
-			}
-		}
+        internal void ForceAttributePropertyChangedNotificationAll(params string[] lstNames)
+        {
+            foreach (CharacterAttrib att in AttributeList)
+            {
+                att.OnMultiplePropertyChanged(lstNames);
+            }
+        }
 
-		public static void CopyAttribute(CharacterAttrib objSource, CharacterAttrib objTarget, string strMetavariantXPath, XmlDocument xmlDoc)
-		{
+        public static void CopyAttribute(CharacterAttrib objSource, CharacterAttrib objTarget, string strMetavariantXPath, XmlDocument xmlDoc)
+        {
             string strSourceAbbrev = objSource.Abbrev.ToLower();
             if (strSourceAbbrev == "magadept")
                 strSourceAbbrev = "mag";
             XmlNode node = !string.IsNullOrEmpty(strMetavariantXPath) ? xmlDoc.SelectSingleNode(strMetavariantXPath) : null;
-		    if (node != null)
-		    {
-		        objTarget.MetatypeMinimum = Convert.ToInt32(node[$"{strSourceAbbrev}min"]?.InnerText);
-		        objTarget.MetatypeMaximum = Convert.ToInt32(node[$"{strSourceAbbrev}max"]?.InnerText);
-		        objTarget.MetatypeAugmentedMaximum = Convert.ToInt32(node[$"{strSourceAbbrev}aug"]?.InnerText);
-		    }
+            if (node != null)
+            {
+                objTarget.MetatypeMinimum = Convert.ToInt32(node[$"{strSourceAbbrev}min"]?.InnerText);
+                objTarget.MetatypeMaximum = Convert.ToInt32(node[$"{strSourceAbbrev}max"]?.InnerText);
+                objTarget.MetatypeAugmentedMaximum = Convert.ToInt32(node[$"{strSourceAbbrev}aug"]?.InnerText);
+            }
 
-		    objTarget.Base = objSource.Base;
-		    objTarget.Karma = objSource.Karma;
+            objTarget.Base = objSource.Base;
+            objTarget.Karma = objSource.Karma;
         }
 
-		internal void Reset()
-		{
+        internal void Reset()
+        {
             foreach (CharacterAttrib objAttribute in AttributeList.Concat(SpecialAttributeList))
                 objAttribute.UnbindAttribute();
-			AttributeList.Clear();
-			SpecialAttributeList.Clear();
-			foreach (string strAttribute in AttributeStrings)
-			{
-			    CharacterAttrib objAttribute;
-				switch (CharacterAttrib.ConvertToAttributeCategory(strAttribute))
-				{
-				    case CharacterAttrib.AttributeCategory.Special:
-				        objAttribute = new CharacterAttrib(_objCharacter, strAttribute, CharacterAttrib.AttributeCategory.Special);
-				        SpecialAttributeList.Add(objAttribute);
-				        break;
-				    case CharacterAttrib.AttributeCategory.Standard:
-				        objAttribute = new CharacterAttrib(_objCharacter, strAttribute, CharacterAttrib.AttributeCategory.Standard);
-				        AttributeList.Add(objAttribute);
-				        break;
+            AttributeList.Clear();
+            SpecialAttributeList.Clear();
+            foreach (string strAttribute in AttributeStrings)
+            {
+                CharacterAttrib objAttribute;
+                switch (CharacterAttrib.ConvertToAttributeCategory(strAttribute))
+                {
+                    case CharacterAttrib.AttributeCategory.Special:
+                        objAttribute = new CharacterAttrib(_objCharacter, strAttribute, CharacterAttrib.AttributeCategory.Special);
+                        SpecialAttributeList.Add(objAttribute);
+                        break;
+                    case CharacterAttrib.AttributeCategory.Standard:
+                        objAttribute = new CharacterAttrib(_objCharacter, strAttribute, CharacterAttrib.AttributeCategory.Standard);
+                        AttributeList.Add(objAttribute);
+                        break;
                 }
-			}
-			BuildBindingList();
-		}
+            }
+            BuildBindingList();
+        }
 
-		public static CharacterAttrib.AttributeCategory ConvertAttributeCategory(string s)
-		{
-			switch (s)
-			{
-				case "Shapeshifter":
-					return CharacterAttrib.AttributeCategory.Shapeshifter;
-				case "Special":
-					return CharacterAttrib.AttributeCategory.Special;
-				case "Metahuman":
-				case "Standard":
-					return CharacterAttrib.AttributeCategory.Standard;
-			}
-			return CharacterAttrib.AttributeCategory.Standard;
-		}
+        public static CharacterAttrib.AttributeCategory ConvertAttributeCategory(string s)
+        {
+            switch (s)
+            {
+                case "Shapeshifter":
+                    return CharacterAttrib.AttributeCategory.Shapeshifter;
+                case "Special":
+                    return CharacterAttrib.AttributeCategory.Special;
+                case "Metahuman":
+                case "Standard":
+                    return CharacterAttrib.AttributeCategory.Standard;
+            }
+            return CharacterAttrib.AttributeCategory.Standard;
+        }
 
-		/// <summary>
-		/// Reset the databindings for all character attributes.
-		/// This method is used to support hot-swapping attributes for shapeshifters.
-		/// </summary>
-		public void ResetBindings()
-		{
+        /// <summary>
+        /// Reset the databindings for all character attributes.
+        /// This method is used to support hot-swapping attributes for shapeshifters.
+        /// </summary>
+        public void ResetBindings()
+        {
             foreach (KeyValuePair<string, BindingSource> objBindingEntry in _dicBindings)
             {
                 objBindingEntry.Value.DataSource = GetAttributeByName(objBindingEntry.Key);
             }
-		}
+        }
         #endregion
 
         #region Properties
@@ -851,16 +854,17 @@ namespace Chummer.Backend.Attributes
         /// </summary>
         public List<CharacterAttrib> SpecialAttributeList { get; } = new List<CharacterAttrib>();
 
-	    public CharacterAttrib.AttributeCategory AttributeCategory
-	    {
-	        get => _eAttributeCategory;
-	        set
-	        {
-	            if (_eAttributeCategory == value) return;
-	            _eAttributeCategory = value;
-	            OnPropertyChanged();
-	        }
-	    }
+        public CharacterAttrib.AttributeCategory AttributeCategory
+        {
+            get => _eAttributeCategory;
+            set
+            {
+                if (_eAttributeCategory == value)
+                    return;
+                _eAttributeCategory = value;
+                OnPropertyChanged();
+            }
+        }
         #endregion
     }
 }

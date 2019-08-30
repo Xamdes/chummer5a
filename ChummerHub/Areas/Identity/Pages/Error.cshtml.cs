@@ -11,7 +11,10 @@ namespace ChummerHub.Areas.Identity.Pages
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'ErrorModel'
     {
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'ErrorModel.RequestId'
-        public string RequestId { get; set; }
+        public string RequestId
+        {
+            get; set;
+        }
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'ErrorModel.RequestId'
 
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'ErrorModel.ShowRequestId'

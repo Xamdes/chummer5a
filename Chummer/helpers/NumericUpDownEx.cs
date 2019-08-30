@@ -156,7 +156,10 @@ namespace Chummer
         [DefaultValue(false)]
         [Category("Behavior")]
         [Description("Automatically select control text when it receives focus.")]
-        public bool AutoSelect { get; set; }
+        public bool AutoSelect
+        {
+            get; set;
+        }
 
 
         [Browsable(false)]
@@ -372,10 +375,12 @@ namespace Chummer
         // raises the two new events
         public override void DownButton()
         {
-            if (ReadOnly) return;
+            if (ReadOnly)
+                return;
             CancelEventArgs e = new CancelEventArgs();
             BeforeValueDecrement?.Invoke(this, e);
-            if (e.Cancel) return;
+            if (e.Cancel)
+                return;
 
             if (_wrapValue && Value - Increment < Minimum)
             {
@@ -398,10 +403,12 @@ namespace Chummer
         }
         public override void UpButton()
         {
-            if (ReadOnly) return;
+            if (ReadOnly)
+                return;
             CancelEventArgs e = new CancelEventArgs();
             BeforeValueIncrement?.Invoke(this, e);
-            if (e.Cancel) return;
+            if (e.Cancel)
+                return;
 
             if (_wrapValue && Value + Increment > Maximum)
             {

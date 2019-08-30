@@ -115,7 +115,7 @@ namespace Chummer
 
         private string _strBookXPath = string.Empty;
         private string _strExcludeLimbSlot = string.Empty;
-        
+
         // Karma variables.
         private int _intKarmaAttribute = 5;
         private int _intKarmaCarryover = 7;
@@ -762,7 +762,7 @@ namespace Chummer
             objXmlNode.TryGetBoolFieldQuickly("autobackstory", ref _blnAutomaticBackstory);
             // House Rule: Whether Public Awareness should be a calculated attribute based on Street Cred and Notoriety.
             objXmlNode.TryGetBoolFieldQuickly("usecalculatedpublicawareness", ref _blnUseCalculatedPublicAwareness);
-            
+
             objXmlNode = objXmlDocument.SelectSingleNode("//settings/karmacost");
             // Attempt to populate the Karma values.
             if (objXmlNode != null)
@@ -830,7 +830,7 @@ namespace Chummer
             using (XmlNodeList xmlDirectoryList = objXmlDocument.SelectNodes("/settings/customdatadirectorynames/directoryname"))
                 if (xmlDirectoryList != null)
                     foreach (XmlNode objXmlDirectoryName in xmlDirectoryList)
-                _lstCustomDataDirectoryNames.Add(objXmlDirectoryName.InnerText);
+                        _lstCustomDataDirectoryNames.Add(objXmlDirectoryName.InnerText);
 
             // Load default build settings.
             objXmlNode = objXmlDocument.SelectSingleNode("//settings/defaultbuild");
@@ -1208,7 +1208,8 @@ namespace Chummer
         {
             get
             {
-                if (_character?.GameplayOption == "Prime Runner") return _intFreeContactsMultiplier*2;  //HACK. Should really read from gameplayoptions
+                if (_character?.GameplayOption == "Prime Runner")
+                    return _intFreeContactsMultiplier * 2;  //HACK. Should really read from gameplayoptions
                 return _intFreeContactsMultiplier;
             }
             set
@@ -1380,7 +1381,7 @@ namespace Chummer
             get => _blnAllowCyberwareESSDiscounts;
             set => _blnAllowCyberwareESSDiscounts = value;
         }
-        
+
         /// <summary>
         /// Whether or not Armor Degredation is allowed.
         /// </summary>
@@ -1396,7 +1397,7 @@ namespace Chummer
                 }
             }
         }
-        
+
         /// <summary>
         /// If true, karma costs will not decrease from reductions due to essence loss. Effectively, essence loss becomes an augmented modifier, not one that alters minima and maxima.
         /// </summary>
@@ -1448,7 +1449,7 @@ namespace Chummer
             get => _blnExceedNegativeQualitiesLimit;
             set => _blnExceedNegativeQualitiesLimit = value;
         }
-        
+
         /// <summary>
         /// Whether or not Restricted items have their cost multiplied.
         /// </summary>
@@ -1673,7 +1674,7 @@ namespace Chummer
             get => _blnRestrictRecoil;
             set => _blnRestrictRecoil = value;
         }
-        
+
         /// <summary>
         /// Whether or not characters are unresicted in the number of points they can invest in Nuyen.
         /// </summary>
@@ -1807,7 +1808,7 @@ namespace Chummer
             set => _blnFreeSpiritPowerPointsMAG = value;
         }
         #endregion
-        
+
         #region Karma
         /// <summary>
         /// Karma cost to improve an Attribute = New Rating X this value.

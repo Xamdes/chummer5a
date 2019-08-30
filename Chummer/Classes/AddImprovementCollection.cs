@@ -16,16 +16,16 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
+using Chummer.Backend.Attributes;
+using Chummer.Backend.Equipment;
+using Chummer.Backend.Skills;
+using NLog;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
 using System.Xml;
 using System.Xml.XPath;
-using Chummer.Backend.Attributes;
-using Chummer.Backend.Equipment;
-using Chummer.Backend.Skills;
-using NLog;
 
 // ReSharper disable InconsistentNaming
 
@@ -50,10 +50,22 @@ namespace Chummer.Classes
             _intRating = intRating;
         }
 
-        public string SourceName { get; set; }
-        public string ForcedValue { get; set; }
-        public string LimitSelection { get; set; }
-        public string SelectedValue { get; set; }
+        public string SourceName
+        {
+            get; set;
+        }
+        public string ForcedValue
+        {
+            get; set;
+        }
+        public string LimitSelection
+        {
+            get; set;
+        }
+        public string SelectedValue
+        {
+            get; set;
+        }
         public string SelectedTarget { get; set; } = string.Empty;
 
         private readonly Improvement.ImprovementSource _objImprovementSource;
@@ -440,7 +452,8 @@ namespace Chummer.Classes
                 SelectedValue = frmPickItem.SelectedName;
             }
 
-            if (_blnConcatSelectedValue) SourceName += LanguageManager.GetString("String_Space", GlobalOptions.Language) + '(' + SelectedValue + ')';
+            if (_blnConcatSelectedValue)
+                SourceName += LanguageManager.GetString("String_Space", GlobalOptions.Language) + '(' + SelectedValue + ')';
             Log.Info("_strSelectedValue = " + SelectedValue);
             Log.Info("SourceName = " + SourceName);
 
@@ -613,7 +626,7 @@ namespace Chummer.Classes
             {
                 foreach (Skill objLoopSkill in _objCharacter.SkillsSection.Skills.Where(s => s.IsExoticSkill))
                 {
-                    ExoticSkill objSkill = (ExoticSkill) objLoopSkill;
+                    ExoticSkill objSkill = (ExoticSkill)objLoopSkill;
                     if ($"{objSkill.Name} ({objSkill.Specific})" != strSelectedSkill)
                         continue;
                     // We've found the selected Skill.
@@ -4748,7 +4761,8 @@ namespace Chummer.Classes
             Log.Info("spellcategorydrain");
             Log.Info("spellcategorydrain = " + bonusNode.OuterXml);
             string s = bonusNode["category"]?.InnerText ?? SelectedValue;
-            if (string.IsNullOrWhiteSpace(s)) throw new AbortedException();
+            if (string.IsNullOrWhiteSpace(s))
+                throw new AbortedException();
             Log.Info("Calling CreateImprovement");
             CreateImprovement(s, _objImprovementSource, SourceName,
                 Improvement.ImprovementType.SpellCategoryDrain, _strUnique, ImprovementManager.ValueToInt(_objCharacter, bonusNode["val"]?.InnerText, _intRating));
@@ -4928,8 +4942,8 @@ namespace Chummer.Classes
             if (nodeList != null)
             {
                 List<ListItem> itemList = (from XmlNode objNode in nodeList
-                    select new ListItem(objNode.InnerText,
-                        objNode.Attributes?["translate"]?.InnerText ?? objNode.InnerText)).ToList();
+                                           select new ListItem(objNode.InnerText,
+                                               objNode.Attributes?["translate"]?.InnerText ?? objNode.InnerText)).ToList();
 
                 frmSelectItem frmPickItem = new frmSelectItem
                 {
@@ -5138,7 +5152,7 @@ namespace Chummer.Classes
             }
             else
             {
-                List <ListItem> lstWeapons = new List<ListItem>();
+                List<ListItem> lstWeapons = new List<ListItem>();
                 bool blnIncludeUnarmed = bonusNode.Attributes?["includeunarmed"]?.InnerText == bool.TrueString;
                 string strExclude = bonusNode.Attributes?["excludecategory"]?.InnerText ?? string.Empty;
                 foreach (Weapon objWeapon in _objCharacter.Weapons.GetAllDescendants(x => x.Children))
@@ -5382,7 +5396,7 @@ namespace Chummer.Classes
                 if (string.IsNullOrEmpty(strName) || !_objCharacter.SkillsSection.SkillsDictionary.ContainsKey(strName))
                 {
                     _objCharacter.SkillsSection.AddSkills(skills, strName);
-                    CreateImprovement(skills.ToString(), _objImprovementSource, SourceName,  Improvement.ImprovementType.SpecialSkills, _strUnique);
+                    CreateImprovement(skills.ToString(), _objImprovementSource, SourceName, Improvement.ImprovementType.SpecialSkills, _strUnique);
                 }
             }
             else
@@ -5399,7 +5413,8 @@ namespace Chummer.Classes
                 if (xmlQualityList?.Count > 0)
                     foreach (XmlNode objXmlAddQuality in xmlQualityList)
                     {
-                        if (objXmlAddQuality.NodeType == XmlNodeType.Comment) continue;
+                        if (objXmlAddQuality.NodeType == XmlNodeType.Comment)
+                            continue;
                         XmlNode objXmlSelectedQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + objXmlAddQuality.InnerText + "\"]");
                         string strForceValue = objXmlAddQuality.Attributes?["select"]?.InnerText ?? string.Empty;
 
@@ -5461,7 +5476,7 @@ namespace Chummer.Classes
                 throw new AbortedException();
             }
 
-            frmSelectItem frmPickItem = new frmSelectItem {GeneralItems = lstQualities};
+            frmSelectItem frmPickItem = new frmSelectItem { GeneralItems = lstQualities };
             frmPickItem.ShowDialog();
 
             // Don't do anything else if the form was canceled.
@@ -5505,7 +5520,7 @@ namespace Chummer.Classes
                     throw new AbortedException();
                 }
 
-                frmPickItem = new frmSelectItem {GeneralItems = lstQualities};
+                frmPickItem = new frmSelectItem { GeneralItems = lstQualities };
                 frmPickItem.ShowDialog();
 
                 // Don't do anything else if the form was canceled.
@@ -5689,7 +5704,7 @@ namespace Chummer.Classes
             {
                 addToSelected = Convert.ToBoolean(bonusNode.SelectSingleNode("addtoselected")?.Value);
             }
-            AddSpiritOrSprite("traditions.xml",xmlAllowedSpirits, Improvement.ImprovementType.AddSpirit, addToSelected);
+            AddSpiritOrSprite("traditions.xml", xmlAllowedSpirits, Improvement.ImprovementType.AddSpirit, addToSelected);
         }
         /// <summary>
         /// Improvement type that limits the spirits a character can summon to a particular category.
@@ -5722,12 +5737,13 @@ namespace Chummer.Classes
                     foreach (XmlNode xmlSpirit in xmlSpirits)
                     {
                         string strSpiritName = xmlSpirit["name"]?.InnerText;
-                        if (!setAllowed.Any(l => strSpiritName == l) && setAllowed.Count != 0) continue;
+                        if (!setAllowed.Any(l => strSpiritName == l) && setAllowed.Count != 0)
+                            continue;
                         lstSpirits.Add(new ListItem(strSpiritName,
                             xmlSpirit["translate"]?.InnerText ?? strSpiritName));
                     }
 
-			frmSelectItem frmSelect = new frmSelectItem { GeneralItems = lstSpirits };
+            frmSelectItem frmSelect = new frmSelectItem { GeneralItems = lstSpirits };
             frmSelect.ShowDialog();
             if (frmSelect.DialogResult == DialogResult.Cancel)
             {
@@ -5736,10 +5752,13 @@ namespace Chummer.Classes
 
             if (addToSelectedValue)
             {
-                if (string.IsNullOrEmpty(SelectedValue)) SelectedValue = frmSelect.SelectedItem;
-                else SelectedValue += ", " + frmSelect.SelectedItem;
+                if (string.IsNullOrEmpty(SelectedValue))
+                    SelectedValue = frmSelect.SelectedItem;
+                else
+                    SelectedValue += ", " + frmSelect.SelectedItem;
             }
-            if (_blnConcatSelectedValue) SourceName += " (" + frmSelect.SelectedItem + ')';
+            if (_blnConcatSelectedValue)
+                SourceName += " (" + frmSelect.SelectedItem + ')';
             Log.Info("_strSelectedValue = " + frmSelect.SelectedItem);
             Log.Info("SourceName = " + SourceName);
             Log.Info("Calling CreateImprovement");
@@ -6349,7 +6368,7 @@ namespace Chummer.Classes
             //To handle this, we ceiling the CyberwareEssence value up, as a non-zero loss of Essence removes a point of Resonance and cut the submersion grade in half.
             //Whichever value is lower becomes the value of the improvement.
             Log.Info("cyberadeptdaemon");
-            int final = (int) Math.Min((decimal) Math.Ceiling(0.5 * _objCharacter.SubmersionGrade), Math.Ceiling(_objCharacter.CyberwareEssence));
+            int final = (int)Math.Min((decimal)Math.Ceiling(0.5 * _objCharacter.SubmersionGrade), Math.Ceiling(_objCharacter.CyberwareEssence));
             CreateImprovement("RESBase", _objImprovementSource, SourceName, Improvement.ImprovementType.Attribute, _strUnique, final, 1, 0, 0, final);
         }
 

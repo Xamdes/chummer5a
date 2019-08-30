@@ -16,15 +16,15 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
- using System;
+using Chummer.Backend.Equipment;
+using Chummer.Backend.Skills;
+using System;
 using System.Collections.Generic;
 using System.IO;
- using System.Linq;
- using System.Text;
+using System.Linq;
+using System.Text;
 using System.Windows.Forms;
 using System.Xml;
- using Chummer.Backend.Equipment;
- using Chummer.Backend.Skills;
 
 namespace Chummer
 {
@@ -324,10 +324,10 @@ namespace Chummer
                     // </martialart>
                     objWriter.WriteEndElement();
                 }
-                #if LEGACY
+#if LEGACY
                 foreach (MartialArtManeuver objManeuver in _objCharacter.MartialArtManeuvers)
                     objWriter.WriteElementString("maneuver", objManeuver.Name);
-                #endif
+#endif
                 // </martialarts>
                 objWriter.WriteEndElement();
             }
@@ -463,7 +463,7 @@ namespace Chummer
                     objWriter.WriteEndElement();
                 }
             }
-        
+
             // Export Lifestyle.
             if (chkLifestyle.Checked)
             {
@@ -577,7 +577,7 @@ namespace Chummer
                             // </accessories>
                             objWriter.WriteEndElement();
                         }
-                        
+
                         // Underbarrel Weapon.
                         if (objWeapon.UnderbarrelWeapons.Count > 0)
                         {
@@ -727,9 +727,9 @@ namespace Chummer
         {
             DialogResult = DialogResult.Cancel;
         }
-#endregion
+        #endregion
 
-#region Methods
+        #region Methods
         /// <summary>
         /// Recursively write out all Gear information since these can be nested pretty deep.
         /// </summary>
@@ -765,6 +765,6 @@ namespace Chummer
             // </gears>
             objWriter.WriteEndElement();
         }
-#endregion
+        #endregion
     }
 }

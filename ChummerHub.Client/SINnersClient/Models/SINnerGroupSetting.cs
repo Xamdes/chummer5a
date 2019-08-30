@@ -4,19 +4,17 @@
 
 namespace SINners.Models
 {
-    using System;
-    using System.Linq;
-    using System.Collections.Generic;
     using Newtonsoft.Json;
-    using Microsoft.Rest;
-    using Microsoft.Rest.Serialization;
+    using System;
 
     public partial class SINnerGroupSetting
     {
         /// <summary>
         /// Initializes a new instance of the SINnerGroupSetting class.
         /// </summary>
-        public SINnerGroupSetting() { }
+        public SINnerGroupSetting()
+        {
+        }
 
         /// <summary>
         /// Initializes a new instance of the SINnerGroupSetting class.
@@ -34,32 +32,50 @@ namespace SINners.Models
         /// <summary>
         /// </summary>
         [JsonProperty(PropertyName = "id")]
-        public Guid? Id { get; set; }
+        public Guid? Id
+        {
+            get; set;
+        }
 
         /// <summary>
         /// </summary>
         [JsonProperty(PropertyName = "myGroupId")]
-        public Guid? MyGroupId { get; set; }
+        public Guid? MyGroupId
+        {
+            get; set;
+        }
 
         /// <summary>
         /// </summary>
         [JsonProperty(PropertyName = "downloadUrl")]
-        public string DownloadUrl { get; set; }
+        public string DownloadUrl
+        {
+            get; set;
+        }
 
         /// <summary>
         /// </summary>
         [JsonProperty(PropertyName = "uploadDateTime")]
-        public DateTime? UploadDateTime { get; set; }
+        public DateTime? UploadDateTime
+        {
+            get; set;
+        }
 
         /// <summary>
         /// </summary>
         [JsonProperty(PropertyName = "lastChange")]
-        public DateTime? LastChange { get; set; }
+        public DateTime? LastChange
+        {
+            get; set;
+        }
 
         /// <summary>
         /// </summary>
         [JsonProperty(PropertyName = "fileName")]
-        public string FileName { get; private set; }
+        public string FileName
+        {
+            get; private set;
+        }
 
     }
 }

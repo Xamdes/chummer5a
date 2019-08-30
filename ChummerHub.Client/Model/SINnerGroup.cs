@@ -1,9 +1,5 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace SINners.Models
 {
@@ -13,7 +9,7 @@ namespace SINners.Models
         {
             set
             {
-                if (!String.IsNullOrEmpty(value))
+                if (!string.IsNullOrEmpty(value))
                     this.PasswordHash = GetHashString(value);
                 else
                 {

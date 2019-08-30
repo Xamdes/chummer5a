@@ -16,7 +16,7 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
- using System;
+using System;
 using System.Globalization;
 using System.Windows.Forms;
 
@@ -137,8 +137,14 @@ namespace Chummer
             }
         }
 
-        public bool KarmaNuyenExchange { get; set; }
-        public string KarmaNuyenExchangeString { get; set; }
+        public bool KarmaNuyenExchange
+        {
+            get; set;
+        }
+        public string KarmaNuyenExchangeString
+        {
+            get; set;
+        }
 
         #endregion
 

@@ -28,8 +28,14 @@ namespace Chummer
             DependancyCondition = funcDependancyCondition;
         }
 
-        public DependancyGraphNode<T> Node { get; }
-        public Func<bool> DependancyCondition { get; }
+        public DependancyGraphNode<T> Node
+        {
+            get;
+        }
+        public Func<bool> DependancyCondition
+        {
+            get;
+        }
 
         public static bool operator ==(DependancyGraphNodeWithCondition<T> objFirstEdge, DependancyGraphNodeWithCondition<T> objSecondEdge)
         {

@@ -26,9 +26,12 @@ namespace Chummer
     {
         internal static void MergeInto<T>(this BindingList<T> list, IEnumerable<T> items, Comparison<T> comparison, Action<T, T> funcMergeIfEquals = null)
         {
-            if (list == null) throw new ArgumentNullException(nameof(list));
-            if (items == null) throw new ArgumentNullException(nameof(items));
-            if (comparison == null) throw new ArgumentNullException(nameof(comparison));
+            if (list == null)
+                throw new ArgumentNullException(nameof(list));
+            if (items == null)
+                throw new ArgumentNullException(nameof(items));
+            if (comparison == null)
+                throw new ArgumentNullException(nameof(comparison));
 
             foreach (T item in items)
             {
@@ -36,11 +39,14 @@ namespace Chummer
             }
         }
 
-        internal static void MergeInto<T>(this BindingList<T> list, T objNewItem, Comparison<T> comparison, Action<T,T> funcMergeIfEquals = null)
+        internal static void MergeInto<T>(this BindingList<T> list, T objNewItem, Comparison<T> comparison, Action<T, T> funcMergeIfEquals = null)
         {
-            if (list == null) throw new ArgumentNullException(nameof(list));
-            if (objNewItem == null) throw new ArgumentNullException(nameof(objNewItem));
-            if (comparison == null) throw new ArgumentNullException(nameof(comparison));
+            if (list == null)
+                throw new ArgumentNullException(nameof(list));
+            if (objNewItem == null)
+                throw new ArgumentNullException(nameof(objNewItem));
+            if (comparison == null)
+                throw new ArgumentNullException(nameof(comparison));
             //if (list.Count == 0)
             //{
             //    list.Add(item);

@@ -4,19 +4,17 @@
 
 namespace SINners.Models
 {
-    using System;
-    using System.Linq;
-    using System.Collections.Generic;
     using Newtonsoft.Json;
-    using Microsoft.Rest;
-    using Microsoft.Rest.Serialization;
+    using System;
 
     public partial class SINnerUserRight
     {
         /// <summary>
         /// Initializes a new instance of the SINnerUserRight class.
         /// </summary>
-        public SINnerUserRight() { }
+        public SINnerUserRight()
+        {
+        }
 
         /// <summary>
         /// Initializes a new instance of the SINnerUserRight class.
@@ -31,17 +29,26 @@ namespace SINners.Models
         /// <summary>
         /// </summary>
         [JsonProperty(PropertyName = "id")]
-        public Guid? Id { get; set; }
+        public Guid? Id
+        {
+            get; set;
+        }
 
         /// <summary>
         /// </summary>
         [JsonProperty(PropertyName = "eMail")]
-        public string EMail { get; set; }
+        public string EMail
+        {
+            get; set;
+        }
 
         /// <summary>
         /// </summary>
         [JsonProperty(PropertyName = "canEdit")]
-        public bool? CanEdit { get; set; }
+        public bool? CanEdit
+        {
+            get; set;
+        }
 
         /// <summary>
         /// Validate the object. Throws ValidationException if validation fails.

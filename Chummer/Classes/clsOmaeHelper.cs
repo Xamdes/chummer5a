@@ -16,16 +16,16 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
- using System;
+using Chummer.OmaeService;
+using Chummer.TranslationService;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
-using System.ServiceModel;
-using System.Xml;
-using Chummer.OmaeService;
-using Chummer.TranslationService;
 using System.IO.Packaging;
- using System.Text;
+using System.ServiceModel;
+using System.Text;
+using System.Xml;
 
 namespace Chummer
 {
@@ -255,7 +255,7 @@ namespace Chummer
 
             foreach (string strFile in lstFiles)
             {
-                string[] strPath = Path.GetDirectoryName(strFile)?.Replace(' ', '_').Split(Path.DirectorySeparatorChar) ?? new string[] {};
+                string[] strPath = Path.GetDirectoryName(strFile)?.Replace(' ', '_').Split(Path.DirectorySeparatorChar) ?? new string[] { };
                 string strPackFile = '/' + strPath[strPath.Length - 2] + '/' + strPath[strPath.Length - 1] + '/' + (Path.GetFileName(strFile)?.Replace(' ', '_') ?? string.Empty);
                 strPackFile = strPackFile.TrimStartOnce("/saves");
                 Uri objUri = new Uri(strPackFile, UriKind.Relative);

@@ -233,7 +233,7 @@ namespace Chummer.UI.Table
                 _objSortPausedSender = null;
 
                 // prevent sort for focus loss when disposing
-                if (_lstItems != null && _lstPermutation.Count == _lstItems.Count) 
+                if (_lstItems != null && _lstPermutation.Count == _lstItems.Count)
                 {
                     Sort();
                 }
@@ -242,7 +242,8 @@ namespace Chummer.UI.Table
 
         private void Sort(bool blnPerformLayout = true)
         {
-            if (_objSortPausedSender != null) return;
+            if (_objSortPausedSender != null)
+                return;
             if (_eSortType == SortOrder.None || _sortColumn == null)
             {
                 // sort by index
@@ -251,7 +252,7 @@ namespace Chummer.UI.Table
             else
             {
                 Comparison<T> comparison = _sortColumn.CreateSorter();
-                
+
                 _lstPermutation.Sort((i1, i2) => comparison(_lstItems[i1], _lstItems[i2]));
                 if (_eSortType == SortOrder.Descending)
                 {
@@ -296,7 +297,8 @@ namespace Chummer.UI.Table
             return cell;
         }
 
-        private void CreateCellsForColumn(int insertIndex, TableColumn<T> column) {
+        private void CreateCellsForColumn(int insertIndex, TableColumn<T> column)
+        {
             SuspendLayout();
             List<TableCell> cells;
             if (_lstItems != null)
@@ -327,11 +329,12 @@ namespace Chummer.UI.Table
             };
             if (column.Sorter != null)
             {
-                header.HeaderClick += (sender, evt) => {
+                header.HeaderClick += (sender, evt) =>
+                {
                     if (_sortColumn == column)
                     {
                         // cycle through states if column remains the same
-                        switch(_eSortType)
+                        switch (_eSortType)
                         {
                             case SortOrder.None:
                                 _eSortType = SortOrder.Ascending;
@@ -371,7 +374,8 @@ namespace Chummer.UI.Table
             ResumeLayout(false);
         }
 
-        internal void ColumnAdded(TableColumn<T> column) {
+        internal void ColumnAdded(TableColumn<T> column)
+        {
             column.MakeLive();
             int index = _columns.Count - 1;
             CreateCellsForColumn(index, column);
@@ -401,7 +405,8 @@ namespace Chummer.UI.Table
 
         private void DoFilter(bool performLayout = true)
         {
-            if (_lstItems == null) return;
+            if (_lstItems == null)
+                return;
             SuspendLayout();
 
             for (int i = 0; i < _lstItems.Count; i++)
@@ -452,7 +457,7 @@ namespace Chummer.UI.Table
                 }
             }
         }
- 
+
 
         private void ItemsChanged(object sender, ListChangedEventArgs e)
         {
@@ -649,7 +654,10 @@ namespace Chummer.UI.Table
             }
         }
 
-        public Func<TableRow> RowFactory { get; set; }
+        public Func<TableRow> RowFactory
+        {
+            get; set;
+        }
 
         private TableRow CreateRow()
         {
@@ -663,12 +671,16 @@ namespace Chummer.UI.Table
         public SortOrder SortOrder
         {
             get => _eSortType;
-            set {
+            set
+            {
                 _eSortType = value;
                 Sort();
             }
         }
 
-        public ToolTip ToolTip { get; set; }
+        public ToolTip ToolTip
+        {
+            get; set;
+        }
     }
 }

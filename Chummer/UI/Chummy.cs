@@ -18,18 +18,11 @@
  */
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
 using System.Drawing.Drawing2D;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
 using System.Runtime.InteropServices;
-using System.Xml;
+using System.Windows.Forms;
 using System.Xml.XPath;
-using NLog;
 
 namespace Chummer
 {
@@ -42,12 +35,11 @@ namespace Chummer
         private readonly Point _eyeballCenter = new Point(95, 15);
         private readonly Point _mouthCenter = new Point(100, 50);
         private readonly Pen _thickPen = new Pen(Color.Black, 3);
-        readonly XPathNavigator _objXmlDocument = XmlManager.Load("tips.xml").GetFastNavigator().SelectSingleNode("/chummer/tips");
+        private readonly XPathNavigator _objXmlDocument = XmlManager.Load("tips.xml").GetFastNavigator().SelectSingleNode("/chummer/tips");
         private readonly List<string> _usedTips = new List<string>();
         private Point _oldMousePos = new Point(-1, -1);
         private Character _characterObject;
-
-        readonly ToolTip _myToolTip = new ToolTip
+        private readonly ToolTip _myToolTip = new ToolTip
         {
             IsBalloon = true
         };
@@ -58,11 +50,11 @@ namespace Chummer
 
             this.Paint += panel1_Paint;
 
-            var tmrDraw = new Timer {Interval = 100};
+            Timer tmrDraw = new Timer { Interval = 100 };
             tmrDraw.Tick += tmr_DrawTick;
             tmrDraw.Start();
 
-            var tmrTip = new Timer { Interval = 300000 };
+            Timer tmrTip = new Timer { Interval = 300000 };
             tmrTip.Tick += tmr_TipTick;
             tmrTip.Start();
 
@@ -73,7 +65,8 @@ namespace Chummer
         {
             // See if the cursor has moved.
             Point newPos = Control.MousePosition;
-            if (newPos.Equals(_oldMousePos)) return;
+            if (newPos.Equals(_oldMousePos))
+                return;
             _oldMousePos = newPos;
 
             // Redraw.
@@ -89,7 +82,7 @@ namespace Chummer
         {
             DrawEyes(e.Graphics);
         }
-        
+
         private void Chummy_MouseDown(object sender, MouseEventArgs e)
         {
             switch (e.Button)
@@ -111,8 +104,7 @@ namespace Chummer
         //The SendMessage function sends a message to a window or windows.
 
         [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = false)]
-
-        static extern IntPtr SendMessage(IntPtr hWnd, uint Msg, int wParam, int lParam);
+        private static IntPtr SendMessage(IntPtr hWnd, uint Msg, int wParam, int lParam);
 
         //ReleaseCapture releases a mouse capture
 
@@ -175,11 +167,11 @@ namespace Chummer
             }
             catch (Exception e)
             {
-                string msg = String.Format("Got an " + e.GetType().ToString() + " with these variables in Chummy.cs-DrawEye(): x={0},y={1},width={2},height={3}", x,
+                string msg = string.Format("Got an " + e.GetType().ToString() + " with these variables in Chummy.cs-DrawEye(): x={0},y={1},width={2},height={3}", x,
                     y, width, height);
                 Log.Warn(e, msg);
             }
-            
+
         }
         #endregion
         #region Chat Bubble
@@ -192,9 +184,11 @@ namespace Chummer
             }
             foreach (XPathNavigator objXmlTip in _objXmlDocument.Select("tip"))
             {
-                var strId = objXmlTip.SelectSingleNode("id")?.Value;
-                if (string.IsNullOrEmpty(strId) || _usedTips.Contains(strId)) continue;
-                if (!objXmlTip.RequirementsMet(CharacterObject)) continue;
+                string strId = objXmlTip.SelectSingleNode("id")?.Value;
+                if (string.IsNullOrEmpty(strId) || _usedTips.Contains(strId))
+                    continue;
+                if (!objXmlTip.RequirementsMet(CharacterObject))
+                    continue;
                 _usedTips.Add(strId);
                 return objXmlTip.SelectSingleNode("translate")?.Value ?? objXmlTip.SelectSingleNode("text")?.Value ?? string.Empty;
             }

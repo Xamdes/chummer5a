@@ -16,10 +16,10 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
- using System;
- using System.Diagnostics;
- using System.Xml;
- using System.Globalization;
+using System;
+using System.Diagnostics;
+using System.Globalization;
+using System.Xml;
 
 namespace Chummer
 {
@@ -187,12 +187,18 @@ namespace Chummer
         /// <summary>
         /// Karma Expense Type.
         /// </summary>
-        public KarmaExpenseType KarmaType { get; set; }
+        public KarmaExpenseType KarmaType
+        {
+            get; set;
+        }
 
         /// <summary>
         /// Nuyen Expense Type.
         /// </summary>
-        public NuyenExpenseType NuyenType { get; set; }
+        public NuyenExpenseType NuyenType
+        {
+            get; set;
+        }
 
         /// <summary>
         /// Object InternalId.
@@ -437,7 +443,10 @@ namespace Chummer
         /// <summary>
         /// Undo object.
         /// </summary>
-        public ExpenseUndo Undo { get; set; }
+        public ExpenseUndo Undo
+        {
+            get; set;
+        }
 
         #endregion
     }

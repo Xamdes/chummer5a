@@ -1,17 +1,12 @@
-using ChummerHub.Client.Backend;
+using Chummer;
 using Newtonsoft.Json;
-using SINners.Models;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.Serialization;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml.Serialization;
-using Chummer;
 
 namespace SINners.Models
 {
@@ -44,7 +39,7 @@ namespace SINners.Models
 
         public void Save(CheckedListBox clbVisibilityToUsers)
         {
-            
+
             if (clbVisibilityToUsers != null)
             {
                 clbVisibilityToUsers.DoThreadSafe(() =>
@@ -55,7 +50,7 @@ namespace SINners.Models
                         clbVisibilityToUsers.SetItemChecked(i, obj.CanEdit.Value);
                     }
                 });
-                
+
             }
         }
 
@@ -72,7 +67,7 @@ namespace SINners.Models
                 CanEdit = true,
                 Id = Guid.NewGuid()
             };
-            var found = from a in this.UserRightsObservable where email != null && a!= null && a.EMail != null &&  a.EMail.ToLowerInvariant() == email.ToLowerInvariant() select a;
+            IEnumerable<SINnerUserRight> found = from a in this.UserRightsObservable where email != null && a != null && a.EMail != null && a.EMail.ToLowerInvariant() == email.ToLowerInvariant() select a;
             if (found.Any())
                 ur = found.FirstOrDefault();
             if (!this.UserRightsObservable.Contains(ur))
@@ -84,7 +79,7 @@ namespace SINners.Models
         {
             try
             {
-                var addr = new System.Net.Mail.MailAddress(email);
+                System.Net.Mail.MailAddress addr = new System.Net.Mail.MailAddress(email);
                 return addr.Address == email;
             }
             catch

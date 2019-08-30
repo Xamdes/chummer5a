@@ -26,8 +26,8 @@ namespace ChummerHub.Models.V1.Examples
         public UploadInfoObject GetUploadInfoObjectExample()
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'UploadInfoObjectExample.GetUploadInfoObjectExample()'
         {
-            var sin = new SINnerExample().GetSINnerExample();
-            var id = Guid.NewGuid();
+            SINner sin = new SINnerExample().GetSINnerExample();
+            Guid id = Guid.NewGuid();
             sin.UploadClientId = id;
             UploadInfoObject info = new UploadInfoObject()
             {

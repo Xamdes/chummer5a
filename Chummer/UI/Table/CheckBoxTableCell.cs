@@ -38,7 +38,8 @@ namespace Chummer.UI.Table
         {
             base.UpdateValue(newValue);
             T tValue = newValue as T;
-            if (VisibleExtractor != null) {
+            if (VisibleExtractor != null)
+            {
                 _checkBox.Visible = VisibleExtractor(tValue);
             }
             if (!_blnUpdating && ValueGetter != null)
@@ -49,19 +50,28 @@ namespace Chummer.UI.Table
             }
         }
 
-        public Func<T, bool> VisibleExtractor { get; set; }
+        public Func<T, bool> VisibleExtractor
+        {
+            get; set;
+        }
 
         /// <summary>
         /// The extractor for getting the checked state from the
         /// value.
         /// </summary>
-        public Func<T, bool> ValueGetter { get; set; }
+        public Func<T, bool> ValueGetter
+        {
+            get; set;
+        }
 
         /// <summary>
         /// Updater handling the change of the checked state
         /// of the checkbox.
         /// </summary>
-        public Action<T, bool> ValueUpdater { get; set; }
+        public Action<T, bool> ValueUpdater
+        {
+            get; set;
+        }
 
         private void checked_changed(object sender, EventArgs e)
         {

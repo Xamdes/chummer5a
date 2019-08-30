@@ -17,6 +17,7 @@
  *  https://github.com/chummer5a/chummer5a
  */
 using Chummer.Backend.Skills;
+using NLog;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -25,7 +26,6 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using System.Xml;
-using NLog;
 
 namespace Chummer
 {
@@ -127,7 +127,7 @@ namespace Chummer
                 _guiID = Guid.NewGuid();
             }
             objNode.TryGetStringFieldQuickly("name", ref _strName);
-            if(!objNode.TryGetGuidFieldQuickly("sourceid", ref _guiSourceID))
+            if (!objNode.TryGetGuidFieldQuickly("sourceid", ref _guiSourceID))
             {
                 XmlNode node = GetNode(GlobalOptions.Language);
                 node?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
@@ -174,7 +174,8 @@ namespace Chummer
             get => _guiSourceID;
             set
             {
-                if (_guiSourceID == value) return;
+                if (_guiSourceID == value)
+                    return;
                 _guiSourceID = value;
                 _objCachedMyXmlNode = null;
             }
@@ -476,10 +477,10 @@ namespace Chummer
                 int intReturn = 0;
                 if (Skill != null)
                 {
-                  intReturn = Skill.PoolOtherAttribute(_objCharacter.RES.TotalValue, "RES");
-                  // Add any Specialization bonus if applicable.
-                  if (Skill.HasSpecialization(DisplayName))
-                    intReturn += 2;
+                    intReturn = Skill.PoolOtherAttribute(_objCharacter.RES.TotalValue, "RES");
+                    // Add any Specialization bonus if applicable.
+                    if (Skill.HasSpecialization(DisplayName))
+                        intReturn += 2;
                 }
 
                 // Include any Improvements to Threading.

@@ -21,6 +21,9 @@ namespace Chummer
 {
     public interface IHasChildren<T>
     {
-        TaggedObservableCollection<T> Children { get; }
+        TaggedObservableCollection<T> Children
+        {
+            get;
+        }
     }
 }

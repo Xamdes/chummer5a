@@ -16,14 +16,14 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
-﻿using System;
+using System;
 using System.Windows.Forms;
 
 namespace Chummer
 {
     public partial class frmLifestyleNuyen : Form
     {
-        readonly Character _objCharacter;
+        private readonly Character _objCharacter;
 
         #region Control Events
         public frmLifestyleNuyen(Character objCharacter)
@@ -65,17 +65,26 @@ namespace Chummer
         /// <summary>
         /// Number of dice that are rolled for the lifestyle.
         /// </summary>
-        public int Dice { get; set; }
+        public int Dice
+        {
+            get; set;
+        }
 
         /// <summary>
         /// Extra number that is added to the dice roll.
         /// </summary>
-        public decimal Extra { get; set; }
+        public decimal Extra
+        {
+            get; set;
+        }
 
         /// <summary>
         /// D6 multiplier for the Lifestyle.
         /// </summary>
-        public decimal Multiplier { get; set; }
+        public decimal Multiplier
+        {
+            get; set;
+        }
 
         /// <summary>
         /// The total amount of Nuyen resulting from the dice roll.

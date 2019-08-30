@@ -7,7 +7,10 @@ namespace ChummerHub.Models.V1
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'ResultSINnerPut'
     {
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'ResultSINnerPut.MySINner'
-        public SINner MySINner { get; set; }
+        public SINner MySINner
+        {
+            get; set;
+        }
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'ResultSINnerPut.MySINner'
 
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'ResultSINnerPut.ResultSINnerPut()'

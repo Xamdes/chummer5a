@@ -28,7 +28,8 @@ namespace Chummer
                 max = array.Count;
             for (; skip < max; skip++)
             {
-                if (array[skip] == value) return skip;
+                if (array[skip] == value)
+                    return skip;
             }
 
             return -1;

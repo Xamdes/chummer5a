@@ -16,10 +16,10 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
- using System;
- using System.Diagnostics;
+using System;
+using System.Diagnostics;
 using System.IO;
- using System.Runtime.CompilerServices;
+using System.Runtime.CompilerServices;
 using System.Runtime.ExceptionServices;
 using System.Text;
 
@@ -112,7 +112,7 @@ namespace Chummer
 #endif
         )
         {
-            writeLog(new object[] {"Entering " + info}, file, method, line, LogLevel.Debug);
+            writeLog(new object[] { "Entering " + info }, file, method, line, LogLevel.Debug);
         }
 
         /// <summary>
@@ -138,7 +138,7 @@ namespace Chummer
 #endif
         )
         {
-            writeLog(new object[]{ "Exiting " + info},file, method, line, LogLevel.Debug);
+            writeLog(new object[] { "Exiting " + info }, file, method, line, LogLevel.Debug);
         }
 
         /// <summary>
@@ -164,7 +164,7 @@ namespace Chummer
 #endif
             )
         {
-            writeLog(info,file, method, line, LogLevel.Error);
+            writeLog(info, file, method, line, LogLevel.Error);
         }
 
         /// <summary>
@@ -190,7 +190,7 @@ namespace Chummer
 #endif
             )
         {
-            writeLog(new[]{info},file, method, line, LogLevel.Error);
+            writeLog(new[] { info }, file, method, line, LogLevel.Error);
         }
 
         /// <summary>
@@ -281,13 +281,13 @@ namespace Chummer
 
         public static void Exception(Exception exception, string message = null)
         {
-            if(!IsLoggerEnabled)
+            if (!IsLoggerEnabled)
                 return;
 
-            if (String.IsNullOrEmpty(message))
+            if (string.IsNullOrEmpty(message))
             {
                 writeLog(
-                    new object[] {exception, exception.StackTrace},
+                    new object[] { exception, exception.StackTrace },
                     exception.Source,
                     exception.TargetSite.Name,
                     (new StackTrace(exception, true)).GetFrame(0).GetFileLineNumber(),
@@ -296,7 +296,7 @@ namespace Chummer
             else
             {
                 writeLog(
-                    new object[] {message, exception, exception.StackTrace },
+                    new object[] { message, exception, exception.StackTrace },
                     exception.Source,
                     exception.TargetSite.Name,
                     (new StackTrace(exception, true)).GetFrame(0).GetFileLineNumber(),
@@ -315,7 +315,7 @@ namespace Chummer
 
         public static void Warning
             (
-            object[] info= null,
+            object[] info = null,
 #if LEGACY
             string file = "LEGACY",
             string method = "LEGACY",
@@ -353,7 +353,7 @@ namespace Chummer
 #endif
             )
         {
-            writeLog(new[]{info},file, method, line, LogLevel.Warn);
+            writeLog(new[] { info }, file, method, line, LogLevel.Warn);
         }
 
         /// <summary>
@@ -379,7 +379,7 @@ namespace Chummer
 #endif
             )
         {
-            writeLog(info,file, method, line, LogLevel.Info);
+            writeLog(info, file, method, line, LogLevel.Info);
         }
 
         /// <summary>
@@ -405,7 +405,7 @@ namespace Chummer
 #endif
             )
         {
-            writeLog(new object[]{info},file, method, line, LogLevel.Info);
+            writeLog(new object[] { info }, file, method, line, LogLevel.Info);
         }
 
         public enum LogLevel

@@ -16,7 +16,7 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
- using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
@@ -66,7 +66,7 @@ namespace Chummer
             int intHitCount = 0;
             int intGlitchCount = 0;
             int intGlitchMin = 1;
-            
+
             // If Rushed Job is checked, the minimum die result for a Glitch becomes 2.
             if (chkRushJob.Checked)
                 intGlitchMin = 2;
@@ -296,7 +296,7 @@ namespace Chummer
                 }
             }
 
-            
+
             lblResultsLabel.Visible = true;
             lblResults.Text = string.Empty;
             if (intGlitchCount >= intGlitchThreshold)

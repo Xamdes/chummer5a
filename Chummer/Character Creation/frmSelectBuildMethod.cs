@@ -16,10 +16,10 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
- using System;
+using System;
 using System.Collections.Generic;
- using System.Windows.Forms;
- using System.Xml.XPath;
+using System.Windows.Forms;
+using System.Xml.XPath;
 
 namespace Chummer
 {
@@ -158,7 +158,7 @@ namespace Chummer
             {
                 _objCharacter.BannedWareGrades.Clear();
                 foreach (XPathNavigator xmlNode in xmlGameplayOption.Select("bannedwaregrades/grade"))
-                            _objCharacter.BannedWareGrades.Add(xmlNode.Value);
+                    _objCharacter.BannedWareGrades.Add(xmlNode.Value);
 
                 int intTemp = 0;
                 if (!_objCharacter.Options.FreeContactsMultiplierEnabled && xmlGameplayOption.TryGetInt32FieldQuickly("contactmultiplier", ref intTemp))
@@ -192,27 +192,27 @@ namespace Chummer
             switch (strSelectedBuildMethod)
             {
                 case "Karma":
-                {
-                    int intKarmaValue = _intDefaultPointBuyKarma;
-                    xmlSelectedGameplayOption?.TryGetInt32FieldQuickly("pointbuykarma", ref intKarmaValue);
-                    nudKarma.Value = intKarmaValue;
-                    nudKarma.Enabled = true;
-                    nudMaxNuyen.Value = 225 + _decNuyenBP;
-                    nudMaxNuyen.Enabled = true;
-                    lblDescription.Text = string.Format(LanguageManager.GetString("String_SelectBP_KarmaSummary", GlobalOptions.Language), nudKarma.Value.ToString(GlobalOptions.InvariantCultureInfo));
-                    break;
-                }
+                    {
+                        int intKarmaValue = _intDefaultPointBuyKarma;
+                        xmlSelectedGameplayOption?.TryGetInt32FieldQuickly("pointbuykarma", ref intKarmaValue);
+                        nudKarma.Value = intKarmaValue;
+                        nudKarma.Enabled = true;
+                        nudMaxNuyen.Value = 225 + _decNuyenBP;
+                        nudMaxNuyen.Enabled = true;
+                        lblDescription.Text = string.Format(LanguageManager.GetString("String_SelectBP_KarmaSummary", GlobalOptions.Language), nudKarma.Value.ToString(GlobalOptions.InvariantCultureInfo));
+                        break;
+                    }
                 case "LifeModule":
-                {
-                    int intKarmaValue = _intDefaultLifeModulesKarma;
-                    xmlSelectedGameplayOption?.TryGetInt32FieldQuickly("lifemoduleskarma", ref intKarmaValue);
-                    nudKarma.Value = intKarmaValue;
-                    nudKarma.Enabled = true;
-                    nudMaxNuyen.Value = 225 + _decNuyenBP;
-                    nudMaxNuyen.Enabled = true;
-                    lblDescription.Text = string.Format(LanguageManager.GetString("String_SelectBP_LifeModuleSummary", GlobalOptions.Language), nudKarma.Value.ToString(GlobalOptions.InvariantCultureInfo));
-                    break;
-                }
+                    {
+                        int intKarmaValue = _intDefaultLifeModulesKarma;
+                        xmlSelectedGameplayOption?.TryGetInt32FieldQuickly("lifemoduleskarma", ref intKarmaValue);
+                        nudKarma.Value = intKarmaValue;
+                        nudKarma.Enabled = true;
+                        nudMaxNuyen.Value = 225 + _decNuyenBP;
+                        nudMaxNuyen.Enabled = true;
+                        lblDescription.Text = string.Format(LanguageManager.GetString("String_SelectBP_LifeModuleSummary", GlobalOptions.Language), nudKarma.Value.ToString(GlobalOptions.InvariantCultureInfo));
+                        break;
+                    }
                 case "SumtoTen":
                     nudSumtoTen.Visible = true;
                     lblSumToX.Visible = true;

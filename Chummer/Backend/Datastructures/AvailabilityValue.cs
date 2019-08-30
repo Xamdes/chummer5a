@@ -58,12 +58,13 @@ namespace Chummer
             if (strAvailExpr.StartsWith("FixedValues("))
             {
                 string[] strValues = strAvailExpr.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',');
-                strAvailExpr = strValues[(int)Math.Max(Math.Min(intRating, strValues.Length) - 1, 0)];
+                strAvailExpr = strValues[Math.Max(Math.Min(intRating, strValues.Length) - 1, 0)];
             }
 
             _chrSuffix = strAvailExpr[strAvailExpr.Length - 1];
             _blnAddToParent = strAvailExpr.StartsWith('+') || strAvailExpr.StartsWith('-');
-            if (_chrSuffix == 'F' || _chrSuffix == 'R') strAvailExpr = strAvailExpr.Substring(0, strAvailExpr.Length - 1);
+            if (_chrSuffix == 'F' || _chrSuffix == 'R')
+                strAvailExpr = strAvailExpr.Substring(0, strAvailExpr.Length - 1);
             object objProcess = CommonFunctions.EvaluateInvariantXPath(strAvailExpr.Replace("Rating", intRating.ToString(GlobalOptions.InvariantCultureInfo)), out bool blnIsSuccess);
             _intValue = blnIsSuccess ? Convert.ToInt32(objProcess) : 0;
             _intValue += intBonus;

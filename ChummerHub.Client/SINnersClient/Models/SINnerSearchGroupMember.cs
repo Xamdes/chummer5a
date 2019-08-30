@@ -4,19 +4,16 @@
 
 namespace SINners.Models
 {
-    using System;
-    using System.Linq;
-    using System.Collections.Generic;
     using Newtonsoft.Json;
-    using Microsoft.Rest;
-    using Microsoft.Rest.Serialization;
 
     public partial class SINnerSearchGroupMember
     {
         /// <summary>
         /// Initializes a new instance of the SINnerSearchGroupMember class.
         /// </summary>
-        public SINnerSearchGroupMember() { }
+        public SINnerSearchGroupMember()
+        {
+        }
 
         /// <summary>
         /// Initializes a new instance of the SINnerSearchGroupMember class.
@@ -30,12 +27,18 @@ namespace SINners.Models
         /// <summary>
         /// </summary>
         [JsonProperty(PropertyName = "mySINner")]
-        public SINner MySINner { get; set; }
+        public SINner MySINner
+        {
+            get; set;
+        }
 
         /// <summary>
         /// </summary>
         [JsonProperty(PropertyName = "username")]
-        public string Username { get; set; }
+        public string Username
+        {
+            get; set;
+        }
 
         /// <summary>
         /// Validate the object. Throws ValidationException if validation fails.

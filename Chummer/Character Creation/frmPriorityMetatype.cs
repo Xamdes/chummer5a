@@ -16,6 +16,7 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
+using Chummer.Backend.Equipment;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,7 +24,6 @@ using System.Text;
 using System.Windows.Forms;
 using System.Xml;
 using System.Xml.XPath;
-using Chummer.Backend.Equipment;
 
 namespace Chummer
 {
@@ -387,7 +387,7 @@ namespace Chummer
                                 LanguageManager.GetString("String_MetamagicSkills", GlobalOptions.Language));
                             // strSkillType can have the following values: magic, resonance, matrix, active, specific, grouped
                             // So the language file should contain each of those like String_MetamagicSkillType_magic
-                            lblMetatypeSkillSelection.Text = string.Format(strMetamagicSkillSelection, strSkillCount, LanguageManager.GetString("String_MetamagicSkillType_"+strSkillType, GlobalOptions.Language), strSkillVal);
+                            lblMetatypeSkillSelection.Text = string.Format(strMetamagicSkillSelection, strSkillCount, LanguageManager.GetString("String_MetamagicSkillType_" + strSkillType, GlobalOptions.Language), strSkillVal);
                             lblMetatypeSkillSelection.Visible = true;
                         }
 
@@ -542,7 +542,7 @@ namespace Chummer
         /// <summary>
         /// A Metatype has been selected, so fill in all of the necessary Character information.
         /// </summary>
-        void MetatypeSelected()
+        private void MetatypeSelected()
         {
             if (_objCharacter.BuildMethod == CharacterBuildMethod.SumtoTen)
             {
@@ -967,7 +967,7 @@ namespace Chummer
             return value;
         }
 
-        void RefreshSelectedMetatype()
+        private void RefreshSelectedMetatype()
         {
             string strSpaceCharacter = LanguageManager.GetString("String_Space", GlobalOptions.Language);
             string strSelectedMetatype = lstMetatypes.SelectedValue?.ToString();
@@ -1206,7 +1206,7 @@ namespace Chummer
             lblMetavariantKarmaLabel.Visible = !string.IsNullOrEmpty(lblMetavariantKarma.Text);
         }
 
-        void PopulateTalents()
+        private void PopulateTalents()
         {
             // Load the Priority information.
             List<ListItem> lstTalent = new List<ListItem>();
@@ -1278,7 +1278,7 @@ namespace Chummer
                                     }
                                 }
                             }
-                            EndForbiddenLoop:
+EndForbiddenLoop:
                             if (blnRequirementForbidden)
                                 continue;
                         }
@@ -1324,7 +1324,7 @@ namespace Chummer
                                     }
                                 }
                             }
-                            EndRequiredLoop:
+EndRequiredLoop:
                             if (!blnRequirementMet)
                                 continue;
                         }
@@ -1356,7 +1356,7 @@ namespace Chummer
             cboTalents.EndUpdate();
         }
 
-        void PopulateMetavariants()
+        private void PopulateMetavariants()
         {
             string strSelectedMetatype = lstMetatypes.SelectedValue?.ToString();
 
@@ -1476,7 +1476,7 @@ namespace Chummer
         /// <summary>
         /// Populate the list of Metatypes.
         /// </summary>
-        void PopulateMetatypes()
+        private void PopulateMetatypes()
         {
             string strSelectedMetatypeCategory = cboCategory.SelectedValue?.ToString();
             if (!string.IsNullOrEmpty(strSelectedMetatypeCategory))
@@ -1543,7 +1543,8 @@ namespace Chummer
                 }
                 // Remove metatypes not covered by heritage
                 lstRemoveCategory.Add(objXmlCategory.Value);
-                NextItem:;
+NextItem:
+                ;
             }
 
             foreach (XPathNavigator objXmlCategory in _xmlBaseMetatypeDataNode.Select("categories/category"))

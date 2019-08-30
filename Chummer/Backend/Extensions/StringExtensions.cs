@@ -87,7 +87,8 @@ namespace Chummer
                     }
                 }
                 achrNewChars[intCurrent++] = chrLoop;
-            SkipChar:;
+SkipChar:
+                ;
             }
             // ... then we create a new string from the new CharArray, but only up to the number of characters that actually ended up getting copied
             return new string(achrNewChars, 0, intCurrent);
@@ -220,7 +221,7 @@ namespace Chummer
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static string[] Split(this string strInput, char chrSeparator, StringSplitOptions eSplitOptions)
         {
-            return strInput.Split(new []{chrSeparator}, eSplitOptions);
+            return strInput.Split(new[] { chrSeparator }, eSplitOptions);
         }
 
         /// <summary>
@@ -678,7 +679,7 @@ namespace Chummer
         public static string CheapReplace(this string strInput, string strOldValue, Func<string> funcNewValueFactory, bool ToLowerInvariant = false)
         {
             if (strInput?.Contains(strOldValue) == true)
-                    return strInput.Replace(strOldValue, funcNewValueFactory.Invoke());
+                return strInput.Replace(strOldValue, funcNewValueFactory.Invoke());
             if (ToLowerInvariant)
             {
                 if (strInput?.ToLowerInvariant().Contains(strOldValue.ToLowerInvariant()) == true)
@@ -772,7 +773,8 @@ namespace Chummer
                     }
                     while (intEndOfLinePosition > intCurrentPosition);
                 }
-                else objReturn.Append(strNewLine); // Empty line
+                else
+                    objReturn.Append(strNewLine); // Empty line
             }
             return objReturn.ToString();
         }
@@ -812,7 +814,7 @@ namespace Chummer
         /// <param name="strSearch">String to clean.</param>
         public static string CleanXPath(this string strSearch)
         {
-            if(String.IsNullOrEmpty(strSearch))
+            if (string.IsNullOrEmpty(strSearch))
                 return null;
             int intQuotePos = strSearch.IndexOf('"');
             if (intQuotePos == -1)

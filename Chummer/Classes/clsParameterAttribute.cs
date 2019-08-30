@@ -17,9 +17,9 @@
  *  https://github.com/chummer5a/chummer5a
  */
 
+using Chummer.Backend.Equipment;
 using System.Collections.Generic;
- using System.Text.RegularExpressions;
- using Chummer.Backend.Equipment;
+using System.Text.RegularExpressions;
 
 namespace Chummer
 {
@@ -35,7 +35,7 @@ namespace Chummer
     /// </summary>
     public sealed class ParameterAttribute
     {
-         //Keep a single regex to not create one for each class.
+        //Keep a single regex to not create one for each class.
         //This might not be thread save if winforms ever gets multithreaded
         private static readonly Regex FixedExtract = new Regex(@"FixedValues\(([^)]*)\)");
         private readonly Gear _gear;
@@ -82,7 +82,7 @@ namespace Chummer
 
             }
 
-            
+
         }
 
         public Gear Gear => _gear;
@@ -106,12 +106,13 @@ namespace Chummer
                         return fixedDoubles[fixedDoubles.Length - 1];
                     }
                     else  //Structured like this to allow easy disabling of
-                         //above code if IndexOutOfRangeException turns out to be
-                        //prefered. This is an elseif
-                        if(true)
-                        {
-                            return fixedDoubles[_gear.Rating];
-                    /**/}
+                          //above code if IndexOutOfRangeException turns out to be
+                          //prefered. This is an elseif
+                        if (true)
+                    {
+                        return fixedDoubles[_gear.Rating];
+                        /**/
+                    }
                 }
                 else
                 {
@@ -120,6 +121,6 @@ namespace Chummer
             }
         }
 
-        public int AttributeInt => (int) AttributeDouble;
+        public int AttributeInt => (int)AttributeDouble;
     }
 }

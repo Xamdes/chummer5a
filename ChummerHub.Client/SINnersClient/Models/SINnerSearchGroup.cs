@@ -4,19 +4,18 @@
 
 namespace SINners.Models
 {
-    using System;
-    using System.Linq;
-    using System.Collections.Generic;
     using Newtonsoft.Json;
-    using Microsoft.Rest;
-    using Microsoft.Rest.Serialization;
+    using System;
+    using System.Collections.Generic;
 
     public partial class SINnerSearchGroup
     {
         /// <summary>
         /// Initializes a new instance of the SINnerSearchGroup class.
         /// </summary>
-        public SINnerSearchGroup() { }
+        public SINnerSearchGroup()
+        {
+        }
 
         /// <summary>
         /// Initializes a new instance of the SINnerSearchGroup class.
@@ -43,78 +42,123 @@ namespace SINners.Models
         /// <summary>
         /// </summary>
         [JsonProperty(PropertyName = "mySINSearchGroups")]
-        public IList<SINnerSearchGroup> MySINSearchGroups { get; set; }
+        public IList<SINnerSearchGroup> MySINSearchGroups
+        {
+            get; set;
+        }
 
         /// <summary>
         /// </summary>
         [JsonProperty(PropertyName = "errorText")]
-        public string ErrorText { get; set; }
+        public string ErrorText
+        {
+            get; set;
+        }
 
         /// <summary>
         /// </summary>
         [JsonProperty(PropertyName = "myMembers")]
-        public IList<SINnerSearchGroupMember> MyMembers { get; set; }
+        public IList<SINnerSearchGroupMember> MyMembers
+        {
+            get; set;
+        }
 
         /// <summary>
         /// </summary>
         [JsonProperty(PropertyName = "id")]
-        public Guid? Id { get; set; }
+        public Guid? Id
+        {
+            get; set;
+        }
 
         /// <summary>
         /// </summary>
         [JsonProperty(PropertyName = "myParentGroupId")]
-        public Guid? MyParentGroupId { get; set; }
+        public Guid? MyParentGroupId
+        {
+            get; set;
+        }
 
         /// <summary>
         /// </summary>
         [JsonProperty(PropertyName = "isPublic")]
-        public bool? IsPublic { get; set; }
+        public bool? IsPublic
+        {
+            get; set;
+        }
 
         /// <summary>
         /// </summary>
         [JsonProperty(PropertyName = "groupCreatorUserName")]
-        public string GroupCreatorUserName { get; set; }
+        public string GroupCreatorUserName
+        {
+            get; set;
+        }
 
         /// <summary>
         /// </summary>
         [JsonProperty(PropertyName = "mySettings")]
-        public SINnerGroupSetting MySettings { get; set; }
+        public SINnerGroupSetting MySettings
+        {
+            get; set;
+        }
 
         /// <summary>
         /// </summary>
         [JsonProperty(PropertyName = "groupname")]
-        public string Groupname { get; set; }
+        public string Groupname
+        {
+            get; set;
+        }
 
         /// <summary>
         /// </summary>
         [JsonProperty(PropertyName = "passwordHash")]
-        public string PasswordHash { get; set; }
+        public string PasswordHash
+        {
+            get; set;
+        }
 
         /// <summary>
         /// </summary>
         [JsonProperty(PropertyName = "hasPassword")]
-        public bool? HasPassword { get; set; }
+        public bool? HasPassword
+        {
+            get; set;
+        }
 
         /// <summary>
         /// </summary>
         [JsonProperty(PropertyName = "description")]
-        public string Description { get; set; }
+        public string Description
+        {
+            get; set;
+        }
 
         /// <summary>
         /// </summary>
         [JsonProperty(PropertyName = "language")]
-        public string Language { get; set; }
+        public string Language
+        {
+            get; set;
+        }
 
         /// <summary>
         /// </summary>
         [JsonProperty(PropertyName = "myGroups")]
-        public IList<SINnerGroup> MyGroups { get; set; }
+        public IList<SINnerGroup> MyGroups
+        {
+            get; set;
+        }
 
         /// <summary>
         /// Only users of the specified Role can join this group
         /// </summary>
         [JsonProperty(PropertyName = "myAdminIdentityRole")]
-        public string MyAdminIdentityRole { get; set; }
+        public string MyAdminIdentityRole
+        {
+            get; set;
+        }
 
         /// <summary>
         /// Validate the object. Throws ValidationException if validation fails.
@@ -123,7 +167,7 @@ namespace SINners.Models
         {
             if (this.MySINSearchGroups != null)
             {
-                foreach (var element in this.MySINSearchGroups)
+                foreach (SINnerSearchGroup element in this.MySINSearchGroups)
                 {
                     if (element != null)
                     {
@@ -133,7 +177,7 @@ namespace SINners.Models
             }
             if (this.MyMembers != null)
             {
-                foreach (var element1 in this.MyMembers)
+                foreach (SINnerSearchGroupMember element1 in this.MyMembers)
                 {
                     if (element1 != null)
                     {
@@ -157,7 +201,7 @@ namespace SINners.Models
             }
             if (this.MyGroups != null)
             {
-                foreach (var element2 in this.MyGroups)
+                foreach (SINnerGroup element2 in this.MyGroups)
                 {
                     if (element2 != null)
                     {

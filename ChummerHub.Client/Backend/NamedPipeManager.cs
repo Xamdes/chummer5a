@@ -1,12 +1,7 @@
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.IO.Pipes;
-using System.Linq;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
-using System.Windows.Forms;
 
 namespace ChummerHub.Client.Backend
 {
@@ -14,7 +9,7 @@ namespace ChummerHub.Client.Backend
     /// A very simple Named Pipe Server implementation that makes it 
     /// easy to pass string messages between two applications.
     /// </summary>
-    public class NamedPipeManager 
+    public class NamedPipeManager
     {
         private static NLog.Logger Log = NLog.LogManager.GetCurrentClassLogger();
         public string NamedPipeName = "Chummer";
@@ -37,7 +32,7 @@ namespace ChummerHub.Client.Backend
             StopServer();
             Thread = new Thread((pipeName) =>
             {
-                if (!(pipeName is String pipeNameString))
+                if (!(pipeName is string pipeNameString))
                     throw new ArgumentNullException(nameof(pipeName));
                 _isRunning = true;
                 while (true)
@@ -50,7 +45,7 @@ namespace ChummerHub.Client.Backend
                         PipeAccessRule par = new PipeAccessRule(sid, PipeAccessRights.ReadWrite, System.Security.AccessControl.AccessControlType.Allow);
                         //PipeAccessRule psRule = new PipeAccessRule(@"Everyone", PipeAccessRights.ReadWrite, System.Security.AccessControl.AccessControlType.Allow);
                         ps.AddAccessRule(par);
-                        using (var server = new NamedPipeServerStream(pipeNameString,
+                        using (NamedPipeServerStream server = new NamedPipeServerStream(pipeNameString,
                             PipeDirection.InOut, 1,
                             PipeTransmissionMode.Message, PipeOptions.None,
                             4028, 4028, ps))
@@ -78,7 +73,7 @@ namespace ChummerHub.Client.Backend
                         Log.Error(e);
                         Thread.Sleep(50);
                     }
-                    
+
 
                     if (_isRunning == false)
                         break;
@@ -114,7 +109,7 @@ namespace ChummerHub.Client.Backend
         {
             try
             {
-                using (var client = new NamedPipeClientStream(".", NamedPipeName, PipeDirection.InOut))
+                using (NamedPipeClientStream client = new NamedPipeClientStream(".", NamedPipeName, PipeDirection.InOut))
                 {
                     try
                     {
@@ -148,7 +143,7 @@ namespace ChummerHub.Client.Backend
                     }
                 }
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 Log.Warn(e);
                 return false;

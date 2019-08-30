@@ -16,9 +16,9 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
+using Chummer.Classes;
 using System;
 using System.Xml;
-using Chummer.Classes;
 // ReSharper disable StringLiteralTypo
 
 namespace Chummer

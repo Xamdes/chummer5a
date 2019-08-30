@@ -16,13 +16,13 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
+using Chummer.Backend.Skills;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
-using Chummer.Backend.Skills;
 
 namespace Chummer.UI.Skills
 {
@@ -86,7 +86,7 @@ namespace Chummer.UI.Skills
                 cboSpec.Visible = false;
 
                 lblModifiedRating.Location = new Point(294 - 30, 4);
-                
+
                 btnAddSpec.DataBindings.Add("Enabled", skill, nameof(Skill.CanAffordSpecialization), false, DataSourceUpdateMode.OnPropertyChanged);
                 btnAddSpec.DataBindings.Add("Visible", skill, nameof(Skill.CanHaveSpecs), false, DataSourceUpdateMode.OnPropertyChanged);
                 btnAddSpec.DataBindings.Add("ToolTipText", skill, nameof(Skill.AddSpecToolTip), false, DataSourceUpdateMode.OnPropertyChanged);
@@ -260,7 +260,8 @@ namespace Chummer.UI.Skills
             };
             selectForm.ShowDialog();
 
-            if (selectForm.DialogResult != DialogResult.OK) return;
+            if (selectForm.DialogResult != DialogResult.OK)
+                return;
 
             _skill.AddSpecialization(selectForm.SelectedItem);
 
@@ -279,14 +280,15 @@ namespace Chummer.UI.Skills
         /// </summary>
         #region ButtonWithToolTip Visibility workaround
 
-        ButtonWithToolTip _activeButton;
+        private ButtonWithToolTip _activeButton;
 
         private ButtonWithToolTip ActiveButton
         {
             get => _activeButton;
             set
             {
-                if (value == ActiveButton) return;
+                if (value == ActiveButton)
+                    return;
                 ActiveButton?.ToolTipObject.Hide(this);
                 _activeButton = value;
                 if (_activeButton?.Visible == true)
@@ -300,8 +302,10 @@ namespace Chummer.UI.Skills
         {
             foreach (Control c in Controls)
             {
-                if (!(c is ButtonWithToolTip)) continue;
-                if (c.Bounds.Contains(pt)) return c;
+                if (!(c is ButtonWithToolTip))
+                    continue;
+                if (c.Bounds.Contains(pt))
+                    return c;
             }
             return null;
         }

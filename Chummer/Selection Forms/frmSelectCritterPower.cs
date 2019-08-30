@@ -16,12 +16,12 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
- using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
- using System.Xml.XPath;
+using System.Xml.XPath;
 
 namespace Chummer
 {
@@ -163,7 +163,8 @@ namespace Chummer
             {
                 foreach (ListItem objItem in _lstCategory)
                 {
-                    if (objItem.Value.ToString() == "Drake") continue;
+                    if (objItem.Value.ToString() == "Drake")
+                        continue;
                     _lstCategory.Remove(objItem);
                     break;
                 }
@@ -424,8 +425,10 @@ namespace Chummer
             foreach (XPathNavigator objXmlPower in _xmlBaseCritterPowerDataNode.Select("powers/power[" + strFilter + "]"))
             {
                 string strPowerName = objXmlPower.SelectSingleNode("name")?.Value ?? LanguageManager.GetString("String_Unknown", GlobalOptions.Language);
-                if (!lstPowerWhitelist.Contains(strPowerName) && lstPowerWhitelist.Count != 0) continue;
-                if (!objXmlPower.RequirementsMet(_objCharacter, string.Empty, string.Empty)) continue;
+                if (!lstPowerWhitelist.Contains(strPowerName) && lstPowerWhitelist.Count != 0)
+                    continue;
+                if (!objXmlPower.RequirementsMet(_objCharacter, string.Empty, string.Empty))
+                    continue;
                 TreeNode objNode = new TreeNode
                 {
                     Tag = objXmlPower.SelectSingleNode("id")?.Value ?? string.Empty,
@@ -484,7 +487,7 @@ namespace Chummer
 
             DialogResult = DialogResult.OK;
         }
-        
+
         private void OpenSourceFromLabel(object sender, EventArgs e)
         {
             CommonFunctions.OpenPDFFromControl(sender, e);

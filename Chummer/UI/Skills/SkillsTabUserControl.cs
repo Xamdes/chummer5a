@@ -16,6 +16,9 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
+using Chummer.Backend.Attributes;
+using Chummer.Backend.Skills;
+using Chummer.UI.Shared;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -27,9 +30,6 @@ using System.Globalization;
 using System.Linq;
 using System.Windows.Forms;
 using System.Xml;
-using Chummer.Backend.Skills;
-using Chummer.UI.Shared;
-using Chummer.Backend.Attributes;
 
 namespace Chummer.UI.Skills
 {
@@ -39,7 +39,7 @@ namespace Chummer.UI.Skills
 
         private BindingListDisplay<Skill> _lstActiveSkills;
         private BindingListDisplay<SkillGroup> _lstSkillGroups;
-        private BindingListDisplay<KnowledgeSkill> _lstKnowledgeSkills; 
+        private BindingListDisplay<KnowledgeSkill> _lstKnowledgeSkills;
 
         public SkillsTabUserControl()
         {
@@ -57,7 +57,8 @@ namespace Chummer.UI.Skills
 
         private void LstSkillControlsOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            if (!HasLoaded) return;
+            if (!HasLoaded)
+                return;
             int intNameLabelWidth = _lstSkillControls.Max(i => i.NameWidth);
 
             foreach (SkillControl2 objSkillControl in _lstSkillControls)
@@ -65,12 +66,14 @@ namespace Chummer.UI.Skills
                 objSkillControl.MoveControls(intNameLabelWidth);
             }
 
-            if (_objCharacter.Created) return;
+            if (_objCharacter.Created)
+                return;
             int intRatingLabelWidth = _lstSkillControls.Max(i => i.NudSkillWidth);
             lblActiveSp.Left = lblActiveSkills.Left + intNameLabelWidth + 6;
             lblActiveKarma.Left = lblActiveSp.Left + intRatingLabelWidth + 6;
             //When in karma mode, we will occasionally fail to load the proper size; break if this is the case during debug and try a failback. 
-            if (lblActiveKarma.Left >= intNameLabelWidth) return;
+            if (lblActiveKarma.Left >= intNameLabelWidth)
+                return;
             Utils.BreakIfDebug();
             lblActiveKarma.Left = intNameLabelWidth + 6;
         }
@@ -89,13 +92,13 @@ namespace Chummer.UI.Skills
         public bool HasLoaded => _objCharacter != null;
         private Character _objCharacter;
         private readonly IList<Tuple<string, Predicate<Skill>>> _lstDropDownActiveSkills;
-        private readonly IList<Tuple<string, IComparer<Skill>>>  _sortList;
+        private readonly IList<Tuple<string, IComparer<Skill>>> _sortList;
         private readonly ObservableCollection<SkillControl2> _lstSkillControls = new ObservableCollection<SkillControl2>();
         private bool _blnActiveSkillSearchMode;
         private bool _blnKnowledgeSkillSearchMode;
         private readonly IList<Tuple<string, Predicate<KnowledgeSkill>>> _lstDropDownKnowledgeSkills;
         private readonly IList<Tuple<string, IComparer<KnowledgeSkill>>> _lstSortKnowledgeList;
-        
+
         private void SkillsTabUserControl_Load(object sender, EventArgs e)
         {
             if (_objCharacter == null)
@@ -107,7 +110,7 @@ namespace Chummer.UI.Skills
                     ParentForm.Cursor = Cursors.Default;
             }
         }
-        
+
         public void RealLoad()
         {
             if (ParentForm is CharacterShared frmParent)
@@ -191,7 +194,7 @@ namespace Chummer.UI.Skills
             swDisplays.TaskEnd("_lstActiveSkills add");
 
             _lstKnowledgeSkills = new BindingListDisplay<KnowledgeSkill>(_objCharacter.SkillsSection.KnowledgeSkills,
-                knoSkill => new KnowledgeSkillControl(knoSkill) {Anchor = AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Top})
+                knoSkill => new KnowledgeSkillControl(knoSkill) { Anchor = AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Top })
             {
                 Location = new Point(3, 50),
             };
@@ -455,10 +458,10 @@ namespace Chummer.UI.Skills
 
             return ret;
         }
-        
+
         private Control MakeActiveSkill(Skill arg)
         {
-            SkillControl2 objSkillControl = new SkillControl2(arg) {Anchor = AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Top};
+            SkillControl2 objSkillControl = new SkillControl2(arg) { Anchor = AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Top };
             _lstSkillControls.Add(objSkillControl);
             objSkillControl.CustomAttributeChanged += Control_CustomAttributeChanged;
             return objSkillControl;
@@ -597,7 +600,7 @@ namespace Chummer.UI.Skills
             if (!_objCharacter.SkillsSection.SkillsDictionary.ContainsKey(key))
                 _objCharacter.SkillsSection.SkillsDictionary.Add(key, objSkill);
         }
-        
+
         private void btnKnowledge_Click(object sender, EventArgs e)
         {
             if (_objCharacter.Created)
@@ -633,7 +636,7 @@ namespace Chummer.UI.Skills
                 control2.ResetSelectAttribute();
             }
         }
-        
+
         private void cboSortKnowledge_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (cboSortKnowledge.SelectedItem is Tuple<string, IComparer<KnowledgeSkill>> selectedItem)

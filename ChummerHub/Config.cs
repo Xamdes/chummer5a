@@ -10,7 +10,7 @@ namespace ChummerHub
     {
         internal static List<ApplicationUser> GetAdminUsers()
         {
-            var a = new ApplicationUser()
+            ApplicationUser a = new ApplicationUser()
             {
                 Email = "archon.megalon@gmail.com",
                 EmailConfirmed = true,
@@ -23,7 +23,7 @@ namespace ChummerHub
 #pragma warning restore CS0612 // 'ApplicationUser.Groupname' is obsolete
                 Id = Guid.Parse("9FC744C1-FC22-4EDA-6A05-08D64B08AE81"),
             };
-            var b = new ApplicationUser()
+            ApplicationUser b = new ApplicationUser()
             {
                 Email = "chummer5isalive@gmail.com",
                 EmailConfirmed = true,
@@ -36,7 +36,7 @@ namespace ChummerHub
 #pragma warning restore CS0612 // 'ApplicationUser.Groupname' is obsolete
                 Id = Guid.Parse("AFC744C1-FC22-4EDA-6A05-08D64B08AE81"),
             };
-            var list = new List<ApplicationUser>() { a, b };
+            List<ApplicationUser> list = new List<ApplicationUser>() { a, b };
             return list;
         }
     }

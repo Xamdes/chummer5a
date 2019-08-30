@@ -4,19 +4,17 @@
 
 namespace SINners.Models
 {
-    using System;
-    using System.Linq;
-    using System.Collections.Generic;
     using Newtonsoft.Json;
-    using Microsoft.Rest;
-    using Microsoft.Rest.Serialization;
+    using System.Collections.Generic;
 
     public partial class SINSearchGroupResult
     {
         /// <summary>
         /// Initializes a new instance of the SINSearchGroupResult class.
         /// </summary>
-        public SINSearchGroupResult() { }
+        public SINSearchGroupResult()
+        {
+        }
 
         /// <summary>
         /// Initializes a new instance of the SINSearchGroupResult class.
@@ -32,22 +30,34 @@ namespace SINners.Models
         /// <summary>
         /// </summary>
         [JsonProperty(PropertyName = "roles")]
-        public IList<string> Roles { get; set; }
+        public IList<string> Roles
+        {
+            get; set;
+        }
 
         /// <summary>
         /// </summary>
         [JsonProperty(PropertyName = "version")]
-        public ChummerHubVersion Version { get; set; }
+        public ChummerHubVersion Version
+        {
+            get; set;
+        }
 
         /// <summary>
         /// </summary>
         [JsonProperty(PropertyName = "sinGroups")]
-        public IList<SINnerSearchGroup> SinGroups { get; set; }
+        public IList<SINnerSearchGroup> SinGroups
+        {
+            get; set;
+        }
 
         /// <summary>
         /// </summary>
         [JsonProperty(PropertyName = "errorText")]
-        public string ErrorText { get; set; }
+        public string ErrorText
+        {
+            get; set;
+        }
 
     }
 }

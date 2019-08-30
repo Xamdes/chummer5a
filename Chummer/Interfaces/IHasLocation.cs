@@ -21,6 +21,9 @@ namespace Chummer
 {
     public interface IHasLocation
     {
-        Location Location { get; set; }
+        Location Location
+        {
+            get; set;
+        }
     }
 }

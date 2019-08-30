@@ -21,6 +21,9 @@ namespace Chummer
 {
     public interface IHasName
     {
-        string Name { get; set; }
+        string Name
+        {
+            get; set;
+        }
     }
 }

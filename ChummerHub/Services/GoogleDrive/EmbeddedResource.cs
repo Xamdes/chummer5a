@@ -15,14 +15,14 @@ namespace ChummerHub.Services.GoogleDrive
         {
             try
             {
-                var assembly = typeof(EmbeddedResource).GetTypeInfo().Assembly;
+                Assembly assembly = typeof(EmbeddedResource).GetTypeInfo().Assembly;
                 // This shows the available items.
                 string[] resources = assembly.GetManifestResourceNames();
 
 
-                using (var stream = assembly.GetManifestResourceStream(namespaceAndFileName))
+                using (Stream stream = assembly.GetManifestResourceStream(namespaceAndFileName))
                 {
-                    using (var reader = new StreamReader(stream, Encoding.UTF8))
+                    using (StreamReader reader = new StreamReader(stream, Encoding.UTF8))
                     {
                         return reader.ReadToEnd();
                     }

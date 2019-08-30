@@ -36,8 +36,8 @@ namespace Chummer.Backend.Equipment
         private int _intAvail;
         private string _strSource = "SR5";
         private int _intDeviceRating = 2;
-	    private int _intAddictionThreshold;
-		private readonly Improvement.ImprovementSource _eSource;
+        private int _intAddictionThreshold;
+        private readonly Improvement.ImprovementSource _eSource;
 
         #region Constructor and Load Methods
         public Grade(Improvement.ImprovementSource eSource)
@@ -58,7 +58,7 @@ namespace Chummer.Backend.Equipment
             {
                 _guiID = Guid.NewGuid();
             }
-            if(!objNode.TryGetGuidFieldQuickly("sourceid", ref _guiSourceID))
+            if (!objNode.TryGetGuidFieldQuickly("sourceid", ref _guiSourceID))
             {
                 XmlNode node = GetNode(GlobalOptions.Language);
                 node?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
@@ -68,7 +68,7 @@ namespace Chummer.Backend.Equipment
             objNode.TryGetInt32FieldQuickly("avail", ref _intAvail);
             objNode.TryGetStringFieldQuickly("source", ref _strSource);
             objNode.TryGetField("addictionthreshold", out _intAddictionThreshold);
-			if (!objNode.TryGetInt32FieldQuickly("devicerating", ref _intDeviceRating))
+            if (!objNode.TryGetInt32FieldQuickly("devicerating", ref _intDeviceRating))
             {
                 if (Name.Contains("Alphaware"))
                     _intDeviceRating = 3;
@@ -93,7 +93,8 @@ namespace Chummer.Backend.Equipment
 
         public XmlNode GetNode(string strLanguage)
         {
-            if (_objCachedMyXmlNode != null && strLanguage == _strCachedXmlNodeLanguage && !GlobalOptions.LiveCustomData) return _objCachedMyXmlNode;
+            if (_objCachedMyXmlNode != null && strLanguage == _strCachedXmlNodeLanguage && !GlobalOptions.LiveCustomData)
+                return _objCachedMyXmlNode;
             _objCachedMyXmlNode = SourceID == Guid.Empty
                 ? XmlManager
                     .Load(_eSource == Improvement.ImprovementSource.Bioware ? "bioware.xml" : "cyberware.xml",
@@ -191,6 +192,6 @@ namespace Chummer.Backend.Equipment
             get => _intAddictionThreshold;
             set => _intAddictionThreshold = value;
         }
-		#endregion
-	}
+        #endregion
+    }
 }

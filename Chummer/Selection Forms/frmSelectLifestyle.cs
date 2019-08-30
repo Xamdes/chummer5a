@@ -16,12 +16,12 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
- using System;
+using Chummer.Backend.Equipment;
+using NLog;
+using System;
 using System.Collections.Generic;
- using System.Windows.Forms;
+using System.Windows.Forms;
 using System.Xml;
- using Chummer.Backend.Equipment;
- using NLog;
 
 namespace Chummer
 {
@@ -259,7 +259,8 @@ namespace Chummer
                 }
                 foreach (TreeNode objNode in treQualities.Nodes)
                 {
-                    if (!objNode.Checked) continue;
+                    if (!objNode.Checked)
+                        continue;
                     XmlNode objXmlLifestyleQuality = _objXmlDocument.SelectSingleNode($"/chummer/qualities/quality[id = \"{objNode.Tag}\"]");
                     LifestyleQuality objQuality = new LifestyleQuality(_objCharacter);
                     objQuality.Create(objXmlLifestyleQuality, _objLifestyle, _objCharacter, QualitySource.Selected);

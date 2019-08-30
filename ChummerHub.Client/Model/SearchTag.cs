@@ -1,13 +1,8 @@
 using Chummer;
 using Newtonsoft.Json;
-using SINners.Models;
-using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
 using System.Runtime.Serialization;
-using System.Text;
-using System.Threading.Tasks;
 using System.Xml.Serialization;
 
 namespace SINners.Models
@@ -23,18 +18,24 @@ namespace SINners.Models
     public partial class SearchTag
     {
 
-        
+
 
         [IgnoreDataMember]
         [XmlIgnore]
         [JsonIgnore]
-        public SearchTag MyParentTag { get; set; }
+        public SearchTag MyParentTag
+        {
+            get; set;
+        }
 
-        
+
         [IgnoreDataMember]
         [XmlIgnore]
         [JsonIgnore]
-        public object MyRuntimePropertyValue { get; set; }
+        public object MyRuntimePropertyValue
+        {
+            get; set;
+        }
 
         public SearchTag(PropertyInfo myPropertyInfo, Chummer.HubTagAttribute hubTag)
         {
@@ -53,19 +54,28 @@ namespace SINners.Models
         [IgnoreDataMember]
         [XmlIgnore]
         [JsonIgnore]
-        public PropertyInfo MyPropertyInfo { get;  set; }
+        public PropertyInfo MyPropertyInfo
+        {
+            get; set;
+        }
 
         [IgnoreDataMember]
         [XmlIgnore]
         [JsonIgnore]
-        public HubClassTagAttribute MyRuntimeHubClassTag { get;  set; }
+        public HubClassTagAttribute MyRuntimeHubClassTag
+        {
+            get; set;
+        }
 
         [IgnoreDataMember]
         [XmlIgnore]
         [JsonIgnore]
-        public HubTagAttribute MyRuntimeHubTag { get;  set; }
+        public HubTagAttribute MyRuntimeHubTag
+        {
+            get; set;
+        }
 
-        public String DisplayText
+        public string DisplayText
         {
             get
             {

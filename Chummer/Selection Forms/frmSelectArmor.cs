@@ -16,14 +16,14 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
- using System;
-using System.Data;
+using Chummer.Backend.Equipment;
+using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
+using System.Text;
 using System.Windows.Forms;
 using System.Xml;
- using Chummer.Backend.Equipment;
-using System.Text;
 
 // ReSharper disable LocalizableElement
 
@@ -517,8 +517,8 @@ namespace Chummer
                 chkBlackMarketDiscount.Checked = _setBlackMarketMaps.Contains(_objSelectedArmor.Category);
                 _objSelectedArmor.DiscountCost = chkBlackMarketDiscount.Checked;
                 _objSelectedArmor.Rating = decimal.ToInt32(nudRating.Value);
-                
-                lblSource.Text =     _objSelectedArmor.SourceDetail.ToString();
+
+                lblSource.Text = _objSelectedArmor.SourceDetail.ToString();
                 lblSource.SetToolTip(_objSelectedArmor.SourceDetail.LanguageBookTooltip);
                 lblSourceLabel.Visible = !string.IsNullOrEmpty(lblSource.Text);
 

@@ -8,13 +8,22 @@ namespace ChummerHub.Models.V1
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'ResultBase'
     {
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'ResultBase.MyException'
-        public HubException MyException { get; set; }
+        public HubException MyException
+        {
+            get; set;
+        }
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'ResultBase.MyException'
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'ResultBase.CallSuccess'
-        public bool CallSuccess { get; set; }
+        public bool CallSuccess
+        {
+            get; set;
+        }
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'ResultBase.CallSuccess'
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'ResultBase.ErrorText'
-        public string ErrorText { get; set; }
+        public string ErrorText
+        {
+            get; set;
+        }
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'ResultBase.ErrorText'
         //public Object PayLoad { get; set; }
 

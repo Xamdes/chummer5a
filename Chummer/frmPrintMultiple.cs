@@ -16,11 +16,11 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
- using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
- using System.Threading.Tasks;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace Chummer
@@ -28,7 +28,7 @@ namespace Chummer
     public partial class frmPrintMultiple : Form
     {
         private readonly BackgroundWorker _workerPrinter = new BackgroundWorker();
-        List<Character> _lstCharacters;
+        private List<Character> _lstCharacters;
 
         #region Control Events
         public frmPrintMultiple()
@@ -127,7 +127,7 @@ namespace Chummer
                 if (_workerPrinter.CancellationPending)
                     throw new OperationCanceledException();
                 objCharacter.Load().RunSynchronously();
-                prgProgress.Invoke((Action) FuncIncreaseProgress);
+                prgProgress.Invoke((Action)FuncIncreaseProgress);
             });
 
             if (_workerPrinter.CancellationPending)

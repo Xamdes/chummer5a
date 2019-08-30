@@ -16,13 +16,13 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
- using System;
- using System.ComponentModel;
- using System.Diagnostics;
-﻿using System.IO;
+using NLog;
+using System;
+using System.ComponentModel;
+using System.Diagnostics;
+using System.IO;
 using System.Reflection;
- using System.Windows.Forms;
- using NLog;
+using System.Windows.Forms;
 
 namespace Chummer
 {
@@ -41,12 +41,18 @@ namespace Chummer
 
         public static bool IsDesignerMode => LicenseManager.UsageMode == LicenseUsageMode.Designtime;
 
-        public static Version CachedGitVersion { get; set; }
+        public static Version CachedGitVersion
+        {
+            get; set;
+        }
 
         /// <summary>
         /// This property is set in the Constructor of frmChummerMain (and NO where else!)
         /// </summary>
-        public static bool IsUnitTest { get; set; }
+        public static bool IsUnitTest
+        {
+            get; set;
+        }
 
         /// <summary>
         /// Returns the actuall path of the Chummer-Directory regardless of running as Unit test or not.

@@ -4,19 +4,16 @@
 
 namespace SINners.Models
 {
-    using System;
-    using System.Linq;
-    using System.Collections.Generic;
     using Newtonsoft.Json;
-    using Microsoft.Rest;
-    using Microsoft.Rest.Serialization;
 
     public partial class ChummerHubVersion
     {
         /// <summary>
         /// Initializes a new instance of the ChummerHubVersion class.
         /// </summary>
-        public ChummerHubVersion() { }
+        public ChummerHubVersion()
+        {
+        }
 
         /// <summary>
         /// Initializes a new instance of the ChummerHubVersion class.
@@ -29,7 +26,10 @@ namespace SINners.Models
         /// <summary>
         /// </summary>
         [JsonProperty(PropertyName = "assemblyVersion")]
-        public string AssemblyVersion { get; set; }
+        public string AssemblyVersion
+        {
+            get; set;
+        }
 
     }
 }

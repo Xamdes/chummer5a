@@ -1,16 +1,8 @@
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Drawing;
-using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using SINners.Models;
-using Chummer.Plugins;
-using ChummerHub.Client.Backend;
 using Chummer;
+using ChummerHub.Client.Backend;
+using SINners.Models;
+using System;
+using System.Windows.Forms;
 
 
 namespace ChummerHub.Client.UI
@@ -52,11 +44,11 @@ namespace ChummerHub.Client.UI
                 tbGroupname.Text = MyGroup.Groupname;
                 tbParentGroupId.Text = MyGroup.MyParentGroupId?.ToString();
                 tbPassword.Text = "";
-                if (!String.IsNullOrEmpty(MyGroup.GroupCreatorUserName))
+                if (!string.IsNullOrEmpty(MyGroup.GroupCreatorUserName))
                     tbGroupCreatorUsername.Text = MyGroup.GroupCreatorUserName;
                 else
                     tbGroupCreatorUsername.Text = Properties.Settings.Default.UserEmail;
-                if (!String.IsNullOrEmpty(MyGroup.Language))
+                if (!string.IsNullOrEmpty(MyGroup.Language))
                     this.cboLanguage1.SelectedValue = MyGroup.Language;
                 else
                 {
@@ -83,8 +75,8 @@ namespace ChummerHub.Client.UI
                 tbGroupCreatorUsername.ReadOnly = !EditMode;
             }
 
-           
-            
+
+
 
             if (onlyPWHash)
             {
@@ -120,7 +112,7 @@ namespace ChummerHub.Client.UI
             if (Guid.TryParse(this.tbParentGroupId.Text, out id))
                 myGroup.MyParentGroupId = id;
             myGroup.Password = tbPassword.Text;
-            if (String.IsNullOrEmpty(tbPassword.Text))
+            if (string.IsNullOrEmpty(tbPassword.Text))
                 myGroup.PasswordHash = null;
             myGroup.Language = cboLanguage1.SelectedItem.ToString();
             myGroup.IsPublic = cbIsPublic.Checked;

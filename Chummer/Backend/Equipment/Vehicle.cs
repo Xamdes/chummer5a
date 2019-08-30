@@ -18,6 +18,7 @@
  */
 using Chummer.Annotations;
 using Chummer.Backend.Attributes;
+using NLog;
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
@@ -28,7 +29,6 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using System.Xml;
-using NLog;
 
 namespace Chummer.Backend.Equipment
 {
@@ -357,9 +357,11 @@ namespace Chummer.Backend.Equipment
                         // Find the first free Weapon Mount in the Vehicle.
                         foreach (WeaponMount objWeaponMount in _lstWeaponMounts)
                         {
-                            if (objWeaponMount.Weapons.Count != 0) continue;
+                            if (objWeaponMount.Weapons.Count != 0)
+                                continue;
                             if (!objWeaponMount.AllowedWeaponCategories.Contains(objWeapon.SizeCategory) &&
-                                !objWeaponMount.AllowedWeapons.Contains(objWeapon.Name)) continue;
+                                !objWeaponMount.AllowedWeapons.Contains(objWeapon.Name))
+                                continue;
                             objWeaponMount.Weapons.Add(objWeapon);
                             blnAttached = true;
                             foreach (Weapon objSubWeapon in objSubWeapons)
@@ -531,12 +533,12 @@ namespace Chummer.Backend.Equipment
         /// <param name="blnCopy">Whether or not we are copying an existing vehicle.</param>
         public void Load(XmlNode objNode, bool blnCopy = false)
         {
-            if ( blnCopy || !objNode.TryGetField("guid", Guid.TryParse, out _guiID))
+            if (blnCopy || !objNode.TryGetField("guid", Guid.TryParse, out _guiID))
             {
                 _guiID = Guid.NewGuid();
             }
             objNode.TryGetStringFieldQuickly("name", ref _strName);
-            if(!objNode.TryGetGuidFieldQuickly("sourceid", ref _guiSourceID))
+            if (!objNode.TryGetGuidFieldQuickly("sourceid", ref _guiSourceID))
             {
                 XmlNode node = GetNode(GlobalOptions.Language);
                 node?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
@@ -1160,7 +1162,8 @@ namespace Chummer.Backend.Equipment
 
             foreach (VehicleMod objChild in Mods)
             {
-                if (objChild.IncludedInVehicle || !objChild.Equipped) continue;
+                if (objChild.IncludedInVehicle || !objChild.Equipped)
+                    continue;
                 AvailabilityValue objLoopAvail = objChild.TotalAvailTuple();
                 if (objLoopAvail.AddToParent)
                     intAvail += objLoopAvail.Value;
@@ -1172,7 +1175,8 @@ namespace Chummer.Backend.Equipment
 
             foreach (WeaponMount objChild in WeaponMounts)
             {
-                if (objChild.IncludedInVehicle || !objChild.Equipped) continue;
+                if (objChild.IncludedInVehicle || !objChild.Equipped)
+                    continue;
                 AvailabilityValue objLoopAvail = objChild.TotalAvailTuple();
                 if (objLoopAvail.AddToParent)
                     intAvail += objLoopAvail.Value;
@@ -1184,7 +1188,8 @@ namespace Chummer.Backend.Equipment
 
             foreach (Weapon objChild in Weapons)
             {
-                if (objChild.ParentID == InternalId || !objChild.Equipped) continue;
+                if (objChild.ParentID == InternalId || !objChild.Equipped)
+                    continue;
                 AvailabilityValue objLoopAvail = objChild.TotalAvailTuple();
                 if (objLoopAvail.AddToParent)
                     intAvail += objLoopAvail.Value;
@@ -1196,7 +1201,8 @@ namespace Chummer.Backend.Equipment
 
             foreach (Gear objChild in Gear)
             {
-                if (objChild.ParentID == InternalId) continue;
+                if (objChild.ParentID == InternalId)
+                    continue;
                 AvailabilityValue objLoopAvail = objChild.TotalAvailTuple();
                 if (objLoopAvail.AddToParent)
                     intAvail += objLoopAvail.Value;
@@ -1543,7 +1549,8 @@ namespace Chummer.Backend.Equipment
             get
             {
                 decimal decCost = 0;
-                if (Stolen) decCost += OwnCost;
+                if (Stolen)
+                    decCost += OwnCost;
 
                 foreach (VehicleMod objMod in Mods)
                 {
@@ -2484,7 +2491,7 @@ namespace Chummer.Backend.Equipment
         {
             get
             {
-                int intCosmetic = _intBody +_intAddCosmeticModSlots;
+                int intCosmetic = _intBody + _intAddCosmeticModSlots;
 
                 foreach (VehicleMod objMod in Mods.Where(objMod => !objMod.IncludedInVehicle && objMod.Equipped && objMod.Category == "Cosmetic"))
                 {
@@ -2533,7 +2540,8 @@ namespace Chummer.Backend.Equipment
 
         public XmlNode GetNode(string strLanguage)
         {
-            if (_objCachedMyXmlNode != null && strLanguage == _strCachedXmlNodeLanguage && !GlobalOptions.LiveCustomData) return _objCachedMyXmlNode;
+            if (_objCachedMyXmlNode != null && strLanguage == _strCachedXmlNodeLanguage && !GlobalOptions.LiveCustomData)
+                return _objCachedMyXmlNode;
             _objCachedMyXmlNode = SourceID == Guid.Empty
                 ? XmlManager.Load("vehicles.xml", strLanguage)
                     .SelectSingleNode($"/chummer/vehicles/vehicle[name = \"{Name}\"]")
@@ -2656,14 +2664,24 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Empty for Vehicles.
         /// </summary>
-        public string CanFormPersona { get => string.Empty; set { } }
+        public string CanFormPersona
+        {
+            get => string.Empty; set
+            {
+            }
+        }
 
         public bool IsCommlink => Gear.Any(x => x.CanFormPersona.Contains("Parent")) && this.GetTotalMatrixAttribute("Device Rating") > 0;
 
         /// <summary>
         /// 0 for Vehicles.
         /// </summary>
-        public int BonusMatrixBoxes { get => 0; set { } }
+        public int BonusMatrixBoxes
+        {
+            get => 0; set
+            {
+            }
+        }
 
         public int TotalBonusMatrixBoxes
         {
@@ -2935,7 +2953,8 @@ namespace Chummer.Backend.Equipment
                     {
                         foreach (TreeNode objFind in lstChildNodes)
                         {
-                            if (objFind.Tag != objWeapon.Location) continue;
+                            if (objFind.Tag != objWeapon.Location)
+                                continue;
                             objParent = objFind;
                             break;
                         }
@@ -2957,7 +2976,8 @@ namespace Chummer.Backend.Equipment
                     {
                         foreach (TreeNode objFind in lstChildNodes)
                         {
-                            if (objFind.Tag != objGear.Location) continue;
+                            if (objFind.Tag != objGear.Location)
+                                continue;
                             objParent = objFind;
                             break;
                         }
@@ -3275,7 +3295,8 @@ namespace Chummer.Backend.Equipment
         public void Sell(Character characterObject, decimal percentage)
         {
             decimal decAmount = TotalCost * percentage;
-            if (!Remove(characterObject)) return;
+            if (!Remove(characterObject))
+                return;
 
             // Create the Expense Log Entry for the sale.
             ExpenseLogEntry objExpense = new ExpenseLogEntry(characterObject);

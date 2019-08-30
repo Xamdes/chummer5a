@@ -1,17 +1,9 @@
-using ChummerHub.Client.Backend;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
 using Chummer;
+using ChummerHub.Client.Backend;
 using Newtonsoft.Json;
-using NLog;
 using SINners.Models;
+using System;
+using System.Windows.Forms;
 
 namespace ChummerHub.Client.UI
 {
@@ -23,15 +15,15 @@ namespace ChummerHub.Client.UI
             InitializeComponent();
         }
 
-       
 
-       
+
+
 
         private string LoginUrl
         {
             get
             {
-                if(String.IsNullOrEmpty(Properties.Settings.Default.SINnerUrl))
+                if (string.IsNullOrEmpty(Properties.Settings.Default.SINnerUrl))
                 {
                     Properties.Settings.Default.SINnerUrl = "https://sinners.azurewebsites.net/";
                     string msg = "if you are (want to be) a Beta-Tester, change this to http://sinners-beta.azurewebsites.net/!";
@@ -45,30 +37,30 @@ namespace ChummerHub.Client.UI
             }
         }
 
-       
+
 
         private void frmWebBrowser_Load(object sender, EventArgs e)
         {
-            
-                Invoke((Action)(() =>
-                {
-                    this.SuspendLayout();
-                    webBrowser2.Navigated += new System.Windows.Forms.WebBrowserNavigatedEventHandler(this.webBrowser2_Navigated);
-                    webBrowser2.ScriptErrorsSuppressed = true;
-                    webBrowser2.Navigate(LoginUrl);
-                    this.BringToFront();
-                })
-                );
-                        
+
+            Invoke((Action)(() =>
+            {
+                this.SuspendLayout();
+                webBrowser2.Navigated += new System.Windows.Forms.WebBrowserNavigatedEventHandler(this.webBrowser2_Navigated);
+                webBrowser2.ScriptErrorsSuppressed = true;
+                webBrowser2.Navigate(LoginUrl);
+                this.BringToFront();
+            })
+            );
+
         }
 
         private bool login = false;
 
         private async void webBrowser2_Navigated(object sender, WebBrowserNavigatedEventArgs e)
         {
-            if(e.Url.AbsoluteUri == LoginUrl)
+            if (e.Url.AbsoluteUri == LoginUrl)
                 return;
-            if((e.Url.AbsoluteUri.Contains("/Identity/Account/Logout")))
+            if ((e.Url.AbsoluteUri.Contains("/Identity/Account/Logout")))
             {
                 //maybe we are logged in now
                 GetCookieContainer();
@@ -79,7 +71,7 @@ namespace ChummerHub.Client.UI
                 {
                     //we are logged in!
                     GetCookieContainer();
-                    var client = StaticUtils.GetClient();
+                    SINners.SINnersClient client = StaticUtils.GetClient();
                     if (client == null)
                     {
                         Log.Error("Cloud not create an instance of SINnersclient!");
@@ -92,7 +84,7 @@ namespace ChummerHub.Client.UI
                         {
                             login = true;
                             SINnerVisibility tempvis;
-                            if (!String.IsNullOrEmpty(Properties.Settings.Default.SINnerVisibility))
+                            if (!string.IsNullOrEmpty(Properties.Settings.Default.SINnerVisibility))
                             {
                                 tempvis = JsonConvert.DeserializeObject<SINnerVisibility>(Properties.Settings.Default
                                     .SINnerVisibility);
@@ -121,7 +113,7 @@ namespace ChummerHub.Client.UI
                     Log.Error(exception);
                     throw;
                 }
-                
+
             }
         }
 
@@ -133,17 +125,17 @@ namespace ChummerHub.Client.UI
                 {
                     Properties.Settings.Default.CookieData = null;
                     Properties.Settings.Default.Save();
-                    var cookies =
+                    System.Net.CookieCollection cookies =
                         StaticUtils.AuthorizationCookieContainer?.GetCookies(new Uri(Properties.Settings.Default
                             .SINnerUrl));
-                    var client = StaticUtils.GetClient(true);
+                    SINners.SINnersClient client = StaticUtils.GetClient(true);
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 Log.Warn(ex);
             }
-            
+
         }
 
         private void FrmWebBrowser_FormClosing(object sender, FormClosingEventArgs e)

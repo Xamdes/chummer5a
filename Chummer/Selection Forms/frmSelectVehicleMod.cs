@@ -16,13 +16,13 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
- using System;
+using Chummer.Backend.Equipment;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Windows.Forms;
 using System.Xml.XPath;
- using Chummer.Backend.Equipment;
-using System.Text;
 
 namespace Chummer
 {
@@ -255,7 +255,10 @@ namespace Chummer
         /// <summary>
         /// Rating that was selected in the dialogue.
         /// </summary>
-        public int SelectedRating { get; private set; }
+        public int SelectedRating
+        {
+            get; private set;
+        }
 
         /// <summary>
         /// Whether or not the item should be added for free.
@@ -270,7 +273,10 @@ namespace Chummer
         /// <summary>
         /// Is the mod being added to a vehicle weapon mount?
         /// </summary>
-        public bool VehicleMountMods { get; set; }
+        public bool VehicleMountMods
+        {
+            get; set;
+        }
 
         #endregion
 

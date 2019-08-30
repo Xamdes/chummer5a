@@ -4,12 +4,8 @@
 
 namespace SINners.Models
 {
-    using System;
-    using System.Linq;
-    using System.Collections.Generic;
     using Newtonsoft.Json;
-    using Microsoft.Rest;
-    using Microsoft.Rest.Serialization;
+    using System.Collections.Generic;
 
     public partial class ResultAccountGetPossibleRoles
     {
@@ -17,7 +13,9 @@ namespace SINners.Models
         /// Initializes a new instance of the ResultAccountGetPossibleRoles
         /// class.
         /// </summary>
-        public ResultAccountGetPossibleRoles() { }
+        public ResultAccountGetPossibleRoles()
+        {
+        }
 
         /// <summary>
         /// Initializes a new instance of the ResultAccountGetPossibleRoles
@@ -34,22 +32,34 @@ namespace SINners.Models
         /// <summary>
         /// </summary>
         [JsonProperty(PropertyName = "allRoles")]
-        public IList<string> AllRoles { get; set; }
+        public IList<string> AllRoles
+        {
+            get; set;
+        }
 
         /// <summary>
         /// </summary>
         [JsonProperty(PropertyName = "myException")]
-        public object MyException { get; set; }
+        public object MyException
+        {
+            get; set;
+        }
 
         /// <summary>
         /// </summary>
         [JsonProperty(PropertyName = "callSuccess")]
-        public bool? CallSuccess { get; set; }
+        public bool? CallSuccess
+        {
+            get; set;
+        }
 
         /// <summary>
         /// </summary>
         [JsonProperty(PropertyName = "errorText")]
-        public string ErrorText { get; set; }
+        public string ErrorText
+        {
+            get; set;
+        }
 
     }
 }

@@ -17,6 +17,7 @@
  *  https://github.com/chummer5a/chummer5a
  */
 using Chummer.Backend.Skills;
+using NLog;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -26,7 +27,6 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using System.Xml;
-using NLog;
 
 namespace Chummer
 {
@@ -170,7 +170,7 @@ namespace Chummer
                 _guiID = Guid.NewGuid();
             }
             objNode.TryGetStringFieldQuickly("name", ref _strName);
-            if(!objNode.TryGetGuidFieldQuickly("sourceid", ref _guiSourceID))
+            if (!objNode.TryGetGuidFieldQuickly("sourceid", ref _guiSourceID))
             {
                 XmlNode node = GetNode(GlobalOptions.Language);
                 node?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
@@ -454,7 +454,8 @@ namespace Chummer
                 }
 
                 List<Improvement> lstDrainImprovements = RelevantImprovements(o => o.ImproveType == Improvement.ImprovementType.DrainValue || o.ImproveType == Improvement.ImprovementType.SpellCategoryDrain).ToList();
-                if (lstDrainImprovements.Count <= 0) return strTip.ToString();
+                if (lstDrainImprovements.Count <= 0)
+                    return strTip.ToString();
                 strTip.Append(Environment.NewLine + LanguageManager.GetString("Label_Bonus", GlobalOptions.Language));
                 foreach (Improvement objLoopImprovement in lstDrainImprovements)
                 {
@@ -557,7 +558,8 @@ namespace Chummer
                 string strReturn = _strDV;
                 if (!Limited && (!Extended || Name.EndsWith("Extended")) && !RelevantImprovements(o =>
                         o.ImproveType == Improvement.ImprovementType.DrainValue ||
-                         o.ImproveType == Improvement.ImprovementType.SpellCategoryDrain).Any()) return strReturn;
+                         o.ImproveType == Improvement.ImprovementType.SpellCategoryDrain).Any())
+                    return strReturn;
                 bool force = strReturn.StartsWith('F');
                 string strDV = strReturn.TrimStartOnce('F');
                 //Navigator can't do math on a single value, so inject a mathable value.
@@ -582,7 +584,7 @@ namespace Chummer
                     }
                 }
 
-                foreach (var improvement in RelevantImprovements(i => i.ImproveType == Improvement.ImprovementType.DrainValue || i.ImproveType == Improvement.ImprovementType.SpellCategoryDrain))
+                foreach (Improvement improvement in RelevantImprovements(i => i.ImproveType == Improvement.ImprovementType.DrainValue || i.ImproveType == Improvement.ImprovementType.SpellCategoryDrain))
                     strDV = strDV + $" + {improvement.Value:0;-0;0}";
                 if (Limited)
                 {
@@ -593,7 +595,8 @@ namespace Chummer
                     strDV += " + 2";
                 }
                 object xprResult = CommonFunctions.EvaluateInvariantXPath(strDV.TrimStart('+'), out bool blnIsSuccess);
-                if (!blnIsSuccess) return strReturn;
+                if (!blnIsSuccess)
+                    return strReturn;
                 if (force)
                 {
                     strReturn = $"F{xprResult:+0;-0;}";
@@ -911,7 +914,8 @@ namespace Chummer
             if (blnConfirmDelete)
             {
                 string strMessage = LanguageManager.GetString("Message_DeleteSpell", GlobalOptions.Language);
-                if (!characterObject.ConfirmDelete(strMessage)) return false;
+                if (!characterObject.ConfirmDelete(strMessage))
+                    return false;
             }
 
             characterObject.Spells.Remove(this);

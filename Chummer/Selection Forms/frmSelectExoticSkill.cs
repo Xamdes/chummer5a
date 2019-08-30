@@ -16,12 +16,12 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
- using System;
+using Chummer.Backend.Skills;
+using System;
 using System.Collections.Generic;
- using System.Linq;
- using System.Windows.Forms;
+using System.Linq;
+using System.Windows.Forms;
 using System.Xml;
- using Chummer.Backend.Skills;
 
 namespace Chummer
 {
@@ -120,7 +120,7 @@ namespace Chummer
                             lstSkillSpecialisations.Add(new ListItem(strInnerText, objXmlSpecialization.Attributes?["translate"]?.InnerText ?? strInnerText));
                         }
                 List<string> lstExistingExoticSkills = _objCharacter.SkillsSection.Skills
-                    .Where(x => x.Name == strSelectedCategory).Select(x => ((ExoticSkill) x).Specific).ToList();
+                    .Where(x => x.Name == strSelectedCategory).Select(x => ((ExoticSkill)x).Specific).ToList();
                 lstSkillSpecialisations.RemoveAll(x => lstExistingExoticSkills.Contains(x.Value));
 
                 cboSkillSpecialisations.BeginUpdate();

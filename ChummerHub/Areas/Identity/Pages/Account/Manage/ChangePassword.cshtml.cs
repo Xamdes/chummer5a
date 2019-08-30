@@ -28,12 +28,18 @@ namespace ChummerHub.Areas.Identity.Pages.Account.Manage
 
         [BindProperty]
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'ChangePasswordModel.Input'
-        public InputModel Input { get; set; }
+        public InputModel Input
+        {
+            get; set;
+        }
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'ChangePasswordModel.Input'
 
         [TempData]
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'ChangePasswordModel.StatusMessage'
-        public string StatusMessage { get; set; }
+        public string StatusMessage
+        {
+            get; set;
+        }
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'ChangePasswordModel.StatusMessage'
 
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'ChangePasswordModel.InputModel'
@@ -44,7 +50,10 @@ namespace ChummerHub.Areas.Identity.Pages.Account.Manage
             [DataType(DataType.Password)]
             [Display(Name = "Current password")]
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'ChangePasswordModel.InputModel.OldPassword'
-            public string OldPassword { get; set; }
+            public string OldPassword
+            {
+                get; set;
+            }
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'ChangePasswordModel.InputModel.OldPassword'
 
             [Required]
@@ -52,14 +61,20 @@ namespace ChummerHub.Areas.Identity.Pages.Account.Manage
             [DataType(DataType.Password)]
             [Display(Name = "New password")]
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'ChangePasswordModel.InputModel.NewPassword'
-            public string NewPassword { get; set; }
+            public string NewPassword
+            {
+                get; set;
+            }
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'ChangePasswordModel.InputModel.NewPassword'
 
             [DataType(DataType.Password)]
             [Display(Name = "Confirm new password")]
             [Compare("NewPassword", ErrorMessage = "The new password and confirmation password do not match.")]
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'ChangePasswordModel.InputModel.ConfirmPassword'
-            public string ConfirmPassword { get; set; }
+            public string ConfirmPassword
+            {
+                get; set;
+            }
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'ChangePasswordModel.InputModel.ConfirmPassword'
         }
 
@@ -67,13 +82,13 @@ namespace ChummerHub.Areas.Identity.Pages.Account.Manage
         public async Task<IActionResult> OnGetAsync()
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'ChangePasswordModel.OnGetAsync()'
         {
-            var user = await _userManager.GetUserAsync(User);
+            ApplicationUser user = await _userManager.GetUserAsync(User);
             if (user == null)
             {
                 return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
             }
 
-            var hasPassword = await _userManager.HasPasswordAsync(user);
+            bool hasPassword = await _userManager.HasPasswordAsync(user);
             if (!hasPassword)
             {
                 return RedirectToPage("./SetPassword");
@@ -91,16 +106,16 @@ namespace ChummerHub.Areas.Identity.Pages.Account.Manage
                 return Page();
             }
 
-            var user = await _userManager.GetUserAsync(User);
+            ApplicationUser user = await _userManager.GetUserAsync(User);
             if (user == null)
             {
                 return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
             }
 
-            var changePasswordResult = await _userManager.ChangePasswordAsync(user, Input.OldPassword, Input.NewPassword);
+            IdentityResult changePasswordResult = await _userManager.ChangePasswordAsync(user, Input.OldPassword, Input.NewPassword);
             if (!changePasswordResult.Succeeded)
             {
-                foreach (var error in changePasswordResult.Errors)
+                foreach (IdentityError error in changePasswordResult.Errors)
                 {
                     ModelState.AddModelError(string.Empty, error.Description);
                 }

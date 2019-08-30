@@ -16,17 +16,17 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
+using Chummer.Annotations;
+using Chummer.Backend.Attributes;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
-using System.Xml;
-using System.Collections.Concurrent;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
-using Chummer.Annotations;
-using Chummer.Backend.Attributes;
+using System.Xml;
 
 namespace Chummer.Backend.Skills
 {
@@ -187,12 +187,12 @@ namespace Chummer.Backend.Skills
         {
             if (xmlSkillNode == null)
                 return;
-            using (var op_load_char_skills = Timekeeper.StartSyncron("load_char_skills_skillnode", parentActivity))
+            using (CustomActivity op_load_char_skills = Timekeeper.StartSyncron("load_char_skills_skillnode", parentActivity))
             {
 
                 if (!blnLegacy)
                 {
-                    using (var op_load_char_skills_groups = Timekeeper.StartSyncron("load_char_skills_groups", op_load_char_skills))
+                    using (CustomActivity op_load_char_skills_groups = Timekeeper.StartSyncron("load_char_skills_groups", op_load_char_skills))
                     {
                         List<SkillGroup> lstLoadingSkillGroups = new List<SkillGroup>();
                         using (XmlNodeList xmlGroupsList = xmlSkillNode.SelectNodes("groups/group"))
@@ -214,7 +214,7 @@ namespace Chummer.Backend.Skills
                         //Timekeeper.Finish("load_char_skills_groups");
                     }
 
-                    using (var op_load_char_skills_groups = Timekeeper.StartSyncron("load_char_skills_normal", op_load_char_skills))
+                    using (CustomActivity op_load_char_skills_groups = Timekeeper.StartSyncron("load_char_skills_normal", op_load_char_skills))
                     {
                         //Load skills. Because sorting a BindingList is complicated we use a temporery normal list
                         List<Skill> lstLoadingSkills = new List<Skill>();
@@ -261,7 +261,7 @@ namespace Chummer.Backend.Skills
                         //Timekeeper.Finish("load_char_skills_normal");
                     }
 
-                    using (var op_load_char_skills_kno = Timekeeper.StartSyncron("load_char_skills_kno", op_load_char_skills))
+                    using (CustomActivity op_load_char_skills_kno = Timekeeper.StartSyncron("load_char_skills_kno", op_load_char_skills))
                     {
                         using (XmlNodeList xmlSkillsList = xmlSkillNode.SelectNodes("knoskills/skill"))
                             if (xmlSkillsList != null)
@@ -274,7 +274,7 @@ namespace Chummer.Backend.Skills
                         //Timekeeper.Finish("load_char_skills_kno");
                     }
 
-                    using (var op_load_char_skills_kno = Timekeeper.StartSyncron("load_char_knowsoft_buffer", op_load_char_skills))
+                    using (CustomActivity op_load_char_skills_kno = Timekeeper.StartSyncron("load_char_knowsoft_buffer", op_load_char_skills))
                     {
                         // Knowsoft Buffer.
                         using (XmlNodeList xmlSkillsList = xmlSkillNode.SelectNodes("skilljackknowledgeskills/skill"))
@@ -386,7 +386,7 @@ namespace Chummer.Backend.Skills
 
         internal async void LoadFromHeroLab(XmlNode xmlSkillNode, CustomActivity parentActivity)
         {
-            using (var op_load_char_skills_groups = Timekeeper.StartSyncron("load_char_skills_groups", parentActivity))
+            using (CustomActivity op_load_char_skills_groups = Timekeeper.StartSyncron("load_char_skills_groups", parentActivity))
             {
                 List<SkillGroup> lstLoadingSkillGroups = new List<SkillGroup>();
                 using (XmlNodeList xmlGroupsList = xmlSkillNode.SelectNodes("groups/skill"))
@@ -408,7 +408,7 @@ namespace Chummer.Backend.Skills
                 //Timekeeper.Finish("load_char_skills_groups");
             }
 
-            using (var op_load_char_skills = Timekeeper.StartSyncron("load_char_skills", parentActivity))
+            using (CustomActivity op_load_char_skills = Timekeeper.StartSyncron("load_char_skills", parentActivity))
             {
 
                 List<Skill> lstTempSkillList = new List<Skill>();
@@ -856,7 +856,7 @@ namespace Chummer.Backend.Skills
                 }
                 else
                 {
-                    fromAttributes *= (_objCharacter.INT.Value + _objCharacter.LOG.Value) ;
+                    fromAttributes *= (_objCharacter.INT.Value + _objCharacter.LOG.Value);
                 }
 
                 int val = ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.FreeKnowledgeSkills);
@@ -879,13 +879,16 @@ namespace Chummer.Backend.Skills
         /// </summary>
         public int KnowledgeSkillRanksSum
         {
-            get { return KnowledgeSkills.AsParallel().Sum(x => x.CurrentSpCost); }
+            get
+            {
+                return KnowledgeSkills.AsParallel().Sum(x => x.CurrentSpCost);
+            }
         }
 
         /// <summary>
         /// Number of Skill Points that have been spent on knowledge skills.
         /// </summary>
-       public int SkillPointsSpentOnKnoskills
+        public int SkillPointsSpentOnKnoskills
         {
             get
             {
@@ -919,20 +922,29 @@ namespace Chummer.Backend.Skills
         /// <summary>
         /// Number of maximum Skill Points the character has.
         /// </summary>
-        public int SkillPointsMaximum { get; set; }
+        public int SkillPointsMaximum
+        {
+            get; set;
+        }
 
         /// <summary>
         /// Number of free Skill Points the character has.
         /// </summary>
         public int SkillGroupPoints
         {
-            get { return SkillGroupPointsMaximum - SkillGroups.Sum(x => x.Base - x.FreeBase); }
+            get
+            {
+                return SkillGroupPointsMaximum - SkillGroups.Sum(x => x.Base - x.FreeBase);
+            }
         }
 
         /// <summary>
         /// Number of maximum Skill Groups the character has.
         /// </summary>
-        public int SkillGroupPointsMaximum { get; set; }
+        public int SkillGroupPointsMaximum
+        {
+            get; set;
+        }
 
         public static int CompareSkills(Skill rhs, Skill lhs)
         {

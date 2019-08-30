@@ -14,11 +14,17 @@ namespace ChummerHub.Models.V1
         //public Guid? sParentTagId { get; set; }
 
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'SearchTag.SearchTags'
-        public List<SearchTag> SearchTags { get; set; }
+        public List<SearchTag> SearchTags
+        {
+            get; set;
+        }
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'SearchTag.SearchTags'
 
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'SearchTag.SearchOpterator'
-        public TagOperatorEnum SearchOpterator { get; set; }
+        public TagOperatorEnum SearchOpterator
+        {
+            get; set;
+        }
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'SearchTag.SearchOpterator'
 
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'SearchTag.TagOperatorEnum'

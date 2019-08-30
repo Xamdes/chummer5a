@@ -17,16 +17,19 @@
  *  https://github.com/chummer5a/chummer5a
  */
 
+using Chummer.Backend.Equipment;
 using System;
 using System.Collections.Specialized;
 using System.Windows.Forms;
-using Chummer.Backend.Equipment;
 
 namespace Chummer
 {
     public interface IHasInternalId
     {
-        string InternalId { get; }
+        string InternalId
+        {
+            get;
+        }
     }
 
     public static class InternalId

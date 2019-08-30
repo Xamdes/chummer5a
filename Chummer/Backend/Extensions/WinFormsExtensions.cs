@@ -16,15 +16,14 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
+using NLog;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-using NLog;
 
 namespace Chummer
 {
@@ -48,7 +47,7 @@ namespace Chummer
                 else
                     funcToRun.Invoke();
             }
-            catch (ObjectDisposedException e)
+            catch (ObjectDisposedException)
             {
                 //we really don't need to care about that.
                 //Log.Trace(e);
@@ -58,7 +57,7 @@ namespace Chummer
                 //we really don't need to care about that.
                 Log.Trace(e);
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 Log.Error(e);
 #if DEBUG
@@ -124,14 +123,16 @@ namespace Chummer
         /// <param name="blnDeep">Whether to look at grandchildren and greater descendents of this node.</param>
         public static TreeNode FindNode(this TreeNode objNode, string strGuid, bool blnDeep = true)
         {
-            if (objNode == null || string.IsNullOrEmpty(strGuid) || strGuid.IsEmptyGuid()) return null;
+            if (objNode == null || string.IsNullOrEmpty(strGuid) || strGuid.IsEmptyGuid())
+                return null;
             foreach (TreeNode objChild in objNode.Nodes)
             {
                 if (objChild.Tag is IHasInternalId idNode && idNode.InternalId == strGuid || objChild.Tag is string s && s == strGuid)
                     return objChild;
 
-                if (!blnDeep) continue;
-                var objFound = objChild.FindNode(strGuid);
+                if (!blnDeep)
+                    continue;
+                TreeNode objFound = objChild.FindNode(strGuid);
                 if (objFound != null)
                     return objFound;
             }
@@ -264,7 +265,7 @@ namespace Chummer
         {
             string strSelectedNodeTag = (treView.SelectedNode?.Tag as IHasInternalId)?.InternalId;
 
-            var currentSorter = treView.TreeViewNodeSorter;
+            System.Collections.IComparer currentSorter = treView.TreeViewNodeSorter;
             treView.TreeViewNodeSorter = new CustomNodeSorter();
             treView.Sort();
             treView.TreeViewNodeSorter = currentSorter;
@@ -280,7 +281,9 @@ namespace Chummer
         /// </summary>
         private class CustomNodeSorter : System.Collections.IComparer
         {
-            public CustomNodeSorter() { }
+            public CustomNodeSorter()
+            {
+            }
 
             public int Compare(object x, object y)
             {
@@ -341,14 +344,16 @@ namespace Chummer
         /// <param name="blnDeep">Whether to look at grandchildren and greater descendents of this node.</param>
         public static TreeNode FindNode(this TreeView treTree, string strGuid, bool blnDeep = true)
         {
-            if (treTree == null || string.IsNullOrEmpty(strGuid) || strGuid.IsEmptyGuid()) return null;
+            if (treTree == null || string.IsNullOrEmpty(strGuid) || strGuid.IsEmptyGuid())
+                return null;
             foreach (TreeNode objNode in treTree.Nodes)
             {
-                if (objNode?.Tag != null &&  objNode.Tag is IHasInternalId node && node.InternalId == strGuid || objNode?.Tag?.ToString() == strGuid)
+                if (objNode?.Tag != null && objNode.Tag is IHasInternalId node && node.InternalId == strGuid || objNode?.Tag?.ToString() == strGuid)
                     return objNode;
 
-                if (!blnDeep) continue;
-                var objFound = objNode.FindNode(strGuid);
+                if (!blnDeep)
+                    continue;
+                TreeNode objFound = objNode.FindNode(strGuid);
                 if (objFound != null)
                     return objFound;
             }

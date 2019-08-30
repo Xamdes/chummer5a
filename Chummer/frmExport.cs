@@ -16,22 +16,22 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
- using System;
- using System.Collections.Generic;
- using System.IO;
- using System.Text;
- using System.Windows.Forms;
+using Newtonsoft.Json;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Text;
+using System.Windows.Forms;
 using System.Xml;
 using System.Xml.Xsl;
- using Newtonsoft.Json;
- using Formatting = Newtonsoft.Json.Formatting;
+using Formatting = Newtonsoft.Json.Formatting;
 
 namespace Chummer
 {
     public partial class frmExport : Form
     {
         private readonly XmlDocument _objCharacterXML;
-        private readonly Dictionary<string,string> _dictCache = new Dictionary<string, string>();
+        private readonly Dictionary<string, string> _dictCache = new Dictionary<string, string>();
         private bool _blnSelected;
 
         #region Control Events
@@ -111,7 +111,8 @@ namespace Chummer
 
         private void rtbText_MouseUp(object sender, MouseEventArgs e)
         {
-            if (_blnSelected || rtbText.SelectionLength != 0) return;
+            if (_blnSelected || rtbText.SelectionLength != 0)
+                return;
             _blnSelected = true;
             rtbText.SelectAll();
         }

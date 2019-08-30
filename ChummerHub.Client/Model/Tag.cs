@@ -1,10 +1,7 @@
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.Serialization;
-using System.Text;
-using System.Threading.Tasks;
 using System.Xml.Serialization;
 
 namespace SINners.Models
@@ -15,9 +12,12 @@ namespace SINners.Models
         [IgnoreDataMember]
         [XmlIgnore]
         [JsonIgnore]
-        public Tag MyParentTag { get; set; }
+        public Tag MyParentTag
+        {
+            get; set;
+        }
 
-        public Tag (Object myRuntimeObject, Chummer.HubTagAttribute hubTag)
+        public Tag(object myRuntimeObject, Chummer.HubTagAttribute hubTag)
         {
             this.Id = Guid.NewGuid();
             MyRuntimeObject = myRuntimeObject;
@@ -25,14 +25,14 @@ namespace SINners.Models
             this.Tags = new List<Tag>();
         }
 
-        public Tag (bool isUserGenerated)
+        public Tag(bool isUserGenerated)
         {
             this.Id = Guid.NewGuid();
             this.IsUserGenerated = isUserGenerated;
             this.Tags = new List<Tag>();
         }
 
-        public Tag(Object myRuntimeObject, Chummer.HubClassTagAttribute hubClassTag)
+        public Tag(object myRuntimeObject, Chummer.HubClassTagAttribute hubClassTag)
         {
             this.Id = Guid.NewGuid();
             MyRuntimeObject = myRuntimeObject;
@@ -52,44 +52,56 @@ namespace SINners.Models
                 while (tempParent != null)
                 {
                     string tempstr = tempParent.TagName;
-                    if (!String.IsNullOrEmpty(tempParent.TagValue))
+                    if (!string.IsNullOrEmpty(tempParent.TagValue))
                         tempstr += ": " + tempParent.TagValue;
-                    if (!String.IsNullOrEmpty(str))
+                    if (!string.IsNullOrEmpty(str))
                         tempstr += " -> " + str;
                     str = tempstr;
                     tempParent = tempParent.MyParentTag;
                 }
-                if(!String.IsNullOrEmpty(this.TagComment))
+                if (!string.IsNullOrEmpty(this.TagComment))
                     str += " (" + this.TagComment + ")";
                 return str;
             }
-            
+
         }
 
         [IgnoreDataMember]
         [XmlIgnore]
         [JsonIgnore]
-        public bool DeleteIfEmpty { get; set; }
+        public bool DeleteIfEmpty
+        {
+            get; set;
+        }
 
         [IgnoreDataMember]
         [XmlIgnore]
         [JsonIgnore]
-        public Object MyRuntimeObject { get; set; }
+        public object MyRuntimeObject
+        {
+            get; set;
+        }
 
         [IgnoreDataMember]
         [XmlIgnore]
         [JsonIgnore]
-        public Chummer.HubTagAttribute MyRuntimeHubTag { get; set; }
+        public Chummer.HubTagAttribute MyRuntimeHubTag
+        {
+            get; set;
+        }
 
         [IgnoreDataMember]
         [XmlIgnore]
         [JsonIgnore]
-        public Chummer.HubClassTagAttribute MyRuntimeHubClassTag { get; set; }
+        public Chummer.HubClassTagAttribute MyRuntimeHubClassTag
+        {
+            get; set;
+        }
 
         internal void SetSinnerIdRecursive(Guid? id)
         {
             this.SiNnerId = id;
-            foreach(var childtag in this.Tags)
+            foreach (Tag childtag in this.Tags)
                 childtag.SetSinnerIdRecursive(id);
         }
 

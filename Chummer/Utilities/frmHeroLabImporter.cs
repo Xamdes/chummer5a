@@ -214,7 +214,7 @@ namespace Chummer
                     objCache.BuildMethod = xmlBaseCharacterNode.SelectSingleNode("creation/bp/@total")?.InnerText == "25" ?
                         CharacterBuildMethod.Priority.ToString() :
                         CharacterBuildMethod.Karma.ToString();
-                    
+
                     objCache.Created = objCache.Karma != "0";
                     if (!objCache.Created)
                     {
@@ -259,19 +259,58 @@ namespace Chummer
         /// </summary>
         private sealed class HeroLabCharacterCache
         {
-            internal string FilePath { get; set; }
-            internal string Description { get; set; }
-            internal string Karma { get; set; }
-            internal string Metatype { get; set; }
-            internal string Metavariant { get; set; }
-            internal string PlayerName { get; set; }
-            internal string CharacterId { get; set; }
-            internal string CharacterName { get; set; }
-            internal string CharacterAlias { get; set; }
-            internal string BuildMethod { get; set; }
-            internal string Essence { get; set; }
-            internal Image Mugshot { get; set; }
-            internal bool Created { get; set; }
+            internal string FilePath
+            {
+                get; set;
+            }
+            internal string Description
+            {
+                get; set;
+            }
+            internal string Karma
+            {
+                get; set;
+            }
+            internal string Metatype
+            {
+                get; set;
+            }
+            internal string Metavariant
+            {
+                get; set;
+            }
+            internal string PlayerName
+            {
+                get; set;
+            }
+            internal string CharacterId
+            {
+                get; set;
+            }
+            internal string CharacterName
+            {
+                get; set;
+            }
+            internal string CharacterAlias
+            {
+                get; set;
+            }
+            internal string BuildMethod
+            {
+                get; set;
+            }
+            internal string Essence
+            {
+                get; set;
+            }
+            internal Image Mugshot
+            {
+                get; set;
+            }
+            internal bool Created
+            {
+                get; set;
+            }
         }
         #endregion
 
@@ -309,7 +348,7 @@ namespace Chummer
 
                 string strUnknown = LanguageManager.GetString("String_Unknown", GlobalOptions.Language);
                 string strNone = LanguageManager.GetString("String_None", GlobalOptions.Language);
-                
+
                 lblCharacterName.Text = objCache.CharacterName;
                 if (string.IsNullOrEmpty(lblCharacterName.Text))
                     lblCharacterName.Text = strUnknown;
@@ -327,7 +366,7 @@ namespace Chummer
                     lblPlayerName.Text = strUnknown;
                 lblPlayerNameLabel.Visible = !string.IsNullOrEmpty(lblPlayerName.Text);
                 lblPlayerName.Visible = !string.IsNullOrEmpty(lblPlayerName.Text);
-                
+
                 lblCareerKarma.Text = objCache.Karma;
                 if (string.IsNullOrEmpty(lblCareerKarma.Text) || lblCareerKarma.Text == "0")
                     lblCareerKarma.Text = strNone;
@@ -339,7 +378,7 @@ namespace Chummer
                     lblEssence.Text = strUnknown;
                 lblEssenceLabel.Visible = !string.IsNullOrEmpty(lblEssence.Text);
                 lblEssence.Visible = !string.IsNullOrEmpty(lblEssence.Text);
-                
+
                 picMugshot.Image = objCache.Mugshot;
 
                 // Populate character information fields.
@@ -472,7 +511,7 @@ namespace Chummer
                             string strSettingsFile = settingsFiles[0];
                             objCharacter.SettingsFile = Path.GetFileName(strSettingsFile);
                         }
-                        
+
                         Program.MainForm.OpenCharacters.Add(objCharacter);
                         //Timekeeper.Start("load_file");
                         bool blnLoaded = await objCharacter.LoadFromHeroLabFile(strFile, strCharacterId, objCharacter.SettingsFile);

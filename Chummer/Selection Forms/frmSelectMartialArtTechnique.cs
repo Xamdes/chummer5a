@@ -69,8 +69,9 @@ namespace Chummer
 
                     foreach (XPathNavigator xmlTechnique in objTechniquesList)
                     {
-                        if (_objMartialArt.Techniques.Any(x => x.Name == xmlTechnique.Value) || xmlTechnique.SelectSingleNode("name") == null) continue;
-                            _setAllowedTechniques.Add(xmlTechnique.SelectSingleNode("name")?.Value);
+                        if (_objMartialArt.Techniques.Any(x => x.Name == xmlTechnique.Value) || xmlTechnique.SelectSingleNode("name") == null)
+                            continue;
+                        _setAllowedTechniques.Add(xmlTechnique.SelectSingleNode("name")?.Value);
                     }
                 }
             }

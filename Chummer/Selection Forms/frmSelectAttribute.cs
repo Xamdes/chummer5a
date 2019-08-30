@@ -16,9 +16,9 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
- using System;
+using System;
 using System.Collections.Generic;
- using System.Windows.Forms;
+using System.Windows.Forms;
 
 namespace Chummer
 {

@@ -54,7 +54,7 @@ namespace Chummer.UI.Table
             {
                 _spinner.Enabled = EnabledExtractor(tValue);
             }
-            
+
             if (!_blnUpdating && ValueGetter != null)
             {
                 decimal value = Convert.ToDecimal(ValueGetter(tValue));
@@ -64,30 +64,45 @@ namespace Chummer.UI.Table
                 _blnUpdating = false;
             }
         }
-        
-        public Func<T, bool> EnabledExtractor { get; set; }
+
+        public Func<T, bool> EnabledExtractor
+        {
+            get; set;
+        }
 
         /// <summary>
         /// The extractor extracting the minimum value for the spinner
         /// form the value.
         /// </summary>
-        public Func<T, decimal> MinExtractor { get; set; }
+        public Func<T, decimal> MinExtractor
+        {
+            get; set;
+        }
 
         /// <summary>
         /// The extractor to extract the maximum value for the spinner
         /// from the value.
         /// </summary>
-        public Func<T, decimal> MaxExtractor { get; set; }
+        public Func<T, decimal> MaxExtractor
+        {
+            get; set;
+        }
 
         /// <summary>
         /// The extractor for the property displayed in the spinner.
         /// </summary>
-        public Func<T, decimal> ValueGetter { get; set; }
+        public Func<T, decimal> ValueGetter
+        {
+            get; set;
+        }
 
         /// <summary>
         /// The extractor for the property displayed in the spinner.
         /// </summary>
-        public Action<T, decimal> ValueUpdater { get; set; }
+        public Action<T, decimal> ValueUpdater
+        {
+            get; set;
+        }
 
         /// <summary>
         /// spinner value change handler
@@ -96,7 +111,8 @@ namespace Chummer.UI.Table
         /// <param name="e"></param>
         private void value_changed(object sender, EventArgs e)
         {
-            if (_blnUpdating || ValueUpdater == null) return;
+            if (_blnUpdating || ValueUpdater == null)
+                return;
             _blnUpdating = true;
             try
             {

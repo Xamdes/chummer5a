@@ -16,10 +16,10 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
+using Chummer.Backend.Equipment;
 using System;
 using System.Diagnostics;
 using System.Xml;
-using Chummer.Backend.Equipment;
 
 namespace Chummer
 {
@@ -79,7 +79,10 @@ namespace Chummer
         /// <summary>
         /// Foci's name.
         /// </summary>
-        public Gear GearObject { get; set; }
+        public Gear GearObject
+        {
+            get; set;
+        }
 
         /// <summary>
         /// Rating of the Foci.

@@ -1,8 +1,8 @@
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Serialization;
 
 namespace ChummerHub.Client.Backend
 {
@@ -22,7 +22,7 @@ namespace ChummerHub.Client.Backend
             if (!_ignores.ContainsKey(type))
                 _ignores[type] = new HashSet<string>();
 
-            foreach (var prop in jsonPropertyNames)
+            foreach (string prop in jsonPropertyNames)
                 _ignores[type].Add(prop);
         }
 
@@ -36,7 +36,7 @@ namespace ChummerHub.Client.Backend
 
         protected override JsonProperty CreateProperty(MemberInfo member, MemberSerialization memberSerialization)
         {
-            var property = base.CreateProperty(member, memberSerialization);
+            JsonProperty property = base.CreateProperty(member, memberSerialization);
 
             if (IsIgnored(property.DeclaringType, property.PropertyName))
             {
@@ -44,7 +44,7 @@ namespace ChummerHub.Client.Backend
                 property.Ignored = true;
             }
 
-            if (IsRenamed(property.DeclaringType, property.PropertyName, out var newJsonPropertyName))
+            if (IsRenamed(property.DeclaringType, property.PropertyName, out string newJsonPropertyName))
                 property.PropertyName = newJsonPropertyName;
 
             return property;

@@ -23,6 +23,9 @@ namespace Chummer
 {
     public interface IHasGear
     {
-        TaggedObservableCollection<Gear> Gear { get; }
+        TaggedObservableCollection<Gear> Gear
+        {
+            get;
+        }
     }
 }

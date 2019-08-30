@@ -10,9 +10,9 @@ namespace ChummerHub.Areas.Identity.Pages.Account.Manage
     public class ResetAuthenticatorModel : PageModel
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'ResetAuthenticatorModel'
     {
-        UserManager<ApplicationUser> _userManager;
+        private UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
-        ILogger<ResetAuthenticatorModel> _logger;
+        private ILogger<ResetAuthenticatorModel> _logger;
 
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'ResetAuthenticatorModel.ResetAuthenticatorModel(UserManager<ApplicationUser>, SignInManager<ApplicationUser>, ILogger<ResetAuthenticatorModel>)'
         public ResetAuthenticatorModel(
@@ -28,14 +28,17 @@ namespace ChummerHub.Areas.Identity.Pages.Account.Manage
 
         [TempData]
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'ResetAuthenticatorModel.StatusMessage'
-        public string StatusMessage { get; set; }
+        public string StatusMessage
+        {
+            get; set;
+        }
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'ResetAuthenticatorModel.StatusMessage'
 
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'ResetAuthenticatorModel.OnGet()'
         public async Task<IActionResult> OnGet()
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'ResetAuthenticatorModel.OnGet()'
         {
-            var user = await _userManager.GetUserAsync(User);
+            ApplicationUser user = await _userManager.GetUserAsync(User);
             if (user == null)
             {
                 return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
@@ -48,7 +51,7 @@ namespace ChummerHub.Areas.Identity.Pages.Account.Manage
         public async Task<IActionResult> OnPostAsync()
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'ResetAuthenticatorModel.OnPostAsync()'
         {
-            var user = await _userManager.GetUserAsync(User);
+            ApplicationUser user = await _userManager.GetUserAsync(User);
             if (user == null)
             {
                 return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");

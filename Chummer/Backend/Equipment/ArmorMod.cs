@@ -17,6 +17,8 @@
  *  https://github.com/chummer5a/chummer5a
  */
 
+using Chummer.Backend.Attributes;
+using NLog;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -26,8 +28,6 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using System.Xml;
-using Chummer.Backend.Attributes;
-using NLog;
 
 namespace Chummer.Backend.Equipment
 {
@@ -36,10 +36,10 @@ namespace Chummer.Backend.Equipment
     /// </summary>
     [DebuggerDisplay("{DisplayName(GlobalOptions.DefaultLanguage)}")]
     public class ArmorMod : IHasInternalId, IHasName, IHasXmlNode, IHasNotes, ICanSell, ICanEquip, IHasSource, IHasRating, ICanSort, IHasWirelessBonus, IHasStolenProperty
-	{
+    {
         private Logger Log = NLog.LogManager.GetCurrentClassLogger();
         private Guid _guiID;
-	    private Guid _guiSourceID;
+        private Guid _guiSourceID;
         private string _strName = string.Empty;
         private string _strCategory = string.Empty;
         private string _strArmorCapacity = "[0]";
@@ -62,7 +62,7 @@ namespace Chummer.Backend.Equipment
         private readonly TaggedObservableCollection<Gear> _lstGear = new TaggedObservableCollection<Gear>();
         private string _strNotes = string.Empty;
         private bool _blnDiscountCost;
-	    private bool _blnStolen;
+        private bool _blnStolen;
         private int _intSortOrder;
 
         #region Constructor, Create, Save, Load, and Print Methods
@@ -323,7 +323,8 @@ namespace Chummer.Backend.Equipment
                         }
             }
 
-            if (!blnCopy) return;
+            if (!blnCopy)
+                return;
             if (!string.IsNullOrEmpty(Extra))
                 ImprovementManager.ForcedValue = Extra;
             ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.ArmorMod, _guiID.ToString("D"), Bonus, false, 1, DisplayNameShort(GlobalOptions.Language));
@@ -332,7 +333,8 @@ namespace Chummer.Backend.Equipment
                 Extra = ImprovementManager.SelectedValue;
             }
             ToggleWirelessBonuses(WirelessOn);
-            if (_blnEquipped) return;
+            if (_blnEquipped)
+                return;
             _blnEquipped = true;
             Equipped = false;
         }
@@ -381,15 +383,15 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public string InternalId => _guiID.ToString("D");
 
-	    /// <summary>
-	    /// Identifier of the object within data files.
-	    /// </summary>
-	    public Guid SourceID => _guiSourceID;
+        /// <summary>
+        /// Identifier of the object within data files.
+        /// </summary>
+        public Guid SourceID => _guiSourceID;
 
-	    /// <summary>
-	    /// String-formatted identifier of the <inheritdoc cref="SourceID"/> from the data files.
-	    /// </summary>
-	    public string SourceIDString => _guiSourceID.ToString("D");
+        /// <summary>
+        /// String-formatted identifier of the <inheritdoc cref="SourceID"/> from the data files.
+        /// </summary>
+        public string SourceIDString => _guiSourceID.ToString("D");
 
         /// <summary>
         /// Guid of a Cyberware Weapon.
@@ -587,15 +589,15 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Was the object stolen  via the Stolen Gear quality?
         /// </summary>
-	    public bool Stolen
-	    {
-	        get => _blnStolen;
-	        set => _blnStolen = value;
-	    }
+        public bool Stolen
+        {
+            get => _blnStolen;
+            set => _blnStolen = value;
+        }
 
         private SourceString _objCachedSourceDetail;
-	    public SourceString SourceDetail => _objCachedSourceDetail ?? (_objCachedSourceDetail =
-	                                            new SourceString(Source, DisplayPage(GlobalOptions.Language), GlobalOptions.Language));
+        public SourceString SourceDetail => _objCachedSourceDetail ?? (_objCachedSourceDetail =
+                                                new SourceString(Source, DisplayPage(GlobalOptions.Language), GlobalOptions.Language));
 
 
         /// <summary>
@@ -720,7 +722,10 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Parent Armor.
         /// </summary>
-        public Armor Parent { get; set; }
+        public Armor Parent
+        {
+            get; set;
+        }
 
         /// <summary>
         /// The Gear currently applied to the Armor.
@@ -916,22 +921,23 @@ namespace Chummer.Backend.Equipment
             }
         }
 
-	    /// <summary>
-	    /// Total cost of the Armor Mod.
-	    /// </summary>
-	    public decimal StolenTotalCost
-	    {
-	        get
-	        {
-	            decimal decReturn = 0;
-	            if (Stolen) decReturn += OwnCost;
+        /// <summary>
+        /// Total cost of the Armor Mod.
+        /// </summary>
+        public decimal StolenTotalCost
+        {
+            get
+            {
+                decimal decReturn = 0;
+                if (Stolen)
+                    decReturn += OwnCost;
 
-	            // Go through all of the Gear for this piece of Armor and add the Cost value.
-	            decReturn += Gear.Where(g => g.Stolen).AsParallel().Sum(objGear => objGear.StolenTotalCost);
+                // Go through all of the Gear for this piece of Armor and add the Cost value.
+                decReturn += Gear.Where(g => g.Stolen).AsParallel().Sum(objGear => objGear.StolenTotalCost);
 
-	            return decReturn;
-	        }
-	    }
+                return decReturn;
+            }
+        }
 
         /// <summary>
         /// Cost for just the Armor Mod.
@@ -977,7 +983,8 @@ namespace Chummer.Backend.Equipment
 
         public XmlNode GetNode(string strLanguage)
         {
-            if (_objCachedMyXmlNode != null && strLanguage == _strCachedXmlNodeLanguage && !GlobalOptions.LiveCustomData) return _objCachedMyXmlNode;
+            if (_objCachedMyXmlNode != null && strLanguage == _strCachedXmlNodeLanguage && !GlobalOptions.LiveCustomData)
+                return _objCachedMyXmlNode;
             _objCachedMyXmlNode = SourceID == Guid.Empty
                 ? XmlManager.Load("armor.xml", strLanguage)
                     .SelectSingleNode($"/chummer/mods/mod[name = \"{Name}\"]")

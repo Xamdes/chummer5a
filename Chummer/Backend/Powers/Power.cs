@@ -16,6 +16,9 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
+using Chummer.Annotations;
+using Chummer.Backend.Attributes;
+using Chummer.Backend.Skills;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -27,9 +30,6 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Windows.Forms;
 using System.Xml;
-using Chummer.Annotations;
-using Chummer.Backend.Attributes;
-using Chummer.Backend.Skills;
 // ReSharper disable SpecifyACultureInStringConversionExplicitly
 
 // ReSharper disable once CheckNamespace
@@ -220,7 +220,7 @@ namespace Chummer
                 _guiID = Guid.NewGuid();
             }
             objNode.TryGetStringFieldQuickly("name", ref _strName);
-            if(!objNode.TryGetGuidFieldQuickly("sourceid", ref _guiSourceID))
+            if (!objNode.TryGetGuidFieldQuickly("sourceid", ref _guiSourceID))
             {
                 XmlNode node = GetNode(GlobalOptions.Language);
                 if (!(node.TryGetField("id", Guid.TryParse, out _guiSourceID)))
@@ -344,7 +344,10 @@ namespace Chummer
         /// <summary>
         /// The Character object being used by the Power.
         /// </summary>
-        public Character CharacterObject { get; }
+        public Character CharacterObject
+        {
+            get;
+        }
 
         private CharacterAttrib _objMAGAttribute;
         /// <summary>
@@ -560,7 +563,8 @@ namespace Chummer
             get
             {
                 //TODO: This isn't super safe, but it's more reliable than checking it at load as improvement effects like Essence Loss take effect after powers are loaded. Might need another solution.
-                if (_intRating <= TotalMaximumLevels) return _intRating;
+                if (_intRating <= TotalMaximumLevels)
+                    return _intRating;
                 _intRating = TotalMaximumLevels;
                 return _intRating;
             }
@@ -713,7 +717,10 @@ namespace Chummer
         /// <summary>
         /// Bonus node from the XML file.
         /// </summary>
-        public XmlNode Bonus { get; set; }
+        public XmlNode Bonus
+        {
+            get; set;
+        }
 
         /// <summary>
         /// Whether or not Levels enabled for the Power.
@@ -739,7 +746,8 @@ namespace Chummer
             get => _intMaxLevels;
             set
             {
-                if (_intMaxLevels == value) return;
+                if (_intMaxLevels == value)
+                    return;
                 _intMaxLevels = value;
                 OnPropertyChanged();
             }

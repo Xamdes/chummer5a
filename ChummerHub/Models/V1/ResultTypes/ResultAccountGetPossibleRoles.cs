@@ -8,7 +8,10 @@ namespace ChummerHub.Models.V1
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'ResultAccountGetPossibleRoles'
     {
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'ResultAccountGetPossibleRoles.AllRoles'
-        public List<string> AllRoles { get; set; }
+        public List<string> AllRoles
+        {
+            get; set;
+        }
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'ResultAccountGetPossibleRoles.AllRoles'
 
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'ResultAccountGetPossibleRoles.ResultAccountGetPossibleRoles()'

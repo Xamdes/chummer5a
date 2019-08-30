@@ -23,9 +23,15 @@ namespace Chummer
 {
     public interface IHasNotes
     {
-        string Notes { get; set; }
+        string Notes
+        {
+            get; set;
+        }
 
-        Color PreferredColor { get; }
+        Color PreferredColor
+        {
+            get;
+        }
     }
 
     public static class Notes

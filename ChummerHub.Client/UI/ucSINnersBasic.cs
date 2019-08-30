@@ -1,31 +1,26 @@
+using Chummer;
+using Chummer.Plugins;
+using ChummerHub.Client.Backend;
+using SINners;
+using SINners.Models;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Drawing;
 using System.Data;
 using System.Globalization;
 using System.Linq;
-using System.Text;
+using System.Net;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using Chummer;
-using ChummerHub.Client.Model;
-using System.Net.Http;
-using Microsoft.Rest;
-using SINners;
-using System.Net;
-using SINners.Models;
-using ChummerHub.Client.Backend;
-using Chummer.Plugins;
-using NLog;
-using Utils = Chummer.Utils;
 
 namespace ChummerHub.Client.UI
 {
     public partial class ucSINnersBasic : UserControl
     {
         private Logger Log = NLog.LogManager.GetCurrentClassLogger();
-        public ucSINnersUserControl myUC { get; private set; }
+        public ucSINnersUserControl myUC
+        {
+            get; private set;
+        }
 
         public ucSINnersBasic()
         {
@@ -43,7 +38,7 @@ namespace ChummerHub.Client.UI
         {
             _inConstructor = true;
             InitializeComponent();
-           
+
 
             this.TagValueArchetype.DataSource = ContactControl.ContactArchetypes;
             this.Name = "SINnersBasic";
@@ -65,9 +60,9 @@ namespace ChummerHub.Client.UI
                     Log.Error("somehow I couldn't check the onlinestatus of " +
                                                         myUC.MyCE.MySINnerFile.Id);
                 }
-                
+
             });
-            foreach (var cb in gpTags.Controls)
+            foreach (object cb in gpTags.Controls)
             {
                 if ((cb is Control cont))
                     cont.Click += OnGroupBoxTagsClick;
@@ -88,7 +83,7 @@ namespace ChummerHub.Client.UI
 
         public async Task<bool> CheckSINnerStatus()
         {
-        
+
             try
             {
                 if ((myUC?.MyCE?.MySINnerFile?.Id == null) || (myUC.MyCE.MySINnerFile.Id == Guid.Empty))
@@ -104,7 +99,7 @@ namespace ChummerHub.Client.UI
 
                 using (new CursorWait(true, this))
                 {
-                    var client = StaticUtils.GetClient();
+                    SINnersClient client = StaticUtils.GetClient();
                     var response = await client.GetSINnerGroupFromSINerByIdWithHttpMessagesAsync(myUC.MyCE.MySINnerFile.Id.Value);
                     PluginHandler.MainForm.DoThreadSafe(() =>
                     {
@@ -157,9 +152,9 @@ namespace ChummerHub.Client.UI
 
         private void UpdateTags()
         {
-            var archetypeseq = from a in StaticUtils.UserRoles
-                where a.ToLowerInvariant() == "ArchetypeAdmin".ToLowerInvariant()
-                select a;
+            IEnumerable<string> archetypeseq = from a in StaticUtils.UserRoles
+                                               where a.ToLowerInvariant() == "ArchetypeAdmin".ToLowerInvariant()
+                                               select a;
             if (archetypeseq.Any())
             {
                 this.cbTagCustom.Enabled = true;
@@ -168,15 +163,15 @@ namespace ChummerHub.Client.UI
             if (myUC?.MyCE?.MySINnerFile?.MyGroup != null)
                 this.lGourpForSinner.Text = myUC.MyCE.MySINnerFile.MyGroup.Groupname;
 
-            var gpControlSeq = (from a in GetAllControls(gpTags, new List<Control>())
-                where a.Name.Contains("cbTag")
-                select a).ToList();
+            List<Control> gpControlSeq = (from a in GetAllControls(gpTags, new List<Control>())
+                                          where a.Name.Contains("cbTag")
+                                          select a).ToList();
 
-            var gpControlValueSeq = (from a in GetAllControls(gpTags, new List<Control>())
-                where a.Name.Contains("TagValue")
-                select a).ToList();
+            List<Control> gpControlValueSeq = (from a in GetAllControls(gpTags, new List<Control>())
+                                               where a.Name.Contains("TagValue")
+                                               select a).ToList();
 
-            foreach (var cb in gpControlSeq)
+            foreach (Control cb in gpControlSeq)
             {
                 if (cb is CheckBox cbTag)
                     cbTag.CheckState = CheckState.Unchecked;
@@ -188,13 +183,13 @@ namespace ChummerHub.Client.UI
                     continue;
                 //search for a CheckBox that is named like the tag
                 string checkBoxKey = "cbTag" + tag.TagName;
-                var tagsCB = (from a in gpControlSeq where a.Name == checkBoxKey select a).ToList();
+                List<Control> tagsCB = (from a in gpControlSeq where a.Name == checkBoxKey select a).ToList();
                 if (!tagsCB.Any())
                     continue;
                 if (!(tagsCB.FirstOrDefault() is CheckBox cbTag))
                     throw new ArgumentNullException("Control " + checkBoxKey + " is NOT a Checkbox!");
-                
-                if (Boolean.TryParse(tag.TagValue, out var value))
+
+                if (bool.TryParse(tag.TagValue, out bool value))
                 {
                     cbTag.Checked = value;
                 }
@@ -203,8 +198,8 @@ namespace ChummerHub.Client.UI
                     cbTag.Checked = false;
                 }
                 //search for the value-control (whatever that may be)
-                var tagValueControlKey = "TagValue" + tag.TagName;
-                var tagValueControlSeq = (from a in gpControlValueSeq where a.Name == tagValueControlKey select a).ToList();
+                string tagValueControlKey = "TagValue" + tag.TagName;
+                List<Control> tagValueControlSeq = (from a in gpControlValueSeq where a.Name == tagValueControlKey select a).ToList();
                 if (!tagValueControlSeq.Any())
                 {
                     continue;
@@ -226,7 +221,7 @@ namespace ChummerHub.Client.UI
                 }
                 else if (tagValueControlSeq.FirstOrDefault() is NumericUpDown upDownTagValue)
                 {
-                    if (Decimal.TryParse(tag.TagValue, out var val))
+                    if (decimal.TryParse(tag.TagValue, out decimal val))
                         upDownTagValue.Value = val;
                 }
             }
@@ -257,20 +252,21 @@ namespace ChummerHub.Client.UI
                 return;
             if (myUC == null)
                 return;
-            var gpControlSeq = (from a in GetAllControls(gpTags, new List<Control>())
-                where a.Name.Contains("cbTag") select a).ToList();
+            List<Control> gpControlSeq = (from a in GetAllControls(gpTags, new List<Control>())
+                                          where a.Name.Contains("cbTag")
+                                          select a).ToList();
 
-            var gpControlValueSeq = (from a in GetAllControls(gpTags, new List<Control>())
-                where a.Name.Contains("TagValue")
-                select a).ToList();
+            List<Control> gpControlValueSeq = (from a in GetAllControls(gpTags, new List<Control>())
+                                               where a.Name.Contains("TagValue")
+                                               select a).ToList();
 
             myUC.MyCE.MySINnerFile.SiNnerMetaData.Tags = myUC.MyCE.MySINnerFile.SiNnerMetaData.Tags.Where(a => a != null).ToList();
-            
-            foreach (var cb in gpControlSeq)
+
+            foreach (Control cb in gpControlSeq)
             {
                 if (!(cb is CheckBox cbTag))
                     continue;
-                
+
                 string tagName = cbTag.Name.Substring("cbTag".Length);
                 Tag tag = null;
                 if (myUC.MyCE.MySINnerFile.SiNnerMetaData.Tags.All(a => a != null && a.TagName != tagName))
@@ -280,13 +276,14 @@ namespace ChummerHub.Client.UI
                         SiNnerId = myUC.MyCE.MySINnerFile.Id,
                         TagName = tagName
                     };
-                    
+
                 }
                 else
                 {
-                    tag = myUC.MyCE.MySINnerFile.SiNnerMetaData.Tags.FirstOrDefault(a => a != null &&  a.TagName == tagName);
+                    tag = myUC.MyCE.MySINnerFile.SiNnerMetaData.Tags.FirstOrDefault(a => a != null && a.TagName == tagName);
                 }
-                if (tag == null) continue;
+                if (tag == null)
+                    continue;
                 if (myUC.MyCE.MySINnerFile.SiNnerMetaData.Tags.Contains(tag))
                     myUC.MyCE.MySINnerFile.SiNnerMetaData.Tags.Remove(tag);
                 if (cbTag.Checked == false)
@@ -297,8 +294,8 @@ namespace ChummerHub.Client.UI
                 }
                 myUC.MyCE.MySINnerFile.SiNnerMetaData.Tags.Add(tag);
                 //search for the value
-                var tagValueControlKey = "TagValue" + tag.TagName;
-                var tagValueControlSeq =
+                string tagValueControlKey = "TagValue" + tag.TagName;
+                List<Control> tagValueControlSeq =
                     (from a in gpControlValueSeq where a.Name == tagValueControlKey select a).ToList();
                 if (!tagValueControlSeq.Any())
                     continue;
@@ -318,7 +315,7 @@ namespace ChummerHub.Client.UI
             }
         }
 
-       
+
         private async void bUpload_Click(object sender, EventArgs e)
         {
             using (new CursorWait(true, this))
@@ -357,18 +354,18 @@ namespace ChummerHub.Client.UI
                     PluginHandler.MainForm.CharacterRoster.LoadCharacters(false, false, false, true);
                 });
             };
-            var res = gs.ShowDialog();
-            
+            DialogResult res = gs.ShowDialog();
+
         }
 
         private async void BVisibility_Click(object sender, EventArgs e)
         {
-            var visfrm = new frmSINnerVisibility();
+            frmSINnerVisibility visfrm = new frmSINnerVisibility();
             using (new CursorWait(true, this))
             {
                 if (!this.myUC.MyCE.MySINnerFile.SiNnerMetaData.Visibility.UserRights.Any())
                 {
-                    var client = Backend.StaticUtils.GetClient();
+                    SINnersClient client = Backend.StaticUtils.GetClient();
                     HttpOperationResponse<ResultSinnerGetSINnerVisibilityById> res =
                         await client.GetSINnerVisibilityByIdWithHttpMessagesAsync(
                             this.myUC.MyCE.MySINnerFile.Id.Value);
@@ -381,7 +378,7 @@ namespace ChummerHub.Client.UI
             }
 
             visfrm.MyVisibility = this.myUC.MyCE.MySINnerFile.SiNnerMetaData.Visibility;
-            var result = visfrm.ShowDialog(this);
+            DialogResult result = visfrm.ShowDialog(this);
             if (result == DialogResult.OK)
             {
                 this.myUC.MyCE.MySINnerFile.SiNnerMetaData.Visibility = visfrm.MyVisibility;
@@ -391,11 +388,11 @@ namespace ChummerHub.Client.UI
 
         private void BGenerateNewId_Click(object sender, EventArgs e)
         {
-            var oldId = this.myUC.MyCE.MySINnerFile.Id;
+            Guid? oldId = this.myUC.MyCE.MySINnerFile.Id;
             this.myUC.MyCE.MySINnerFile.Id = Guid.NewGuid();
             this.myUC.MyCE.MySINnerFile.SiNnerMetaData.Id = Guid.NewGuid();
             this.myUC.MyCE.MySINnerFile.SiNnerMetaData.Visibility.Id = Guid.NewGuid();
-            foreach (var user in this.myUC.MyCE.MySINnerFile.SiNnerMetaData.Visibility.UserRights)
+            foreach (SINnerUserRight user in this.myUC.MyCE.MySINnerFile.SiNnerMetaData.Visibility.UserRights)
             {
                 user.Id = Guid.NewGuid();
             }
@@ -403,7 +400,7 @@ namespace ChummerHub.Client.UI
             //this.myUC.MyCE.MySINnerFile.MyExtendedAttributes.Id = Guid.NewGuid();
             if (oldId != null)
             {
-                this.myUC.CharacterObject.FileName =  this.myUC.CharacterObject.FileName.Replace(oldId.ToString(), this.myUC.MyCE.MySINnerFile.Id.ToString());
+                this.myUC.CharacterObject.FileName = this.myUC.CharacterObject.FileName.Replace(oldId.ToString(), this.myUC.MyCE.MySINnerFile.Id.ToString());
             }
             this.myUC.CharacterObject.Save(this.myUC.MyCE.MySINnerFile.Id + ".chum5", false, true);
             this.tbID.Text = this.myUC.MyCE.MySINnerFile.Id.ToString();

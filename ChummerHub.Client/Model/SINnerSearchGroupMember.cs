@@ -1,9 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 namespace SINners.Models
 {
     public partial class SINnerSearchGroupMember
@@ -13,7 +7,7 @@ namespace SINners.Models
             get
             {
                 string display = this.MySINner.Alias;
-                if (!String.IsNullOrEmpty(Username))
+                if (!string.IsNullOrEmpty(Username))
                     display += " " + this.Username;
                 return display;
             }

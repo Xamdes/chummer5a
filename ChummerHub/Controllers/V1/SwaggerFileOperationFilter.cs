@@ -13,7 +13,7 @@ namespace ChummerHub.Controllers.V1
         public void Apply(Operation operation, OperationFilterContext context)
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'SwaggerFileOperationFilter.Apply(Operation, OperationFilterContext)'
         {
-            var anyFileStreamResult = context.ApiDescription.SupportedResponseTypes
+            bool anyFileStreamResult = context.ApiDescription.SupportedResponseTypes
                 .Any(x => x.Type == typeof(FileStreamResult));
 
             if (anyFileStreamResult)

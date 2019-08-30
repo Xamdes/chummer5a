@@ -156,7 +156,10 @@ namespace Chummer
 
         public TaggedObservableCollection<IHasLocation> Children { get; } = new TaggedObservableCollection<IHasLocation>();
 
-        public ObservableCollection<Location> Parent { get; }
+        public ObservableCollection<Location> Parent
+        {
+            get;
+        }
         #endregion
 
         #region UI Methods

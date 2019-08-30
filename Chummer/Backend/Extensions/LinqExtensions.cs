@@ -82,7 +82,8 @@ namespace Chummer
                 }
                 // No matching item was found, return false
                 return false;
-                NextItem:;
+NextItem:
+                ;
             }
             return true;
         }

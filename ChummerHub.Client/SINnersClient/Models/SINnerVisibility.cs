@@ -4,19 +4,18 @@
 
 namespace SINners.Models
 {
-    using System;
-    using System.Linq;
-    using System.Collections.Generic;
     using Newtonsoft.Json;
-    using Microsoft.Rest;
-    using Microsoft.Rest.Serialization;
+    using System;
+    using System.Collections.Generic;
 
     public partial class SINnerVisibility
     {
         /// <summary>
         /// Initializes a new instance of the SINnerVisibility class.
         /// </summary>
-        public SINnerVisibility() { }
+        public SINnerVisibility()
+        {
+        }
 
         /// <summary>
         /// Initializes a new instance of the SINnerVisibility class.
@@ -32,22 +31,34 @@ namespace SINners.Models
         /// <summary>
         /// </summary>
         [JsonProperty(PropertyName = "id")]
-        public Guid? Id { get; set; }
+        public Guid? Id
+        {
+            get; set;
+        }
 
         /// <summary>
         /// </summary>
         [JsonProperty(PropertyName = "isPublic")]
-        public bool? IsPublic { get; set; }
+        public bool? IsPublic
+        {
+            get; set;
+        }
 
         /// <summary>
         /// </summary>
         [JsonProperty(PropertyName = "isGroupVisible")]
-        public bool? IsGroupVisible { get; set; }
+        public bool? IsGroupVisible
+        {
+            get; set;
+        }
 
         /// <summary>
         /// </summary>
         [JsonProperty(PropertyName = "userRights")]
-        public IList<SINnerUserRight> UserRights { get; set; }
+        public IList<SINnerUserRight> UserRights
+        {
+            get; set;
+        }
 
     }
 }

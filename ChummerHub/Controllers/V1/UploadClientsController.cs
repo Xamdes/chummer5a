@@ -54,7 +54,7 @@ namespace ChummerHub.Controllers.V1
                 return BadRequest(ModelState);
             }
 
-            var uploadClient = await _context.UploadClients.FindAsync(id);
+            UploadClient uploadClient = await _context.UploadClients.FindAsync(id);
 
             if (uploadClient == null)
             {
@@ -77,13 +77,13 @@ namespace ChummerHub.Controllers.V1
                 return BadRequest(ModelState);
             }
 
-            var uploadClient = await _context.UploadClients.FindAsync(id);
+            UploadClient uploadClient = await _context.UploadClients.FindAsync(id);
 
             if (uploadClient == null)
             {
                 return NotFound();
             }
-            var list = await _context.SINners.Select(a => a.UploadClientId == id).ToListAsync();
+            List<bool> list = await _context.SINners.Select(a => a.UploadClientId == id).ToListAsync();
             if (!list.Any())
                 return NotFound(id);
             return Ok(list);

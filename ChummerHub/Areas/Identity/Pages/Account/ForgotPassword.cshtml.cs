@@ -27,7 +27,10 @@ namespace ChummerHub.Areas.Identity.Pages.Account
 
         [BindProperty]
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'ForgotPasswordModel.Input'
-        public InputModel Input { get; set; }
+        public InputModel Input
+        {
+            get; set;
+        }
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'ForgotPasswordModel.Input'
 
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'ForgotPasswordModel.InputModel'
@@ -37,7 +40,10 @@ namespace ChummerHub.Areas.Identity.Pages.Account
             [Required]
             [EmailAddress]
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'ForgotPasswordModel.InputModel.Email'
-            public string Email { get; set; }
+            public string Email
+            {
+                get; set;
+            }
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'ForgotPasswordModel.InputModel.Email'
         }
 
@@ -47,7 +53,7 @@ namespace ChummerHub.Areas.Identity.Pages.Account
         {
             if (ModelState.IsValid)
             {
-                var user = await _userManager.FindByEmailAsync(Input.Email);
+                ApplicationUser user = await _userManager.FindByEmailAsync(Input.Email);
                 if (user == null || !(await _userManager.IsEmailConfirmedAsync(user)))
                 {
                     // Don't reveal that the user does not exist or is not confirmed
@@ -56,11 +62,14 @@ namespace ChummerHub.Areas.Identity.Pages.Account
 
                 // For more information on how to enable account confirmation and password reset please 
                 // visit https://go.microsoft.com/fwlink/?LinkID=532713
-                var code = await _userManager.GeneratePasswordResetTokenAsync(user);
-                var callbackUrl = Url.Page(
+                string code = await _userManager.GeneratePasswordResetTokenAsync(user);
+                string callbackUrl = Url.Page(
                     "/Account/ResetPassword",
                     pageHandler: null,
-                    values: new { code },
+                    values: new
+                    {
+                        code
+                    },
                     protocol: Request.Scheme);
 
                 await _emailSender.SendEmailAsync(

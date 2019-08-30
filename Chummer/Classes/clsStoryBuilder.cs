@@ -16,13 +16,13 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
- using System;
- using System.Collections.Concurrent;
- using System.Collections.Generic;
+using System;
+using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
- using System.Xml.XPath;
+using System.Xml.XPath;
 
 namespace Chummer
 {
@@ -90,7 +90,8 @@ namespace Chummer
 
         private void Write(StringBuilder story, string innerText, int levels, XPathNavigator xmlBaseMacrosNode)
         {
-            if (levels <= 0) return;
+            if (levels <= 0)
+                return;
 
             int startingLength = story.Length;
 
@@ -138,7 +139,7 @@ namespace Chummer
                 }
             }
         }
-        
+
         public string Macro(string innerText, XPathNavigator xmlBaseMacrosNode)
         {
             if (string.IsNullOrEmpty(innerText))
@@ -165,7 +166,7 @@ namespace Chummer
                 }
                 return "Alias ";
             }
-            if(macroName == "real")
+            if (macroName == "real")
             {
                 if (!string.IsNullOrEmpty(_objCharacter.Name))
                 {

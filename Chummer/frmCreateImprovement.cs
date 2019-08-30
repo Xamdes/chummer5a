@@ -16,14 +16,14 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
- using System;
+using Chummer.Backend.Skills;
+using System;
 using System.Collections.Generic;
 using System.IO;
- using System.Linq;
- using System.Text;
- using System.Windows.Forms;
+using System.Linq;
+using System.Text;
+using System.Windows.Forms;
 using System.Xml;
- using Chummer.Backend.Skills;
 
 namespace Chummer
 {
@@ -54,7 +54,7 @@ namespace Chummer
             XmlNodeList objXmlImprovementList = _objDocument.SelectNodes("/chummer/improvements/improvement");
             if (objXmlImprovementList != null)
                 lstTypes.AddRange(from XmlNode objXmlImprovement in objXmlImprovementList
-                    select new ListItem(objXmlImprovement["id"]?.InnerText, Name = objXmlImprovement["translate"]?.InnerText ?? objXmlImprovement["name"]?.InnerText));
+                                  select new ListItem(objXmlImprovement["id"]?.InnerText, Name = objXmlImprovement["translate"]?.InnerText ?? objXmlImprovement["name"]?.InnerText));
 
             lstTypes.Sort(CompareListItems.CompareNames);
             cboImprovemetType.BeginUpdate();
@@ -123,7 +123,8 @@ namespace Chummer
             cmdChangeSelection.Visible = false;
             _strSelect = string.Empty;
 
-            if (objFetchNode == null) return;
+            if (objFetchNode == null)
+                return;
             XmlNodeList xmlNodeList = objFetchNode.SelectNodes("fields/field");
             if (xmlNodeList != null)
                 foreach (XmlNode objNode in xmlNodeList)
@@ -303,7 +304,7 @@ namespace Chummer
                         {
                             txtSelect.Text = frmPickSkill.SelectedSkill;
                             txtTranslateSelection.Text = TranslateField(_strSelect, frmPickSkill.SelectedSkill);
-                        }  
+                        }
                     }
                     break;
                 case "SelectKnowSkill":
@@ -371,7 +372,7 @@ namespace Chummer
                         txtSelect.Text = frmPickSkillCategory.SelectedCategory;
                         txtTranslateSelection.Text = TranslateField(_strSelect, frmPickSkillCategory.SelectedCategory);
                     }
-                       
+
                     break;
                 case "SelectSkillGroup":
                     frmSelectSkillGroup frmPickSkillGroup = new frmSelectSkillGroup
@@ -385,7 +386,7 @@ namespace Chummer
                         txtSelect.Text = frmPickSkillGroup.SelectedSkillGroup;
                         txtTranslateSelection.Text = TranslateField(_strSelect, frmPickSkillGroup.SelectedSkillGroup);
                     }
-                        
+
                     break;
                 case "SelectSpell":
                     List<ListItem> lstSpells = new List<ListItem>();
@@ -400,7 +401,7 @@ namespace Chummer
                     {
                         Description = LanguageManager.GetString("Title_SelectSpell", GlobalOptions.Language),
                         DropdownItems = lstSpells
-                        
+
                     };
                     selectSpell.ShowDialog(this);
 
@@ -434,11 +435,13 @@ namespace Chummer
                     {
                         txtSelect.Text = frmPickSpellCategory.SelectedCategory;
                         txtTranslateSelection.Text = TranslateField(_strSelect, frmPickSpellCategory.SelectedCategory);
-                    }                     
+                    }
                     break;
                 case "SelectAdeptPower":
-                    frmSelectPower frmPickPower = new frmSelectPower(_objCharacter);
-                    frmPickPower.IgnoreLimits = chkIgnoreLimits.Checked;
+                    frmSelectPower frmPickPower = new frmSelectPower(_objCharacter)
+                    {
+                        IgnoreLimits = chkIgnoreLimits.Checked
+                    };
                     frmPickPower.ShowDialog(this);
 
                     if (frmPickPower.DialogResult == DialogResult.OK)
@@ -550,7 +553,10 @@ namespace Chummer
                 objImprovement.CustomGroup = _strCustomGroup;
                 NewImprovement = objImprovement;
             }
-            else {Utils.BreakIfDebug();}
+            else
+            {
+                Utils.BreakIfDebug();
+            }
 
             DialogResult = DialogResult.OK;
         }
@@ -633,7 +639,10 @@ namespace Chummer
             set => _objEditImprovement = value;
         }
 
-        public Improvement NewImprovement { get; set; }
+        public Improvement NewImprovement
+        {
+            get; set;
+        }
 
         #endregion
     }

@@ -16,6 +16,7 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
+using NLog;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -24,14 +25,16 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
-using NLog;
 
 namespace Chummer.UI.Shared
 {
     public partial class BindingListDisplay<TType> : UserControl
     {
         private Logger Log = NLog.LogManager.GetCurrentClassLogger();
-        public PropertyChangedEventHandler ChildPropertyChanged { get; set; }
+        public PropertyChangedEventHandler ChildPropertyChanged
+        {
+            get; set;
+        }
 
         public IComparer<TType> DefaultComparer => _indexComparer;
 
@@ -61,7 +64,8 @@ namespace Chummer.UI.Shared
                 _contentList.Add(new ControlWithMetaData(objLoopTType, this));
             }
             _indexComparer = new IndexComparer(_contents);
-            if (_comparison == null) _comparison = _indexComparer;
+            if (_comparison == null)
+                _comparison = _indexComparer;
             _contents.ListChanged += ContentsChanged;
             ComptuteDisplayIndex();
             LoadScreenContent();
@@ -84,11 +88,13 @@ namespace Chummer.UI.Shared
         {
             min = Math.Max(0, min);
             max = Math.Min(_displayIndex.Count, max);
-            if (_rendered.FirstMatching(false, min) > max) return;
+            if (_rendered.FirstMatching(false, min) > max)
+                return;
             SuspendLayout();
             for (int i = min; i < max; i++)
             {
-                if (_rendered[i]) continue;
+                if (_rendered[i])
+                    continue;
 
                 ControlWithMetaData item = _contentList[_displayIndex[i]];
 
@@ -129,13 +135,14 @@ namespace Chummer.UI.Shared
 
         private void LoadScreenContent()
         {
-            if (_contentList.Count == 0) return;
+            if (_contentList.Count == 0)
+                return;
 
             int toload = _loadVisibleOnly
                 ? VisibleElements()
                 : _contentList.Count;
 
-            int top = VerticalScroll.Value/_contentList[0].Control.Height;
+            int top = VerticalScroll.Value / _contentList[0].Control.Height;
 
             LoadRange(top, top + toload);
         }
@@ -158,7 +165,7 @@ namespace Chummer.UI.Shared
 
         private void ApplicationOnIdle(object sender, EventArgs eventArgs)
         {
-            TimeSpan maxDelay =TimeSpan.FromSeconds(0.1f);
+            TimeSpan maxDelay = TimeSpan.FromSeconds(0.1f);
 
             if (_resetAtIdle)
             {
@@ -169,7 +176,8 @@ namespace Chummer.UI.Shared
                 pnlDisplay.ResumeLayout();
             }
 
-            if (_allRendered) return;
+            if (_allRendered)
+                return;
             int firstUnrendered = _rendered.FirstMatching(false);
 
             if (firstUnrendered == -1)
@@ -179,7 +187,8 @@ namespace Chummer.UI.Shared
             }
 
             int end = _rendered.FirstMatching(true, firstUnrendered);
-            if (end == -1) end = _displayIndex.Count;
+            if (end == -1)
+                end = _displayIndex.Count;
 
             end = Math.Min(end, firstUnrendered + _offScreenChunkSize);
             Stopwatch sw = Stopwatch.StartNew();
@@ -203,7 +212,8 @@ namespace Chummer.UI.Shared
 
         public void Filter(Predicate<TType> predicate, bool forceRefresh = false)
         {
-            if (_visibleFilter == predicate && !forceRefresh) return;
+            if (_visibleFilter == predicate && !forceRefresh)
+                return;
             _visibleFilter = predicate;
 
             pnlDisplay.SuspendLayout();
@@ -218,7 +228,8 @@ namespace Chummer.UI.Shared
 
         public void Sort(IComparer<TType> comparison)
         {
-            if (Equals(_comparison, comparison)) return;
+            if (Equals(_comparison, comparison))
+                return;
             _comparison = comparison;
 
             pnlDisplay.SuspendLayout();
@@ -296,7 +307,7 @@ namespace Chummer.UI.Shared
             if (_contentList == null) //In some edge case i don't know, this is done before _Load()
                 pnlDisplay.Height = Height;
             else
-                pnlDisplay.Height = _contentList.Count == 0 ? Height : _contentList.Count(x => x.Visible)*_contentList[0].Control.Height;
+                pnlDisplay.Height = _contentList.Count == 0 ? Height : _contentList.Count(x => x.Visible) * _contentList[0].Control.Height;
             foreach (Control control in pnlDisplay.Controls)
             {
                 control.Width = pnlDisplay.Width;
@@ -305,7 +316,10 @@ namespace Chummer.UI.Shared
 
         private sealed class ControlWithMetaData
         {
-            public TType Item { get; }
+            public TType Item
+            {
+                get;
+            }
 
             public Control Control => _control ?? (_control = CreateControl());
 

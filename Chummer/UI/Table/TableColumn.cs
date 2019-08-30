@@ -113,7 +113,8 @@ namespace Chummer.UI.Table
         public Func<T, object> Extractor
         {
             get => _funcExtractor;
-            set {
+            set
+            {
                 CheckLive();
                 _funcExtractor = value;
             }
@@ -130,7 +131,8 @@ namespace Chummer.UI.Table
         public int MinWidth
         {
             get => _intMinWidth;
-            set {
+            set
+            {
                 CheckLive();
                 if (value < 0)
                 {
@@ -185,7 +187,8 @@ namespace Chummer.UI.Table
         public int PrefWidth
         {
             get => _intPrefWidth;
-            set {
+            set
+            {
                 if (value >= _intMinWidth)
                 {
                     _intPrefWidth = value;
@@ -196,7 +199,10 @@ namespace Chummer.UI.Table
         /// <summary>
         /// Extractor for tooltip text on cell
         /// </summary>
-        public Func<T, string> ToolTipExtractor { get; set; }
+        public Func<T, string> ToolTipExtractor
+        {
+            get; set;
+        }
 
         /// <summary>
         /// transfer the column to the live state

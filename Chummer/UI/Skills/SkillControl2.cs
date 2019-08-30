@@ -16,15 +16,15 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
+using Chummer.Annotations;
+using Chummer.Backend.Attributes;
+using Chummer.Backend.Skills;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
 using System.Windows.Forms;
-using Chummer.Annotations;
-using Chummer.Backend.Skills;
-using Chummer.Backend.Attributes;
 
 namespace Chummer.UI.Skills
 {
@@ -51,15 +51,15 @@ namespace Chummer.UI.Skills
             {
                 LanguageManager.TranslateToolStripItemsRecursively(objItem, GlobalOptions.Language);
             }
-            
+
             this.DoDatabinding("Enabled", skill, nameof(Skill.Enabled));
 
             //Display
             _normalName = lblName.Font;
             _italicName = new Font(lblName.Font, FontStyle.Italic);
-            
+
             this.DoDatabinding("BackColor", skill, nameof(Skill.PreferredControlColor));
-            
+
             lblName.DoDatabinding("Text", skill, nameof(Skill.DisplayName));
             lblName.DoDatabinding("ForeColor", skill, nameof(Skill.PreferredColor));
             lblName.DoDatabinding("ToolTipText", skill, nameof(Skill.SkillToolTip));
@@ -69,11 +69,11 @@ namespace Chummer.UI.Skills
 
             _attributeActive = skill.AttributeObject;
             _skill.PropertyChanged += Skill_PropertyChanged;
-            
+
             nudSkill.Visible = !skill.CharacterObject.Created && skill.CharacterObject.BuildMethodHasSkillPoints;
             nudKarma.Visible = !skill.CharacterObject.Created;
             chkKarma.Visible = !skill.CharacterObject.Created;
-            cboSpec.Visible  = !skill.CharacterObject.Created;
+            cboSpec.Visible = !skill.CharacterObject.Created;
 
             cboSelectAttribute.Visible = false;
             btnCareerIncrease.Visible = skill.CharacterObject.Created;
@@ -169,7 +169,7 @@ namespace Chummer.UI.Skills
             lblModifiedRating.Text = _skill.DisplayOtherAttribute(_attributeActive.TotalValue, _attributeActive.Abbrev);
 
             _blnLoading = false;
-            
+
             ResumeLayout();
         }
 
@@ -276,7 +276,8 @@ namespace Chummer.UI.Skills
             frmSelectSpec selectForm = new frmSelectSpec(_skill);
             selectForm.ShowDialog();
 
-            if (selectForm.DialogResult != DialogResult.OK) return;
+            if (selectForm.DialogResult != DialogResult.OK)
+                return;
 
             _skill.AddSpecialization(selectForm.SelectedItem);
 
@@ -287,10 +288,10 @@ namespace Chummer.UI.Skills
         private void SetupDropdown()
         {
             List<ListItem> lstAttributeItems = new List<ListItem>();
-		    foreach (string strLoopAttribute in AttributeSection.AttributeStrings)
-		    {
+            foreach (string strLoopAttribute in AttributeSection.AttributeStrings)
+            {
                 if (strLoopAttribute != "MAGAdept")
-                    lstAttributeItems.Add(new ListItem (strLoopAttribute, LanguageManager.GetString($"String_Attribute{strLoopAttribute}Short", GlobalOptions.Language)));
+                    lstAttributeItems.Add(new ListItem(strLoopAttribute, LanguageManager.GetString($"String_Attribute{strLoopAttribute}Short", GlobalOptions.Language)));
             }
 
             cboSelectAttribute.BeginUpdate();
@@ -313,12 +314,12 @@ namespace Chummer.UI.Skills
             btnAttribute.Visible = true;
             cboSelectAttribute.Visible = false;
             _attributeActive.PropertyChanged -= Attribute_PropertyChanged;
-            _attributeActive = _skill.CharacterObject.GetAttribute((string) cboSelectAttribute.SelectedValue);
+            _attributeActive = _skill.CharacterObject.GetAttribute((string)cboSelectAttribute.SelectedValue);
 
             _attributeActive.PropertyChanged += Attribute_PropertyChanged;
             btnAttribute.Font = _attributeActive == _skill.AttributeObject ? _normal : _italic;
             btnAttribute.Text = cboSelectAttribute.Text;
-            Attribute_PropertyChanged(this,null);
+            Attribute_PropertyChanged(this, null);
             CustomAttributeChanged?.Invoke(this, EventArgs.Empty);
         }
 
@@ -332,7 +333,8 @@ namespace Chummer.UI.Skills
         [UsedImplicitly]
         public void ResetSelectAttribute()
         {
-            if (!CustomAttributeSet) return;
+            if (!CustomAttributeSet)
+                return;
             _attributeActive.PropertyChanged -= Attribute_PropertyChanged;
             cboSelectAttribute.SelectedValue = _skill.AttributeObject.Abbrev;
             cboSelectAttribute_Closed(null, null);
@@ -392,14 +394,15 @@ namespace Chummer.UI.Skills
         /// </summary>
         #region ButtonWithToolTip Visibility workaround
 
-        ButtonWithToolTip _activeButton;
+        private ButtonWithToolTip _activeButton;
 
         private ButtonWithToolTip ActiveButton
         {
             get => _activeButton;
             set
             {
-                if (value == ActiveButton) return;
+                if (value == ActiveButton)
+                    return;
                 ActiveButton?.ToolTipObject.Hide(this);
                 _activeButton = value;
                 if (_activeButton?.Visible == true)
@@ -413,8 +416,10 @@ namespace Chummer.UI.Skills
         {
             foreach (Control c in Controls)
             {
-                if (!(c is ButtonWithToolTip)) continue;
-                if (c.Bounds.Contains(pt)) return c;
+                if (!(c is ButtonWithToolTip))
+                    continue;
+                if (c.Bounds.Contains(pt))
+                    return c;
             }
             return null;
         }

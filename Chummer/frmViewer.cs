@@ -16,20 +16,20 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
-using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Windows.Forms;
-using System.IO;
-using System.Xml;
-using System.Xml.Xsl;
-using System.ComponentModel;
- using System.Linq;
 using Codaxy.WkHtmlToPdf;
-using System.Diagnostics;
-using System.Globalization;
 using Microsoft.Win32;
 using NLog;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Diagnostics;
+using System.Globalization;
+using System.IO;
+using System.Linq;
+using System.Text;
+using System.Windows.Forms;
+using System.Xml;
+using System.Xml.Xsl;
 
 namespace Chummer
 {
@@ -114,7 +114,7 @@ namespace Chummer
         {
             _blnLoading = true;
             // Populate the XSLT list with all of the XSL files found in the sheets directory.
-            cboLanguage  = PopulateLanguageList(cboLanguage, _strSelectedSheet);
+            cboLanguage = PopulateLanguageList(cboLanguage, _strSelectedSheet);
             PopulateXsltList();
 
             cboXSLT.SelectedValue = _strSelectedSheet;
@@ -455,7 +455,7 @@ namespace Chummer
 
             Cursor = Cursors.Default;
         }
-        
+
         private void cmdSaveAsPdf_Click(object sender, EventArgs e)
         {
             // Save the generated output as PDF.
@@ -542,7 +542,7 @@ namespace Chummer
             List<ListItem> lstSheets = new List<ListItem>();
 
             // Populate the XSL list with all of the manifested XSL files found in the sheets\[language] directory.
-            using (XmlNodeList lstSheetNodes = XmlManager.Load("sheets.xml",strLanguage,true).SelectNodes($"/chummer/sheets[@lang='{strLanguage}']/sheet[not(hide)]"))
+            using (XmlNodeList lstSheetNodes = XmlManager.Load("sheets.xml", strLanguage, true).SelectNodes($"/chummer/sheets[@lang='{strLanguage}']/sheet[not(hide)]"))
                 if (lstSheetNodes != null)
                     foreach (XmlNode xmlSheet in lstSheetNodes)
                     {
@@ -701,7 +701,7 @@ namespace Chummer
         {
             set => _lstCharacters = value;
         }
-#endregion
+        #endregion
 
         private void cboLanguage_SelectedIndexChanged(object sender, EventArgs e)
         {
@@ -732,7 +732,7 @@ namespace Chummer
             // If the desired sheet was not found, fall back to the Shadowrun 5 sheet.
             if (cboXSLT.SelectedIndex == -1)
             {
-                var intNameIndex = cboXSLT.FindStringExact(strNewLanguage == GlobalOptions.DefaultLanguage ? GlobalOptions.DefaultCharacterSheet : GlobalOptions.DefaultCharacterSheet.Substring(strNewLanguage.LastIndexOf(Path.DirectorySeparatorChar) + 1));
+                int intNameIndex = cboXSLT.FindStringExact(strNewLanguage == GlobalOptions.DefaultLanguage ? GlobalOptions.DefaultCharacterSheet : GlobalOptions.DefaultCharacterSheet.Substring(strNewLanguage.LastIndexOf(Path.DirectorySeparatorChar) + 1));
                 if (intNameIndex != -1)
                     cboXSLT.SelectedIndex = intNameIndex;
                 else if (cboXSLT.Items.Count > 0)

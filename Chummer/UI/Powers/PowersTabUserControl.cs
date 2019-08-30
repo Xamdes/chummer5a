@@ -16,6 +16,8 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
+using Chummer.Backend.Equipment;
+using Chummer.UI.Table;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -25,8 +27,6 @@ using System.Globalization;
 using System.Linq;
 using System.Windows.Forms;
 using System.Xml;
-using Chummer.Backend.Equipment;
-using Chummer.UI.Table;
 
 // ReSharper disable StringCompareToIsCultureSpecific
 
@@ -36,7 +36,7 @@ namespace Chummer.UI.Powers
     {
         // TODO: check, if this can be removed???
         public event PropertyChangedEventHandler MakeDirtyWithCharacterUpdate;
-        
+
         private TableView<Power> _table;
 
         public PowersTabUserControl()
@@ -50,11 +50,11 @@ namespace Chummer.UI.Powers
             InitializeTable();
             ResumeLayout();
         }
-        
+
         private Character _objCharacter;
         private readonly IList<Tuple<string, Predicate<Power>>> _dropDownList;
         private bool _blnSearchMode;
-        
+
         private void PowersTabUserControl_Load(object sender, EventArgs e)
         {
             if (_objCharacter == null)
@@ -66,7 +66,7 @@ namespace Chummer.UI.Powers
                     ParentForm.Cursor = Cursors.Default;
             }
         }
-        
+
         public void RealLoad()
         {
             if (ParentForm is CharacterShared frmParent)
@@ -77,7 +77,8 @@ namespace Chummer.UI.Powers
                 _objCharacter = new Character();
             }
 
-            _objCharacter.Powers.ListChanged += (sender, e) => {
+            _objCharacter.Powers.ListChanged += (sender, e) =>
+            {
                 if (e.ListChangedType == ListChangedType.ItemChanged)
                 {
                     string propertyName = e.PropertyDescriptor?.Name;
@@ -129,7 +130,7 @@ namespace Chummer.UI.Powers
             sw.Stop();
             Debug.WriteLine("RealLoad() in {0} ms", sw.Elapsed.TotalMilliseconds);
         }
-        
+
         private static IList<Tuple<string, Predicate<Power>>> GenerateDropdownFilter()
         {
             List<Tuple<string, Predicate<Power>>> ret = new List<Tuple<string, Predicate<Power>>>
@@ -154,7 +155,7 @@ namespace Chummer.UI.Powers
 
             return ret;
         }
-        
+
         private void cboDisplayFilter_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (cboDisplayFilter.SelectedItem is Tuple<string, Predicate<Power>> selectedItem)
@@ -369,7 +370,8 @@ namespace Chummer.UI.Powers
                 Size = GetImageSize(Properties.Resources.note_edit),
             })
             {
-                ClickHandler = p => {
+                ClickHandler = p =>
+                {
                     frmNotes frmPowerNotes = new frmNotes
                     {
                         Notes = p.Notes
@@ -384,7 +386,8 @@ namespace Chummer.UI.Powers
             {
                 Text = "Notes",
                 Tag = "ColumnHeader_Notes",
-                ToolTipExtractor = (p => {
+                ToolTipExtractor = (p =>
+                {
                     string strTooltip = LanguageManager.GetString("Tip_Power_EditNotes", GlobalOptions.Language);
                     if (!string.IsNullOrEmpty(p.Notes))
                         strTooltip += Environment.NewLine + Environment.NewLine + p.Notes;

@@ -31,7 +31,7 @@ namespace ChummerHub.Models.V1.Examples
         {
             Guid parentTagGuid = Guid.NewGuid();
             Guid childTagGuid = Guid.NewGuid();
-            var sin = new SINner
+            SINner sin = new SINner
             {
                 Id = Guid.NewGuid(),
                 UploadClientId = Guid.NewGuid()
@@ -54,7 +54,7 @@ namespace ChummerHub.Models.V1.Examples
                 }
 
             };
-            var parenttag = new Tag(sin, null)
+            Tag parenttag = new Tag(sin, null)
             {
                 Id = parentTagGuid,
                 TagName = "TestTag",
@@ -89,7 +89,7 @@ namespace ChummerHub.Models.V1.Examples
         public object GetExamples()
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'SINnerListExample.GetExamples()'
         {
-            var list = new List<SINner>() { new SINnerExample().GetSINnerExample() };
+            List<SINner> list = new List<SINner>() { new SINnerExample().GetSINnerExample() };
             return list;
         }
     }

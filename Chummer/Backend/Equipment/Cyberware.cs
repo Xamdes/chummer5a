@@ -16,6 +16,8 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
+using Chummer.Backend.Attributes;
+using NLog;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -27,8 +29,6 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using System.Xml;
-using Chummer.Backend.Attributes;
-using NLog;
 
 namespace Chummer.Backend.Equipment
 {
@@ -116,7 +116,7 @@ namespace Chummer.Backend.Equipment
         private static readonly HashSet<string> s_AgilityCustomisationStrings = new HashSet<string> { "Customized Agility", "Cyberlimb Customization, Agility (2050)" };
         private static readonly HashSet<string> s_AgilityEnhancementStrings = new HashSet<string> { "Enhanced Agility", "Cyberlimb Augmentation, Agility (2050)" };
         private static readonly HashSet<string> s_AgilityCombinedStrings = new HashSet<string>(s_AgilityEnhancementStrings.Union(s_AgilityEnhancementStrings));
-        
+
         private static readonly HashSet<string> s_StrengthCustomisationStrings = new HashSet<string> { "Customized Strength", "Cyberlimb Customization, Strength (2050)" };
         private static readonly HashSet<string> s_StrengthEnhancementStrings = new HashSet<string> { "Enhanced Strength", "Cyberlimb Augmentation, Strength (2050)" };
         private static readonly HashSet<string> s_StrengthCombinedStrings = new HashSet<string>(s_StrengthEnhancementStrings.Union(s_StrengthEnhancementStrings));
@@ -955,7 +955,7 @@ namespace Chummer.Backend.Equipment
             if (!objNode.TryGetStringFieldQuickly("plugsintomodularmount", ref _strPlugsIntoModularMount))
                 _strPlugsIntoModularMount = GetNode()?["plugsintomodularmount"]?.InnerText ?? string.Empty;
             if (!objNode.TryGetStringFieldQuickly("blocksmounts", ref _strBlocksMounts))
-                _strBlocksMounts = GetNode()?["blocksmounts"]?. InnerText ?? string.Empty;
+                _strBlocksMounts = GetNode()?["blocksmounts"]?.InnerText ?? string.Empty;
             objNode.TryGetStringFieldQuickly("forced", ref _strForced);
             objNode.TryGetInt32FieldQuickly("rating", ref _intRating);
             objNode.TryGetStringFieldQuickly("minrating", ref _strMinRating);
@@ -1367,7 +1367,8 @@ namespace Chummer.Backend.Equipment
             get => _blnWirelessOn;
             set
             {
-                if (_blnWirelessOn == value) return;
+                if (_blnWirelessOn == value)
+                    return;
                 _blnWirelessOn = value;
                 ToggleWirelessBonuses(value);
             }
@@ -1404,7 +1405,8 @@ namespace Chummer.Backend.Equipment
             get => _strName;
             set
             {
-                if (_strName == value) return;
+                if (_strName == value)
+                    return;
                 string strOldValue = _strName;
                 _lstIncludeInPairBonus.Remove(_strName);
                 _lstIncludeInPairBonus.Add(value);
@@ -1414,7 +1416,8 @@ namespace Chummer.Backend.Equipment
                 if (_objParent?.Category != "Cyberlimb" || _objParent.Parent?.InheritAttributes == false ||
                     _objParent.ParentVehicle != null || _objCharacter.Options.DontUseCyberlimbCalculation ||
                     string.IsNullOrWhiteSpace(_objParent.LimbSlot) ||
-                    _objCharacter.Options.ExcludeLimbSlot.Contains(_objParent.LimbSlot)) return;
+                    _objCharacter.Options.ExcludeLimbSlot.Contains(_objParent.LimbSlot))
+                    return;
                 bool blnDoMovementUpdate = false;
                 if (s_AgilityCombinedStrings.Contains(value) || s_AgilityCombinedStrings.Contains(strOldValue))
                 {
@@ -1794,7 +1797,8 @@ namespace Chummer.Backend.Equipment
                 if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue) && string.IsNullOrEmpty(_strExtra))
                     _strExtra = ImprovementManager.SelectedValue;
 
-                if (WirelessPairBonus == null) return;
+                if (WirelessPairBonus == null)
+                    return;
                 // This cyberware should not be included in the count to make things easier.
                 List<Cyberware> lstPairableCyberwares = _objCharacter.Cyberware.DeepWhere(x => x.Children,
                     x => x != this && IncludeWirelessPair.Contains(x.Name) && x.Extra == Extra &&
@@ -1851,7 +1855,8 @@ namespace Chummer.Backend.Equipment
                 }
                 ImprovementManager.DisableImprovements(_objCharacter, _objCharacter.Improvements.Where(x => x.ImproveSource == SourceType && x.SourceName == InternalId + "Wireless").ToList());
 
-                if (WirelessPairBonus == null) return;
+                if (WirelessPairBonus == null)
+                    return;
 
                 ImprovementManager.RemoveImprovements(_objCharacter, SourceType, InternalId + "WirelessPair");
                 // This cyberware should not be included in the count to make things easier (we want to get the same number regardless of whether we call this before or after the actual equipping).
@@ -2042,7 +2047,8 @@ namespace Chummer.Backend.Equipment
             set
             {
                 int intNewValue = Math.Max(Math.Min(value, MaxRating), MinRating);
-                if (_intRating == intNewValue) return;
+                if (_intRating == intNewValue)
+                    return;
                 _intRating = intNewValue;
                 bool blnDoMovementUpdate = false;
                 if (_objParent?.Category == "Cyberlimb" && _objParent.Parent?.InheritAttributes != false && _objParent.ParentVehicle == null && !_objCharacter.Options.DontUseCyberlimbCalculation &&
@@ -2825,7 +2831,7 @@ namespace Chummer.Backend.Equipment
                         decMultiplier = _objCharacter.Improvements
                             .Where(objImprovement => objImprovement.ImproveType == Improvement.ImprovementType.CyberwareEssCost && objImprovement.Enabled)
                             .Aggregate(decMultiplier, (current, objImprovement) => current - (1m - Convert.ToDecimal(objImprovement.Value, GlobalOptions.InvariantCultureInfo) / 100m));
-                        decESSMultiplier = Math.Floor( (decESSMultiplier - 1.0m + decMultiplier) * 10.0m) / 10;
+                        decESSMultiplier = Math.Floor((decESSMultiplier - 1.0m + decMultiplier) * 10.0m) / 10;
                     }
                     if (ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.CyberwareTotalEssMultiplier) != 0)
                     {
@@ -3143,7 +3149,8 @@ namespace Chummer.Backend.Equipment
                 // Add in the cost of all child components.
                 foreach (Cyberware objChild in Children.Where(child => child.Stolen).AsParallel())
                 {
-                    if (objChild.Capacity == "[*]") continue;
+                    if (objChild.Capacity == "[*]")
+                        continue;
                     // If the child cost starts with "*", multiply the item's base cost.
                     if (objChild.Cost.StartsWith('*'))
                     {
@@ -3210,7 +3217,8 @@ namespace Chummer.Backend.Equipment
                     {
                         // Children that are built into the parent
                         if (objChildCyberware.PlugsIntoModularMount == HasModularMount && !string.IsNullOrWhiteSpace(HasModularMount) ||
-                            objChildCyberware.ParentID == InternalId) continue;
+                            objChildCyberware.ParentID == InternalId)
+                            continue;
                         string strCapacity = objChildCyberware.CalculatedCapacity;
                         int intPos = strCapacity.IndexOf("/[", StringComparison.Ordinal);
                         if (intPos != -1)
@@ -3251,7 +3259,8 @@ namespace Chummer.Backend.Equipment
                     foreach (Cyberware objChildCyberware in Children)
                     {
                         if (objChildCyberware.PlugsIntoModularMount == HasModularMount && !string.IsNullOrWhiteSpace(HasModularMount) ||
-                            objChildCyberware.ParentID == InternalId) continue;
+                            objChildCyberware.ParentID == InternalId)
+                            continue;
                         string strCapacity = objChildCyberware.CalculatedCapacity;
                         int intPos = strCapacity.IndexOf("/[", StringComparison.Ordinal);
                         if (intPos != -1)
@@ -3315,7 +3324,8 @@ namespace Chummer.Backend.Equipment
                     int intCyberlimbChildrenNumber = 0;
                     foreach (Cyberware objChild in Children)
                     {
-                        if (objChild.TotalStrength <= 0) continue;
+                        if (objChild.TotalStrength <= 0)
+                            continue;
                         intCyberlimbChildrenNumber += 1;
                         intAverageAttribute += objChild.TotalStrength;
                     }
@@ -3382,7 +3392,8 @@ namespace Chummer.Backend.Equipment
                     int intCyberlimbChildrenNumber = 0;
                     foreach (Cyberware objChild in Children)
                     {
-                        if (objChild.TotalAgility <= 0) continue;
+                        if (objChild.TotalAgility <= 0)
+                            continue;
                         intCyberlimbChildrenNumber += 1;
                         intAverageAttribute += objChild.TotalAgility;
                     }
@@ -3532,14 +3543,24 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Empty for Cyberware.
         /// </summary>
-        public string CanFormPersona { get => string.Empty; set { } }
+        public string CanFormPersona
+        {
+            get => string.Empty; set
+            {
+            }
+        }
 
         public bool IsCommlink => Gear.Any(x => x.CanFormPersona.Contains("Parent")) && this.GetTotalMatrixAttribute("Device Rating") > 0;
 
         /// <summary>
         /// 0 for Cyberware.
         /// </summary>
-        public int BonusMatrixBoxes { get => 0; set { } }
+        public int BonusMatrixBoxes
+        {
+            get => 0; set
+            {
+            }
+        }
 
         public int TotalBonusMatrixBoxes
         {
@@ -3947,7 +3968,8 @@ namespace Chummer.Backend.Equipment
                             goto EndGradeCheck;
                         }
                     }
-                    EndGradeCheck:;
+EndGradeCheck:
+                    ;
                 }
                 XmlDocument xmlCyberwareDocument = XmlManager.Load("cyberware.xml");
                 XmlDocument xmlBiowareDocument = XmlManager.Load("bioware.xml");
@@ -4406,7 +4428,7 @@ namespace Chummer.Backend.Equipment
                     MessageBoxButtons.OK, MessageBoxIcon.Information);
 
                 Rating = oldRating;
-                Grade  = oldGrade;
+                Grade = oldGrade;
                 return;
             }
             StringBuilder expenseBuilder = new StringBuilder();

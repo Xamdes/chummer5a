@@ -16,31 +16,27 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
- using System;
- using System.Collections;
- using System.ComponentModel;
- using System.Diagnostics;
- using System.Globalization;
- using System.IO;
+using Chummer.Backend;
+using Chummer.Plugins;
+using Microsoft.ApplicationInsights;
+using Microsoft.ApplicationInsights.DataContracts;
+using Microsoft.ApplicationInsights.Extensibility;
+using Microsoft.ApplicationInsights.Metrics;
+using NLog;
+using NLog.Config;
+using System;
+using System.Collections;
+using System.ComponentModel;
+using System.Diagnostics;
+using System.Globalization;
+using System.IO;
 using System.Linq;
- using System.Net;
- using System.Net.Sockets;
- using System.Reflection;
- using System.Runtime;
- using System.Runtime.InteropServices;
- using System.Runtime.Remoting.Contexts;
- using System.Threading;
- using System.Threading.Tasks;
- using System.Windows.Forms;
-﻿using Chummer.Backend;
- using Chummer.Plugins;
- using Microsoft.ApplicationInsights;
- using Microsoft.ApplicationInsights.DataContracts;
- using Microsoft.ApplicationInsights.Extensibility;
- using Microsoft.ApplicationInsights.Metrics;
- using Microsoft.ApplicationInsights.NLogTarget;
- using NLog;
- using NLog.Config;
+using System.Reflection;
+using System.Runtime;
+using System.Runtime.InteropServices;
+using System.Threading;
+using System.Threading.Tasks;
+using System.Windows.Forms;
 
 
 [assembly: CLSCompliant(true)]
@@ -63,11 +59,11 @@ namespace Chummer
         /// The main entry point for the application.
         /// </summary>
         [STAThread]
-        static void Main()
+        private static void Main()
         {
             //for some fun try out this command line parameter: chummer://plugin:SINners:Load:5ff55b9d-7d1c-4067-a2f5-774127346f4e
             PageViewTelemetry pvt = null;
-            var startTime = DateTimeOffset.UtcNow;
+            DateTimeOffset startTime = DateTimeOffset.UtcNow;
             using (GlobalChummerMutex = new Mutex(false, @"Global\" + strChummerGuid))
             {
                 IsMono = Type.GetType("Mono.Runtime") != null;
@@ -94,7 +90,7 @@ namespace Chummer
 
 
                 sw.TaskEnd("fixcwd");
-                
+
                 AppDomain.CurrentDomain.FirstChanceException += ExceptionHeatmap.OnException;
 
                 sw.TaskEnd("appdomain 2");
@@ -102,7 +98,7 @@ namespace Chummer
                 string strInfo =
                     $"Application Chummer5a build {System.Reflection.Assembly.GetExecutingAssembly().GetName().Version} started at {DateTime.UtcNow} with command line arguments {Environment.CommandLine}";
                 sw.TaskEnd("infogen");
-             
+
                 sw.TaskEnd("infoprnt");
 
                 Application.EnableVisualStyles();
@@ -150,7 +146,7 @@ namespace Chummer
 
                 sw.TaskEnd("Startup");
 
-                
+
                 Application.SetUnhandledExceptionMode(UnhandledExceptionMode.ThrowException);
 
                 if (!string.IsNullOrEmpty(LanguageManager.ManagerErrorMessage))
@@ -180,14 +176,14 @@ namespace Chummer
                     Log = NLog.LogManager.GetCurrentClassLogger();
                     if (GlobalOptions.UseLogging)
                     {
-                        foreach (var rule in NLog.LogManager.Configuration.LoggingRules.ToList())
+                        foreach (LoggingRule rule in NLog.LogManager.Configuration.LoggingRules.ToList())
                         {
                             //only change the loglevel, if it's off - otherwise it has been changed manually
                             if (rule.Levels.Count == 0)
                                 rule.EnableLoggingForLevels(LogLevel.Debug, LogLevel.Fatal);
                         }
                     }
-                    
+
                     if (Chummer.Properties.Settings.Default.UploadClientId == Guid.Empty)
                     {
                         Chummer.Properties.Settings.Default.UploadClientId = Guid.NewGuid();
@@ -205,7 +201,7 @@ namespace Chummer
 #endif
                         TelemetryConfiguration.Active.TelemetryInitializers.Add(new CustomTelemetryInitializer());
                         TelemetryConfiguration.Active.TelemetryProcessorChainBuilder.Use((next) => new TranslateExceptionTelemetryProcessor(next));
-                        var replacePath = Environment.UserName;
+                        string replacePath = Environment.UserName;
                         TelemetryConfiguration.Active.TelemetryProcessorChainBuilder.Use((next) => new DropUserdataTelemetryProcessor(next, replacePath));
                         TelemetryConfiguration.Active.TelemetryProcessorChainBuilder.Build();
                         //for now lets disable live view.We may make another GlobalOption to enable it at a later stage...
@@ -213,8 +209,8 @@ namespace Chummer
                         //live.Enable();
 
                         //Log an Event with AssemblyVersion and CultureInfo
-                        MetricIdentifier mi = new MetricIdentifier("Chummer", "Program Start", "Version", "Culture", dimension3Name:"AISetting");
-                        var metric = TelemetryClient.GetMetric(mi);
+                        MetricIdentifier mi = new MetricIdentifier("Chummer", "Program Start", "Version", "Culture", dimension3Name: "AISetting");
+                        Metric metric = TelemetryClient.GetMetric(mi);
                         metric.TrackValue(1,
                             Assembly.GetExecutingAssembly().GetName().Version.ToString(),
                             CultureInfo.CurrentUICulture.TwoLetterISOLanguageName,
@@ -277,7 +273,7 @@ namespace Chummer
                 {
                     Program.PluginLoader.LoadPlugins(null);
                 }
-                catch (ApplicationException e)
+                catch (ApplicationException)
                 {
                     showMainForm = false;
                 }
@@ -286,7 +282,7 @@ namespace Chummer
                     string[] strArgs = Environment.GetCommandLineArgs();
                     try
                     {
-                        var loopResult = Parallel.For(1, strArgs.Length, i =>
+                        ParallelLoopResult loopResult = Parallel.For(1, strArgs.Length, i =>
                         {
                             if (strArgs[i].Contains("/plugin"))
                             {
@@ -305,12 +301,12 @@ namespace Chummer
                                     int endplugin = whatplugin.IndexOf(':');
                                     string parameter = whatplugin.Substring(endplugin + 1);
                                     whatplugin = whatplugin.Substring(0, endplugin);
-                                    var plugin =
+                                    IPlugin plugin =
                                         Program.PluginLoader.MyActivePlugins.FirstOrDefault(a =>
                                             a.ToString() == whatplugin);
                                     if (plugin == null)
                                     {
-                                        var notactive =
+                                        IPlugin notactive =
                                             Program.PluginLoader.MyPlugins.FirstOrDefault(a =>
                                                 a.ToString() == whatplugin);
                                         if (notactive != null)
@@ -383,10 +379,12 @@ namespace Chummer
                     {
                         case 2://file not found - that means the alternate data-stream is not present.
                             break;
-                        case 5: Log.Warn(exception);
+                        case 5:
+                            Log.Warn(exception);
                             allUnblocked = false;
                             break;
-                        default: Log.Error(exception);
+                        default:
+                            Log.Error(exception);
                             allUnblocked = false;
                             break;
                     }
@@ -429,7 +427,7 @@ namespace Chummer
 
         private static ExceptionHeatMap ExceptionHeatmap { get; } = new ExceptionHeatMap();
 
-        static void FixCwd()
+        private static void FixCwd()
         {
             //If launched by file assiocation, the cwd is file location.
             //Chummer looks for data in cwd, to be able to move exe (legacy+bootstraper uses this)

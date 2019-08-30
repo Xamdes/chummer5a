@@ -18,8 +18,11 @@
  */
 namespace Chummer
 {
-    interface ICanEquip
+    internal interface ICanEquip
     {
-        bool Equipped { get; set; }
+        bool Equipped
+        {
+            get; set;
+        }
     }
 }

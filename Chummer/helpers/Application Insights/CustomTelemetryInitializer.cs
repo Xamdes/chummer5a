@@ -16,12 +16,10 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
-using System;
-using System.Net;
-using System.Net.Sockets;
 using Microsoft.ApplicationInsights.Channel;
 using Microsoft.ApplicationInsights.Extensibility;
 using NLog;
+using System;
 
 namespace Chummer
 {
@@ -40,7 +38,7 @@ namespace Chummer
             : false;
         public static string Ip = null;
 
-      
+
         public void Initialize(ITelemetry telemetry)
         {
             //personal data should not be submited
@@ -62,7 +60,7 @@ namespace Chummer
             }
             if (Program.PluginLoader?.MyActivePlugins != null)
             {
-                foreach (var plugin in Program.PluginLoader?.MyActivePlugins)
+                foreach (Plugins.IPlugin plugin in Program.PluginLoader?.MyActivePlugins)
                 {
                     try
                     {
@@ -72,7 +70,7 @@ namespace Chummer
                     {
                         Log.Error(e);
                     }
-                    
+
                 }
             }
         }

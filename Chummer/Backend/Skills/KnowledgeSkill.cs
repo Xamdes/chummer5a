@@ -71,7 +71,10 @@ namespace Chummer.Backend.Skills
         public override bool AllowDelete => !ForcedName || FreeBase + FreeKarma + RatingModifiers(Attribute) == 0;
 
         private string _strType = string.Empty;
-        public bool ForcedName { get; }
+        public bool ForcedName
+        {
+            get;
+        }
 
         public KnowledgeSkill(Character objCharacter) : base(objCharacter)
         {
@@ -166,7 +169,7 @@ namespace Chummer.Backend.Skills
             {
                 if (Rating == 0 && Type == "Language")
                 {
-                    return LanguageManager.GetString("Skill_NativeLanguageShort",GlobalOptions.Language);
+                    return LanguageManager.GetString("Skill_NativeLanguageShort", GlobalOptions.Language);
                 }
                 else
                 {
@@ -191,18 +194,19 @@ namespace Chummer.Backend.Skills
                     .Where(objImprovement => objImprovement.ImproveType == Improvement.ImprovementType.Hardwire &&
                                             (objImprovement.ImprovedName == Name || objImprovement.ImprovedName == strTranslatedName) &&
                                              objImprovement.Enabled)
-                    .Select(objImprovement => objImprovement.Value).Concat(new[] {-1}).Max();
+                    .Select(objImprovement => objImprovement.Value).Concat(new[] { -1 }).Max();
                 if (intMaxHardwire >= 0)
                 {
                     return _intCachedCyberwareRating = intMaxHardwire;
                 }
 
                 int intMaxSkillsoftRating = ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.SkillsoftAccess);
-                if (intMaxSkillsoftRating <= 0) return _intCachedCyberwareRating = 0;
+                if (intMaxSkillsoftRating <= 0)
+                    return _intCachedCyberwareRating = 0;
                 int intMax = CharacterObject.Improvements
                     .Where(objSkillsoftImprovement => objSkillsoftImprovement.ImproveType == Improvement.ImprovementType.Skillsoft &&
                                                       objSkillsoftImprovement.ImprovedName == InternalId && objSkillsoftImprovement.Enabled)
-                    .Select(objSkillsoftImprovement => objSkillsoftImprovement.Value).Concat(new[] {0}).Max();
+                    .Select(objSkillsoftImprovement => objSkillsoftImprovement.Value).Concat(new[] { 0 }).Max();
 
                 return _intCachedCyberwareRating = Math.Min(intMax, intMaxSkillsoftRating);
 
@@ -214,7 +218,8 @@ namespace Chummer.Backend.Skills
             get => _strType;
             set
             {
-                if (value == _strType) return;
+                if (value == _strType)
+                    return;
                 _strType = value;
 
                 //2018-22-03: Causes any attempt to alter the Type for skills with names that match

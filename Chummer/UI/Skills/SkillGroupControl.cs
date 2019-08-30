@@ -16,11 +16,11 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
+using Chummer.Backend.Skills;
 using System;
 using System.Diagnostics;
 using System.Drawing;
 using System.Windows.Forms;
-using Chummer.Backend.Skills;
 
 namespace Chummer.UI.Skills
 {
@@ -122,13 +122,14 @@ namespace Chummer.UI.Skills
         /// </summary>
         #region ButtonWithToolTip Visibility workaround
 
-        ButtonWithToolTip _activeButton;
+        private ButtonWithToolTip _activeButton;
         protected ButtonWithToolTip ActiveButton
         {
             get => _activeButton;
             set
             {
-                if (value == ActiveButton) return;
+                if (value == ActiveButton)
+                    return;
                 ActiveButton?.ToolTipObject.Hide(this);
                 _activeButton = value;
                 if (_activeButton?.Visible == true)
@@ -142,8 +143,10 @@ namespace Chummer.UI.Skills
         {
             foreach (Control c in Controls)
             {
-                if (!(c is ButtonWithToolTip)) continue;
-                if (c.Bounds.Contains(pt)) return c;
+                if (!(c is ButtonWithToolTip))
+                    continue;
+                if (c.Bounds.Contains(pt))
+                    return c;
             }
             return null;
         }

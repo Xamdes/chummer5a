@@ -396,7 +396,10 @@ namespace Chummer
         /// <summary>
         /// The Character object being used by the Spirit.
         /// </summary>
-        public Character CharacterObject { get; }
+        public Character CharacterObject
+        {
+            get;
+        }
 
         /// <summary>
         /// Name of the Spirit's Metatype.
@@ -482,7 +485,8 @@ namespace Chummer
                         break;
                 }
 
-                if (_intForce == value) return;
+                if (_intForce == value)
+                    return;
                 _intForce = value;
                 OnPropertyChanged();
             }
@@ -590,14 +594,17 @@ namespace Chummer
 
             set
             {
-                if (_blnFettered == value) return;
+                if (_blnFettered == value)
+                    return;
                 if (value)
                 {
                     //Technomancers require the Sprite Pet Complex Form to Fetter sprites.
-                    if (!CharacterObject.AllowSpriteFettering && EntityType == SpiritType.Sprite) return;
+                    if (!CharacterObject.AllowSpriteFettering && EntityType == SpiritType.Sprite)
+                        return;
 
                     //Only one Fettered spirit is permitted.
-                    if (CharacterObject.Spirits.Any(objSpirit => objSpirit.Fettered)) return;
+                    if (CharacterObject.Spirits.Any(objSpirit => objSpirit.Fettered))
+                        return;
 
                     if (CharacterObject.Created)
                     {
@@ -807,9 +814,9 @@ namespace Chummer
 
         #region IHasMugshots
         /// <summary>
-		/// Character's portraits encoded using Base64.
-		/// </summary>
-		public IList<Image> Mugshots
+        /// Character's portraits encoded using Base64.
+        /// </summary>
+        public IList<Image> Mugshots
         {
             get
             {

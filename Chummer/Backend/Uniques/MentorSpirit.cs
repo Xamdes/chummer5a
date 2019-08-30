@@ -16,11 +16,11 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
+using NLog;
 using System;
 using System.Diagnostics;
 using System.Windows.Forms;
 using System.Xml;
-using NLog;
 
 namespace Chummer
 {
@@ -53,12 +53,12 @@ namespace Chummer
             _guiID = Guid.NewGuid();
             _objCharacter = objCharacter;
             XmlNode namenode = xmlNodeMentor?.SelectSingleNode("name");
-            if(namenode != null)
+            if (namenode != null)
                 Name = namenode.InnerText;
             XmlNode typenode = xmlNodeMentor?.SelectSingleNode("mentortype");
             if (typenode != null)
             {
-                if(Enum.TryParse(typenode.InnerText, true, out Improvement.ImprovementType outEnum))
+                if (Enum.TryParse(typenode.InnerText, true, out Improvement.ImprovementType outEnum))
                     _eMentorType = outEnum;
             }
         }
@@ -226,7 +226,7 @@ namespace Chummer
             {
                 _guiID = Guid.NewGuid();
             }
-            if(!objNode.TryGetGuidFieldQuickly("sourceid", ref _guiSourceID))
+            if (!objNode.TryGetGuidFieldQuickly("sourceid", ref _guiSourceID))
             {
                 XmlNode node = GetNode(GlobalOptions.Language);
                 if (node?.TryGetGuidFieldQuickly("id", ref _guiSourceID) == false)
@@ -297,7 +297,7 @@ namespace Chummer
         {
             get
             {
-                if (String.IsNullOrEmpty(_strName))
+                if (string.IsNullOrEmpty(_strName))
                 {
                     if (_objCharacter.MentorSpirits.Count > 0 && _objCharacter.MentorSpirits[0] == this)
                         _strName = _objCharacter.MentorSpirits[0].Name;
@@ -440,7 +440,7 @@ namespace Chummer
         {
             if (_objCachedMyXmlNode == null || strLanguage != _strCachedXmlNodeLanguage || GlobalOptions.LiveCustomData)
             {
-                var xdoc = XmlManager.Load(
+                XmlDocument xdoc = XmlManager.Load(
                     _eMentorType == Improvement.ImprovementType.MentorSpirit ? "mentors.xml" : "paragons.xml",
                     strLanguage);
                 _objCachedMyXmlNode = xdoc.SelectSingleNode(SourceID == Guid.Empty

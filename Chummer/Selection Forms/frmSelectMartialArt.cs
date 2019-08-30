@@ -111,8 +111,8 @@ namespace Chummer
                             {
                                 if (objTechniqueStringBuilder.Length > 0)
                                     objTechniqueStringBuilder.AppendLine(",");
-                                
-                                objTechniqueStringBuilder.Append(GlobalOptions.Language != GlobalOptions.DefaultLanguage ? xmlTechniqueNode.SelectSingleNode("translate")?.Value ?? strLoopTechniqueName: strLoopTechniqueName);
+
+                                objTechniqueStringBuilder.Append(GlobalOptions.Language != GlobalOptions.DefaultLanguage ? xmlTechniqueNode.SelectSingleNode("translate")?.Value ?? strLoopTechniqueName : strLoopTechniqueName);
                             }
                         }
                     }
@@ -175,7 +175,10 @@ namespace Chummer
         /// <summary>
         /// Only show Martial Arts that are provided by a quality
         /// </summary>
-        public bool ShowQualities { get; set; }
+        public bool ShowQualities
+        {
+            get; set;
+        }
 
         /// <summary>
         /// Force a Martial Art to be selected.
@@ -218,7 +221,7 @@ namespace Chummer
             strFilter += CommonFunctions.GenerateSearchXPath(txtSearch.Text);
 
             XPathNodeIterator objArtList = _xmlBaseMartialArtsNode.Select("martialart[" + strFilter + "]");
-            
+
             List<ListItem> lstMartialArt = new List<ListItem>();
             foreach (XPathNavigator objXmlArt in objArtList)
             {

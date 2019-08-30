@@ -16,10 +16,10 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
- using System;
+using System;
 using System.Collections.Generic;
- using System.Windows.Forms;
- using System.Xml.XPath;
+using System.Windows.Forms;
+using System.Xml.XPath;
 
 namespace Chummer
 {
@@ -27,7 +27,7 @@ namespace Chummer
     {
         private bool _blnSkipRefresh = true;
         private string _strForceMentor = string.Empty;
-        
+
         private readonly XPathNavigator _xmlBaseMentorSpiritDataNode;
         private readonly Character _objCharacter;
         private readonly bool _blnEverShowMentorMask;
@@ -77,7 +77,7 @@ namespace Chummer
                 cboChoice2.BeginUpdate();
                 cboChoice1.DataSource = null;
                 cboChoice2.DataSource = null;
-                
+
                 // If the Mentor offers a choice of bonuses, build the list and let the user select one.
                 XPathNavigator xmlChoices = objXmlMentor.SelectSingleNode("choices");
                 if (xmlChoices != null)
@@ -96,7 +96,7 @@ namespace Chummer
                                 lstChoice1.Add(new ListItem(strName, objChoice.SelectSingleNode("translate")?.Value ?? strName));
                         }
                     }
-                    
+
                     cboChoice1.Visible = true;
                     cboChoice1.ValueMember = "Value";
                     cboChoice1.DisplayMember = "Name";

@@ -16,9 +16,9 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
- using System;
+using System;
 using System.Collections.Generic;
- using System.Windows.Forms;
+using System.Windows.Forms;
 
 namespace Chummer
 {
@@ -86,10 +86,11 @@ namespace Chummer
         }
 
         //This is our custom event added to each control to check mouse leave
-        void control_MouseLeave(object sender, EventArgs e)
+        private void control_MouseLeave(object sender, EventArgs e)
         {
             //If it have allready left we don't want to check again
-            if(_left) return;
+            if (_left)
+                return;
 
             foreach (Control control in _controls)
             {
@@ -102,8 +103,8 @@ namespace Chummer
 
             _left = true;  //Don't do again flag
 
-              //remove everything we have a listner on. Might not be necesary but afraid of GC leak
-             //Anybody can test this by uncommenting the lines below and triggering 100000 of those
+            //remove everything we have a listner on. Might not be necesary but afraid of GC leak
+            //Anybody can test this by uncommenting the lines below and triggering 100000 of those
             //then checking if memory usage changed
             foreach (Control control in _controls)
             {

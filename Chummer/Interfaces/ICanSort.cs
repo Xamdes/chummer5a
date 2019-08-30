@@ -20,6 +20,9 @@ namespace Chummer
 {
     public interface ICanSort
     {
-        int SortOrder { get; set; }
+        int SortOrder
+        {
+            get; set;
+        }
     }
 }

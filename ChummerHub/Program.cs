@@ -63,7 +63,7 @@ namespace ChummerHub
                     Console.WriteLine(msg);
                     //System.Diagnostics.Trace.TraceError(msg, e.Exception);
                     System.Diagnostics.Debug.WriteLine(msg);
-                    var tc = new Microsoft.ApplicationInsights.TelemetryClient();
+                    Microsoft.ApplicationInsights.TelemetryClient tc = new Microsoft.ApplicationInsights.TelemetryClient();
                     ExceptionTelemetry et = new ExceptionTelemetry(e.Exception);
                     tc.TrackException(et);
                 }
@@ -91,10 +91,10 @@ namespace ChummerHub
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'Program.Seed()'
         {
 
-            using (var scope = MyHost.Services.CreateScope())
+            using (IServiceScope scope = MyHost.Services.CreateScope())
             {
-                var services = scope.ServiceProvider;
-                var logger = services.GetRequiredService<ILogger<Program>>();
+                IServiceProvider services = scope.ServiceProvider;
+                ILogger<Program> logger = services.GetRequiredService<ILogger<Program>>();
                 ApplicationDbContext context = services.GetRequiredService<ApplicationDbContext>();
                 try
                 {
@@ -104,8 +104,8 @@ namespace ChummerHub
                 {
                     try
                     {
-                        var tc = new Microsoft.ApplicationInsights.TelemetryClient();
-                        var telemetry = new Microsoft.ApplicationInsights.DataContracts.ExceptionTelemetry(e);
+                        Microsoft.ApplicationInsights.TelemetryClient tc = new Microsoft.ApplicationInsights.TelemetryClient();
+                        ExceptionTelemetry telemetry = new Microsoft.ApplicationInsights.DataContracts.ExceptionTelemetry(e);
                         tc.TrackException(telemetry);
                     }
                     catch (Exception ex)
@@ -117,21 +117,21 @@ namespace ChummerHub
                     context.Database.EnsureCreated();
                 }
                 // requires using Microsoft.Extensions.Configuration;
-                var config = services.GetRequiredService<IConfiguration>();
+                IConfiguration config = services.GetRequiredService<IConfiguration>();
                 // Set password with the Secret Manager tool.
                 // dotnet user-secrets set SeedUserPW <pw>
-                var testUserPw = config["SeedUserPW"];
+                string testUserPw = config["SeedUserPW"];
                 try
                 {
-                    var env = services.GetService<IHostingEnvironment>();
+                    IHostingEnvironment env = services.GetService<IHostingEnvironment>();
                     SeedData.Initialize(services, testUserPw, env).Wait();
                 }
                 catch (Exception ex)
                 {
                     try
                     {
-                        var tc = new Microsoft.ApplicationInsights.TelemetryClient();
-                        var telemetry = new Microsoft.ApplicationInsights.DataContracts.ExceptionTelemetry(ex);
+                        Microsoft.ApplicationInsights.TelemetryClient tc = new Microsoft.ApplicationInsights.TelemetryClient();
+                        ExceptionTelemetry telemetry = new Microsoft.ApplicationInsights.DataContracts.ExceptionTelemetry(ex);
                         tc.TrackException(telemetry);
                     }
                     catch (Exception e1)

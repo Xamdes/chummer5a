@@ -16,10 +16,10 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
- using System;
+using System;
 using System.Collections;
- using System.Diagnostics;
- using System.Windows.Forms;
+using System.Diagnostics;
+using System.Windows.Forms;
 
 namespace Chummer
 {
@@ -40,12 +40,18 @@ namespace Chummer
         /// <summary>
         /// Value.
         /// </summary>
-        public object Value { get; }
+        public object Value
+        {
+            get;
+        }
 
         /// <summary>
         /// Name.
         /// </summary>
-        public string Name { get; }
+        public string Name
+        {
+            get;
+        }
 
         public override bool Equals(object obj)
         {

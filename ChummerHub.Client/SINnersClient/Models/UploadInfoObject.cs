@@ -4,19 +4,18 @@
 
 namespace SINners.Models
 {
-    using System;
-    using System.Linq;
-    using System.Collections.Generic;
     using Newtonsoft.Json;
-    using Microsoft.Rest;
-    using Microsoft.Rest.Serialization;
+    using System;
+    using System.Collections.Generic;
 
     public partial class UploadInfoObject
     {
         /// <summary>
         /// Initializes a new instance of the UploadInfoObject class.
         /// </summary>
-        public UploadInfoObject() { }
+        public UploadInfoObject()
+        {
+        }
 
         /// <summary>
         /// Initializes a new instance of the UploadInfoObject class.
@@ -32,22 +31,34 @@ namespace SINners.Models
         /// <summary>
         /// </summary>
         [JsonProperty(PropertyName = "uploadDateTime")]
-        public DateTime? UploadDateTime { get; set; }
+        public DateTime? UploadDateTime
+        {
+            get; set;
+        }
 
         /// <summary>
         /// </summary>
         [JsonProperty(PropertyName = "client")]
-        public UploadClient Client { get; set; }
+        public UploadClient Client
+        {
+            get; set;
+        }
 
         /// <summary>
         /// </summary>
         [JsonProperty(PropertyName = "siNners")]
-        public IList<SINner> SiNners { get; set; }
+        public IList<SINner> SiNners
+        {
+            get; set;
+        }
 
         /// <summary>
         /// </summary>
         [JsonProperty(PropertyName = "groupname")]
-        public string Groupname { get; set; }
+        public string Groupname
+        {
+            get; set;
+        }
 
     }
 }

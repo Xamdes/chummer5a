@@ -16,6 +16,8 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
+using Microsoft.ApplicationInsights.DataContracts;
+using Microsoft.Win32;
 using System;
 using System.Collections;
 using System.Collections.Concurrent;
@@ -29,9 +31,6 @@ using System.Runtime.Serialization;
 using System.Text;
 using System.Web.Script.Serialization;
 using System.Windows.Forms;
-using Microsoft.ApplicationInsights;
-using Microsoft.ApplicationInsights.DataContracts;
-using Microsoft.Win32;
 
 namespace Chummer.Backend
 {
@@ -47,7 +46,7 @@ namespace Chummer.Backend
         {
             public DumpData(Exception ex)
             {
-                _dicPretendFiles = new Dictionary<string, string> {{"exception.txt", ex?.ToString() ?? "No Exception Specified"}};
+                _dicPretendFiles = new Dictionary<string, string> { { "exception.txt", ex?.ToString() ?? "No Exception Specified" } };
 
                 _dicAttributes = new Dictionary<string, string>
                 {
@@ -220,7 +219,7 @@ namespace Chummer.Backend
 
                 crashHandler?.WaitForExit();
             }
-            catch(Exception nex)
+            catch (Exception nex)
             {
                 Program.MainForm.ShowMessageBox("Failed to create crash report." + Environment.NewLine +
                                 "Here is some information to help the developers figure out why:" + Environment.NewLine + nex + Environment.NewLine + "Crash information:" + Environment.NewLine + ex);

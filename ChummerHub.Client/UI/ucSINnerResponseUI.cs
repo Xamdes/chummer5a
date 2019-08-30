@@ -1,29 +1,23 @@
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Drawing;
-using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Controls;
-using System.Windows.Forms;
 using Chummer;
-using Control = System.Windows.Controls.Control;
-using UserControl = System.Windows.Forms.UserControl;
 using ChummerHub.Client.Model;
+using System;
+using System.Windows.Forms;
+using UserControl = System.Windows.Forms.UserControl;
 
 namespace ChummerHub.Client.UI
 {
     public partial class ucSINnerResponseUI : UserControl
     {
-        public ResultBase Result { get; internal set; }
+        public ResultBase Result
+        {
+            get; internal set;
+        }
 
         public ucSINnerResponseUI()
         {
             InitializeComponent();
             this.tbSINnerResponseMyExpection.SetToolTip("In case you want to report this error, please make sure that the whole errortext is visible/available for the developer.");
-          
+
         }
 
         private void BOk_Click(object sender, EventArgs e)

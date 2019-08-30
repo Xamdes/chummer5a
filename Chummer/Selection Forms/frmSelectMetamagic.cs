@@ -80,7 +80,7 @@ namespace Chummer
         {
             if (_blnLoading)
                 return;
-            
+
             string strSelectedId = lstMetamagic.SelectedValue?.ToString();
             if (!string.IsNullOrEmpty(strSelectedId))
             {

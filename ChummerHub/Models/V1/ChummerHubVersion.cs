@@ -7,7 +7,10 @@ namespace ChummerHub.Models.V1
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'ChummerHubVersion'
     {
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'ChummerHubVersion.AssemblyVersion'
-        public string AssemblyVersion { get; set; }
+        public string AssemblyVersion
+        {
+            get; set;
+        }
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'ChummerHubVersion.AssemblyVersion'
 
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'ChummerHubVersion.ChummerHubVersion()'

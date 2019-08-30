@@ -16,16 +16,15 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
- using System;
+using Chummer.Backend.Equipment;
+using Chummer.Backend.Skills;
+using System;
 using System.Collections.Generic;
- using System.Linq;
- using System.Windows.Forms;
+using System.Linq;
+using System.Text;
+using System.Windows.Forms;
 using System.Xml;
 using System.Xml.XPath;
- using Chummer.Backend.Equipment;
- using Chummer.Backend.Skills;
-using MessageBox = System.Windows.Forms.MessageBox;
-using System.Text;
 
 namespace Chummer
 {
@@ -293,12 +292,12 @@ namespace Chummer
                     if (xmlOptionalPowersNode != null)
                     {
                         //For every 3 full points of Force a spirit has, it may gain one Optional Power.
-                        for (int i = intForce -3; i >= 0; i -= 3)
+                        for (int i = intForce - 3; i >= 0; i -= 3)
                         {
                             XmlDocument objDummyDocument = new XmlDocument();
                             XmlNode bonusNode = objDummyDocument.CreateNode(XmlNodeType.Element, "bonus", null);
                             objDummyDocument.AppendChild(bonusNode);
-                            XmlNode powerNode = objDummyDocument.ImportNode(xmlOptionalPowersNode.CloneNode(true),true);
+                            XmlNode powerNode = objDummyDocument.ImportNode(xmlOptionalPowersNode.CloneNode(true), true);
                             objDummyDocument.ImportNode(powerNode, true);
                             bonusNode.AppendChild(powerNode);
                             ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.Metatype, strSelectedMetatype, bonusNode, false, 1, strSelectedMetatype);

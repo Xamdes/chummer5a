@@ -28,33 +28,102 @@ namespace Chummer
         int GetBaseMatrixAttribute(string strAttributeName);
         int GetBonusMatrixAttribute(string strAttributeName);
 
-        bool IsProgram { get; }
-        string Attack { get; set; }
-        string Sleaze { get; set; }
-        string DataProcessing { get; set; }
-        string Firewall { get; set; }
-        string ModAttack { get; set; }
-        string ModSleaze { get; set; }
-        string ModDataProcessing { get; set; }
-        string ModFirewall { get; set; }
-        string Overclocked { get; set; }
+        bool IsProgram
+        {
+            get;
+        }
+        string Attack
+        {
+            get; set;
+        }
+        string Sleaze
+        {
+            get; set;
+        }
+        string DataProcessing
+        {
+            get; set;
+        }
+        string Firewall
+        {
+            get; set;
+        }
+        string ModAttack
+        {
+            get; set;
+        }
+        string ModSleaze
+        {
+            get; set;
+        }
+        string ModDataProcessing
+        {
+            get; set;
+        }
+        string ModFirewall
+        {
+            get; set;
+        }
+        string Overclocked
+        {
+            get; set;
+        }
 
-        string CanFormPersona { get; set; }
-        bool IsCommlink { get; }
+        string CanFormPersona
+        {
+            get; set;
+        }
+        bool IsCommlink
+        {
+            get;
+        }
 
-        string DeviceRating { get; set; }
-        int BaseMatrixBoxes { get; }
-        int BonusMatrixBoxes { get; set; }
-        int TotalBonusMatrixBoxes { get; }
-        int MatrixCM { get; }
-        int MatrixCMFilled { get; set; }
-        string ProgramLimit { get; set; }
+        string DeviceRating
+        {
+            get; set;
+        }
+        int BaseMatrixBoxes
+        {
+            get;
+        }
+        int BonusMatrixBoxes
+        {
+            get; set;
+        }
+        int TotalBonusMatrixBoxes
+        {
+            get;
+        }
+        int MatrixCM
+        {
+            get;
+        }
+        int MatrixCMFilled
+        {
+            get; set;
+        }
+        string ProgramLimit
+        {
+            get; set;
+        }
 
-        bool CanSwapAttributes { get; set; }
-        string AttributeArray { get; set; }
-        string ModAttributeArray { get; set; }
+        bool CanSwapAttributes
+        {
+            get; set;
+        }
+        string AttributeArray
+        {
+            get; set;
+        }
+        string ModAttributeArray
+        {
+            get; set;
+        }
 
-        IList<IHasMatrixAttributes> ChildrenWithMatrixAttributes { get; }
+        IList<IHasMatrixAttributes> ChildrenWithMatrixAttributes
+        {
+            get;
+        }
     }
 
     public static class MatrixAttributes

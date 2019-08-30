@@ -1,22 +1,16 @@
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Drawing;
-using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
 using Chummer;
+using Chummer.Backend.Equipment;
+using ChummerHub.Client.Backend;
 using ChummerHub.Client.Model;
 using SINners.Models;
-using ChummerHub.Client.Backend;
-using System.Xml;
+using System;
 using System.Collections;
-using GroupControls;
+using System.Collections.Generic;
+using System.Data;
+using System.Linq;
 using System.Reflection;
-using Chummer.Backend.Equipment;
-using NLog;
+using System.Windows.Forms;
+using System.Xml;
 
 namespace ChummerHub.Client.UI
 {
@@ -28,7 +22,10 @@ namespace ChummerHub.Client.UI
         public SearchTag motherTag = null;
         private Action<string> GetSelectedObjectCallback;
 
-        public string SelectedId { get; private set; }
+        public string SelectedId
+        {
+            get; private set;
+        }
 
         public ucSINnersSearch()
         {
@@ -39,9 +36,9 @@ namespace ChummerHub.Client.UI
         private void SINnersSearchSearch_Load(object sender, EventArgs e)
         {
             UpdateDialog();
-           
-            
-            
+
+
+
         }
 
         private bool loading = false;
@@ -54,17 +51,17 @@ namespace ChummerHub.Client.UI
 
 
                 //input can be here any time, regardless of childs!
-                var input = GetUserInputControl(stag);
+                Control input = GetUserInputControl(stag);
                 if (input != null)
                 {
                     flpReflectionMembers.Controls.Add(input);
                     return input;
                 }
 
-                var list = SearchTagExtractor.ExtractTagsFromAttributes(stag.MyRuntimePropertyValue, stag);
+                IList<SearchTag> list = SearchTagExtractor.ExtractTagsFromAttributes(stag.MyRuntimePropertyValue, stag);
                 if (list.Any())
                 {
-                    var ordered = (from a in list orderby a.TagName select a).ToList();
+                    List<SearchTag> ordered = (from a in list orderby a.TagName select a).ToList();
                     ComboBox cb = new ComboBox
                     {
                         DropDownStyle = ComboBoxStyle.DropDownList,
@@ -75,8 +72,8 @@ namespace ChummerHub.Client.UI
                     cb.DisplayMember = "TagName";
                     cb.SelectedValueChanged += (sender, e) =>
                     {
-                        var tag = cb.SelectedItem as SearchTag;
-                        var childcb = GetCbOrOInputontrolFromMembers(tag);
+                        SearchTag tag = cb.SelectedItem as SearchTag;
+                        Control childcb = GetCbOrOInputontrolFromMembers(tag);
                     };
                     return cb;
                 }
@@ -101,7 +98,8 @@ namespace ChummerHub.Client.UI
         {
             string switchname = stag.TagName;
             string typename = stag.MyRuntimePropertyValue.GetType().ToString();
-            FlowLayoutPanel flp = new FlowLayoutPanel(); ;
+            FlowLayoutPanel flp = new FlowLayoutPanel();
+            ;
             TextBox tb = null;
             Button b = null;
             NumericUpDown nud = null;
@@ -161,7 +159,7 @@ namespace ChummerHub.Client.UI
                     }
                 case "Chummer.Backend.Uniques.Tradition":
                     {
-                        var traditions = Chummer.Backend.Uniques.Tradition.GetTraditions(ucSINnersSearch.MySearchCharacter.MyCharacter);
+                        List<Chummer.Backend.Uniques.Tradition> traditions = Chummer.Backend.Uniques.Tradition.GetTraditions(ucSINnersSearch.MySearchCharacter.MyCharacter);
                         cb = new ComboBox
                         {
                             DataSource = traditions,
@@ -186,8 +184,8 @@ namespace ChummerHub.Client.UI
                 default:
                     break;
             }
-            Object obj = stag.MyRuntimePropertyValue;
-            if (!typeof(String).IsAssignableFrom(obj.GetType()))
+            object obj = stag.MyRuntimePropertyValue;
+            if (!typeof(string).IsAssignableFrom(obj.GetType()))
             {
                 IEnumerable islist = obj as IEnumerable;
                 if (islist == null)
@@ -201,32 +199,36 @@ namespace ChummerHub.Client.UI
                         switchname = listtype.Name;
                 }
             }
-            
+
             switch (switchname)
             {
                 ///these are sample implementations to get added one by one...
                 case "Spell":
                     {
-                        Button button = new Button();
-                        button.Text = "select Spell";
+                        Button button = new Button
+                        {
+                            Text = "select Spell"
+                        };
                         button.Click += ((sender, e) =>
                         {
-                            var frmPickSpell = new frmSelectSpell(MySearchCharacter.MyCharacter);
+                            frmSelectSpell frmPickSpell = new frmSelectSpell(MySearchCharacter.MyCharacter);
                             frmPickSpell.ShowDialog();
-                        // Open the Spells XML file and locate the selected piece.
-                        XmlDocument objXmlDocument = XmlManager.Load("spells.xml");
+                            // Open the Spells XML file and locate the selected piece.
+                            XmlDocument objXmlDocument = XmlManager.Load("spells.xml");
                             XmlNode objXmlSpell = objXmlDocument.SelectSingleNode("/chummer/spells/spell[id = \"" + frmPickSpell.SelectedSpell + "\"]");
                             Spell objSpell = new Spell(MySearchCharacter.MyCharacter);
-                            if(String.IsNullOrEmpty(objSpell?.Name))
+                            if (string.IsNullOrEmpty(objSpell?.Name))
                                 return;
                             objSpell.Create(objXmlSpell, string.Empty, frmPickSpell.Limited, frmPickSpell.Extended, frmPickSpell.Alchemical);
                             MySearchCharacter.MyCharacter.Spells.Add(objSpell);
-                            SearchTag spellsearch = new SearchTag(stag.MyPropertyInfo, stag.MyRuntimeHubClassTag);
-                            spellsearch.MyRuntimePropertyValue = objSpell;
-                            spellsearch.MyParentTag = stag;
-                            spellsearch.TagName = objSpell.Name;
-                            spellsearch.TagValue = "";
-                            spellsearch.SearchOpterator = "exists";
+                            SearchTag spellsearch = new SearchTag(stag.MyPropertyInfo, stag.MyRuntimeHubClassTag)
+                            {
+                                MyRuntimePropertyValue = objSpell,
+                                MyParentTag = stag,
+                                TagName = objSpell.Name,
+                                TagValue = "",
+                                SearchOpterator = "exists"
+                            };
                             MySetTags.Add(spellsearch);
                             UpdateDialog();
                         });
@@ -235,11 +237,13 @@ namespace ChummerHub.Client.UI
                     }
                 case "Quality":
                     {
-                        Button button = new Button();
-                        button.Text = "select Quality";
+                        Button button = new Button
+                        {
+                            Text = "select Quality"
+                        };
                         button.Click += ((sender, e) =>
                         {
-                            var frmPick = new frmSelectQuality(MySearchCharacter.MyCharacter);
+                            frmSelectQuality frmPick = new frmSelectQuality(MySearchCharacter.MyCharacter);
                             frmPick.ShowDialog();
                             // Open the Spells XML file and locate the selected piece.
                             XmlDocument objXmlDocument = XmlManager.Load("qualities.xml");
@@ -248,12 +252,14 @@ namespace ChummerHub.Client.UI
                             List<Weapon> lstWeapons = new List<Weapon>();
                             objQuality.Create(objXmlNode, QualitySource.Selected, lstWeapons);
                             MySearchCharacter.MyCharacter.Qualities.Add(objQuality);
-                            SearchTag newtag = new SearchTag(stag.MyPropertyInfo, stag.MyRuntimeHubClassTag);
-                            newtag.MyRuntimePropertyValue = objQuality;
-                            newtag.MyParentTag = stag;
-                            newtag.TagName = objQuality.Name;
-                            newtag.TagValue = "";
-                            newtag.SearchOpterator = "exists";
+                            SearchTag newtag = new SearchTag(stag.MyPropertyInfo, stag.MyRuntimeHubClassTag)
+                            {
+                                MyRuntimePropertyValue = objQuality,
+                                MyParentTag = stag,
+                                TagName = objQuality.Name,
+                                TagValue = "",
+                                SearchOpterator = "exists"
+                            };
                             MySetTags.Add(newtag);
                             UpdateDialog();
                         });
@@ -265,7 +271,7 @@ namespace ChummerHub.Client.UI
                     break;
             }
             return null;
-            
+
         }
 
         private void UpdateDialog()
@@ -287,6 +293,6 @@ namespace ChummerHub.Client.UI
             Control cbChar = GetCbOrOInputontrolFromMembers(motherTag);
         }
 
-     
+
     }
 }

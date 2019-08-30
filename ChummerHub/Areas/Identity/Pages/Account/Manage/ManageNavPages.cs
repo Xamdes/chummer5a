@@ -67,7 +67,7 @@ namespace ChummerHub.Areas.Identity.Pages.Account.Manage
         public static string PageNavClass(ViewContext viewContext, string page)
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'ManageNavPages.PageNavClass(ViewContext, string)'
         {
-            var activePage = viewContext.ViewData["ActivePage"] as string
+            string activePage = viewContext.ViewData["ActivePage"] as string
                 ?? System.IO.Path.GetFileNameWithoutExtension(viewContext.ActionDescriptor.DisplayName);
             return string.Equals(activePage, page, StringComparison.OrdinalIgnoreCase) ? "active" : null;
         }

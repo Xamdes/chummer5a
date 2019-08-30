@@ -16,7 +16,9 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
+using Chummer.Annotations;
 using Chummer.Backend.Attributes;
+using NLog;
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
@@ -30,8 +32,6 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
-using Chummer.Annotations;
-using NLog;
 
 namespace Chummer.Backend.Equipment
 {
@@ -167,7 +167,7 @@ namespace Chummer.Backend.Equipment
             _nodBonus = objXmlGear["bonus"];
             _nodWirelessBonus = objXmlGear["wirelessbonus"];
             _blnWirelessOn = false;
-			objXmlGear.TryGetStringFieldQuickly("rating", ref _strMaxRating);
+            objXmlGear.TryGetStringFieldQuickly("rating", ref _strMaxRating);
             if (_strMaxRating == "0")
                 _strMaxRating = string.Empty;
             objXmlGear.TryGetStringFieldQuickly("minrating", ref _strMinRating);
@@ -270,7 +270,7 @@ namespace Chummer.Backend.Equipment
                     {
                         frmPickWeaponCategory.WeaponType = "taser";
                     }
-                    else if(_strName.StartsWith("Ammo: Fuel Canister"))
+                    else if (_strName.StartsWith("Ammo: Fuel Canister"))
                     {
                         frmPickWeaponCategory.WeaponType = "flame";
                     }
@@ -781,7 +781,7 @@ namespace Chummer.Backend.Equipment
             }
             objNode.TryGetStringFieldQuickly("name", ref _strName);
             objNode.TryGetStringFieldQuickly("category", ref _strCategory);
-            if(!objNode.TryGetGuidFieldQuickly("sourceid", ref _guiSourceID))
+            if (!objNode.TryGetGuidFieldQuickly("sourceid", ref _guiSourceID))
             {
                 if (!objNode.TryGetGuidFieldQuickly("id", ref _guiSourceID))
                 {
@@ -789,7 +789,7 @@ namespace Chummer.Backend.Equipment
                     node?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
                 }
             }
-                _objCachedMyXmlNode = null;
+            _objCachedMyXmlNode = null;
             objNode.TryGetInt32FieldQuickly("matrixcmfilled", ref _intMatrixCMFilled);
             objNode.TryGetInt32FieldQuickly("matrixcmbonus", ref _intMatrixCMBonus);
             objNode.TryGetStringFieldQuickly("capacity", ref _strCapacity);
@@ -1430,7 +1430,7 @@ namespace Chummer.Backend.Equipment
 
                 // This is first converted to a decimal and rounded up since some items have a multiplier that is not a whole number, such as 2.5.
                 object objProcess = CommonFunctions.EvaluateInvariantXPath(objValue.ToString(), out bool blnIsSuccess);
-                return blnIsSuccess ? Convert.ToInt32(Math.Ceiling((double) objProcess)) : 0;
+                return blnIsSuccess ? Convert.ToInt32(Math.Ceiling((double)objProcess)) : 0;
             }
 
             int.TryParse(strExpression, out int intReturn);
@@ -2114,7 +2114,7 @@ namespace Chummer.Backend.Equipment
                         object objProcess = CommonFunctions.EvaluateInvariantXPath(strReturn
                             .CheapReplace("Parent Rating", () => (Parent as IHasRating)?.Rating.ToString(GlobalOptions.InvariantCultureInfo))
                             .Replace("Rating", Rating.ToString()), out bool blnIsSuccess);
-                        double dblNumber = blnIsSuccess ? (double) objProcess : 1;
+                        double dblNumber = blnIsSuccess ? (double)objProcess : 1;
                         if (dblNumber < 1)
                             dblNumber = 1;
                         strReturn = dblNumber.ToString("#,0.##", GlobalOptions.CultureInfo);
@@ -2179,7 +2179,7 @@ namespace Chummer.Backend.Equipment
 
                     object objProcess = CommonFunctions.EvaluateInvariantXPath(strReturn.Replace("Rating", Rating.ToString()), out bool blnIsSuccess);
                     if (blnIsSuccess)
-                        strReturn = ((double) objProcess).ToString("#,0.##", GlobalOptions.CultureInfo);
+                        strReturn = ((double)objProcess).ToString("#,0.##", GlobalOptions.CultureInfo);
                     if (blnSquareBrackets)
                         strReturn = '[' + strReturn + ']';
                 }
@@ -2213,7 +2213,7 @@ namespace Chummer.Backend.Equipment
                 if (Parent != null)
                 {
                     if (strCostExpression.Contains("Gear Cost"))
-                        decGearCost = ((Gear) Parent).CalculatedCost;
+                        decGearCost = ((Gear)Parent).CalculatedCost;
                     if (strCostExpression.Contains("Parent Cost"))
                         decParentCost = ((Gear)Parent).OwnCostPreMultipliers;
                 }

@@ -4,12 +4,7 @@
 
 namespace SINners.Models
 {
-    using System;
-    using System.Linq;
-    using System.Collections.Generic;
     using Newtonsoft.Json;
-    using Microsoft.Rest;
-    using Microsoft.Rest.Serialization;
 
     public partial class ResultAccountGetUserByEmail
     {
@@ -17,7 +12,9 @@ namespace SINners.Models
         /// Initializes a new instance of the ResultAccountGetUserByEmail
         /// class.
         /// </summary>
-        public ResultAccountGetUserByEmail() { }
+        public ResultAccountGetUserByEmail()
+        {
+        }
 
         /// <summary>
         /// Initializes a new instance of the ResultAccountGetUserByEmail
@@ -34,22 +31,34 @@ namespace SINners.Models
         /// <summary>
         /// </summary>
         [JsonProperty(PropertyName = "myApplicationUser")]
-        public ApplicationUser MyApplicationUser { get; set; }
+        public ApplicationUser MyApplicationUser
+        {
+            get; set;
+        }
 
         /// <summary>
         /// </summary>
         [JsonProperty(PropertyName = "myException")]
-        public object MyException { get; set; }
+        public object MyException
+        {
+            get; set;
+        }
 
         /// <summary>
         /// </summary>
         [JsonProperty(PropertyName = "callSuccess")]
-        public bool? CallSuccess { get; set; }
+        public bool? CallSuccess
+        {
+            get; set;
+        }
 
         /// <summary>
         /// </summary>
         [JsonProperty(PropertyName = "errorText")]
-        public string ErrorText { get; set; }
+        public string ErrorText
+        {
+            get; set;
+        }
 
     }
 }

@@ -4,14 +4,12 @@
 
 namespace SINners
 {
+    using Models;
+    using Newtonsoft.Json;
     using System;
     using System.Collections.Generic;
-    using System.Net.Http;
     using System.Threading;
     using System.Threading.Tasks;
-    using Newtonsoft.Json;
-    using Microsoft.Rest;
-    using Models;
 
     /// <summary>
     /// Description for API v1 to store and search Chummer Xml files
@@ -21,26 +19,38 @@ namespace SINners
         /// <summary>
         /// The base URI of the service.
         /// </summary>
-        Uri BaseUri { get; set; }
+        Uri BaseUri
+        {
+            get; set;
+        }
 
         /// <summary>
         /// Gets or sets json serialization settings.
         /// </summary>
-        JsonSerializerSettings SerializationSettings { get; }
+        JsonSerializerSettings SerializationSettings
+        {
+            get;
+        }
 
         /// <summary>
         /// Gets or sets json deserialization settings.
         /// </summary>
-        JsonSerializerSettings DeserializationSettings { get; }
+        JsonSerializerSettings DeserializationSettings
+        {
+            get;
+        }
 
         /// <summary>
         /// Subscription credentials which uniquely identify client
         /// subscription.
         /// </summary>
-        ServiceClientCredentials Credentials { get; }
+        ServiceClientCredentials Credentials
+        {
+            get;
+        }
 
 
-            /// <param name='customHeaders'>
+        /// <param name='customHeaders'>
         /// The headers that will be added to request.
         /// </param>
         /// <param name='cancellationToken'>

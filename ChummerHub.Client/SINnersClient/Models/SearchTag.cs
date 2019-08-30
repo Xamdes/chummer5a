@@ -4,19 +4,18 @@
 
 namespace SINners.Models
 {
-    using System;
-    using System.Linq;
-    using System.Collections.Generic;
     using Newtonsoft.Json;
-    using Microsoft.Rest;
-    using Microsoft.Rest.Serialization;
+    using System;
+    using System.Collections.Generic;
 
     public partial class SearchTag
     {
         /// <summary>
         /// Initializes a new instance of the SearchTag class.
         /// </summary>
-        public SearchTag() { }
+        public SearchTag()
+        {
+        }
 
         /// <summary>
         /// Initializes a new instance of the SearchTag class.
@@ -40,67 +39,103 @@ namespace SINners.Models
         /// <summary>
         /// </summary>
         [JsonProperty(PropertyName = "searchTags")]
-        public IList<SearchTag> SearchTags { get; set; }
+        public IList<SearchTag> SearchTags
+        {
+            get; set;
+        }
 
         /// <summary>
         /// Possible values include: 'bigger', 'smaller', 'equal', 'contains',
         /// 'notnull', 'exists'
         /// </summary>
         [JsonProperty(PropertyName = "searchOpterator")]
-        public string SearchOpterator { get; set; }
+        public string SearchOpterator
+        {
+            get; set;
+        }
 
         /// <summary>
         /// </summary>
         [JsonProperty(PropertyName = "id")]
-        public Guid? Id { get; set; }
+        public Guid? Id
+        {
+            get; set;
+        }
 
         /// <summary>
         /// </summary>
         [JsonProperty(PropertyName = "tagName")]
-        public string TagName { get; set; }
+        public string TagName
+        {
+            get; set;
+        }
 
         /// <summary>
         /// </summary>
         [JsonProperty(PropertyName = "tagValue")]
-        public string TagValue { get; set; }
+        public string TagValue
+        {
+            get; set;
+        }
 
         /// <summary>
         /// </summary>
         [JsonProperty(PropertyName = "tagValueDouble")]
-        public double? TagValueDouble { get; set; }
+        public double? TagValueDouble
+        {
+            get; set;
+        }
 
         /// <summary>
         /// This has NO FUNCTION and is only here for Debugging reasons.
         /// </summary>
         [JsonProperty(PropertyName = "tagComment")]
-        public string TagComment { get; set; }
+        public string TagComment
+        {
+            get; set;
+        }
 
         /// <summary>
         /// </summary>
         [JsonProperty(PropertyName = "parentTagId")]
-        public Guid? ParentTagId { get; set; }
+        public Guid? ParentTagId
+        {
+            get; set;
+        }
 
         /// <summary>
         /// </summary>
         [JsonProperty(PropertyName = "siNnerId")]
-        public Guid? SiNnerId { get; set; }
+        public Guid? SiNnerId
+        {
+            get; set;
+        }
 
         /// <summary>
         /// </summary>
         [JsonProperty(PropertyName = "tags")]
-        public IList<Tag> Tags { get; set; }
+        public IList<Tag> Tags
+        {
+            get; set;
+        }
 
         /// <summary>
         /// </summary>
         [JsonProperty(PropertyName = "isUserGenerated")]
-        public bool? IsUserGenerated { get; set; }
+        public bool? IsUserGenerated
+        {
+            get; set;
+        }
 
         /// <summary>
         /// Possible values include: 'list', 'bool', 'int', 'Guid', 'string',
         /// 'double', 'binary', 'enum', 'other', 'unknown'
         /// </summary>
         [JsonProperty(PropertyName = "tagType")]
-        public string TagType { get; set; }
+        public string TagType
+        {
+            get; set;
+        }
 
         /// <summary>
         /// Validate the object. Throws ValidationException if validation fails.
@@ -109,7 +144,7 @@ namespace SINners.Models
         {
             if (this.SearchTags != null)
             {
-                foreach (var element in this.SearchTags)
+                foreach (SearchTag element in this.SearchTags)
                 {
                     if (element != null)
                     {
@@ -140,7 +175,7 @@ namespace SINners.Models
             }
             if (this.Tags != null)
             {
-                foreach (var element1 in this.Tags)
+                foreach (Tag element1 in this.Tags)
                 {
                     if (element1 != null)
                     {

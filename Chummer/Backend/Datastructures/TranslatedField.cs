@@ -58,7 +58,8 @@ namespace Chummer
             }
             else
             {
-                if(translated != null) return translated;
+                if (translated != null)
+                    return translated;
 
                 if (orginal != null && _translate.TryGetValue(orginal, out translated))
                 {

@@ -16,29 +16,28 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
-using System;
-using System.Collections;
-using System.Data;
-using System.Globalization;
-using System.Reflection;
-using System.Resources;
-using System.Runtime.Remoting.Messaging;
-using System.Text.RegularExpressions;
-using System.Threading;
-using Microsoft.ApplicationInsights.Extensibility;
 using Microsoft.ApplicationInsights.Channel;
 using Microsoft.ApplicationInsights.DataContracts;
+using Microsoft.ApplicationInsights.Extensibility;
+using System;
+using System.Collections;
 
 namespace Chummer
 {
     public class DropUserdataTelemetryProcessor : ITelemetryProcessor
     {
-        
-        private string UserProfilePath = String.Empty;
-        private ITelemetryProcessor Next { get; set; }
+
+        private string UserProfilePath = string.Empty;
+        private ITelemetryProcessor Next
+        {
+            get; set;
+        }
 
         // You can pass values from .config
-        public string MyParamFromConfigFile { get; set; }
+        public string MyParamFromConfigFile
+        {
+            get; set;
+        }
 
         // Link processors to each other in a chain.
         public DropUserdataTelemetryProcessor(ITelemetryProcessor next, string UserProfilePath)
@@ -58,7 +57,7 @@ namespace Chummer
             {
                 if (item is ExceptionTelemetry exceptionTelemetry)
                 {
-                    if ((exceptionTelemetry.Exception.Data.Contains("IsCrash"))                
+                    if ((exceptionTelemetry.Exception.Data.Contains("IsCrash"))
                         || (exceptionTelemetry.Properties.ContainsKey("IsCrash") == true))
                     {
                         this.Next.Process(item);
@@ -90,7 +89,7 @@ namespace Chummer
             return;
         }
 
-        
+
         // Example: replace with your own modifiers.
         private void ModifyItem(ITelemetry item)
         {
@@ -103,14 +102,14 @@ namespace Chummer
             if (item is RequestTelemetry req)
             {
                 string newurl = req.Url?.ToString()?.CheapReplace(UserProfilePath, () => @"{username}", true);
-                if (!String.IsNullOrEmpty(newurl))
+                if (!string.IsNullOrEmpty(newurl))
                     req.Url = new Uri(newurl);
                 return;
             }
 
             if (item is ExceptionTelemetry exception)
             {
-                
+
                 if (exception.Exception != null)
                 {
                     foreach (DictionaryEntry de in exception.Exception.Data)
@@ -127,8 +126,8 @@ namespace Chummer
                     exception.Message = exception.Message?.CheapReplace(UserProfilePath, () => @"{username}", true);
                 return;
             }
-            
-            
+
+
         }
 
     }

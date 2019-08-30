@@ -15,19 +15,31 @@ namespace ChummerHub.Models
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
 
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'SINnerUploadAble.Id'
-        public Guid? Id { get; set; }
+        public Guid? Id
+        {
+            get; set;
+        }
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'SINnerUploadAble.Id'
 
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'SINnerUploadAble.DownloadUrl'
-        public string DownloadUrl { get; set; }
+        public string DownloadUrl
+        {
+            get; set;
+        }
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'SINnerUploadAble.DownloadUrl'
 
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'SINnerUploadAble.UploadDateTime'
-        public DateTime? UploadDateTime { get; set; }
+        public DateTime? UploadDateTime
+        {
+            get; set;
+        }
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'SINnerUploadAble.UploadDateTime'
 
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'SINnerUploadAble.LastChange'
-        public DateTime LastChange { get; set; }
+        public DateTime LastChange
+        {
+            get; set;
+        }
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'SINnerUploadAble.LastChange'
 
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'SINnerUploadAble.FileName'
@@ -52,7 +64,10 @@ namespace ChummerHub.Models
         [JsonIgnore]
         [XmlIgnore]
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'SINnerUploadAble.GoogleDriveFileId'
-        public string GoogleDriveFileId { get; set; }
+        public string GoogleDriveFileId
+        {
+            get; set;
+        }
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'SINnerUploadAble.GoogleDriveFileId'
 
 

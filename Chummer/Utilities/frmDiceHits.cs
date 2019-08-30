@@ -16,7 +16,7 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
- using System;
+using System;
 using System.Windows.Forms;
 
 namespace Chummer
@@ -49,7 +49,10 @@ namespace Chummer
         /// <summary>
         /// Number of dice that are rolled for the lifestyle.
         /// </summary>
-        public int Dice { get; set; }
+        public int Dice
+        {
+            get; set;
+        }
 
         /// <summary>
         /// Description text.

@@ -29,14 +29,20 @@ namespace ChummerHub.Models.V1
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'SINnerUserRight.Id'
-        public Guid? Id { get; set; }
+        public Guid? Id
+        {
+            get; set;
+        }
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'SINnerUserRight.Id'
 
         [JsonIgnore]
         [XmlIgnore]
         [IgnoreDataMember]
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'SINnerUserRight.SINnerId'
-        public Guid? SINnerId { get; set; }
+        public Guid? SINnerId
+        {
+            get; set;
+        }
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'SINnerUserRight.SINnerId'
 
         private string _email = null;
@@ -46,7 +52,10 @@ namespace ChummerHub.Models.V1
         public string EMail
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'SINnerUserRight.EMail'
         {
-            get { return _email; }
+            get
+            {
+                return _email;
+            }
             set
             {
                 _email = null;
@@ -55,7 +64,10 @@ namespace ChummerHub.Models.V1
         }
 
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'SINnerUserRight.CanEdit'
-        public bool CanEdit { get; set; }
+        public bool CanEdit
+        {
+            get; set;
+        }
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'SINnerUserRight.CanEdit'
     }
 }

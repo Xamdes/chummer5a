@@ -80,17 +80,26 @@ namespace Chummer
         /// <summary>
         /// True if the node is part of a graph and its links are still being processed, false otherwise.
         /// </summary>
-        public bool Initializing { get; set; }
+        public bool Initializing
+        {
+            get; set;
+        }
 
         /// <summary>
         /// Object tied to this node in the DependancyGraph
         /// </summary>
-        public T MyObject { get; }
+        public T MyObject
+        {
+            get;
+        }
 
         /// <summary>
         /// Root DependancyGraph object to which this DependancyGraphNode is attached.
         /// </summary>
-        public DependancyGraph<T> Root { get; }
+        public DependancyGraph<T> Root
+        {
+            get;
+        }
 
         /// <summary>
         /// Collection of all items that depend on the object tied to this node.

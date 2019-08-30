@@ -39,14 +39,16 @@ namespace Chummer.UI.Table
         /// </summary>
         /// <param name="index"></param>
         /// <returns></returns>
-        public TableColumn<T> this[int index] {
+        public TableColumn<T> this[int index]
+        {
             get => _lstColumns[index];
             //set => _lstColumns[index] = value;
         }
 
         public int Count => _lstColumns.Count;
 
-        public void Add(TableColumn<T> objColumn) {
+        public void Add(TableColumn<T> objColumn)
+        {
             if (objColumn == null)
             {
                 throw new ArgumentException(nameof(objColumn));

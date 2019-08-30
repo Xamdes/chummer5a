@@ -12,19 +12,31 @@ namespace ChummerHub.Models.V1
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'SINnerVisibility.Id'
-        public Guid? Id { get; set; }
+        public Guid? Id
+        {
+            get; set;
+        }
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'SINnerVisibility.Id'
 
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'SINnerVisibility.IsPublic'
-        public bool IsPublic { get; set; }
+        public bool IsPublic
+        {
+            get; set;
+        }
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'SINnerVisibility.IsPublic'
 
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'SINnerVisibility.IsGroupVisible'
-        public bool IsGroupVisible { get; set; }
+        public bool IsGroupVisible
+        {
+            get; set;
+        }
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'SINnerVisibility.IsGroupVisible'
 
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'SINnerVisibility.UserRights'
-        public List<SINnerUserRight> UserRights { get; set; }
+        public List<SINnerUserRight> UserRights
+        {
+            get; set;
+        }
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'SINnerVisibility.UserRights'
 
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'SINnerVisibility.SINnerVisibility()'

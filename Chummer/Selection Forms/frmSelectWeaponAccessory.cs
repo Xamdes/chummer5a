@@ -16,15 +16,15 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
- using System;
+using Chummer.Backend.Equipment;
+using System;
 using System.Collections.Generic;
- using System.Globalization;
- using System.Linq;
+using System.Globalization;
+using System.Linq;
 using System.Text;
 using System.Windows.Forms;
- using System.Xml;
- using System.Xml.XPath;
- using Chummer.Backend.Equipment;
+using System.Xml;
+using System.Xml.XPath;
 
 namespace Chummer
 {
@@ -116,7 +116,8 @@ namespace Chummer
                     }
                 }
 
-                if (!objXmlAccessory.RequirementsMet(_objCharacter, _objParentWeapon, string.Empty, string.Empty)) continue;
+                if (!objXmlAccessory.RequirementsMet(_objCharacter, _objParentWeapon, string.Empty, string.Empty))
+                    continue;
 
                 XPathNavigator xmlTestNode = objXmlAccessory.SelectSingleNode("forbidden/weapondetails");
                 if (xmlTestNode != null)
@@ -146,9 +147,10 @@ namespace Chummer
                 {
                     lstAccessories.Add(new ListItem(strId, objXmlAccessory.SelectSingleNode("translate")?.Value ?? objXmlAccessory.SelectSingleNode("name")?.Value ?? LanguageManager.GetString("String_Unknown", GlobalOptions.Language)));
                 }
-                NextItem:;
+NextItem:
+                ;
             }
-            
+
             lstAccessories.Sort(CompareListItems.CompareNames);
             string strOldSelected = lstAccessory.SelectedValue?.ToString();
             _blnLoading = true;
@@ -206,7 +208,7 @@ namespace Chummer
 
         private void nudMarkup_ValueChanged(object sender, EventArgs e)
         {
-            if (chkShowOnlyAffordItems.Checked  && !chkFreeItem.Checked)
+            if (chkShowOnlyAffordItems.Checked && !chkFreeItem.Checked)
                 BuildAccessoryList();
             UpdateGearInfo();
         }
@@ -427,7 +429,7 @@ namespace Chummer
 
                 strMounts.Add("None");
 
-                List<string> strAllowed = new List<string>(_lstAllowedMounts) {"None"};
+                List<string> strAllowed = new List<string>(_lstAllowedMounts) { "None" };
                 cboMount.Visible = true;
                 cboMount.Items.Clear();
                 foreach (string strCurrentMount in strMounts)

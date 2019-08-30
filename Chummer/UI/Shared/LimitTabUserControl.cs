@@ -49,7 +49,8 @@ namespace Chummer.UI.Shared
 
         private void LimitTabUserControl_Load(object sender, EventArgs e)
         {
-            if (_objCharacter != null) return;
+            if (_objCharacter != null)
+                return;
             if (ParentForm != null)
                 ParentForm.Cursor = Cursors.WaitCursor;
             RealLoad();
@@ -100,8 +101,10 @@ namespace Chummer.UI.Shared
 
         private void cmdDeleteLimitModifier_Click(object sender, EventArgs e)
         {
-            if (!(treLimit.SelectedNode?.Tag is ICanRemove selectedObject)) return;
-            if (!selectedObject.Remove(_objCharacter, _objCharacter.Options.ConfirmDelete)) return;
+            if (!(treLimit.SelectedNode?.Tag is ICanRemove selectedObject))
+                return;
+            if (!selectedObject.Remove(_objCharacter, _objCharacter.Options.ConfirmDelete))
+                return;
             MakeDirtyWithCharacterUpdate?.Invoke(null, null);
         }
         private void treLimit_KeyDown(object sender, KeyEventArgs e)
@@ -114,10 +117,11 @@ namespace Chummer.UI.Shared
 
         private void tssLimitModifierNotes_Click(object sender, EventArgs e)
         {
-            if (treLimit.SelectedNode == null) return;
+            if (treLimit.SelectedNode == null)
+                return;
             if (treLimit.SelectedNode?.Tag is IHasNotes objNotes)
             {
-                
+
                 WriteNotes(objNotes, treLimit.SelectedNode);
             }
             else
@@ -126,7 +130,8 @@ namespace Chummer.UI.Shared
                 foreach (Improvement objImprovement in _objCharacter.Improvements)
                 {
                     if (objImprovement.ImproveType != Improvement.ImprovementType.LimitModifier ||
-                        objImprovement.SourceName != treLimit.SelectedNode?.Tag.ToString()) continue;
+                        objImprovement.SourceName != treLimit.SelectedNode?.Tag.ToString())
+                        continue;
                     string strOldValue = objImprovement.Notes;
                     frmNotes frmItemNotes = new frmNotes
                     {
@@ -134,9 +139,11 @@ namespace Chummer.UI.Shared
                     };
                     frmItemNotes.ShowDialog(this);
 
-                    if (frmItemNotes.DialogResult != DialogResult.OK) continue;
+                    if (frmItemNotes.DialogResult != DialogResult.OK)
+                        continue;
                     objImprovement.Notes = frmItemNotes.Notes;
-                    if (objImprovement.Notes == strOldValue) continue;
+                    if (objImprovement.Notes == strOldValue)
+                        continue;
                     MakeDirty?.Invoke(null, null);
 
                     treLimit.SelectedNode.ForeColor = objImprovement.PreferredColor;
@@ -167,12 +174,14 @@ namespace Chummer.UI.Shared
             };
             frmItemNotes.ShowDialog(this);
 
-            if (frmItemNotes.DialogResult != DialogResult.OK) return;
+            if (frmItemNotes.DialogResult != DialogResult.OK)
+                return;
             objNotes.Notes = frmItemNotes.Notes;
-            if (objNotes.Notes == strOldValue) return;
+            if (objNotes.Notes == strOldValue)
+                return;
             treNode.ForeColor = objNotes.PreferredColor;
             treNode.ToolTipText = objNotes.Notes.WordWrap(100);
-            MakeDirty?.Invoke(null,null);
+            MakeDirty?.Invoke(null, null);
         }
 
         private void RefreshLimitModifiers(NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs = null)
@@ -404,7 +413,8 @@ namespace Chummer.UI.Shared
         /// </summary>
         protected void UpdateLimitModifier()
         {
-            if (treLimit.SelectedNode.Level <= 0) return;
+            if (treLimit.SelectedNode.Level <= 0)
+                return;
             TreeNode objSelectedNode = treLimit.SelectedNode;
             string strGuid = (objSelectedNode?.Tag as IHasInternalId)?.InternalId ?? string.Empty;
             if (string.IsNullOrEmpty(strGuid) || strGuid.IsEmptyGuid())

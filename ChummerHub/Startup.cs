@@ -53,12 +53,18 @@ namespace ChummerHub
         /// <summary>
         /// This leads to the master-azure-db to create/edit/delete users
         /// </summary>
-        public static string ConnectionStringToMasterSqlDb { get; set; }
+        public static string ConnectionStringToMasterSqlDb
+        {
+            get; set;
+        }
 
         /// <summary>
         /// This leads to the master-azure-db to create/edit/delete users
         /// </summary>
-        public static string ConnectionStringSinnersDb { get; set; }
+        public static string ConnectionStringSinnersDb
+        {
+            get; set;
+        }
 
 
 
@@ -73,14 +79,20 @@ namespace ChummerHub
         }
 
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'Startup.Configuration'
-        public IConfiguration Configuration { get; }
+        public IConfiguration Configuration
+        {
+            get;
+        }
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'Startup.Configuration'
 
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'Startup.MyServices'
-        public IServiceCollection MyServices { get; set; }
+        public IServiceCollection MyServices
+        {
+            get; set;
+        }
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'Startup.MyServices'
 
-        readonly string MyAllowAllOrigins = "AllowAllOrigins";
+        private readonly string MyAllowAllOrigins = "AllowAllOrigins";
 
         // This method gets called by the runtime. Use this method to add services to the container.
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'Startup.ConfigureServices(IServiceCollection)'
@@ -113,7 +125,7 @@ namespace ChummerHub
             // Add SnapshotCollector telemetry processor.
             services.AddSingleton<ITelemetryProcessorFactory>(sp => new SnapshotCollectorTelemetryProcessorFactory(sp));
 
-            var tcbuilder = TelemetryConfiguration.Active.TelemetryProcessorChainBuilder;
+            Microsoft.ApplicationInsights.Extensibility.Implementation.TelemetryProcessorChainBuilder tcbuilder = TelemetryConfiguration.Active.TelemetryProcessorChainBuilder;
             tcbuilder.Use((next) => new GroupNotFoundFilter(next));
 
             // If you have more processors:
@@ -177,10 +189,10 @@ namespace ChummerHub
 
             services.AddMvc(options =>
             {
-                var policy = new AuthorizationPolicyBuilder()
+                AuthorizationPolicy policy = new AuthorizationPolicyBuilder()
                                  .RequireAuthenticatedUser()
                                  .Build();
-                var filter = new AuthorizeFilter(policy);
+                AuthorizeFilter filter = new AuthorizeFilter(policy);
                 options.Filters.Add(filter);
             }).SetCompatibilityVersion(CompatibilityVersion.Version_2_1)
                 .AddRazorPagesOptions(options =>
@@ -319,13 +331,13 @@ namespace ChummerHub
                 //});
                 // resolve the IApiVersionDescriptionProvider service
                 // note: that we have to build a temporary service provider here because one has not been created yet
-                var provider = services.BuildServiceProvider()
+                IApiVersionDescriptionProvider provider = services.BuildServiceProvider()
             .GetRequiredService<IApiVersionDescriptionProvider>();
 
                 // add a swagger document for each discovered API version
                 // note: you might choose to skip or document deprecated API versions differently
 
-                foreach (var description in provider.ApiVersionDescriptions)
+                foreach (ApiVersionDescription description in provider.ApiVersionDescriptions)
                 {
                     options.SwaggerDoc(description.GroupName, new Info
                     {
@@ -361,8 +373,8 @@ namespace ChummerHub
 
 
                 // Set the comments path for the Swagger JSON and UI.
-                var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
-                var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+                string xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+                string xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
                 options.IncludeXmlComments(xmlPath);
 
                 options.MapType<FileResult>(() => new Schema
@@ -439,7 +451,7 @@ namespace ChummerHub
 
             // resolve the IApiVersionDescriptionProvider service
             // note: that we have to build a temporary service provider here because one has not been created yet
-            var provider = MyServices.BuildServiceProvider().GetRequiredService<IApiVersionDescriptionProvider>();
+            IApiVersionDescriptionProvider provider = MyServices.BuildServiceProvider().GetRequiredService<IApiVersionDescriptionProvider>();
 
             // Enable middleware to serve swagger-ui (HTML, JS, CSS, etc.), 
             // specifying the Swagger JSON endpoint.
@@ -448,16 +460,16 @@ namespace ChummerHub
 
                 //c.SwaggerEndpoint("/swagger/v1.0/swagger.json", "V1");
                 // build a swagger endpoint for each discovered API version
-                foreach (var description in provider.ApiVersionDescriptions)
+                foreach (ApiVersionDescription description in provider.ApiVersionDescriptions)
                 {
                     options.SwaggerEndpoint($"/swagger/{description.GroupName}/swagger.json", description.GroupName.ToUpperInvariant());
                 }
             });
 
-            var serviceScopeFactory = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>();
-            using (var serviceScope = serviceScopeFactory.CreateScope())
+            IServiceScopeFactory serviceScopeFactory = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>();
+            using (IServiceScope serviceScope = serviceScopeFactory.CreateScope())
             {
-                var dbContext = serviceScope.ServiceProvider.GetService<ApplicationDbContext>();
+                ApplicationDbContext dbContext = serviceScope.ServiceProvider.GetService<ApplicationDbContext>();
                 //dbContext.Database.EnsureDeleted();
                 dbContext.Database.EnsureCreated();
 

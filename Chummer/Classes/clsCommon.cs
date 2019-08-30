@@ -16,19 +16,19 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
+using Chummer.Annotations;
+using Chummer.Backend.Equipment;
+using iTextSharp.text.pdf;
+using iTextSharp.text.pdf.parser;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Windows.Forms;
 using System.IO;
 using System.Linq;
-using Chummer.Backend.Equipment;
+using System.Runtime.CompilerServices;
+using System.Windows.Forms;
 using System.Xml;
 using System.Xml.XPath;
-using System.Runtime.CompilerServices;
-using Chummer.Annotations;
-using iTextSharp.text.pdf;
-using iTextSharp.text.pdf.parser;
 
 namespace Chummer
 {
@@ -140,15 +140,15 @@ namespace Chummer
 
             return null;
         }
-		/// <summary>
-		/// Locate a piece of Gear within the character's Vehicles.
-		/// </summary>
-		/// <param name="strGuid">InternalId of the Gear to find.</param>
-		/// <param name="lstVehicles">List of Vehicles to search.</param>
-		/// <param name="objFoundVehicle">Vehicle that the Gear was found in.</param>
-		/// <param name="objFoundWeaponAccessory">Weapon Accessory that the Gear was found in.</param>
-		/// <param name="objFoundCyberware">Cyberware that the Gear was found in.</param>
-		public static Gear FindVehicleGear(this IEnumerable<Vehicle> lstVehicles, string strGuid, out Vehicle objFoundVehicle, out WeaponAccessory objFoundWeaponAccessory, out Cyberware objFoundCyberware)
+        /// <summary>
+        /// Locate a piece of Gear within the character's Vehicles.
+        /// </summary>
+        /// <param name="strGuid">InternalId of the Gear to find.</param>
+        /// <param name="lstVehicles">List of Vehicles to search.</param>
+        /// <param name="objFoundVehicle">Vehicle that the Gear was found in.</param>
+        /// <param name="objFoundWeaponAccessory">Weapon Accessory that the Gear was found in.</param>
+        /// <param name="objFoundCyberware">Cyberware that the Gear was found in.</param>
+        public static Gear FindVehicleGear(this IEnumerable<Vehicle> lstVehicles, string strGuid, out Vehicle objFoundVehicle, out WeaponAccessory objFoundWeaponAccessory, out Cyberware objFoundCyberware)
         {
             if (!string.IsNullOrEmpty(strGuid) && !strGuid.IsEmptyGuid())
             {
@@ -840,11 +840,11 @@ namespace Chummer
                 astrSourceParts = strSource.Split(strSpaceCharacter[0]);
             else if (strSource.StartsWith("SR5"))
             {
-                astrSourceParts = new [] { "SR5", strSource.Substring(3) };
+                astrSourceParts = new[] { "SR5", strSource.Substring(3) };
             }
             else if (strSource.StartsWith("R5"))
             {
-                astrSourceParts = new [] { "R5", strSource.Substring(3) };
+                astrSourceParts = new[] { "R5", strSource.Substring(3) };
             }
             else
             {
@@ -856,7 +856,7 @@ namespace Chummer
                         break;
                     }
                 }
-                astrSourceParts = new [] { strSource.Substring(0, i), strSource.Substring(i) };
+                astrSourceParts = new[] { strSource.Substring(0, i), strSource.Substring(i) };
             }
             if (astrSourceParts.Length < 2)
                 return;

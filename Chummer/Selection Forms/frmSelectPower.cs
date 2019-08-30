@@ -160,12 +160,18 @@ namespace Chummer
         /// <summary>
         /// Whether or not the user wants to add another item after this one.
         /// </summary>
-        public bool AddAgain { get; private set; }
+        public bool AddAgain
+        {
+            get; private set;
+        }
 
         /// <summary>
         /// Whether or not we should ignore how many of a given power may be taken. Generally used when bonding Qi Foci.
         /// </summary>
-        public bool IgnoreLimits { get; set; }
+        public bool IgnoreLimits
+        {
+            get; set;
+        }
 
         /// <summary>
         /// Power that was selected in the dialogue.

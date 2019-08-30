@@ -21,6 +21,9 @@ namespace Chummer
 {
     public interface IHasRating
     {
-        int Rating { get; set; }
+        int Rating
+        {
+            get; set;
+        }
     }
 }

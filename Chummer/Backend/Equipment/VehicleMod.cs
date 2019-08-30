@@ -17,6 +17,7 @@
  *  https://github.com/chummer5a/chummer5a
  */
 using Chummer.Backend.Attributes;
+using NLog;
 using System;
 using System.Collections.Specialized;
 using System.Diagnostics;
@@ -26,7 +27,6 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using System.Xml;
-using NLog;
 
 namespace Chummer.Backend.Equipment
 {
@@ -136,7 +136,8 @@ namespace Chummer.Backend.Equipment
         public void Create(XmlNode objXmlMod, int intRating, Vehicle objParent, decimal decMarkup = 0, string strForcedValue = "")
         {
             Parent = objParent ?? throw new ArgumentNullException(nameof(objParent));
-            if (objXmlMod == null) Utils.BreakIfDebug();
+            if (objXmlMod == null)
+                Utils.BreakIfDebug();
             if (!objXmlMod.TryGetField("id", Guid.TryParse, out _guiSourceID))
             {
                 Log.Warn(new object[] { "Missing id field for xmlnode", objXmlMod });
@@ -299,7 +300,7 @@ namespace Chummer.Backend.Equipment
             {
                 _guiID = Guid.NewGuid();
             }
-            if(!objNode.TryGetGuidFieldQuickly("sourceid", ref _guiSourceID))
+            if (!objNode.TryGetGuidFieldQuickly("sourceid", ref _guiSourceID))
             {
                 XmlNode node = GetNode(GlobalOptions.Language);
                 node?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
@@ -433,7 +434,10 @@ namespace Chummer.Backend.Equipment
 
         public TaggedObservableCollection<Cyberware> Cyberware => _lstCyberware;
 
-        public WeaponMount WeaponMountParent { get; set; }
+        public WeaponMount WeaponMountParent
+        {
+            get; set;
+        }
 
         /// <summary>
         /// Identifier of the object within data files.
@@ -703,7 +707,10 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Vehicle that the Mod is attached to.
         /// </summary>
-        public Vehicle Parent { internal get; set; }
+        public Vehicle Parent
+        {
+            internal get; set;
+        }
 
         /// <summary>
         /// Adjust the Weapon's Ammo amount by the specified percent.

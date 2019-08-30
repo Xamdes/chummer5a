@@ -109,7 +109,7 @@ namespace Chummer
         private void ResizeDropDown()
         {
             float fltMaxItemWidth = Width;
-            foreach (var objItem in Items)
+            foreach (object objItem in Items)
             {
                 string strItemText = string.Empty;
                 if (objItem is ListItem objListItem)

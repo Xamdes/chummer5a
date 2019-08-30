@@ -16,15 +16,15 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
- using System;
+using Chummer.Backend.Equipment;
+using System;
 using System.Collections.Generic;
- using System.Linq;
+using System.Globalization;
+using System.Linq;
+using System.Text;
 using System.Windows.Forms;
 using System.Xml;
 using System.Xml.XPath;
-using Chummer.Backend.Equipment;
-using System.Text;
-using System.Globalization;
 
 namespace Chummer
 {
@@ -74,7 +74,7 @@ namespace Chummer
                 chkStack.Checked = false;
                 chkStack.Visible = false;
             }
-            
+
             // Load the Gear information.
             _xmlBaseGearDataNode = XmlManager.Load("gear.xml").GetFastNavigator().SelectSingleNode("/chummer");
             _setBlackMarketMaps = _objCharacter.GenerateBlackMarketMappings(_xmlBaseGearDataNode);
@@ -132,7 +132,7 @@ namespace Chummer
                     _lstCategory.Add(new ListItem(strInnerText, objXmlCategory.SelectSingleNode("@translate")?.Value ?? strCategory));
                 }
             }
-            
+
             _lstCategory.Sort(CompareListItems.CompareNames);
 
             if (_lstCategory.Count > 0)
@@ -377,7 +377,10 @@ namespace Chummer
         /// <summary>
         /// Whether or not the user wants to add another item after this one.
         /// </summary>
-        public bool AddAgain { get; private set; }
+        public bool AddAgain
+        {
+            get; private set;
+        }
 
         /// <summary>
         /// Only items that grant Capacity should be shown.
@@ -410,7 +413,10 @@ namespace Chummer
         /// <summary>
         /// Only items that consume Armor Capacity should be shown.
         /// </summary>
-        public bool ShowArmorCapacityOnly { get; set; }
+        public bool ShowArmorCapacityOnly
+        {
+            get; set;
+        }
 
         /// <summary>
         /// Guid of Gear that was selected in the dialogue.
@@ -492,7 +498,10 @@ namespace Chummer
         /// <summary>
         /// Default text string to filter by.
         /// </summary>
-        public string DefaultSearchText { get; set; }
+        public string DefaultSearchText
+        {
+            get; set;
+        }
 
         /// <summary>
         /// What prefixes is our gear allowed to have
@@ -579,7 +588,7 @@ namespace Chummer
             lblSourceLabel.Visible = !string.IsNullOrEmpty(lblSource.Text);
             lblAvail.Text = new AvailabilityValue(Convert.ToInt32(nudRating.Value), objXmlGear.SelectSingleNode("avail")?.Value).ToString();
             lblAvailLabel.Visible = !string.IsNullOrEmpty(lblAvail.Text);
-            
+
             decimal decMultiplier = nudGearQty.Value / nudGearQty.Increment;
             if (chkDoItYourself.Checked)
                 decMultiplier *= 0.5m;
@@ -681,7 +690,7 @@ namespace Chummer
                 }
             }
             lblCostLabel.Visible = !string.IsNullOrEmpty(lblCost.Text);
-            
+
             // Update the Avail Test Label.
             lblTest.Text = _objCharacter.AvailTest(decItemCost * _intCostMultiplier, lblAvail.Text);
             lblTestLabel.Visible = true;
@@ -805,7 +814,7 @@ namespace Chummer
                 }
             }
             lblCapacityLabel.Visible = !string.IsNullOrEmpty(lblCapacity.Text);
-            
+
             // Rating.
             string strExpression = objXmlGear.SelectSingleNode("rating")?.Value ?? string.Empty;
             if (strExpression == "0")
@@ -832,12 +841,12 @@ namespace Chummer
 
                     // This is first converted to a decimal and rounded up since some items have a multiplier that is not a whole number, such as 2.5.
                     objProcess = CommonFunctions.EvaluateInvariantXPath(objValue.ToString(), out blnIsSuccess);
-                    intRating = blnIsSuccess ? Convert.ToInt32(Math.Ceiling((double) objProcess)) : 0;
+                    intRating = blnIsSuccess ? Convert.ToInt32(Math.Ceiling((double)objProcess)) : 0;
                 }
                 else
                     int.TryParse(strExpression, out intRating);
             }
-            
+
             if (intRating > 0 && intRating != int.MaxValue)
             {
                 nudRating.Maximum = intRating;
@@ -1055,7 +1064,7 @@ namespace Chummer
 
             return lstGears;
         }
-        
+
         /// <summary>
         /// Accept the selected item and close the form.
         /// </summary>

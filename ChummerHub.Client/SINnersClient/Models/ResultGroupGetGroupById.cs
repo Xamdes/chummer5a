@@ -4,19 +4,16 @@
 
 namespace SINners.Models
 {
-    using System;
-    using System.Linq;
-    using System.Collections.Generic;
     using Newtonsoft.Json;
-    using Microsoft.Rest;
-    using Microsoft.Rest.Serialization;
 
     public partial class ResultGroupGetGroupById
     {
         /// <summary>
         /// Initializes a new instance of the ResultGroupGetGroupById class.
         /// </summary>
-        public ResultGroupGetGroupById() { }
+        public ResultGroupGetGroupById()
+        {
+        }
 
         /// <summary>
         /// Initializes a new instance of the ResultGroupGetGroupById class.
@@ -32,22 +29,34 @@ namespace SINners.Models
         /// <summary>
         /// </summary>
         [JsonProperty(PropertyName = "myGroup")]
-        public SINnerGroup MyGroup { get; set; }
+        public SINnerGroup MyGroup
+        {
+            get; set;
+        }
 
         /// <summary>
         /// </summary>
         [JsonProperty(PropertyName = "myException")]
-        public object MyException { get; set; }
+        public object MyException
+        {
+            get; set;
+        }
 
         /// <summary>
         /// </summary>
         [JsonProperty(PropertyName = "callSuccess")]
-        public bool? CallSuccess { get; set; }
+        public bool? CallSuccess
+        {
+            get; set;
+        }
 
         /// <summary>
         /// </summary>
         [JsonProperty(PropertyName = "errorText")]
-        public string ErrorText { get; set; }
+        public string ErrorText
+        {
+            get; set;
+        }
 
         /// <summary>
         /// Validate the object. Throws ValidationException if validation fails.

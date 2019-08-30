@@ -19,7 +19,10 @@ namespace Microsoft.AspNetCore.Identity
         //[NotMapped]
         [JsonIgnore]
         [XmlIgnore]
-        public string Groupname { get; set; }
+        public string Groupname
+        {
+            get; set;
+        }
 
         private List<ApplicationUserFavoriteGroup> _FavoriteGroups;
 
@@ -38,7 +41,10 @@ namespace Microsoft.AspNetCore.Identity
             FavoriteGroups = new List<ApplicationUserFavoriteGroup>();
         }
 
-        private ILazyLoader LazyLoader { get; set; }
+        private ILazyLoader LazyLoader
+        {
+            get; set;
+        }
 
         private ApplicationUser(ILazyLoader lazyLoader)
         {

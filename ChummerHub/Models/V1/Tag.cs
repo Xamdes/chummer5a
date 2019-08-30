@@ -18,22 +18,34 @@ namespace ChummerHub.Models.V1
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
 
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'Tag.Id'
-        public Guid Id { get; set; }
+        public Guid Id
+        {
+            get; set;
+        }
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'Tag.Id'
 
         [MaxLength(64)]
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'Tag.TagName'
-        public string TagName { get; set; }
+        public string TagName
+        {
+            get; set;
+        }
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'Tag.TagName'
 
         [MaxLength(64)]
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'Tag.TagValue'
-        public string TagValue { get; set; }
+        public string TagValue
+        {
+            get; set;
+        }
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'Tag.TagValue'
 
 
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'Tag.TagValueFloat'
-        public float? TagValueFloat { get; set; }
+        public float? TagValueFloat
+        {
+            get; set;
+        }
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'Tag.TagValueFloat'
 
         /// <summary>
@@ -41,10 +53,16 @@ namespace ChummerHub.Models.V1
         /// </summary>
         ///
         [MaxLength(64)]
-        public string TagComment { get; set; }
+        public string TagComment
+        {
+            get; set;
+        }
 
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'Tag.ParentTagId'
-        public Guid? ParentTagId { get; set; }
+        public Guid? ParentTagId
+        {
+            get; set;
+        }
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'Tag.ParentTagId'
 
         [IgnoreDataMember]
@@ -52,23 +70,38 @@ namespace ChummerHub.Models.V1
         [XmlIgnore]
         [NotMapped]
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'Tag.ParentTag'
-        public Tag ParentTag { get; set; }
+        public Tag ParentTag
+        {
+            get; set;
+        }
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'Tag.ParentTag'
 
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'Tag.SINnerId'
-        public Guid? SINnerId { get; set; }
+        public Guid? SINnerId
+        {
+            get; set;
+        }
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'Tag.SINnerId'
 
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'Tag.Tags'
-        public List<Tag> Tags { get; set; }
+        public List<Tag> Tags
+        {
+            get; set;
+        }
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'Tag.Tags'
 
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'Tag.IsUserGenerated'
-        public bool IsUserGenerated { get; set; }
+        public bool IsUserGenerated
+        {
+            get; set;
+        }
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'Tag.IsUserGenerated'
 
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'Tag.TagType'
-        public TagValueEnum TagType { get; set; }
+        public TagValueEnum TagType
+        {
+            get; set;
+        }
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'Tag.TagType'
 
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'Tag.TagValueEnum'
@@ -154,9 +187,9 @@ namespace ChummerHub.Models.V1
                 while (tempParent != null)
                 {
                     string tempstr = tempParent.TagName;
-                    if (!String.IsNullOrEmpty(tempParent.TagValue))
+                    if (!string.IsNullOrEmpty(tempParent.TagValue))
                         tempstr += ": " + tempParent.TagValue;
-                    if (!String.IsNullOrEmpty(str))
+                    if (!string.IsNullOrEmpty(str))
                         tempstr += " -> " + str;
                     str = tempstr;
                     tempParent = tempParent.ParentTag;
@@ -169,7 +202,7 @@ namespace ChummerHub.Models.V1
         internal void SetSinnerIdRecursive(Guid? id)
         {
             this.SINnerId = id;
-            foreach (var child in this.Tags)
+            foreach (Tag child in this.Tags)
                 child.SetSinnerIdRecursive(id);
         }
     }

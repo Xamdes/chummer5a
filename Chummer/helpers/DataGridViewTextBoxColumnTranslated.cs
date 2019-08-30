@@ -26,6 +26,9 @@ namespace Chummer
         /// <summary>
         /// String used to translate the HeaderText of the column.
         /// </summary>
-        public string TranslationTag { get; set; }
+        public string TranslationTag
+        {
+            get; set;
+        }
     }
 }

@@ -16,7 +16,7 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
- using System;
+using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
 using System.Xml;
@@ -28,7 +28,10 @@ namespace Chummer
         private string _strSelectedCategory = string.Empty;
         private string _strForceCategory = string.Empty;
 
-        public string WeaponType { get; set; }
+        public string WeaponType
+        {
+            get; set;
+        }
 
         private readonly XmlDocument _objXmlDocument;
 

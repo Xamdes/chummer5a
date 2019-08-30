@@ -1,25 +1,11 @@
+using Chummer;
+using Chummer.Plugins;
+using ChummerHub.Client.Backend;
+using ChummerHub.Client.Model;
+using SINners;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Drawing;
-using System.Data;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using Chummer;
-using ChummerHub.Client.Model;
-using System.Net;
-using Microsoft.Rest;
-using System.Net.Http;
-using SINners;
-using ChummerHub.Client.Backend;
-using System.Composition;
-using Chummer.Plugins;
-using System.IO;
-using SINners.Models;
-using System.Windows.Threading;
-using NLog;
 
 namespace ChummerHub.Client.UI
 {
@@ -33,11 +19,14 @@ namespace ChummerHub.Client.UI
 
         public ucSINnersAdvanced TabSINnersAdvanced = null;
 
-        public CharacterExtended MyCE { get; set; }
+        public CharacterExtended MyCE
+        {
+            get; set;
+        }
 
         public Character CharacterObject => MySINner.CharacterObject;
 
-        
+
 
         public async Task<CharacterExtended> SetCharacterFrom(CharacterShared mySINner)
         {
@@ -45,7 +34,7 @@ namespace ChummerHub.Client.UI
             _mySINner = mySINner;
             MyCE = new CharacterExtended(mySINner.CharacterObject, null, PluginHandler.MySINnerLoading);
             MyCE.ZipFilePath = await MyCE.PrepareModel();
-            
+
 
             TabSINnersBasic = new ucSINnersBasic(this)
             {
@@ -59,7 +48,7 @@ namespace ChummerHub.Client.UI
 
             this.tabPageBasic.Controls.Add(TabSINnersBasic);
             this.tabPageAdvanced.Controls.Add(TabSINnersAdvanced);
-           
+
             this.AutoSize = true;
 
             if ((ucSINnersOptions.UploadOnSave == true))
@@ -73,21 +62,21 @@ namespace ChummerHub.Client.UI
                 {
                     Log.Warn(e);
                 }
-                
+
             }
             //MyCE.MySINnerFile.SiNnerMetaData.Tags = MyCE.PopulateTags();
             return MyCE;
         }
 
-        
 
-        
+
+
 
         public async Task RemoveSINnerAsync()
         {
             try
             {
-                var client = StaticUtils.GetClient();
+                SINnersClient client = StaticUtils.GetClient();
                 await client.DeleteAsync(MyCE.MySINnerFile.Id.Value);
             }
             catch (Exception ex)
@@ -97,6 +86,6 @@ namespace ChummerHub.Client.UI
             }
         }
 
-  
+
     }
 }

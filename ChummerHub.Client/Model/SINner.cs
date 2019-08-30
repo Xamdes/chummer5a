@@ -1,17 +1,17 @@
+using Chummer;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Chummer;
 
 namespace SINners.Models
 {
     public partial class SINner
     {
-        public DateTime DownloadedFromSINnersTime { get;
-            set; }
+        public DateTime DownloadedFromSINnersTime
+        {
+            get;
+            set;
+        }
 
 
         public string ZipFilePath
@@ -32,8 +32,8 @@ namespace SINners.Models
                 string loadFilePath = null;
                 if (Directory.Exists(this.ZipFilePath))
                 {
-                    var files = Directory.EnumerateFiles(this.ZipFilePath, "*.chum5", SearchOption.TopDirectoryOnly);
-                    foreach (var file in files)
+                    IEnumerable<string> files = Directory.EnumerateFiles(this.ZipFilePath, "*.chum5", SearchOption.TopDirectoryOnly);
+                    foreach (string file in files)
                     {
                         DateTime lastwrite = File.GetLastWriteTime(file);
                         if ((lastwrite >= this.LastChange)

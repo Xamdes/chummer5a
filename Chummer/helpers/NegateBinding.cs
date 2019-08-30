@@ -25,10 +25,22 @@ namespace Chummer
     /// </summary>
     internal class NegatableBinding
     {
-        private string PropertyName { get; }
-        public object DataSource { get; }
-        public string DataMember { get; }
-        public bool Negate { get; }
+        private string PropertyName
+        {
+            get;
+        }
+        public object DataSource
+        {
+            get;
+        }
+        public string DataMember
+        {
+            get;
+        }
+        public bool Negate
+        {
+            get;
+        }
 
         public NegatableBinding(string propertyName, object dataSource, string dataMember, bool negate = false)
         {
@@ -40,9 +52,10 @@ namespace Chummer
 
         public static implicit operator Binding(NegatableBinding eb)
         {
-            var binding = new Binding(eb.PropertyName, eb.DataSource, eb.DataMember, false,
+            Binding binding = new Binding(eb.PropertyName, eb.DataSource, eb.DataMember, false,
                 DataSourceUpdateMode.OnPropertyChanged);
-            if (!eb.Negate) return binding;
+            if (!eb.Negate)
+                return binding;
             binding.Parse += NegateValue;
             binding.Format += NegateValue;
 

@@ -16,13 +16,13 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
- using System;
+using Chummer.Backend.Skills;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using System.Xml.XPath;
- using Chummer.Backend.Skills;
 
 namespace Chummer
 {
@@ -52,7 +52,7 @@ namespace Chummer
             _objCharacter = objCharacter;
             chkLimited.SetToolTip(LanguageManager.GetString("Tip_SelectSpell_LimitedSpell", GlobalOptions.Language));
             chkExtended.SetToolTip(LanguageManager.GetString("Tip_SelectSpell_ExtendedSpell", GlobalOptions.Language));
-            
+
             // Load the Spells information.
             _xmlBaseSpellDataNode = XmlManager.Load("spells.xml").GetFastNavigator().SelectSingleNode("/chummer");
         }
@@ -231,12 +231,14 @@ namespace Chummer
 
         private void chkExtended_CheckedChanged(object sender, EventArgs e)
         {
-            if (_blnRefresh) return;
+            if (_blnRefresh)
+                return;
             UpdateSpellInfo();
         }
         private void chkLimited_CheckedChanged(object sender, EventArgs e)
         {
-            if (_blnRefresh) return;
+            if (_blnRefresh)
+                return;
             UpdateSpellInfo();
         }
         #endregion
@@ -289,7 +291,10 @@ namespace Chummer
             set => _blnIgnoreRequirements = value;
         }
 
-        public bool FreeBonus { get; set; }
+        public bool FreeBonus
+        {
+            get; set;
+        }
         #endregion
 
         #region Methods
@@ -396,11 +401,17 @@ namespace Chummer
             foreach (Spell objspell in _objCharacter.Spells)
             {
                 if (objspell.Alchemical)
-                { intAlchPrepCount++; }
+                {
+                    intAlchPrepCount++;
+                }
                 else if (objspell.Category == "Rituals")
-                { intRitualCount++; }
+                {
+                    intRitualCount++;
+                }
                 else
-                { intSpellCount++; }
+                {
+                    intSpellCount++;
+                }
             }
             if (!_objCharacter.IgnoreRules)
             {
@@ -453,7 +464,7 @@ namespace Chummer
         {
             if (_blnLoading)
                 return;
-            
+
             XPathNavigator xmlSpell = null;
             string strSelectedSpellId = lstSpells.SelectedValue?.ToString();
             _blnRefresh = true;
@@ -491,7 +502,7 @@ namespace Chummer
                 return;
             }
 
-            string[] strDescriptorsIn = xmlSpell.SelectSingleNode("descriptor")?.Value.Split(',') ?? new string[] {};
+            string[] strDescriptorsIn = xmlSpell.SelectSingleNode("descriptor")?.Value.Split(',') ?? new string[] { };
 
             StringBuilder objDescriptors = new StringBuilder();
             bool blnExtendedFound = false;
@@ -689,7 +700,7 @@ namespace Chummer
                 {
                     strAfter = "+2";
                 }
-                
+
                 strDV += strAfter;
             }
 

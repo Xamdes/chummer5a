@@ -7,7 +7,10 @@ namespace ChummerHub.Models.V1
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'ResultGroupGetGroupById'
     {
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'ResultGroupGetGroupById.MyGroup'
-        public SINnerGroup MyGroup { get; set; }
+        public SINnerGroup MyGroup
+        {
+            get; set;
+        }
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'ResultGroupGetGroupById.MyGroup'
 
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'ResultGroupGetGroupById.ResultGroupGetGroupById()'

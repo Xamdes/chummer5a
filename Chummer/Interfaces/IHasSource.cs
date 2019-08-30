@@ -20,7 +20,10 @@ namespace Chummer
 {
     public interface IHasSource
     {
-        SourceString SourceDetail { get; }
+        SourceString SourceDetail
+        {
+            get;
+        }
 
         void SetSourceDetail(System.Windows.Forms.Control sourceControl);
     }

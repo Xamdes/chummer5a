@@ -1,17 +1,9 @@
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Drawing;
-using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
 using Chummer;
 using Chummer.Plugins;
-using GroupControls;
-using NLog;
 using SINners.Models;
+using System;
+using System.Collections.Generic;
+using System.Windows.Forms;
 
 namespace ChummerHub.Client.UI
 {
@@ -21,7 +13,10 @@ namespace ChummerHub.Client.UI
         private SINnerVisibility _mySINnerVisibility;
         public SINnerVisibility MyVisibility
         {
-            get { return _mySINnerVisibility; }
+            get
+            {
+                return _mySINnerVisibility;
+            }
             set
             {
                 _mySINnerVisibility = value;
@@ -31,7 +26,10 @@ namespace ChummerHub.Client.UI
 
         public CheckedListBox MyCheckBoxList
         {
-            get { return this.clbVisibilityToUsers; }
+            get
+            {
+                return this.clbVisibilityToUsers;
+            }
         }
 
         public ucSINnerVisibility()
@@ -89,7 +87,7 @@ namespace ChummerHub.Client.UI
             FillVisibilityListBox();
         }
 
-        
+
 
         private void clbVisibilityToUsers_ItemCheck(object sender, ItemCheckEventArgs e)
         {
@@ -100,7 +98,7 @@ namespace ChummerHub.Client.UI
             {
                 for (int i = selectedItems.Count - 1; i >= 0; i--)
                 {
-                    var userright = selectedItems[i] as SINnerUserRight;
+                    SINnerUserRight userright = selectedItems[i] as SINnerUserRight;
                     if (userright != null)
                     {
                         if (e.NewValue == CheckState.Checked)
@@ -125,7 +123,7 @@ namespace ChummerHub.Client.UI
             {
                 for (int i = selectedItems.Count - 1; i >= 0; i--)
                 {
-                    var userright = selectedItems[i] as SINnerUserRight;
+                    SINnerUserRight userright = selectedItems[i] as SINnerUserRight;
                     MyVisibility.UserRightsObservable.Remove(userright);
                 }
                 FillVisibilityListBox();
@@ -134,6 +132,6 @@ namespace ChummerHub.Client.UI
                 Program.MainForm.ShowMessageBox("No email selected!");
         }
 
-     
+
     }
 }

@@ -11,7 +11,10 @@ namespace ChummerHub.Services.Application_Insights
     public class GroupNotFoundFilter : ITelemetryProcessor
     {
 
-        private ITelemetryProcessor Next { get; set; }
+        private ITelemetryProcessor Next
+        {
+            get; set;
+        }
 
         // You can pass values from .config
         //public string MyParamFromConfigFile { get; set; }

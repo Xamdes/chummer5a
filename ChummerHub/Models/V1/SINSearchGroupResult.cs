@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 
 namespace ChummerHub.Models.V1
@@ -8,11 +7,17 @@ namespace ChummerHub.Models.V1
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'SINSearchGroupResult'
     {
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'SINSearchGroupResult.Roles'
-        public List<String> Roles { get; set; }
+        public List<string> Roles
+        {
+            get; set;
+        }
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'SINSearchGroupResult.Roles'
 
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'SINSearchGroupResult.Version'
-        public ChummerHubVersion Version { get; set; }
+        public ChummerHubVersion Version
+        {
+            get; set;
+        }
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'SINSearchGroupResult.Version'
 
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'SINSearchGroupResult.SINSearchGroupResult()'
@@ -24,11 +29,17 @@ namespace ChummerHub.Models.V1
             Version = new ChummerHubVersion();
         }
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'SINSearchGroupResult.SINGroups'
-        public List<SINnerSearchGroup> SINGroups { get; set; }
+        public List<SINnerSearchGroup> SINGroups
+        {
+            get; set;
+        }
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'SINSearchGroupResult.SINGroups'
 
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'SINSearchGroupResult.ErrorText'
-        public string ErrorText { get; set; }
+        public string ErrorText
+        {
+            get; set;
+        }
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'SINSearchGroupResult.ErrorText'
     }
 
@@ -38,15 +49,24 @@ namespace ChummerHub.Models.V1
     {
 
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'SINnerSearchGroup.MySINSearchGroups'
-        public List<SINnerSearchGroup> MySINSearchGroups { get; set; }
+        public List<SINnerSearchGroup> MySINSearchGroups
+        {
+            get; set;
+        }
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'SINnerSearchGroup.MySINSearchGroups'
 
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'SINnerSearchGroup.ErrorText'
-        public string ErrorText { get; set; }
+        public string ErrorText
+        {
+            get; set;
+        }
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'SINnerSearchGroup.ErrorText'
 
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'SINnerSearchGroup.MyMembers'
-        public List<SINnerSearchGroupMember> MyMembers { get; set; }
+        public List<SINnerSearchGroupMember> MyMembers
+        {
+            get; set;
+        }
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'SINnerSearchGroup.MyMembers'
 
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'SINnerSearchGroup.SINnerSearchGroup()'
@@ -83,11 +103,17 @@ namespace ChummerHub.Models.V1
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'SINnerSearchGroupMember'
     {
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'SINnerSearchGroupMember.MySINner'
-        public SINner MySINner { get; set; }
+        public SINner MySINner
+        {
+            get; set;
+        }
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'SINnerSearchGroupMember.MySINner'
 
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'SINnerSearchGroupMember.Username'
-        public string Username { get; set; }
+        public string Username
+        {
+            get; set;
+        }
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'SINnerSearchGroupMember.Username'
 
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'SINnerSearchGroupMember.SINnerSearchGroupMember()'

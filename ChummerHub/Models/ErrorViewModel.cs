@@ -5,7 +5,10 @@ namespace ChummerHub.Models
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'ErrorViewModel'
     {
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'ErrorViewModel.RequestId'
-        public string RequestId { get; set; }
+        public string RequestId
+        {
+            get; set;
+        }
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'ErrorViewModel.RequestId'
 
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'ErrorViewModel.ShowRequestId'

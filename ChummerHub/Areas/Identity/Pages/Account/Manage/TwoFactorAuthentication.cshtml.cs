@@ -29,32 +29,47 @@ namespace ChummerHub.Areas.Identity.Pages.Account.Manage
         }
 
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'TwoFactorAuthenticationModel.HasAuthenticator'
-        public bool HasAuthenticator { get; set; }
+        public bool HasAuthenticator
+        {
+            get; set;
+        }
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'TwoFactorAuthenticationModel.HasAuthenticator'
 
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'TwoFactorAuthenticationModel.RecoveryCodesLeft'
-        public int RecoveryCodesLeft { get; set; }
+        public int RecoveryCodesLeft
+        {
+            get; set;
+        }
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'TwoFactorAuthenticationModel.RecoveryCodesLeft'
 
         [BindProperty]
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'TwoFactorAuthenticationModel.Is2faEnabled'
-        public bool Is2faEnabled { get; set; }
+        public bool Is2faEnabled
+        {
+            get; set;
+        }
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'TwoFactorAuthenticationModel.Is2faEnabled'
 
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'TwoFactorAuthenticationModel.IsMachineRemembered'
-        public bool IsMachineRemembered { get; set; }
+        public bool IsMachineRemembered
+        {
+            get; set;
+        }
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'TwoFactorAuthenticationModel.IsMachineRemembered'
 
         [TempData]
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'TwoFactorAuthenticationModel.StatusMessage'
-        public string StatusMessage { get; set; }
+        public string StatusMessage
+        {
+            get; set;
+        }
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'TwoFactorAuthenticationModel.StatusMessage'
 
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'TwoFactorAuthenticationModel.OnGet()'
         public async Task<IActionResult> OnGet()
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'TwoFactorAuthenticationModel.OnGet()'
         {
-            var user = await _userManager.GetUserAsync(User);
+            ApplicationUser user = await _userManager.GetUserAsync(User);
             if (user == null)
             {
                 return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
@@ -72,7 +87,7 @@ namespace ChummerHub.Areas.Identity.Pages.Account.Manage
         public async Task<IActionResult> OnPost()
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'TwoFactorAuthenticationModel.OnPost()'
         {
-            var user = await _userManager.GetUserAsync(User);
+            ApplicationUser user = await _userManager.GetUserAsync(User);
             if (user == null)
             {
                 return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");

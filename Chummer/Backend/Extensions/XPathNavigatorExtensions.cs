@@ -348,8 +348,10 @@ namespace Chummer
         public static bool TryGetGuidFieldQuickly(this XPathNavigator node, string field, ref Guid read, bool falseIfEmpty = true)
         {
             XPathNavigator objField = node.SelectSingleNode(field);
-            if (objField == null) return false;
-            if (!Guid.TryParse(objField.Value, out Guid fltTmp)) return false;
+            if (objField == null)
+                return false;
+            if (!Guid.TryParse(objField.Value, out Guid fltTmp))
+                return false;
             if (fltTmp == Guid.Empty && falseIfEmpty)
             {
                 return false;

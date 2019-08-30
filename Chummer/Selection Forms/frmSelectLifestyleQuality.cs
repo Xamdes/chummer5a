@@ -16,15 +16,15 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
+using Chummer.Backend.Attributes;
+using Chummer.Backend.Equipment;
+using Chummer.Backend.Skills;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Windows.Forms;
 using System.Xml;
-using Chummer.Backend.Equipment;
-using Chummer.Backend.Skills;
-using Chummer.Backend.Attributes;
-using System.Text;
 
 namespace Chummer
 {
@@ -41,7 +41,7 @@ namespace Chummer
         private readonly XmlDocument _objXmlDocument;
 
         private readonly List<ListItem> _lstCategory = new List<ListItem>();
-        private static readonly List<string> s_LstLifestylesSorted = new List<string>(new [] {"Street", "Squatter", "Low", "Medium", "High", "Luxury"});
+        private static readonly List<string> s_LstLifestylesSorted = new List<string>(new[] { "Street", "Squatter", "Low", "Medium", "High", "Luxury" });
         private static readonly string[] s_StrLifestyleSpecific = { "Bolt Hole", "Traveler", "Commercial", "Hospitalized" };
 
         private static string s_StrSelectCategory = string.Empty;
@@ -57,7 +57,7 @@ namespace Chummer
             _objCharacter = objCharacter;
             _strSelectedLifestyle = strSelectedLifestyle;
             _lstExistingQualities = lstExistingQualities;
-            
+
             // Load the Quality information.
             _objXmlDocument = XmlManager.Load("lifestyles.xml");
             _objMetatypeDocument = XmlManager.Load("metatypes.xml");
@@ -270,9 +270,9 @@ namespace Chummer
                     lstLifestyleQualities.SelectedIndex += 1;
                 }
                 else if (lstLifestyleQualities.Items.Count > 0)
-                    {
-                        lstLifestyleQualities.SelectedIndex = 0;
-                    }
+                {
+                    lstLifestyleQualities.SelectedIndex = 0;
+                }
             }
             if (e.KeyCode == Keys.Up)
             {
@@ -281,9 +281,9 @@ namespace Chummer
                     lstLifestyleQualities.SelectedIndex -= 1;
                 }
                 else if (lstLifestyleQualities.Items.Count > 0)
-                    {
-                        lstLifestyleQualities.SelectedIndex = lstLifestyleQualities.Items.Count - 1;
-                    }
+                {
+                    lstLifestyleQualities.SelectedIndex = lstLifestyleQualities.Items.Count - 1;
+                }
             }
         }
 
@@ -690,86 +690,39 @@ namespace Chummer
                                     blnOneOfMet = true;
                                 break;
                             case "skillgrouptotal":
-                            {
-                                // Check if the total combined Ratings of Skill Groups adds up to a particular total.
-                                int intTotal = 0;
-                                string[] strGroups = objXmlRequired["skillgroups"].InnerText.Split('+');
-                                for (int i = 0; i <= strGroups.Length - 1; i++)
                                 {
-                                    foreach (SkillGroup objGroup in _objCharacter.SkillsSection.SkillGroups)
+                                    // Check if the total combined Ratings of Skill Groups adds up to a particular total.
+                                    int intTotal = 0;
+                                    string[] strGroups = objXmlRequired["skillgroups"].InnerText.Split('+');
+                                    for (int i = 0; i <= strGroups.Length - 1; i++)
                                     {
-                                        if (objGroup.Name == strGroups[i])
+                                        foreach (SkillGroup objGroup in _objCharacter.SkillsSection.SkillGroups)
                                         {
-                                            intTotal += objGroup.Rating;
-                                            break;
+                                            if (objGroup.Name == strGroups[i])
+                                            {
+                                                intTotal += objGroup.Rating;
+                                                break;
+                                            }
                                         }
                                     }
-                                }
 
-                                if (intTotal >= Convert.ToInt32(objXmlRequired["val"].InnerText))
-                                    blnOneOfMet = true;
-                            }
+                                    if (intTotal >= Convert.ToInt32(objXmlRequired["val"].InnerText))
+                                        blnOneOfMet = true;
+                                }
                                 break;
                             case "lifestyle":
                                 if (_strSelectedLifestyle == objXmlRequired.InnerText)
                                     blnOneOfMet = true;
                                 break;
                             case "cyberwares":
-                            {
-                                // Check to see if the character has a number of the required Cyberware/Bioware items.
-                                int intTotal = 0;
-
-                                // Check Cyberware.
-                                foreach (XmlNode objXmlCyberware in objXmlRequired.SelectNodes("cyberware"))
                                 {
-                                    foreach (Cyberware objCyberware in _objCharacter.Cyberware.Where(objCyberware => (objCyberware.Name == objXmlCyberware.InnerText)))
-                                    {
-                                        if (objXmlCyberware.Attributes["select"] == null)
-                                        {
-                                            intTotal++;
-                                            break;
-                                        }
-                                        if (objXmlCyberware.Attributes["select"].InnerText == objCyberware.Extra)
-                                        {
-                                            intTotal++;
-                                            break;
-                                        }
-                                    }
-                                }
+                                    // Check to see if the character has a number of the required Cyberware/Bioware items.
+                                    int intTotal = 0;
 
-                                // Check Bioware.
-                                foreach (XmlNode objXmlBioware in objXmlRequired.SelectNodes("bioware"))
-                                {
-                                    if (_objCharacter.Cyberware.Any(objCyberware => objCyberware.Name == objXmlBioware.InnerText))
+                                    // Check Cyberware.
+                                    foreach (XmlNode objXmlCyberware in objXmlRequired.SelectNodes("cyberware"))
                                     {
-                                        intTotal++;
-                                    }
-                                }
-
-                                // Check Cyberware name that contain a straing.
-                                foreach (XmlNode objXmlCyberware in objXmlRequired.SelectNodes("cyberwarecontains"))
-                                {
-                                    foreach (Cyberware objCyberware in _objCharacter.Cyberware.Where(objCyberware => objCyberware.Name.Contains(objXmlCyberware.InnerText)))
-                                    {
-                                        if (objXmlCyberware.Attributes["select"] == null)
-                                        {
-                                            intTotal++;
-                                            break;
-                                        }
-                                        if (objXmlCyberware.Attributes["select"].InnerText == objCyberware.Extra)
-                                        {
-                                            intTotal++;
-                                            break;
-                                        }
-                                    }
-                                }
-
-                                // Check Bioware name that contain a straing.
-                                foreach (XmlNode objXmlCyberware in objXmlRequired.SelectNodes("biowarecontains"))
-                                {
-                                    foreach (Cyberware objCyberware in _objCharacter.Cyberware)
-                                    {
-                                        if (objCyberware.Name.Contains(objXmlCyberware.InnerText))
+                                        foreach (Cyberware objCyberware in _objCharacter.Cyberware.Where(objCyberware => (objCyberware.Name == objXmlCyberware.InnerText)))
                                         {
                                             if (objXmlCyberware.Attributes["select"] == null)
                                             {
@@ -783,29 +736,76 @@ namespace Chummer
                                             }
                                         }
                                     }
-                                }
 
-                                // Check for Cyberware Plugins.
-                                foreach (XmlNode objXmlCyberware in objXmlRequired.SelectNodes("cyberwareplugin"))
-                                {
-                                    foreach (Cyberware objCyberware in _objCharacter.Cyberware)
+                                    // Check Bioware.
+                                    foreach (XmlNode objXmlBioware in objXmlRequired.SelectNodes("bioware"))
                                     {
-                                        if (objCyberware.Children.Any(objPlugin => objPlugin.Name == objXmlCyberware.InnerText))
+                                        if (_objCharacter.Cyberware.Any(objCyberware => objCyberware.Name == objXmlBioware.InnerText))
                                         {
                                             intTotal++;
                                         }
                                     }
-                                }
 
-                                // Check for Cyberware Categories.
-                                foreach (XmlNode objXmlCyberware in objXmlRequired.SelectNodes("cyberwarecategory"))
-                                {
-                                    intTotal += _objCharacter.Cyberware.Count(objCyberware => objCyberware.Category == objXmlCyberware.InnerText);
-                                }
+                                    // Check Cyberware name that contain a straing.
+                                    foreach (XmlNode objXmlCyberware in objXmlRequired.SelectNodes("cyberwarecontains"))
+                                    {
+                                        foreach (Cyberware objCyberware in _objCharacter.Cyberware.Where(objCyberware => objCyberware.Name.Contains(objXmlCyberware.InnerText)))
+                                        {
+                                            if (objXmlCyberware.Attributes["select"] == null)
+                                            {
+                                                intTotal++;
+                                                break;
+                                            }
+                                            if (objXmlCyberware.Attributes["select"].InnerText == objCyberware.Extra)
+                                            {
+                                                intTotal++;
+                                                break;
+                                            }
+                                        }
+                                    }
 
-                                if (intTotal >= Convert.ToInt32(objXmlRequired["count"].InnerText))
-                                    blnOneOfMet = true;
-                            }
+                                    // Check Bioware name that contain a straing.
+                                    foreach (XmlNode objXmlCyberware in objXmlRequired.SelectNodes("biowarecontains"))
+                                    {
+                                        foreach (Cyberware objCyberware in _objCharacter.Cyberware)
+                                        {
+                                            if (objCyberware.Name.Contains(objXmlCyberware.InnerText))
+                                            {
+                                                if (objXmlCyberware.Attributes["select"] == null)
+                                                {
+                                                    intTotal++;
+                                                    break;
+                                                }
+                                                if (objXmlCyberware.Attributes["select"].InnerText == objCyberware.Extra)
+                                                {
+                                                    intTotal++;
+                                                    break;
+                                                }
+                                            }
+                                        }
+                                    }
+
+                                    // Check for Cyberware Plugins.
+                                    foreach (XmlNode objXmlCyberware in objXmlRequired.SelectNodes("cyberwareplugin"))
+                                    {
+                                        foreach (Cyberware objCyberware in _objCharacter.Cyberware)
+                                        {
+                                            if (objCyberware.Children.Any(objPlugin => objPlugin.Name == objXmlCyberware.InnerText))
+                                            {
+                                                intTotal++;
+                                            }
+                                        }
+                                    }
+
+                                    // Check for Cyberware Categories.
+                                    foreach (XmlNode objXmlCyberware in objXmlRequired.SelectNodes("cyberwarecategory"))
+                                    {
+                                        intTotal += _objCharacter.Cyberware.Count(objCyberware => objCyberware.Category == objXmlCyberware.InnerText);
+                                    }
+
+                                    if (intTotal >= Convert.ToInt32(objXmlRequired["count"].InnerText))
+                                        blnOneOfMet = true;
+                                }
                                 break;
                             case "streetcredvsnotoriety":
                                 // Street Cred must be higher than Notoriety.
@@ -943,34 +943,34 @@ namespace Chummer
                                     blnFound = true;
                                 break;
                             case "skillgrouptotal":
-                            {
-                                // Check if the total combined Ratings of Skill Groups adds up to a particular total.
-                                int intTotal = 0;
-                                string[] strGroups = objXmlRequired["skillgroups"].InnerText.Split('+');
-                                for (int i = 0; i <= strGroups.Length - 1; i++)
                                 {
-                                    foreach (SkillGroup objGroup in _objCharacter.SkillsSection.SkillGroups)
+                                    // Check if the total combined Ratings of Skill Groups adds up to a particular total.
+                                    int intTotal = 0;
+                                    string[] strGroups = objXmlRequired["skillgroups"].InnerText.Split('+');
+                                    for (int i = 0; i <= strGroups.Length - 1; i++)
                                     {
-                                        if (objGroup.Name == strGroups[i])
+                                        foreach (SkillGroup objGroup in _objCharacter.SkillsSection.SkillGroups)
                                         {
-                                            intTotal += objGroup.Rating;
-                                            break;
+                                            if (objGroup.Name == strGroups[i])
+                                            {
+                                                intTotal += objGroup.Rating;
+                                                break;
+                                            }
                                         }
                                     }
-                                }
 
-                                if (intTotal >= Convert.ToInt32(objXmlRequired["val"].InnerText))
-                                    blnFound = true;
-                            }
+                                    if (intTotal >= Convert.ToInt32(objXmlRequired["val"].InnerText))
+                                        blnFound = true;
+                                }
                                 break;
                             case "lifestyle":
                                 if (_strSelectedLifestyle == objXmlRequired.InnerText)
                                     blnFound = true;
                                 break;
                             case "cyberwares":
-                            {
-                                // Check to see if the character has a number of the required Cyberware/Bioware items.
-                                int intTotal = 0;
+                                {
+                                    // Check to see if the character has a number of the required Cyberware/Bioware items.
+                                    int intTotal = 0;
 
                                     // Check Cyberware.
                                     foreach (XmlNode objXmlCyberware in objXmlRequired.SelectNodes("cyberware"))
@@ -1032,27 +1032,27 @@ namespace Chummer
                                         }
                                     }
 
-                                // Check for Cyberware Plugins.
-                                foreach (XmlNode objXmlCyberware in objXmlRequired.SelectNodes("cyberwareplugin"))
-                                {
-                                    foreach (Cyberware objCyberware in _objCharacter.Cyberware)
+                                    // Check for Cyberware Plugins.
+                                    foreach (XmlNode objXmlCyberware in objXmlRequired.SelectNodes("cyberwareplugin"))
                                     {
-                                        if (objCyberware.Children.Any(objPlugin => objPlugin.Name == objXmlCyberware.InnerText))
+                                        foreach (Cyberware objCyberware in _objCharacter.Cyberware)
                                         {
-                                            intTotal++;
+                                            if (objCyberware.Children.Any(objPlugin => objPlugin.Name == objXmlCyberware.InnerText))
+                                            {
+                                                intTotal++;
+                                            }
                                         }
                                     }
-                                }
 
-                                // Check for Cyberware Categories.
-                                foreach (XmlNode objXmlCyberware in objXmlRequired.SelectNodes("cyberwarecategory"))
-                                {
-                                    intTotal += _objCharacter.Cyberware.Count(objCyberware => objCyberware.Category == objXmlCyberware.InnerText);
-                                }
+                                    // Check for Cyberware Categories.
+                                    foreach (XmlNode objXmlCyberware in objXmlRequired.SelectNodes("cyberwarecategory"))
+                                    {
+                                        intTotal += _objCharacter.Cyberware.Count(objCyberware => objCyberware.Category == objXmlCyberware.InnerText);
+                                    }
 
-                                if (intTotal >= Convert.ToInt32(objXmlRequired["count"].InnerText))
-                                    blnFound = true;
-                            }
+                                    if (intTotal >= Convert.ToInt32(objXmlRequired["count"].InnerText))
+                                        blnFound = true;
+                                }
                                 break;
                             case "streetcredvsnotoriety":
                                 // Street Cred must be higher than Notoriety.

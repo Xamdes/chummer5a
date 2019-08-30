@@ -4,19 +4,17 @@
 
 namespace SINners.Models
 {
-    using System;
-    using System.Linq;
-    using System.Collections.Generic;
     using Newtonsoft.Json;
-    using Microsoft.Rest;
-    using Microsoft.Rest.Serialization;
+    using System;
 
     public partial class UploadClient
     {
         /// <summary>
         /// Initializes a new instance of the UploadClient class.
         /// </summary>
-        public UploadClient() { }
+        public UploadClient()
+        {
+        }
 
         /// <summary>
         /// Initializes a new instance of the UploadClient class.
@@ -33,27 +31,42 @@ namespace SINners.Models
         /// <summary>
         /// </summary>
         [JsonProperty(PropertyName = "id")]
-        public Guid? Id { get; set; }
+        public Guid? Id
+        {
+            get; set;
+        }
 
         /// <summary>
         /// </summary>
         [JsonProperty(PropertyName = "chummerVersion")]
-        public string ChummerVersion { get; set; }
+        public string ChummerVersion
+        {
+            get; set;
+        }
 
         /// <summary>
         /// </summary>
         [JsonProperty(PropertyName = "installationId")]
-        public Guid? InstallationId { get; set; }
+        public Guid? InstallationId
+        {
+            get; set;
+        }
 
         /// <summary>
         /// </summary>
         [JsonProperty(PropertyName = "clientSecret")]
-        public string ClientSecret { get; set; }
+        public string ClientSecret
+        {
+            get; set;
+        }
 
         /// <summary>
         /// </summary>
         [JsonProperty(PropertyName = "userEmail")]
-        public string UserEmail { get; set; }
+        public string UserEmail
+        {
+            get; set;
+        }
 
     }
 }

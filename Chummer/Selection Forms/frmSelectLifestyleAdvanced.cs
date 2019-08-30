@@ -16,12 +16,12 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
-  using System;
+using Chummer.Backend.Equipment;
+using System;
 using System.Collections.Generic;
-  using System.Collections.Specialized;
+using System.Collections.Specialized;
 using System.Windows.Forms;
 using System.Xml;
- ﻿using Chummer.Backend.Equipment;
 
 namespace Chummer
 {
@@ -266,52 +266,52 @@ namespace Chummer
             switch (notifyCollectionChangedEventArgs.Action)
             {
                 case NotifyCollectionChangedAction.Add:
-                {
-                    foreach (LifestyleQuality objQuality in notifyCollectionChangedEventArgs.NewItems)
                     {
-                        AddToTree(objQuality);
+                        foreach (LifestyleQuality objQuality in notifyCollectionChangedEventArgs.NewItems)
+                        {
+                            AddToTree(objQuality);
+                        }
+                        break;
                     }
-                    break;
-                }
                 case NotifyCollectionChangedAction.Remove:
-                {
-                    foreach (LifestyleQuality objQuality in notifyCollectionChangedEventArgs.OldItems)
                     {
-                        TreeNode objNode = treLifestyleQualities.FindNodeByTag(objQuality);
-                        if (objNode != null)
+                        foreach (LifestyleQuality objQuality in notifyCollectionChangedEventArgs.OldItems)
                         {
-                            TreeNode objParent = objNode.Parent;
-                            objNode.Remove();
-                            if (objParent.Level == 0 && objParent.Nodes.Count == 0)
-                                objParent.Remove();
+                            TreeNode objNode = treLifestyleQualities.FindNodeByTag(objQuality);
+                            if (objNode != null)
+                            {
+                                TreeNode objParent = objNode.Parent;
+                                objNode.Remove();
+                                if (objParent.Level == 0 && objParent.Nodes.Count == 0)
+                                    objParent.Remove();
+                            }
                         }
+                        break;
                     }
-                    break;
-                }
                 case NotifyCollectionChangedAction.Replace:
-                {
-                    List<TreeNode> lstOldParents = new List<TreeNode>();
-                    foreach (LifestyleQuality objQuality in notifyCollectionChangedEventArgs.OldItems)
                     {
-                        TreeNode objNode = treLifestyleQualities.FindNodeByTag(objQuality);
-                        if (objNode != null)
+                        List<TreeNode> lstOldParents = new List<TreeNode>();
+                        foreach (LifestyleQuality objQuality in notifyCollectionChangedEventArgs.OldItems)
                         {
-                            if (objNode.Parent != null)
-                                lstOldParents.Add(objNode.Parent);
-                            objNode.Remove();
+                            TreeNode objNode = treLifestyleQualities.FindNodeByTag(objQuality);
+                            if (objNode != null)
+                            {
+                                if (objNode.Parent != null)
+                                    lstOldParents.Add(objNode.Parent);
+                                objNode.Remove();
+                            }
                         }
+                        foreach (LifestyleQuality objQuality in notifyCollectionChangedEventArgs.NewItems)
+                        {
+                            AddToTree(objQuality);
+                        }
+                        foreach (TreeNode objOldParent in lstOldParents)
+                        {
+                            if (objOldParent.Level == 0 && objOldParent.Nodes.Count == 0)
+                                objOldParent.Remove();
+                        }
+                        break;
                     }
-                    foreach (LifestyleQuality objQuality in notifyCollectionChangedEventArgs.NewItems)
-                    {
-                        AddToTree(objQuality);
-                    }
-                    foreach (TreeNode objOldParent in lstOldParents)
-                    {
-                        if (objOldParent.Level == 0 && objOldParent.Nodes.Count == 0)
-                            objOldParent.Remove();
-                    }
-                    break;
-                }
             }
 
             void AddToTree(LifestyleQuality objQuality)
@@ -400,8 +400,8 @@ namespace Chummer
                         }
                     }
 
-            chkBonusLPRandomize.DoNegatableDatabinding("Checked",SelectedLifestyle, nameof(Lifestyle.AllowBonusLP));
-            nudBonusLP.DoDatabinding("Value", SelectedLifestyle,nameof(Lifestyle.BonusLP));
+            chkBonusLPRandomize.DoNegatableDatabinding("Checked", SelectedLifestyle, nameof(Lifestyle.AllowBonusLP));
+            nudBonusLP.DoDatabinding("Value", SelectedLifestyle, nameof(Lifestyle.BonusLP));
             ResetLifestyleQualitiesTree();
             cboBaseLifestyle.BeginUpdate();
             cboBaseLifestyle.ValueMember = "Value";
@@ -409,8 +409,8 @@ namespace Chummer
             cboBaseLifestyle.DataSource = lstLifestyles;
 
             cboBaseLifestyle.SelectedValue = SelectedLifestyle.BaseLifestyle;
-            txtLifestyleName.DoDatabinding("Text",SelectedLifestyle,nameof(Lifestyle.Name));
-            nudRoommates.DoDatabinding("Value",SelectedLifestyle,nameof(Lifestyle.Roommates));
+            txtLifestyleName.DoDatabinding("Text", SelectedLifestyle, nameof(Lifestyle.Name));
+            nudRoommates.DoDatabinding("Value", SelectedLifestyle, nameof(Lifestyle.Roommates));
             nudPercentage.DoDatabinding("Value", SelectedLifestyle, nameof(Lifestyle.Percentage));
             nudArea.DoDatabinding("Value", SelectedLifestyle, nameof(Lifestyle.BindableArea));
             nudComforts.DoDatabinding("Value", SelectedLifestyle, nameof(Lifestyle.BindableComforts));
@@ -418,9 +418,9 @@ namespace Chummer
             nudArea.DoDatabinding("Maximum", SelectedLifestyle, nameof(Lifestyle.AreaDelta));
             nudComforts.DoDatabinding("Maximum", SelectedLifestyle, nameof(Lifestyle.ComfortsDelta));
             nudSecurity.DoDatabinding("Maximum", SelectedLifestyle, nameof(Lifestyle.SecurityDelta));
-            cboBaseLifestyle.DoDatabinding("SelectedValue",SelectedLifestyle,nameof(Lifestyle.BaseLifestyle));
+            cboBaseLifestyle.DoDatabinding("SelectedValue", SelectedLifestyle, nameof(Lifestyle.BaseLifestyle));
             chkTrustFund.DoDatabinding("Checked", SelectedLifestyle, nameof(Lifestyle.TrustFund));
-            chkTrustFund.DoDatabinding("Enabled",SelectedLifestyle,nameof(Lifestyle.IsTrustFundEligible));
+            chkTrustFund.DoDatabinding("Enabled", SelectedLifestyle, nameof(Lifestyle.IsTrustFundEligible));
             chkPrimaryTenant.DoDatabinding("Checked", SelectedLifestyle, nameof(Lifestyle.PrimaryTenant));
             lblCost.DoDatabinding("Text", SelectedLifestyle, nameof(Lifestyle.DisplayTotalMonthlyCost));
             lblArea.DoDatabinding("Text", SelectedLifestyle, nameof(Lifestyle.FormattedArea));
@@ -515,7 +515,7 @@ namespace Chummer
                 //objNode.ContextMenuStrip = cmsQuality;
                 if (objQuality.InternalId.IsEmptyGuid())
                     continue;
-                
+
                 SelectedLifestyle.LifestyleQualities.Add(objQuality);
             }
             while (blnAddAgain);
@@ -527,7 +527,8 @@ namespace Chummer
             if (treLifestyleQualities.SelectedNode == null || treLifestyleQualities.SelectedNode.Level == 0 || treLifestyleQualities.SelectedNode.Parent.Name == "nodFreeMatrixGrids")
                 return;
 
-            if (!(treLifestyleQualities.SelectedNode.Tag is LifestyleQuality objQuality)) return;
+            if (!(treLifestyleQualities.SelectedNode.Tag is LifestyleQuality objQuality))
+                return;
             if (objQuality.Name == "Not a Home" && cboBaseLifestyle.SelectedValue?.ToString() == "Bolt Hole")
             {
                 return;
@@ -573,7 +574,8 @@ namespace Chummer
             if (_blnSkipRefresh)
                 return;
 
-            if (!(treLifestyleQualities.SelectedNode?.Tag is LifestyleQuality objQuality)) return;
+            if (!(treLifestyleQualities.SelectedNode?.Tag is LifestyleQuality objQuality))
+                return;
             objQuality.ContributesLP = chkQualityContributesLP.Checked;
             lblQualityLp.Text = objQuality.LP.ToString();
         }
@@ -596,12 +598,18 @@ namespace Chummer
         /// <summary>
         /// Whether or not the user wants to add another item after this one.
         /// </summary>
-        public bool AddAgain { get; private set; }
+        public bool AddAgain
+        {
+            get; private set;
+        }
 
         /// <summary>
         /// Lifestyle that was created in the dialogue.
         /// </summary>
-        public Lifestyle SelectedLifestyle { get; }
+        public Lifestyle SelectedLifestyle
+        {
+            get;
+        }
 
         /// <summary>
         /// Type of Lifestyle to create.

@@ -20,9 +20,8 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
-using System.Windows.Forms;
 using System.Text;
-using System.Xml;
+using System.Windows.Forms;
 using System.Xml.XPath;
 
 namespace Chummer
@@ -36,7 +35,7 @@ namespace Chummer
 
         private readonly XPathNavigator _xmlBaseQualityDataNode;
         private readonly XPathNavigator _xmlMetatypeQualityRestrictionNode;
-        
+
         private readonly List<ListItem> _lstCategory = new List<ListItem>();
 
         private static string s_StrSelectCategory = string.Empty;
@@ -47,7 +46,7 @@ namespace Chummer
             InitializeComponent();
             LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
             _objCharacter = objCharacter;
-            
+
             // Load the Quality information.
             _xmlBaseQualityDataNode = XmlManager.Load("qualities.xml").GetFastNavigator().SelectSingleNode("/chummer");
 
@@ -149,7 +148,7 @@ namespace Chummer
                     else
                     {
                         int.TryParse(strKarma, out int intBP);
-                        
+
                         if (xmlQuality.SelectSingleNode("costdiscount").RequirementsMet(_objCharacter) && !chkFree.Checked)
                         {
                             string strValue = xmlQuality.SelectSingleNode("costdiscount/value")?.Value;
@@ -423,7 +422,7 @@ namespace Chummer
             }
 
             string strCategoryLower = strCategory == "Show All" ? "*" : strCategory.ToLower();
-            List <ListItem> lstQuality = new List<ListItem>();
+            List<ListItem> lstQuality = new List<ListItem>();
             foreach (XPathNavigator objXmlQuality in _xmlBaseQualityDataNode.Select("qualities/quality[" + strFilter + "]"))
             {
                 string strLoopName = objXmlQuality.SelectSingleNode("name")?.Value;

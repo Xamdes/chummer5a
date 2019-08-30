@@ -27,15 +27,24 @@ namespace ChummerHub.Areas.Identity.Pages.Account
 
         [BindProperty]
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'LoginWith2faModel.Input'
-        public InputModel Input { get; set; }
+        public InputModel Input
+        {
+            get; set;
+        }
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'LoginWith2faModel.Input'
 
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'LoginWith2faModel.RememberMe'
-        public bool RememberMe { get; set; }
+        public bool RememberMe
+        {
+            get; set;
+        }
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'LoginWith2faModel.RememberMe'
 
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'LoginWith2faModel.ReturnUrl'
-        public string ReturnUrl { get; set; }
+        public string ReturnUrl
+        {
+            get; set;
+        }
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'LoginWith2faModel.ReturnUrl'
 
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'LoginWith2faModel.InputModel'
@@ -47,12 +56,18 @@ namespace ChummerHub.Areas.Identity.Pages.Account
             [DataType(DataType.Text)]
             [Display(Name = "Authenticator code")]
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'LoginWith2faModel.InputModel.TwoFactorCode'
-            public string TwoFactorCode { get; set; }
+            public string TwoFactorCode
+            {
+                get; set;
+            }
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'LoginWith2faModel.InputModel.TwoFactorCode'
 
             [Display(Name = "Remember this machine")]
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'LoginWith2faModel.InputModel.RememberMachine'
-            public bool RememberMachine { get; set; }
+            public bool RememberMachine
+            {
+                get; set;
+            }
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'LoginWith2faModel.InputModel.RememberMachine'
         }
 
@@ -61,7 +76,7 @@ namespace ChummerHub.Areas.Identity.Pages.Account
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'LoginWith2faModel.OnGetAsync(bool, string)'
         {
             // Ensure the user has gone through the username & password screen first
-            var user = await _signInManager.GetTwoFactorAuthenticationUserAsync();
+            ApplicationUser user = await _signInManager.GetTwoFactorAuthenticationUserAsync();
 
             if (user == null)
             {
@@ -85,15 +100,15 @@ namespace ChummerHub.Areas.Identity.Pages.Account
 
             returnUrl = returnUrl ?? Url.Content("~/");
 
-            var user = await _signInManager.GetTwoFactorAuthenticationUserAsync();
+            ApplicationUser user = await _signInManager.GetTwoFactorAuthenticationUserAsync();
             if (user == null)
             {
                 throw new InvalidOperationException($"Unable to load two-factor authentication user.");
             }
 
-            var authenticatorCode = Input.TwoFactorCode.Replace(" ", string.Empty).Replace("-", string.Empty);
+            string authenticatorCode = Input.TwoFactorCode.Replace(" ", string.Empty).Replace("-", string.Empty);
 
-            var result = await _signInManager.TwoFactorAuthenticatorSignInAsync(authenticatorCode, rememberMe, Input.RememberMachine);
+            Microsoft.AspNetCore.Identity.SignInResult result = await _signInManager.TwoFactorAuthenticatorSignInAsync(authenticatorCode, rememberMe, Input.RememberMachine);
 
             if (result.Succeeded)
             {

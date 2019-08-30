@@ -16,6 +16,9 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
+using Microsoft.ApplicationInsights.Channel;
+using Microsoft.ApplicationInsights.DataContracts;
+using Microsoft.ApplicationInsights.Extensibility;
 using System;
 using System.Collections;
 using System.Globalization;
@@ -23,18 +26,21 @@ using System.Reflection;
 using System.Resources;
 using System.Text.RegularExpressions;
 using System.Threading;
-using Microsoft.ApplicationInsights.Extensibility;
-using Microsoft.ApplicationInsights.Channel;
-using Microsoft.ApplicationInsights.DataContracts;
 
 namespace Chummer
 {
     public class TranslateExceptionTelemetryProcessor : ITelemetryProcessor
     {
-        private ITelemetryProcessor Next { get; set; }
+        private ITelemetryProcessor Next
+        {
+            get; set;
+        }
 
         // You can pass values from .config
-        public string MyParamFromConfigFile { get; set; }
+        public string MyParamFromConfigFile
+        {
+            get; set;
+        }
 
         // Link processors to each other in a chain.
         public TranslateExceptionTelemetryProcessor(ITelemetryProcessor next)
@@ -55,7 +61,8 @@ namespace Chummer
         private bool OKtoSend(ITelemetry item)
         {
             ExceptionTelemetry exceptionTelemetry = item as ExceptionTelemetry;
-            if (exceptionTelemetry == null) return true;
+            if (exceptionTelemetry == null)
+                return true;
 
             return false;
         }
@@ -64,14 +71,15 @@ namespace Chummer
         private void ModifyItem(ITelemetry item)
         {
             ExceptionTelemetry exceptionTelemetry = item as ExceptionTelemetry;
-            if (exceptionTelemetry == null) return;
-            var translateCultureInfo = new CultureInfo("en");
+            if (exceptionTelemetry == null)
+                return;
+            CultureInfo translateCultureInfo = new CultureInfo("en");
             try
             {
                 string msg =
                     TranslateExceptionMessage(exceptionTelemetry.Exception, translateCultureInfo);
                 if (!exceptionTelemetry.Properties.ContainsKey("Translated"))
-                    exceptionTelemetry.Properties.Add("Translated", msg); 
+                    exceptionTelemetry.Properties.Add("Translated", msg);
             }
             catch (Exception ex)
             {
@@ -90,7 +98,7 @@ namespace Chummer
             ResourceSet rsOriginal = rm.GetResourceSet(Thread.CurrentThread.CurrentUICulture, true, true);
             ResourceSet rsTranslated = rm.GetResourceSet(targetCulture, true, true);
 
-            var result = exception.Message;
+            string result = exception.Message;
 
             foreach (DictionaryEntry item in rsOriginal)
             {
@@ -105,12 +113,12 @@ namespace Chummer
                 }
                 else
                 {
-                    var pattern = $"{Regex.Escape(message)}";
+                    string pattern = $"{Regex.Escape(message)}";
                     pattern = Regex.Replace(pattern, @"\\{([0-9]+)\}", "(?<group$1>.*)");
 
-                    var regex = new Regex(pattern);
+                    Regex regex = new Regex(pattern);
 
-                    var replacePattern = translated;
+                    string replacePattern = translated;
                     replacePattern = Regex.Replace(replacePattern, @"{([0-9]+)}", @"${group$1}");
                     replacePattern = replacePattern.Replace("\\$", "$");
 

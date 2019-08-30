@@ -52,9 +52,15 @@ namespace Chummer.UI.Table
             }
         }
 
-        public Action<T> ClickHandler { get; set; }
+        public Action<T> ClickHandler
+        {
+            get; set;
+        }
 
-        public Func<T, bool> EnabledExtractor { get; set; }
-        
+        public Func<T, bool> EnabledExtractor
+        {
+            get; set;
+        }
+
     }
 }

@@ -16,19 +16,19 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
+using Chummer.Annotations;
+using Chummer.Backend.Attributes;
+using Chummer.Backend.Equipment;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Drawing;
 using System.Globalization;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Xml;
-using Chummer.Annotations;
-using Chummer.Backend.Equipment;
-using Chummer.Backend.Attributes;
-using System.Drawing;
 
 namespace Chummer.Backend.Skills
 {
@@ -42,7 +42,8 @@ namespace Chummer.Backend.Skills
             get => _objAttribute;
             protected set
             {
-                if (_objAttribute == value) return;
+                if (_objAttribute == value)
+                    return;
                 if (_objAttribute != null)
                     _objAttribute.PropertyChanged -= OnLinkedAttributeChanged;
                 if (value != null)
@@ -172,7 +173,8 @@ namespace Chummer.Backend.Skills
             {
                 XmlNode xmlSkillDataNode = xmlSkills.SelectSingleNode($"/chummer/skills/skill[id = '{xmlSkillNode["suid"]?.InnerText}']");
 
-                if (xmlSkillDataNode == null) return null;
+                if (xmlSkillDataNode == null)
+                    return null;
 
                 if (xmlSkillDataNode["exotic"]?.InnerText == bool.TrueString)
                 {
@@ -223,7 +225,8 @@ namespace Chummer.Backend.Skills
 
             using (XmlNodeList xmlSpecList = xmlSkillNode.SelectNodes("specs/spec"))
             {
-                if (xmlSpecList == null) return objLoadingSkill;
+                if (xmlSpecList == null)
+                    return objLoadingSkill;
                 foreach (XmlNode xmlSpec in xmlSpecList)
                 {
                     objLoadingSkill.Specializations.Add(SkillSpecialization.Load(xmlSpec, objLoadingSkill));
@@ -360,7 +363,8 @@ namespace Chummer.Backend.Skills
                     foreach (XmlNode xmlSpecializationNode in xmlSpecList)
                     {
                         string strSpecializationName = xmlSpecializationNode.Attributes?["bonustext"]?.InnerText;
-                        if (string.IsNullOrEmpty(strSpecializationName)) continue;
+                        if (string.IsNullOrEmpty(strSpecializationName))
+                            continue;
                         int intLastPlus = strSpecializationName.LastIndexOf('+');
                         if (intLastPlus > strSpecializationName.Length)
                             strSpecializationName = strSpecializationName.Substring(0, intLastPlus - 1);
@@ -630,7 +634,8 @@ namespace Chummer.Backend.Skills
 
         private void OnAttributeSectionChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName != nameof(AttributeSection.AttributeCategory)) return;
+            if (e.PropertyName != nameof(AttributeSection.AttributeCategory))
+                return;
             AttributeObject.PropertyChanged -= AttributeActiveOnPropertyChanged;
             AttributeObject = CharacterObject.GetAttribute(Attribute);
 
@@ -739,7 +744,8 @@ namespace Chummer.Backend.Skills
             {
                 if ((this as KnowledgeSkill)?.AllowUpgrade == false)
                     return false;
-                if (_intCachedCanHaveSpecs >= 0) return _intCachedCanHaveSpecs > 0;
+                if (_intCachedCanHaveSpecs >= 0)
+                    return _intCachedCanHaveSpecs > 0;
                 _intCachedCanHaveSpecs = !IsExoticSkill && TotalBaseRating > 0 && KarmaUnlocked &&
                                          !CharacterObject.Improvements.Any(x => ((x.ImproveType == Improvement.ImprovementType.BlockSkillSpecializations && (string.IsNullOrEmpty(x.ImprovedName) || x.ImprovedName == Name)) ||
                                                                                  (x.ImproveType == Improvement.ImprovementType.BlockSkillCategorySpecializations && x.ImprovedName == SkillCategory)) && x.Enabled) ? 1 : 0;
@@ -752,13 +758,16 @@ namespace Chummer.Backend.Skills
             }
         }
 
-		public Character CharacterObject { get; }
+        public Character CharacterObject
+        {
+            get;
+        }
 
-		//TODO change to the acctual characterattribute object
-		/// <summary>
-		/// The Abbreviation of the linke attribute. Not the object due legacy
-		/// </summary>
-		public string Attribute => AttributeObject.Abbrev;
+        //TODO change to the acctual characterattribute object
+        /// <summary>
+        /// The Abbreviation of the linke attribute. Not the object due legacy
+        /// </summary>
+        public string Attribute => AttributeObject.Abbrev;
 
         /// <summary>
         /// The translated abbreviation of the linked attribute.
@@ -841,7 +850,8 @@ namespace Chummer.Backend.Skills
             get => _blnForceDisabled;
             set
             {
-                if (_blnForceDisabled == value) return;
+                if (_blnForceDisabled == value)
+                    return;
                 _blnForceDisabled = value;
                 OnPropertyChanged();
             }
@@ -870,7 +880,8 @@ namespace Chummer.Backend.Skills
             }
             set
             {
-                if (_blnDefault == value) return;
+                if (_blnDefault == value)
+                    return;
                 _blnDefault = value;
                 OnPropertyChanged();
             }
@@ -885,7 +896,8 @@ namespace Chummer.Backend.Skills
             get => _strName;
             set
             {
-                if (value == _strName) return;
+                if (value == _strName)
+                    return;
                 _strName = value;
                 _intCachedFreeBase = int.MinValue;
                 _intCachedFreeKarma = int.MinValue;
@@ -916,7 +928,8 @@ namespace Chummer.Backend.Skills
             get => _guidSkillId;
             set
             {
-                if (_guidSkillId == value) return;
+                if (_guidSkillId == value)
+                    return;
                 _guidSkillId = value;
                 _objCachedMyXmlNode = null;
                 ReloadSuggestedSpecializations();
@@ -947,7 +960,8 @@ namespace Chummer.Backend.Skills
         private readonly Dictionary<string, string> _cachedStringSpec = new Dictionary<string, string>();
         public virtual string DisplaySpecializationMethod(string strLanguage)
         {
-            if (_cachedStringSpec.TryGetValue(strLanguage, out string strReturn)) return strReturn;
+            if (_cachedStringSpec.TryGetValue(strLanguage, out string strReturn))
+                return strReturn;
             strReturn = string.Join(", ", Specializations.Select(x => x.DisplayName(strLanguage)));
 
             _cachedStringSpec.Add(strLanguage, strReturn);
@@ -972,7 +986,7 @@ namespace Chummer.Backend.Skills
 
                 if (IsExoticSkill)
                 {
-                    return ((ExoticSkill) this).Specific;
+                    return ((ExoticSkill)this).Specific;
                 }
 
                 return Specializations.Count > 0 ? Specializations[0].DisplayName(GlobalOptions.Language) : string.Empty;
@@ -984,12 +998,14 @@ namespace Chummer.Backend.Skills
                     int index = -1;
                     for (int i = 0; i < Specializations.Count; i++)
                     {
-                        if (Specializations[i].Free) continue;
+                        if (Specializations[i].Free)
+                            continue;
                         index = i;
                         break;
                     }
 
-                    if (index >= 0) Specializations.RemoveAt(index);
+                    if (index >= 0)
+                        Specializations.RemoveAt(index);
                 }
                 else if (Specializations.Count == 0)
                 {
@@ -1061,7 +1077,8 @@ namespace Chummer.Backend.Skills
                     s.Append(objImprovement.Value.ToString(GlobalOptions.CultureInfo));
                     s.Append(')');
                 }
-                if (!first) s.Append(')');
+                if (!first)
+                    s.Append(')');
 
                 s.Append(')');
             }
@@ -1115,7 +1132,8 @@ namespace Chummer.Backend.Skills
                 }
             }
 
-            if (att.Abbrev != Attribute) return s.ToString();
+            if (att.Abbrev != Attribute)
+                return s.ToString();
 
             foreach (Improvement objSwapSkillAttribute in lstRelevantImprovements.Where(x => x.ImproveType == Improvement.ImprovementType.SwapSkillAttribute || x.ImproveType == Improvement.ImprovementType.SwapSkillSpecAttribute))
             {
@@ -1137,7 +1155,8 @@ namespace Chummer.Backend.Skills
                 s.Append(intBasePool.ToString());
 
                 if (objSwapSkillAttribute.ImprovedName != "STR" &&
-                    objSwapSkillAttribute.ImprovedName != "AGI") continue;
+                    objSwapSkillAttribute.ImprovedName != "AGI")
+                    continue;
                 foreach (Cyberware cyberware in CharacterObject.Cyberware.Where(x => x.Name.Contains(" Arm") || x.Name.Contains(" Hand")))
                 {
                     s.Append(Environment.NewLine);
@@ -1189,8 +1208,10 @@ namespace Chummer.Backend.Skills
                         (!string.IsNullOrEmpty(objLoopImprovement.Condition) &&
                          (objLoopImprovement.Condition == "career") != CharacterObject.Created &&
                          (objLoopImprovement.Condition == "create") == CharacterObject.Created) ||
-                        !objLoopImprovement.Enabled) continue;
-                    if (objLoopImprovement.ImprovedName != SkillCategory) continue;
+                        !objLoopImprovement.Enabled)
+                        continue;
+                    if (objLoopImprovement.ImprovedName != SkillCategory)
+                        continue;
                     switch (objLoopImprovement.ImproveType)
                     {
                         case Improvement.ImprovementType.SkillCategorySpecializationKarmaCost:
@@ -1236,7 +1257,8 @@ namespace Chummer.Backend.Skills
             get => _strNotes;
             set
             {
-                if (_strNotes == value) return;
+                if (_strNotes == value)
+                    return;
                 _strNotes = value;
                 OnPropertyChanged();
             }
@@ -1244,9 +1266,15 @@ namespace Chummer.Backend.Skills
 
         public Color PreferredColor => !string.IsNullOrEmpty(Notes) ? Color.SaddleBrown : SystemColors.WindowText;
 
-        public SkillGroup SkillGroupObject { get; }
+        public SkillGroup SkillGroupObject
+        {
+            get;
+        }
 
-        public string Page { get; }
+        public string Page
+        {
+            get;
+        }
 
         /// <summary>
         /// Sourcebook Page Number using a given language file.
@@ -1262,7 +1290,10 @@ namespace Chummer.Backend.Skills
             return !string.IsNullOrWhiteSpace(s) ? s : Page;
         }
 
-        public string Source { get; }
+        public string Source
+        {
+            get;
+        }
 
         //Stuff that is RO, that is simply calculated from other things
         //Move to extension method?

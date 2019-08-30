@@ -16,8 +16,8 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
- using System;
- using System.IO;
+using System;
+using System.IO;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 

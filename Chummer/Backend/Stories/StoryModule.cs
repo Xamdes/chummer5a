@@ -89,12 +89,18 @@ namespace Chummer
             }
         }
 
-        public Story ParentStory { get; set; }
+        public Story ParentStory
+        {
+            get; set;
+        }
 
         /// <summary>
         /// Was this story module generated randomly, likely due to a request for a random persistent module?
         /// </summary>
-        public bool IsRandomlyGenerated { get; set; }
+        public bool IsRandomlyGenerated
+        {
+            get; set;
+        }
 
         public string Name
         {
@@ -110,7 +116,8 @@ namespace Chummer
             get => _guiSourceID;
             set
             {
-                if (_guiSourceID == value) return;
+                if (_guiSourceID == value)
+                    return;
                 _guiSourceID = value;
                 _objCachedMyXmlNode = null;
             }
@@ -136,7 +143,7 @@ namespace Chummer
             get => _strDefaultTextKey;
             set => _strDefaultTextKey = value;
         }
-        
+
         public string DisplayText(string strKey, string strLanguage)
         {
             string strReturn;
@@ -257,139 +264,139 @@ namespace Chummer
             switch (strFunction)
             {
                 case "$ReverseTranslateExtra":
-                {
-                    return LanguageManager.ReverseTranslateExtra(strArguments, GlobalOptions.Language);
-                }
+                    {
+                        return LanguageManager.ReverseTranslateExtra(strArguments, GlobalOptions.Language);
+                    }
                 case "$XmlNameFriendly":
-                {
-                    return strArguments.FastEscape(' ', '$', '/', '?', ',', '\'', '\"', '¥', ';', ':', '(', ')', '[', ']', '|', '\\', '+', '=', '`', '~', '!', '@', '#', '%', '^', '&', '*').ToLower();
-                }
+                    {
+                        return strArguments.FastEscape(' ', '$', '/', '?', ',', '\'', '\"', '¥', ';', ':', '(', ')', '[', ']', '|', '\\', '+', '=', '`', '~', '!', '@', '#', '%', '^', '&', '*').ToLower();
+                    }
                 case "$CharacterName":
-                {
-                    return _objCharacter.CharacterName;
-                }
+                    {
+                        return _objCharacter.CharacterName;
+                    }
                 case "$CharacterGrammaticalGender":
-                {
-                    return _objCharacter.CharacterGrammaticGender;
-                }
+                    {
+                        return _objCharacter.CharacterGrammaticGender;
+                    }
                 case "$Metatype":
-                {
-                    return _objCharacter.Metatype;
-                }
+                    {
+                        return _objCharacter.Metatype;
+                    }
                 case "$Metavariant":
-                {
-                    return _objCharacter.Metavariant;
-                }
+                    {
+                        return _objCharacter.Metavariant;
+                    }
                 case "$Eyes":
-                {
-                    return _objCharacter.Eyes;
-                }
+                    {
+                        return _objCharacter.Eyes;
+                    }
                 case "$Hair":
-                {
-                    return _objCharacter.Hair;
-                }
+                    {
+                        return _objCharacter.Hair;
+                    }
                 case "$Skin":
-                {
-                    return _objCharacter.Skin;
-                }
+                    {
+                        return _objCharacter.Skin;
+                    }
                 case "$Height":
-                {
-                    return _objCharacter.Height;
-                }
+                    {
+                        return _objCharacter.Height;
+                    }
                 case "$Weight":
-                {
-                    return _objCharacter.Weight;
-                }
+                    {
+                        return _objCharacter.Weight;
+                    }
                 case "$Sex":
-                {
-                    return _objCharacter.Sex;
-                }
+                    {
+                        return _objCharacter.Sex;
+                    }
                 case "$Alias":
-                {
-                    return !string.IsNullOrEmpty(_objCharacter.Alias) ? _objCharacter.Alias : LanguageManager.GetString("String_Unknown", strLanguage);
-                }
+                    {
+                        return !string.IsNullOrEmpty(_objCharacter.Alias) ? _objCharacter.Alias : LanguageManager.GetString("String_Unknown", strLanguage);
+                    }
                 case "$Name":
-                {
-                    if (!string.IsNullOrWhiteSpace(_objCharacter.Name))
                     {
-                        if (!string.IsNullOrEmpty(strArguments) && int.TryParse(strArguments, out int intNameIndex))
+                        if (!string.IsNullOrWhiteSpace(_objCharacter.Name))
                         {
-                            string[] lstNames = _objCharacter.Name.Split(' ');
-                            return lstNames[Math.Max(Math.Min(intNameIndex, lstNames.Length - 1), 0)];
-                        }
+                            if (!string.IsNullOrEmpty(strArguments) && int.TryParse(strArguments, out int intNameIndex))
+                            {
+                                string[] lstNames = _objCharacter.Name.Split(' ');
+                                return lstNames[Math.Max(Math.Min(intNameIndex, lstNames.Length - 1), 0)];
+                            }
 
-                        return _objCharacter.Name;
+                            return _objCharacter.Name;
+                        }
+                        return LanguageManager.GetString("String_Unknown", strLanguage);
                     }
-                    return LanguageManager.GetString("String_Unknown", strLanguage);
-                }
                 case "$Year":
-                {
-                    if (int.TryParse(_objCharacter.Age, out int intCurrentAge))
                     {
-                        int intBirthYear = DateTime.UtcNow.Year + 62 - intCurrentAge;
-                        if (!string.IsNullOrEmpty(strArguments) && int.TryParse(strArguments, out int intYearAtTime))
+                        if (int.TryParse(_objCharacter.Age, out int intCurrentAge))
                         {
-                            return (intBirthYear + intYearAtTime).ToString();
+                            int intBirthYear = DateTime.UtcNow.Year + 62 - intCurrentAge;
+                            if (!string.IsNullOrEmpty(strArguments) && int.TryParse(strArguments, out int intYearAtTime))
+                            {
+                                return (intBirthYear + intYearAtTime).ToString();
+                            }
+
+                            return intBirthYear.ToString();
                         }
 
-                        return intBirthYear.ToString();
+                        return LanguageManager.GetString("String_Unknown", strLanguage);
                     }
-
-                    return LanguageManager.GetString("String_Unknown", strLanguage);
-                }
                 case "$GetString":
-                {
-                    return LanguageManager.GetString(strArguments, strLanguage);
-                }
+                    {
+                        return LanguageManager.GetString(strArguments, strLanguage);
+                    }
                 case "$XPath":
-                {
-                    object objProcess = CommonFunctions.EvaluateInvariantXPath(strArguments, out bool blnIsSuccess);
-                    if (blnIsSuccess)
-                        return objProcess.ToString();
-                    return LanguageManager.GetString("String_Unknown", strLanguage);
+                    {
+                        object objProcess = CommonFunctions.EvaluateInvariantXPath(strArguments, out bool blnIsSuccess);
+                        if (blnIsSuccess)
+                            return objProcess.ToString();
+                        return LanguageManager.GetString("String_Unknown", strLanguage);
                     }
                 case "$Index":
-                {
-                    string[] strArgumentsSplit = strArguments.Split('|');
-                    int intArgumentsCount = strArgumentsSplit.Length;
-                    if (intArgumentsCount > 2 && int.TryParse(strArgumentsSplit[0], out int intIndex))
                     {
-                        return strArgumentsSplit[Math.Max(0, Math.Min(intArgumentsCount - 1, intIndex + 1))];
-                    }
+                        string[] strArgumentsSplit = strArguments.Split('|');
+                        int intArgumentsCount = strArgumentsSplit.Length;
+                        if (intArgumentsCount > 2 && int.TryParse(strArgumentsSplit[0], out int intIndex))
+                        {
+                            return strArgumentsSplit[Math.Max(0, Math.Min(intArgumentsCount - 1, intIndex + 1))];
+                        }
 
-                    return LanguageManager.GetString("String_Unknown", strLanguage);
-                }
+                        return LanguageManager.GetString("String_Unknown", strLanguage);
+                    }
                 case "$LookupExtra":
-                {
-                    string strExtra = _objCharacter.AIPrograms.FirstOrDefault(x => x.Name == strArguments && !string.IsNullOrEmpty(x.Extra))?.Extra ??
-                        _objCharacter.Armor.FirstOrDefault(x => x.Name == strArguments && !string.IsNullOrEmpty(x.Extra))?.Extra ??
-                        _objCharacter.ComplexForms.FirstOrDefault(x => x.Name == strArguments && !string.IsNullOrEmpty(x.Extra))?.Extra ??
-                        _objCharacter.CritterPowers.FirstOrDefault(x => x.Name == strArguments && !string.IsNullOrEmpty(x.Extra))?.Extra ??
-                        _objCharacter.Cyberware.DeepFirstOrDefault(x => x.Children, x => x.Name == strArguments && !string.IsNullOrEmpty(x.Extra))?.Extra ??
-                        _objCharacter.Gear.DeepFirstOrDefault(x => x.Children, x => x.Name == strArguments && !string.IsNullOrEmpty(x.Extra))?.Extra ??
-                        _objCharacter.Powers.FirstOrDefault(x => x.Name == strArguments && !string.IsNullOrEmpty(x.Extra))?.Extra ??
-                        _objCharacter.Qualities.FirstOrDefault(x => x.Name == strArguments && !string.IsNullOrEmpty(x.Extra))?.Extra ??
-                        _objCharacter.Spells.FirstOrDefault(x => x.Name == strArguments && !string.IsNullOrEmpty(x.Extra))?.Extra;
-                    if (!string.IsNullOrEmpty(strExtra))
                     {
-                        return LanguageManager.TranslateExtra(strExtra, strLanguage);
-                    }
+                        string strExtra = _objCharacter.AIPrograms.FirstOrDefault(x => x.Name == strArguments && !string.IsNullOrEmpty(x.Extra))?.Extra ??
+                            _objCharacter.Armor.FirstOrDefault(x => x.Name == strArguments && !string.IsNullOrEmpty(x.Extra))?.Extra ??
+                            _objCharacter.ComplexForms.FirstOrDefault(x => x.Name == strArguments && !string.IsNullOrEmpty(x.Extra))?.Extra ??
+                            _objCharacter.CritterPowers.FirstOrDefault(x => x.Name == strArguments && !string.IsNullOrEmpty(x.Extra))?.Extra ??
+                            _objCharacter.Cyberware.DeepFirstOrDefault(x => x.Children, x => x.Name == strArguments && !string.IsNullOrEmpty(x.Extra))?.Extra ??
+                            _objCharacter.Gear.DeepFirstOrDefault(x => x.Children, x => x.Name == strArguments && !string.IsNullOrEmpty(x.Extra))?.Extra ??
+                            _objCharacter.Powers.FirstOrDefault(x => x.Name == strArguments && !string.IsNullOrEmpty(x.Extra))?.Extra ??
+                            _objCharacter.Qualities.FirstOrDefault(x => x.Name == strArguments && !string.IsNullOrEmpty(x.Extra))?.Extra ??
+                            _objCharacter.Spells.FirstOrDefault(x => x.Name == strArguments && !string.IsNullOrEmpty(x.Extra))?.Extra;
+                        if (!string.IsNullOrEmpty(strExtra))
+                        {
+                            return LanguageManager.TranslateExtra(strExtra, strLanguage);
+                        }
 
-                    return string.Empty;
-                }
-                case "$Fallback":
-                {
-                    int intArgumentPipeIndex = strArguments.IndexOf('|');
-                    if (intArgumentPipeIndex != -1)
-                    {
-                        string strMainOutput = strArguments.Substring(0, intArgumentPipeIndex);
-                        if (!string.IsNullOrEmpty(strMainOutput) && strMainOutput != LanguageManager.GetString("String_Error", strLanguage) && strMainOutput != LanguageManager.GetString("String_Unknown", strLanguage))
-                            return strMainOutput;
-                        if (intArgumentPipeIndex + 1 < strArguments.Length)
-                            return strArguments.Substring(intArgumentPipeIndex + 1);
+                        return string.Empty;
                     }
-                    return string.Empty;
-                }
+                case "$Fallback":
+                    {
+                        int intArgumentPipeIndex = strArguments.IndexOf('|');
+                        if (intArgumentPipeIndex != -1)
+                        {
+                            string strMainOutput = strArguments.Substring(0, intArgumentPipeIndex);
+                            if (!string.IsNullOrEmpty(strMainOutput) && strMainOutput != LanguageManager.GetString("String_Error", strLanguage) && strMainOutput != LanguageManager.GetString("String_Unknown", strLanguage))
+                                return strMainOutput;
+                            if (intArgumentPipeIndex + 1 < strArguments.Length)
+                                return strArguments.Substring(intArgumentPipeIndex + 1);
+                        }
+                        return string.Empty;
+                    }
             }
 
             if (blnGeneratePersistents)
@@ -415,7 +422,8 @@ namespace Chummer
 
         public XmlNode GetNode(string strLanguage)
         {
-            if (_objCachedMyXmlNode != null && strLanguage == _strCachedXmlNodeLanguage && !GlobalOptions.LiveCustomData) return _objCachedMyXmlNode;
+            if (_objCachedMyXmlNode != null && strLanguage == _strCachedXmlNodeLanguage && !GlobalOptions.LiveCustomData)
+                return _objCachedMyXmlNode;
             _objCachedMyXmlNode = XmlManager.Load("stories.xml", strLanguage).SelectSingleNode($"/chummer/stories/story[id = \"{SourceIDString}\" or id = \"{SourceIDString.ToUpperInvariant()}\"]");
             _strCachedXmlNodeLanguage = strLanguage;
             return _objCachedMyXmlNode;

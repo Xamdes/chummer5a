@@ -4,12 +4,8 @@
 
 namespace SINners.Models
 {
-    using System;
-    using System.Linq;
-    using System.Collections.Generic;
     using Newtonsoft.Json;
-    using Microsoft.Rest;
-    using Microsoft.Rest.Serialization;
+    using System;
 
     public partial class ApplicationUserFavoriteGroup
     {
@@ -17,7 +13,9 @@ namespace SINners.Models
         /// Initializes a new instance of the ApplicationUserFavoriteGroup
         /// class.
         /// </summary>
-        public ApplicationUserFavoriteGroup() { }
+        public ApplicationUserFavoriteGroup()
+        {
+        }
 
         /// <summary>
         /// Initializes a new instance of the ApplicationUserFavoriteGroup
@@ -32,12 +30,18 @@ namespace SINners.Models
         /// <summary>
         /// </summary>
         [JsonProperty(PropertyName = "id")]
-        public Guid? Id { get; set; }
+        public Guid? Id
+        {
+            get; set;
+        }
 
         /// <summary>
         /// </summary>
         [JsonProperty(PropertyName = "favoriteGuid")]
-        public Guid? FavoriteGuid { get; set; }
+        public Guid? FavoriteGuid
+        {
+            get; set;
+        }
 
     }
 }

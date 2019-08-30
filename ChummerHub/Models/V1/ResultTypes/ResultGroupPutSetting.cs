@@ -6,7 +6,10 @@ namespace ChummerHub.Models.V1
     public class ResultGroupPutSetting : ResultBase
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'ResultGroupPutSetting'
     {
-        private SINnerGroup MyGroup { get; set; }
+        private SINnerGroup MyGroup
+        {
+            get; set;
+        }
 
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'ResultGroupPutSetting.ResultGroupPutSetting()'
         public ResultGroupPutSetting()

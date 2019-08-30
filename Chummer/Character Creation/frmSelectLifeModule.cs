@@ -27,7 +27,10 @@ namespace Chummer
 {
     public partial class frmSelectLifeModule : Form
     {
-        public bool AddAgain { get; private set; }
+        public bool AddAgain
+        {
+            get; private set;
+        }
         private readonly Character _objCharacter;
         private readonly int _intStage;
         private string _strDefaultStageName;
@@ -237,7 +240,7 @@ namespace Chummer
                     cboStage.DataSource = Stages;
                 }
 
-                ListItem selectedItem = ((List<ListItem>) cboStage.DataSource).Find(x => x.Value.ToString() == _intStage.ToString());
+                ListItem selectedItem = ((List<ListItem>)cboStage.DataSource).Find(x => x.Value.ToString() == _intStage.ToString());
                 if (!string.IsNullOrEmpty(selectedItem.Name))
                     cboStage.SelectedItem = selectedItem;
 
@@ -252,7 +255,7 @@ namespace Chummer
 
         private void cboStage_SelectionChangeCommitted(object sender, EventArgs e)
         {
-            string strSelected = (string) cboStage.SelectedValue;
+            string strSelected = (string)cboStage.SelectedValue;
             if (strSelected == "0")
             {
                 _strWorkStage = null;

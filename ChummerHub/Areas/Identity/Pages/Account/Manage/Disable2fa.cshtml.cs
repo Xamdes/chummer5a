@@ -26,14 +26,17 @@ namespace ChummerHub.Areas.Identity.Pages.Account.Manage
 
         [TempData]
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'Disable2faModel.StatusMessage'
-        public string StatusMessage { get; set; }
+        public string StatusMessage
+        {
+            get; set;
+        }
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'Disable2faModel.StatusMessage'
 
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'Disable2faModel.OnGet()'
         public async Task<IActionResult> OnGet()
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'Disable2faModel.OnGet()'
         {
-            var user = await _userManager.GetUserAsync(User);
+            ApplicationUser user = await _userManager.GetUserAsync(User);
             if (user == null)
             {
                 return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
@@ -51,13 +54,13 @@ namespace ChummerHub.Areas.Identity.Pages.Account.Manage
         public async Task<IActionResult> OnPostAsync()
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'Disable2faModel.OnPostAsync()'
         {
-            var user = await _userManager.GetUserAsync(User);
+            ApplicationUser user = await _userManager.GetUserAsync(User);
             if (user == null)
             {
                 return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
             }
 
-            var disable2faResult = await _userManager.SetTwoFactorEnabledAsync(user, false);
+            IdentityResult disable2faResult = await _userManager.SetTwoFactorEnabledAsync(user, false);
             if (!disable2faResult.Succeeded)
             {
                 throw new InvalidOperationException($"Unexpected error occurred disabling 2FA for user with ID '{_userManager.GetUserId(User)}'.");

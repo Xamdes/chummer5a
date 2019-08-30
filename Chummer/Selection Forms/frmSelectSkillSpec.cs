@@ -16,11 +16,11 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
+using Chummer.Backend.Skills;
 using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
 using System.Xml;
-using Chummer.Backend.Skills;
 
 namespace Chummer
 {
@@ -160,7 +160,10 @@ namespace Chummer
         /// <summary>
         /// Type of skill that we're selecting. Used to differentiate knowledge skills.
         /// </summary>
-        public string Mode { get; set; }
+        public string Mode
+        {
+            get; set;
+        }
 
 
         /// <summary>

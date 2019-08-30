@@ -1,21 +1,22 @@
- /*  This file is part of Chummer5a.
- *
- *  Chummer5a is free software: you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation, either version 3 of the License, or
- *  (at your option) any later version.
- *
- *  Chummer5a is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  You should have received a copy of the GNU General Public License
- *  along with Chummer5a.  If not, see <http://www.gnu.org/licenses/>.
- *
- *  You can obtain the full source code for Chummer5a at
- *  https://github.com/chummer5a/chummer5a
- */
+/*  This file is part of Chummer5a.
+*
+*  Chummer5a is free software: you can redistribute it and/or modify
+*  it under the terms of the GNU General Public License as published by
+*  the Free Software Foundation, either version 3 of the License, or
+*  (at your option) any later version.
+*
+*  Chummer5a is distributed in the hope that it will be useful,
+*  but WITHOUT ANY WARRANTY; without even the implied warranty of
+*  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+*  GNU General Public License for more details.
+*
+*  You should have received a copy of the GNU General Public License
+*  along with Chummer5a.  If not, see <http://www.gnu.org/licenses/>.
+*
+*  You can obtain the full source code for Chummer5a at
+*  https://github.com/chummer5a/chummer5a
+*/
+using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -24,8 +25,6 @@ using System.Linq;
 using System.Net;
 using System.Net.Mail;
 using System.Text;
-using System.Windows.Forms;
-using Microsoft.Win32;
 
 namespace Chummer
 {
@@ -47,7 +46,7 @@ namespace Chummer
                 string strFile = Path.Combine(Utils.GetStartupPath, "chummerlog.txt");
                 report.AddData("chummerlog.txt", new StreamReader(strFile, Encoding.UTF8, true).BaseStream);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 report.AddData("chummerlog.txt", ex.ToString());
             }
@@ -78,7 +77,10 @@ namespace Chummer
         /// <summary>
         /// Unique ID for the crash report, makes a user able to refer to a specific report
         /// </summary>
-        public Guid Id { get; }
+        public Guid Id
+        {
+            get;
+        }
 
         private string _subject;
         public string Subject

@@ -16,19 +16,19 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
+using Chummer.Backend.Attributes;
+using Chummer.Backend.Skills;
+using NLog;
 using System;
 using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
-using System.Windows.Forms;
-using System.Xml;
-using Chummer.Backend.Skills;
-using System.Drawing;
-using Chummer.Backend.Attributes;
-using System.Text;
 using System.Collections.Specialized;
 using System.Diagnostics;
-using NLog;
+using System.Drawing;
+using System.Globalization;
+using System.Linq;
+using System.Text;
+using System.Windows.Forms;
+using System.Xml;
 
 namespace Chummer.Backend.Equipment
 {
@@ -38,7 +38,7 @@ namespace Chummer.Backend.Equipment
     [HubClassTag("SourceID", true, "Name", null)]
     [DebuggerDisplay("{DisplayName(GlobalOptions.DefaultLanguage)}")]
     public class Weapon : IHasChildren<Weapon>, IHasName, IHasInternalId, IHasXmlNode, IHasMatrixAttributes, IHasNotes, ICanSell, IHasCustomName, IHasLocation, ICanEquip, IHasSource, ICanSort, IHasWirelessBonus, IHasStolenProperty
-	{
+    {
         private static Logger Log = NLog.LogManager.GetCurrentClassLogger();
         private Guid _guiSourceID = Guid.Empty;
         private Guid _guiID;
@@ -73,9 +73,9 @@ namespace Chummer.Backend.Equipment
         private string _strSource = string.Empty;
         private string _strPage = string.Empty;
         private string _strWeaponName = string.Empty;
-	    private int _intSingleShot = 1;
-	    private int _intShortBurst = 3;
-	    private int _intLongBurst = 6;
+        private int _intSingleShot = 1;
+        private int _intShortBurst = 3;
+        private int _intLongBurst = 6;
         private int _intFullBurst = 10;
         private int _intSuppressive = 20;
         private readonly TaggedObservableCollection<WeaponAccessory> _lstAccessories = new TaggedObservableCollection<WeaponAccessory>();
@@ -94,7 +94,7 @@ namespace Chummer.Backend.Equipment
         private string _strAccuracy = string.Empty;
         private string _strRCTip = string.Empty;
         private string _strWeaponSlots = string.Empty;
-	    private string _strDoubledCostWeaponSlots = string.Empty;
+        private string _strDoubledCostWeaponSlots = string.Empty;
         private bool _blnCyberware;
         private string _strParentID = string.Empty;
         private bool _blnAllowAccessory = true;
@@ -123,7 +123,7 @@ namespace Chummer.Backend.Equipment
         private bool _blnWirelessOn;
         private int _intMatrixCMFilled;
         private int _intSortOrder;
-	    private bool _blnStolen;
+        private bool _blnStolen;
         private readonly Character _objCharacter;
         private string _strMount;
         private string _strExtraMount;
@@ -468,8 +468,8 @@ namespace Chummer.Backend.Equipment
         }
 
         private SourceString _objCachedSourceDetail;
-	    public SourceString SourceDetail => _objCachedSourceDetail ?? (_objCachedSourceDetail =
-	                                            new SourceString(Source, DisplayPage(GlobalOptions.Language), GlobalOptions.Language));
+        public SourceString SourceDetail => _objCachedSourceDetail ?? (_objCachedSourceDetail =
+                                                new SourceString(Source, DisplayPage(GlobalOptions.Language), GlobalOptions.Language));
 
         /// <summary>
         /// Save the object's XML to the XmlWriter.
@@ -496,7 +496,7 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("ammoname", _strAmmoName);
             objWriter.WriteElementString("ammoslots", _intAmmoSlots.ToString());
             objWriter.WriteElementString("sizecategory", _strSizeCategory);
-            objWriter.WriteElementString("firingmode",_eFiringMode.ToString());
+            objWriter.WriteElementString("firingmode", _eFiringMode.ToString());
             objWriter.WriteStartElement("clips");
             foreach (Clip clip in _lstAmmo)
             {
@@ -595,7 +595,7 @@ namespace Chummer.Backend.Equipment
                 _guiID = Guid.NewGuid();
             }
             objNode.TryGetStringFieldQuickly("name", ref _strName);
-            if(!objNode.TryGetGuidFieldQuickly("sourceid", ref _guiSourceID))
+            if (!objNode.TryGetGuidFieldQuickly("sourceid", ref _guiSourceID))
             {
                 XmlNode node = GetNode(GlobalOptions.Language);
                 node?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
@@ -1274,11 +1274,11 @@ namespace Chummer.Backend.Equipment
             get
             {
                 if (Spec == "Flare Launcher" && Name == "Micro Flare Launcher")
-                    return new[] {"Micro Flares"};
+                    return new[] { "Micro Flares" };
                 if (Name.Contains("Net Gun XL"))
-                    return new[] {"XL Net Gun"};
+                    return new[] { "XL Net Gun" };
                 if (Name.Contains("Net Gun"))
-                    return new[] {"Net Gun"};
+                    return new[] { "Net Gun" };
                 if (Name == "Pepper Punch Pen")
                     return new[] { "Pepper Punch" };
                 if (Name == "Ares S-III Super Squirt")
@@ -1286,38 +1286,38 @@ namespace Chummer.Backend.Equipment
                 switch (AmmoCategory)
                 {
                     case "Grenade Launchers":
-                        return new[] {"Minigrenade:"};
+                        return new[] { "Minigrenade:" };
                     case "Missile Launchers":
-                        return new[] {"Missile:", "Rocket:"};
+                        return new[] { "Missile:", "Rocket:" };
                     case "Mortar Launchers":
-                        return new[] {"Mortar Round:"};
+                        return new[] { "Mortar Round:" };
                     case "Bows":
-                        return new[] {"Arrow:"};
+                        return new[] { "Arrow:" };
                     case "Crossbows":
                         if (Name.Contains("Harpoon"))
-                            return new[] {"Harpoon", "Bolt:"};
-                        return new[] {"Bolt:"};
+                            return new[] { "Harpoon", "Bolt:" };
+                        return new[] { "Bolt:" };
                     case "Flamethrowers":
-                        return new[] {"Ammo: Fuel"};
+                        return new[] { "Ammo: Fuel" };
                     case "Gear":
-                    {
-                        string strGearName = Name;
-                        if (!string.IsNullOrEmpty(ParentID))
                         {
-                            Gear objParent = (_objCharacter.Gear.DeepFindById(ParentID) ??
-                                         _objCharacter.Vehicles.FindVehicleGear(ParentID) ??
-                                         _objCharacter.Weapons.FindWeaponGear(ParentID) ??
-                                         _objCharacter.Armor.FindArmorGear(ParentID) ??
-                                         _objCharacter.Cyberware.FindCyberwareGear(ParentID));
-                            if (objParent != null)
-                                strGearName = objParent.Name;
-                        }
+                            string strGearName = Name;
+                            if (!string.IsNullOrEmpty(ParentID))
+                            {
+                                Gear objParent = (_objCharacter.Gear.DeepFindById(ParentID) ??
+                                             _objCharacter.Vehicles.FindVehicleGear(ParentID) ??
+                                             _objCharacter.Weapons.FindWeaponGear(ParentID) ??
+                                             _objCharacter.Armor.FindArmorGear(ParentID) ??
+                                             _objCharacter.Cyberware.FindCyberwareGear(ParentID));
+                                if (objParent != null)
+                                    strGearName = objParent.Name;
+                            }
 
-                        return new[] {strGearName};
-                    }
+                            return new[] { strGearName };
+                        }
                 }
 
-                return new[] {"Ammo:"};
+                return new[] { "Ammo:" };
             }
         }
 
@@ -1632,15 +1632,15 @@ namespace Chummer.Backend.Equipment
 
 
 
-	    /// <summary>
-	    /// Identifier of the object within data files.
-	    /// </summary>
-	    public Guid SourceID => _guiSourceID;
+        /// <summary>
+        /// Identifier of the object within data files.
+        /// </summary>
+        public Guid SourceID => _guiSourceID;
 
-	    /// <summary>
-	    /// String-formatted identifier of the <inheritdoc cref="SourceID"/> from the data files.
-	    /// </summary>
-	    public string SourceIDString => _guiSourceID.ToString("D");
+        /// <summary>
+        /// String-formatted identifier of the <inheritdoc cref="SourceID"/> from the data files.
+        /// </summary>
+        public string SourceIDString => _guiSourceID.ToString("D");
 
         public XmlNode GetNode()
         {
@@ -1685,11 +1685,11 @@ namespace Chummer.Backend.Equipment
             }
         }
 
-	    public bool Stolen
+        public bool Stolen
         {
-	        get => _blnStolen;
-	        set => _blnStolen = value;
-	    }
+            get => _blnStolen;
+            set => _blnStolen = value;
+        }
         #endregion
 
         #region Complex Properties
@@ -1764,7 +1764,8 @@ namespace Chummer.Backend.Equipment
                                     if (intSTR != 0 || intAGI != 0)
                                         break;
                                     objAttributeSource = objAttributeSource.Parent;
-                                    if (objAttributeSource == null) continue;
+                                    if (objAttributeSource == null)
+                                        continue;
                                     intSTR = objAttributeSource.TotalStrength;
                                     intAGI = objAttributeSource.TotalStrength;
                                 }
@@ -1793,7 +1794,8 @@ namespace Chummer.Backend.Equipment
                                 if (intSTR != 0 || intAGI != 0)
                                     break;
                                 objAttributeSource = objAttributeSource.Parent;
-                                if (objAttributeSource == null) continue;
+                                if (objAttributeSource == null)
+                                    continue;
                                 intSTR = objAttributeSource.TotalStrength;
                                 intAGI = objAttributeSource.TotalStrength;
                             }
@@ -1849,7 +1851,7 @@ namespace Chummer.Backend.Equipment
                 int intMinValue = Convert.ToInt32(strValue[0]);
                 for (int i = 1; i < strValue.Length; ++i)
                 {
-                    intMinValue = Math.Min(intMinValue,Convert.ToInt32(strValue[i]));
+                    intMinValue = Math.Min(intMinValue, Convert.ToInt32(strValue[i]));
                 }
 
                 strDamage = strDamage.Replace(strMin, intMinValue.ToString());
@@ -2040,7 +2042,7 @@ namespace Chummer.Backend.Equipment
                         object objProcess = CommonFunctions.EvaluateInvariantXPath(strDamage, out bool blnIsSuccess);
                         if (blnIsSuccess)
                         {
-                            int intDamage = Convert.ToInt32(Math.Ceiling((double) objProcess));
+                            int intDamage = Convert.ToInt32(Math.Ceiling((double)objProcess));
                             intDamage += intBonus;
                             if (Name == "Unarmed Attack (Smashing Blow)")
                                 intDamage *= 2;
@@ -2191,7 +2193,7 @@ namespace Chummer.Backend.Equipment
             int intExtendedMax = 0;
             if (WeaponAccessories.Count != 0)
             {
-                intExtendedMax =  WeaponAccessories.Max(x => (x.Name.Contains("Extended Clip") ? 1 : 0) * x.Rating);
+                intExtendedMax = WeaponAccessories.Max(x => (x.Name.Contains("Extended Clip") ? 1 : 0) * x.Rating);
 
                 foreach (WeaponAccessory objAccessory in WeaponAccessories)
                 {
@@ -2200,7 +2202,7 @@ namespace Chummer.Backend.Equipment
                         // Replace the Ammo value.
                         if (!string.IsNullOrEmpty(objAccessory.AmmoReplace))
                         {
-                            strAmmos = new[] {objAccessory.AmmoReplace};
+                            strAmmos = new[] { objAccessory.AmmoReplace };
                             break;
                         }
 
@@ -2695,7 +2697,8 @@ namespace Chummer.Backend.Equipment
                                     if (intSTR != 0 || intAGI != 0 || intSTRBase != 0 || intAGIBase != 0)
                                         break;
                                     objAttributeSource = objAttributeSource.Parent;
-                                    if (objAttributeSource == null) continue;
+                                    if (objAttributeSource == null)
+                                        continue;
                                     intSTR = objAttributeSource.TotalStrength;
                                     intSTRBase = objAttributeSource.BaseStrength;
                                     intAGI = objAttributeSource.TotalAgility;
@@ -2734,7 +2737,8 @@ namespace Chummer.Backend.Equipment
                                 if (intSTR != 0 || intAGI != 0 || intSTRBase != 0 || intAGIBase != 0)
                                     break;
                                 objAttributeSource = objAttributeSource.Parent;
-                                if (objAttributeSource == null) continue;
+                                if (objAttributeSource == null)
+                                    continue;
                                 intSTR = objAttributeSource.TotalStrength;
                                 intSTRBase = objAttributeSource.BaseStrength;
                                 intAGI = objAttributeSource.TotalAgility;
@@ -2969,7 +2973,8 @@ namespace Chummer.Backend.Equipment
                                 if (intSTR != 0 || intAGI != 0)
                                     break;
                                 objAttributeSource = objAttributeSource.Parent;
-                                if (objAttributeSource == null) continue;
+                                if (objAttributeSource == null)
+                                    continue;
                                 intSTR = objAttributeSource.TotalStrength;
                                 intAGI = objAttributeSource.TotalStrength;
                             }
@@ -2995,7 +3000,8 @@ namespace Chummer.Backend.Equipment
                             if (intSTR != 0 || intAGI != 0)
                                 break;
                             objAttributeSource = objAttributeSource.Parent;
-                            if (objAttributeSource == null) continue;
+                            if (objAttributeSource == null)
+                                continue;
                             intSTR = objAttributeSource.TotalStrength;
                         }
 
@@ -3110,7 +3116,8 @@ namespace Chummer.Backend.Equipment
                                         if (intSTR != 0 || intAGI != 0 || intSTRBase != 0 || intAGIBase != 0)
                                             break;
                                         objAttributeSource = objAttributeSource.Parent;
-                                        if (objAttributeSource == null) continue;
+                                        if (objAttributeSource == null)
+                                            continue;
                                         intSTR = objAttributeSource.TotalStrength;
                                         intSTRBase = objAttributeSource.BaseStrength;
                                         intAGI = objAttributeSource.TotalAgility;
@@ -3149,7 +3156,8 @@ namespace Chummer.Backend.Equipment
                                     if (intSTR != 0 || intAGI != 0 || intSTRBase != 0 || intAGIBase != 0)
                                         break;
                                     objAttributeSource = objAttributeSource.Parent;
-                                    if (objAttributeSource == null) continue;
+                                    if (objAttributeSource == null)
+                                        continue;
                                     intSTR = objAttributeSource.TotalStrength;
                                     intSTRBase = objAttributeSource.BaseStrength;
                                     intAGI = objAttributeSource.TotalAgility;
@@ -3358,7 +3366,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// What modification slots have their costs doubled.
         /// </summary>
-	    public string DoubledCostModificationSlots => _strDoubledCostWeaponSlots;
+        public string DoubledCostModificationSlots => _strDoubledCostWeaponSlots;
 
         public string Range
         {
@@ -3479,7 +3487,8 @@ namespace Chummer.Backend.Equipment
                                     if (intSTR != 0 || intAGI != 0)
                                         break;
                                     objAttributeSource = objAttributeSource.Parent;
-                                    if (objAttributeSource == null) continue;
+                                    if (objAttributeSource == null)
+                                        continue;
                                     intSTR = objAttributeSource.TotalStrength;
                                     intAGI = objAttributeSource.TotalStrength;
                                 }
@@ -3508,7 +3517,8 @@ namespace Chummer.Backend.Equipment
                                 if (intSTR != 0 || intAGI != 0)
                                     break;
                                 objAttributeSource = objAttributeSource.Parent;
-                                if (objAttributeSource == null) continue;
+                                if (objAttributeSource == null)
+                                    continue;
                                 intSTR = objAttributeSource.TotalStrength;
                                 intAGI = objAttributeSource.TotalStrength;
                             }
@@ -3646,65 +3656,65 @@ namespace Chummer.Backend.Equipment
             return retDictionary;
         }
 
-	    /// <summary>
-	    /// Number of rounds consumed by Single Shot.
-	    /// </summary>
-	    public int SingleShot
-	    {
-	        get
-	        {
-	            int intReturn = _intSingleShot;
+        /// <summary>
+        /// Number of rounds consumed by Single Shot.
+        /// </summary>
+        public int SingleShot
+        {
+            get
+            {
+                int intReturn = _intSingleShot;
 
-	            // Check to see if any of the Mods replace this value.
-	            foreach (WeaponAccessory objAccessory in WeaponAccessories)
-	            {
-	                if (objAccessory.Equipped && objAccessory.SingleShot > intReturn)
-	                    intReturn = objAccessory.SingleShot;
-	            }
+                // Check to see if any of the Mods replace this value.
+                foreach (WeaponAccessory objAccessory in WeaponAccessories)
+                {
+                    if (objAccessory.Equipped && objAccessory.SingleShot > intReturn)
+                        intReturn = objAccessory.SingleShot;
+                }
 
-	            return intReturn;
-	        }
-	    }
+                return intReturn;
+            }
+        }
 
-	    /// <summary>
-	    /// Number of rounds consumed by Short Burst.
-	    /// </summary>
-	    public int ShortBurst
-	    {
-	        get
-	        {
-	            int intReturn = _intShortBurst;
+        /// <summary>
+        /// Number of rounds consumed by Short Burst.
+        /// </summary>
+        public int ShortBurst
+        {
+            get
+            {
+                int intReturn = _intShortBurst;
 
-	            // Check to see if any of the Mods replace this value.
-	            foreach (WeaponAccessory objAccessory in WeaponAccessories)
-	            {
-	                if (objAccessory.Equipped && objAccessory.ShortBurst > intReturn)
-	                    intReturn = objAccessory.ShortBurst;
-	            }
+                // Check to see if any of the Mods replace this value.
+                foreach (WeaponAccessory objAccessory in WeaponAccessories)
+                {
+                    if (objAccessory.Equipped && objAccessory.ShortBurst > intReturn)
+                        intReturn = objAccessory.ShortBurst;
+                }
 
-	            return intReturn;
-	        }
-	    }
+                return intReturn;
+            }
+        }
 
-	    /// <summary>
-	    /// Number of rounds consumed by Long Burst.
-	    /// </summary>
-	    public int LongBurst
-	    {
-	        get
-	        {
-	            int intReturn = _intLongBurst;
+        /// <summary>
+        /// Number of rounds consumed by Long Burst.
+        /// </summary>
+        public int LongBurst
+        {
+            get
+            {
+                int intReturn = _intLongBurst;
 
-	            // Check to see if any of the Mods replace this value.
-	            foreach (WeaponAccessory objAccessory in WeaponAccessories)
-	            {
-	                if (objAccessory.Equipped && objAccessory.LongBurst > intReturn)
-	                    intReturn = objAccessory.LongBurst;
-	            }
+                // Check to see if any of the Mods replace this value.
+                foreach (WeaponAccessory objAccessory in WeaponAccessories)
+                {
+                    if (objAccessory.Equipped && objAccessory.LongBurst > intReturn)
+                        intReturn = objAccessory.LongBurst;
+                }
 
-	            return intReturn;
-	        }
-	    }
+                return intReturn;
+            }
+        }
 
         /// <summary>
         /// Number of rounds consumed by Full Burst.
@@ -3913,14 +3923,16 @@ namespace Chummer.Backend.Equipment
                 Skill objSkill = null;
                 foreach (Skill objCharacterSkill in _objCharacter.SkillsSection.Skills)
                 {
-                    if (objCharacterSkill.Name != strSkill) continue;
+                    if (objCharacterSkill.Name != strSkill)
+                        continue;
                     if (string.IsNullOrEmpty(strSpec) || (objCharacterSkill.HasSpecialization(strSpec)))
                     {
                         objSkill = objCharacterSkill;
                         break;
                     }
                     //If the weapon doesn't have a Spec2 or it doesn't match, move along. Mostly affects exotics.
-                    if (string.IsNullOrEmpty(Spec2) || !objCharacterSkill.HasSpecialization(Spec2)) continue;
+                    if (string.IsNullOrEmpty(Spec2) || !objCharacterSkill.HasSpecialization(Spec2))
+                        continue;
                     objSkill = objCharacterSkill;
                     break;
                 }
@@ -4082,11 +4094,12 @@ namespace Chummer.Backend.Equipment
                 if (objSkill != null)
                 {
                     intDicePool = objSkill.Pool;
-                    strKey = objSkill.IsExoticSkill ? $"{objSkill.DisplayName}: {((ExoticSkill) objSkill).Specific}" : objSkill.DisplayName;
+                    strKey = objSkill.IsExoticSkill ? $"{objSkill.DisplayName}: {((ExoticSkill)objSkill).Specific}" : objSkill.DisplayName;
                 }
                 string strReturn = $"{strKey}{strSpaceCharacter}({intDicePool.ToString(GlobalOptions.CultureInfo)})";
 
-                if (string.IsNullOrEmpty(objSkill?.Specialization) || objSkill.IsExoticSkill) return strReturn;
+                if (string.IsNullOrEmpty(objSkill?.Specialization) || objSkill.IsExoticSkill)
+                    return strReturn;
                 if (objSkill.HasSpecialization(DisplayNameShort(GlobalOptions.Language)) || objSkill.HasSpecialization(Name) || objSkill.HasSpecialization(DisplayCategory(GlobalOptions.DefaultLanguage)) || objSkill.HasSpecialization(Category) || (!string.IsNullOrEmpty(objSkill.Specialization) && (objSkill.HasSpecialization(Spec) || objSkill.HasSpecialization(Spec2))))
                     strReturn += strSpaceCharacter + '+' + strSpaceCharacter + LanguageManager.GetString("String_ExpenseSpecialization", GlobalOptions.Language) + strSpaceCharacter + '(' + 2.ToString(GlobalOptions.CultureInfo) + ')';
 
@@ -5003,7 +5016,8 @@ namespace Chummer.Backend.Equipment
                     }
                 }
 
-                EndLoop:;
+EndLoop:
+                ;
             }
 
             Gear objSelectedAmmo;
@@ -5391,7 +5405,7 @@ namespace Chummer.Backend.Equipment
             return _lstAmmo[clip];
         }
 
-        IHasMatrixAttributes GetMatrixAttributesOverride
+        private IHasMatrixAttributes GetMatrixAttributesOverride
         {
             get
             {
@@ -5406,31 +5420,31 @@ namespace Chummer.Backend.Equipment
                                 ((_objCharacter.Cyberware.DeepFindById(ParentID) ??
                                   _objCharacter.Vehicles.FindVehicleCyberware(x => x.InternalId == ParentID)) ??
                                  ((_objCharacter.Weapons.DeepFindById(ParentID) ??
-                                   _objCharacter.Vehicles.FindVehicleWeapon(ParentID)) ?? (IHasMatrixAttributes) _objCharacter.Vehicles.FirstOrDefault(x => x.InternalId == ParentID)));
+                                   _objCharacter.Vehicles.FindVehicleWeapon(ParentID)) ?? (IHasMatrixAttributes)_objCharacter.Vehicles.FirstOrDefault(x => x.InternalId == ParentID)));
                 }
                 return objReturn;
             }
         }
 
-	    public decimal StolenTotalCost
-	    {
-	        get
-	        {
-	            decimal decReturn = 0;
-	            if (Stolen)
-	                decReturn += OwnCost;
+        public decimal StolenTotalCost
+        {
+            get
+            {
+                decimal decReturn = 0;
+                if (Stolen)
+                    decReturn += OwnCost;
 
-	            // Run through the Accessories and add in their cost. If the cost is "Weapon Cost", the Weapon's base cost is added in again.
-	            decReturn += WeaponAccessories.AsParallel().Sum(objAccessory => objAccessory.StolenTotalCost);
+                // Run through the Accessories and add in their cost. If the cost is "Weapon Cost", the Weapon's base cost is added in again.
+                decReturn += WeaponAccessories.AsParallel().Sum(objAccessory => objAccessory.StolenTotalCost);
 
                 // Include the cost of any Underbarrel Weapon.
-	            decReturn += Children.AsParallel().Sum(objUnderbarrel => objUnderbarrel.StolenTotalCost);
+                decReturn += Children.AsParallel().Sum(objUnderbarrel => objUnderbarrel.StolenTotalCost);
 
                 return decReturn;
-	        }
-	    }
+            }
+        }
 
-	    public int GetBaseMatrixAttribute(string strAttributeName)
+        public int GetBaseMatrixAttribute(string strAttributeName)
         {
             IHasMatrixAttributes objThis = GetMatrixAttributesOverride;
             if (objThis != null)
@@ -5528,9 +5542,18 @@ namespace Chummer.Backend.Equipment
 
         private sealed class Clip
         {
-            internal Guid Guid { get; set; }
-            internal int Ammo { get; set; }
-            public string AmmoName { get; internal set; }
+            internal Guid Guid
+            {
+                get; set;
+            }
+            internal int Ammo
+            {
+                get; set;
+            }
+            public string AmmoName
+            {
+                get; internal set;
+            }
 
             internal static Clip Load(XmlNode node)
             {
@@ -5567,7 +5590,8 @@ namespace Chummer.Backend.Equipment
 
         public bool Remove(Character characterObject, bool blnConfirmDelete = true)
         {
-            if (!CanBeRemoved()) return false;
+            if (!CanBeRemoved())
+                return false;
             if (blnConfirmDelete)
             {
                 if (!_objCharacter.ConfirmDelete(LanguageManager.GetString("Message_DeleteWeapon",
@@ -5632,7 +5656,8 @@ namespace Chummer.Backend.Equipment
         {
             decimal decAmount = TotalCost * percentage;
             string expense = ParentVehicle != null ? "String_ExpenseSoldVehicleWeapon" : "String_ExpenseSoldWeapon";
-            if (!Remove(characterObject)) return;
+            if (!Remove(characterObject))
+                return;
 
             // Create the Expense Log Entry for the sale.
             ExpenseLogEntry objExpense = new ExpenseLogEntry(characterObject);

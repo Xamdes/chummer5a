@@ -52,7 +52,7 @@ namespace ChummerHub.Controllers.V1
             try
             {
                 _logger.LogTrace("Searching SINnerFile");
-                var result = _context.SINners.OrderByDescending(a => a.UploadDateTime).Take(20);
+                IQueryable<SINner> result = _context.SINners.OrderByDescending(a => a.UploadDateTime).Take(20);
                 result = _context.SINners.Include(sinner => sinner.SINnerMetaData)
                     .ThenInclude(meta => meta.Tags)
                     .ThenInclude(tag => tag.Tags)
@@ -81,7 +81,7 @@ namespace ChummerHub.Controllers.V1
             try
             {
                 _logger.LogTrace("AdminGetIds");
-                var result = await (from a in _context.SINners.Include(sinner => sinner.SINnerMetaData)
+                List<SINner> result = await (from a in _context.SINners.Include(sinner => sinner.SINnerMetaData)
                                     .ThenInclude(meta => meta.Visibility)
                                     .ThenInclude(vis => vis.UserRights)
                                     .Include(meta => meta.SINnerMetaData)
@@ -91,7 +91,7 @@ namespace ChummerHub.Controllers.V1
                                     .ThenInclude(tag => tag.Tags)
                                     .ThenInclude(tag => tag.Tags)
                                     .ThenInclude(tag => tag.Tags)
-                                    select a).ToListAsync();
+                                             select a).ToListAsync();
                 return result;
             }
             catch (Exception e)

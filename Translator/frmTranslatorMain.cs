@@ -230,50 +230,50 @@ namespace Translator
                     case DialogResult.Cancel:
                         return;
                     case DialogResult.Yes:
-                    {
-                        XmlDocument objExistingTranslationDoc = new XmlDocument();
-                        objExistingTranslationDoc.Load(Path.Combine(PATH, "lang", strLowerCode + ".xml"));
-
-                        string strToSelect = objExistingTranslationDoc.SelectSingleNode("/chummer/name")?.InnerText;
-                        if (!string.IsNullOrEmpty(strToSelect))
                         {
-                            int intIndexToSelect = cboLanguages.FindStringExact(strToSelect);
-                            if (intIndexToSelect != -1)
+                            XmlDocument objExistingTranslationDoc = new XmlDocument();
+                            objExistingTranslationDoc.Load(Path.Combine(PATH, "lang", strLowerCode + ".xml"));
+
+                            string strToSelect = objExistingTranslationDoc.SelectSingleNode("/chummer/name")?.InnerText;
+                            if (!string.IsNullOrEmpty(strToSelect))
                             {
-                                cboLanguages.SelectedIndex = intIndexToSelect;
-                                cmdRebuild_Click(sender, e);
+                                int intIndexToSelect = cboLanguages.FindStringExact(strToSelect);
+                                if (intIndexToSelect != -1)
+                                {
+                                    cboLanguages.SelectedIndex = intIndexToSelect;
+                                    cmdRebuild_Click(sender, e);
+                                }
                             }
                         }
-                    }
                         return;
                     case DialogResult.No:
-                    {
-                        try
                         {
-                            string strPath = Path.Combine(PATH, "lang", strLowerCode + "_data.xml");
-                            if (File.Exists(strPath + ".old"))
-                                File.Delete(strPath + ".old");
-                            File.Move(strPath, strPath + ".old");
-                            strPath = Path.Combine(PATH, "lang", strLowerCode + "xml");
-                            if (File.Exists(strPath + ".old"))
-                                File.Delete(strPath + ".old");
-                            File.Move(strPath, strPath + ".old");
-                        }
-                        catch (IOException)
-                        {
-                            MessageBox.Show("An error was encountered while trying to move the existing translation into a backup format. Aborting operation.",
-                                "File Backup Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                            return;
-                        }
-                        catch (UnauthorizedAccessException)
-                        {
-                            MessageBox.Show("An error was encountered while trying to move the existing translation into a backup format. Aborting operation.",
-                                "File Backup Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                            return;
-                        }
+                            try
+                            {
+                                string strPath = Path.Combine(PATH, "lang", strLowerCode + "_data.xml");
+                                if (File.Exists(strPath + ".old"))
+                                    File.Delete(strPath + ".old");
+                                File.Move(strPath, strPath + ".old");
+                                strPath = Path.Combine(PATH, "lang", strLowerCode + "xml");
+                                if (File.Exists(strPath + ".old"))
+                                    File.Delete(strPath + ".old");
+                                File.Move(strPath, strPath + ".old");
+                            }
+                            catch (IOException)
+                            {
+                                MessageBox.Show("An error was encountered while trying to move the existing translation into a backup format. Aborting operation.",
+                                    "File Backup Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                return;
+                            }
+                            catch (UnauthorizedAccessException)
+                            {
+                                MessageBox.Show("An error was encountered while trying to move the existing translation into a backup format. Aborting operation.",
+                                    "File Backup Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                return;
+                            }
 
-                        break;
-                    }
+                            break;
+                        }
                 }
             }
 

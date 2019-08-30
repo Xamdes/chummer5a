@@ -25,12 +25,18 @@ namespace ChummerHub.Areas.Identity.Pages.Account.Manage
 
         [BindProperty]
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'SetPasswordModel.Input'
-        public InputModel Input { get; set; }
+        public InputModel Input
+        {
+            get; set;
+        }
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'SetPasswordModel.Input'
 
         [TempData]
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'SetPasswordModel.StatusMessage'
-        public string StatusMessage { get; set; }
+        public string StatusMessage
+        {
+            get; set;
+        }
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'SetPasswordModel.StatusMessage'
 
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'SetPasswordModel.InputModel'
@@ -42,14 +48,20 @@ namespace ChummerHub.Areas.Identity.Pages.Account.Manage
             [DataType(DataType.Password)]
             [Display(Name = "New password")]
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'SetPasswordModel.InputModel.NewPassword'
-            public string NewPassword { get; set; }
+            public string NewPassword
+            {
+                get; set;
+            }
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'SetPasswordModel.InputModel.NewPassword'
 
             [DataType(DataType.Password)]
             [Display(Name = "Confirm new password")]
             [Compare("NewPassword", ErrorMessage = "The new password and confirmation password do not match.")]
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'SetPasswordModel.InputModel.ConfirmPassword'
-            public string ConfirmPassword { get; set; }
+            public string ConfirmPassword
+            {
+                get; set;
+            }
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'SetPasswordModel.InputModel.ConfirmPassword'
         }
 
@@ -57,13 +69,13 @@ namespace ChummerHub.Areas.Identity.Pages.Account.Manage
         public async Task<IActionResult> OnGetAsync()
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'SetPasswordModel.OnGetAsync()'
         {
-            var user = await _userManager.GetUserAsync(User);
+            ApplicationUser user = await _userManager.GetUserAsync(User);
             if (user == null)
             {
                 return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
             }
 
-            var hasPassword = await _userManager.HasPasswordAsync(user);
+            bool hasPassword = await _userManager.HasPasswordAsync(user);
 
             if (hasPassword)
             {
@@ -82,16 +94,16 @@ namespace ChummerHub.Areas.Identity.Pages.Account.Manage
                 return Page();
             }
 
-            var user = await _userManager.GetUserAsync(User);
+            ApplicationUser user = await _userManager.GetUserAsync(User);
             if (user == null)
             {
                 return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
             }
 
-            var addPasswordResult = await _userManager.AddPasswordAsync(user, Input.NewPassword);
+            IdentityResult addPasswordResult = await _userManager.AddPasswordAsync(user, Input.NewPassword);
             if (!addPasswordResult.Succeeded)
             {
-                foreach (var error in addPasswordResult.Errors)
+                foreach (IdentityError error in addPasswordResult.Errors)
                 {
                     ModelState.AddModelError(string.Empty, error.Description);
                 }

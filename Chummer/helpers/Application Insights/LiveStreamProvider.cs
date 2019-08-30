@@ -42,7 +42,7 @@ namespace Chummer
                 })
                 .Build();
 
-            var quickPulse = new QuickPulseTelemetryModule();
+            QuickPulseTelemetryModule quickPulse = new QuickPulseTelemetryModule();
             quickPulse.Initialize(_configuration);
             quickPulse.RegisterTelemetryProcessor(processor);
         }

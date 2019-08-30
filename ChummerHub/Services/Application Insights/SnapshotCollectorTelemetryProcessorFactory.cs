@@ -24,7 +24,7 @@ namespace ChummerHub.Services.Application_Insights
         {
             try
             {
-                var snapshotConfigurationOptions = _serviceProvider.GetService<IOptions<SnapshotCollectorConfiguration>>();
+                IOptions<SnapshotCollectorConfiguration> snapshotConfigurationOptions = _serviceProvider.GetService<IOptions<SnapshotCollectorConfiguration>>();
                 ITelemetryProcessor ret = new SnapshotCollectorTelemetryProcessor(next, configuration: snapshotConfigurationOptions.Value);
                 return ret;
             }

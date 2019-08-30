@@ -18,6 +18,7 @@
  */
 
 using Chummer.Backend.Equipment;
+using NLog;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -26,7 +27,6 @@ using System.Globalization;
 using System.Linq;
 using System.Windows.Forms;
 using System.Xml;
-using NLog;
 
 namespace Chummer
 {
@@ -375,7 +375,7 @@ namespace Chummer
                 OriginSource != QualitySource.Metatype &&
                 OriginSource != QualitySource.MetatypeRemovable &&
                 OriginSource != QualitySource.MetatypeRemovedAtChargen)
-            _objCharacter.SourceProcess(_strSource);
+                _objCharacter.SourceProcess(_strSource);
         }
 
         /// <summary>
@@ -389,7 +389,7 @@ namespace Chummer
                 _guiID = Guid.NewGuid();
             }
             objNode.TryGetStringFieldQuickly("name", ref _strName);
-            if(!objNode.TryGetGuidFieldQuickly("sourceid", ref _guiSourceID))
+            if (!objNode.TryGetGuidFieldQuickly("sourceid", ref _guiSourceID))
             {
                 XmlNode node = GetNode(GlobalOptions.Language);
                 node?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
@@ -988,7 +988,7 @@ namespace Chummer
         /// <returns>A XmlNode containing the id and all nodes of its parrents</returns>
         public static XmlNode GetNodeOverrideable(string id, XmlDocument xmlDoc)
         {
-            var node = xmlDoc.SelectSingleNode("//*[id = \"" + id + "\"]");
+            XmlNode node = xmlDoc.SelectSingleNode("//*[id = \"" + id + "\"]");
             if (node == null)
                 throw new ArgumentException("Could not find node " + id + " in xmlDoc " + xmlDoc.Name + ".");
             return GetNodeOverrideable(node);
@@ -1065,7 +1065,8 @@ namespace Chummer
                         blnAddItem = false;
                 }
 
-                if (!blnAddItem) return false;
+                if (!blnAddItem)
+                    return false;
                 if (objCharacter.Created)
                 {
                     // Create the Karma expense.
@@ -1105,7 +1106,8 @@ namespace Chummer
                     intKarmaCost = 0;
                 }
 
-                if (!blnAddItem) return false;
+                if (!blnAddItem)
+                    return false;
                 if (objCharacter.Created)
                 {
                     // Create the Karma expense.

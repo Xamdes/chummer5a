@@ -16,7 +16,7 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
- using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -264,10 +264,10 @@ namespace Chummer
         }
         #endregion
 
-            #region Properties
-            /// <summary>
-            /// Contact object this is linked to.
-            /// </summary>
+        #region Properties
+        /// <summary>
+        /// Contact object this is linked to.
+        /// </summary>
         public Contact ContactObject => _objContact;
 
         #endregion

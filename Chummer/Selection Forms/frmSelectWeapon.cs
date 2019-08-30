@@ -16,14 +16,14 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
+using Chummer.Backend.Equipment;
 using System;
-using System.Data;
 using System.Collections.Generic;
+using System.Data;
+using System.Linq;
+using System.Text;
 using System.Windows.Forms;
 using System.Xml;
-using Chummer.Backend.Equipment;
-using System.Text;
-using System.Linq;
 
 // ReSharper disable LocalizableElement
 
@@ -83,18 +83,18 @@ namespace Chummer
             }
 
             // Populate the Weapon Category list.
-            
-                // Populate the Category list.
-                using (XmlNodeList xmlCategoryList = _objXmlDocument.SelectNodes("/chummer/categories/category"))
-                    if (xmlCategoryList != null)
+
+            // Populate the Category list.
+            using (XmlNodeList xmlCategoryList = _objXmlDocument.SelectNodes("/chummer/categories/category"))
+                if (xmlCategoryList != null)
+                {
+                    foreach (XmlNode objXmlCategory in xmlCategoryList)
                     {
-                        foreach (XmlNode objXmlCategory in xmlCategoryList)
-                        {
-                            string strInnerText = objXmlCategory.InnerText;
-                            if (_hashLimitToCategories.Count == 0 || _hashLimitToCategories.Contains(strInnerText))
-                                _lstCategory.Add(new ListItem(strInnerText, objXmlCategory.Attributes?["translate"]?.InnerText ?? strInnerText));
-                        }
+                        string strInnerText = objXmlCategory.InnerText;
+                        if (_hashLimitToCategories.Count == 0 || _hashLimitToCategories.Contains(strInnerText))
+                            _lstCategory.Add(new ListItem(strInnerText, objXmlCategory.Attributes?["translate"]?.InnerText ?? strInnerText));
                     }
+                }
             _lstCategory.Sort(CompareListItems.CompareNames);
 
             if (_lstCategory.Count > 0)
@@ -132,7 +132,7 @@ namespace Chummer
         {
             if (_blnLoading || _blnSkipUpdate)
                 return;
-            
+
             // Retireve the information for the selected Weapon.
             XmlNode xmlWeapon = null;
             string strSelectedId = lstWeapon.SelectedValue?.ToString();
@@ -161,7 +161,7 @@ namespace Chummer
                 chkBlackMarketDiscount.Checked = _setBlackMarketMaps.Contains(_objSelectedWeapon.Category);
 
                 _objSelectedWeapon.DiscountCost = chkBlackMarketDiscount.Checked;
-                
+
                 lblWeaponReach.Text = _objSelectedWeapon.TotalReach.ToString(GlobalOptions.CultureInfo);
                 lblWeaponReachLabel.Visible = !string.IsNullOrEmpty(lblWeaponReach.Text);
                 lblWeaponDamage.Text = _objSelectedWeapon.CalculatedDamage(GlobalOptions.CultureInfo, GlobalOptions.Language);
@@ -393,7 +393,7 @@ namespace Chummer
                     }
                     lstWeapons.Add(new ListItem(objXmlWeapon["id"]?.InnerText, objXmlWeapon["translate"]?.InnerText ?? objXmlWeapon["name"]?.InnerText));
                 }
-                
+
                 lstWeapons.Sort(CompareListItems.CompareNames);
                 string strOldSelected = lstWeapon.SelectedValue?.ToString();
                 _blnLoading = true;
@@ -539,7 +539,10 @@ namespace Chummer
             set => _hashLimitToCategories = string.IsNullOrWhiteSpace(value) ? new HashSet<string>() : new HashSet<string>(value.Split(','));
         }
 
-        public Weapon ParentWeapon { get; set; }
+        public Weapon ParentWeapon
+        {
+            get; set;
+        }
         public HashSet<string> Mounts { get; set; } = new HashSet<string>();
         #endregion
 

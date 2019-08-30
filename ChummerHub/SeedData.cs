@@ -20,7 +20,7 @@ namespace ChummerHub
         public static async Task Initialize(IServiceProvider serviceProvider, string testUserPw, IHostingEnvironment env)
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'SeedData.Initialize(IServiceProvider, string, IHostingEnvironment)'
         {
-            using (var context = new ApplicationDbContext(
+            using (ApplicationDbContext context = new ApplicationDbContext(
                 serviceProvider.GetRequiredService<DbContextOptions<ApplicationDbContext>>(), env))
             {
 
@@ -33,9 +33,9 @@ namespace ChummerHub
                 //Todo: implement this with a seperate connection to the masters-DB
                 //var sqlMasterUser = GetSqlCommandMasterUser(config["SqlSinnerUserName"], config["SqlSinnerUserPW"]);
                 //context.Database.ExecuteSqlCommandAsync(sqlMasterUser);
-                foreach (var user in Config.GetAdminUsers())
+                foreach (ApplicationUser user in Config.GetAdminUsers())
                 {
-                    var userID = await EnsureUser(serviceProvider, user, testUserPw);
+                    Guid userID = await EnsureUser(serviceProvider, user, testUserPw);
                     await EnsureRole(serviceProvider, user.Id, Authorizarion.Constants.AdministratorsRole, null, null);
                     await EnsureRole(serviceProvider, user.Id, Authorizarion.Constants.UserRoleRegistered, null, null);
                     await EnsureRole(serviceProvider, user.Id, Authorizarion.Constants.UserRoleArchetype, null, null);
@@ -68,7 +68,7 @@ namespace ChummerHub
         /// <param name="username"></param>
         /// <param name="userpwd"></param>
         /// <returns></returns>
-        private static String GetSqlCommandMasterUser(string username, string userpwd)
+        private static string GetSqlCommandMasterUser(string username, string userpwd)
         {
             string sqltext = @"IF NOT EXISTS (SELECT name FROM sys.sql_logins WHERE name='" + username + "') ";
             sqltext += " " + Environment.NewLine + "   BEGIN";
@@ -90,9 +90,9 @@ namespace ChummerHub
         {
             try
             {
-                var userManager = serviceProvider.GetService<UserManager<ApplicationUser>>();
+                UserManager<ApplicationUser> userManager = serviceProvider.GetService<UserManager<ApplicationUser>>();
 
-                var u = await userManager.FindByNameAsync(user.UserName);
+                ApplicationUser u = await userManager.FindByNameAsync(user.UserName);
                 if (u == null)
                 {
                     user.PasswordHash = userManager.PasswordHasher.HashPassword(user, userPW);
@@ -125,7 +125,7 @@ namespace ChummerHub
                 }
                 if (userManager == null)
                     userManager = serviceProvider.GetService<UserManager<ApplicationUser>>();
-                var user = await userManager.FindByIdAsync(uid.ToString());
+                ApplicationUser user = await userManager.FindByIdAsync(uid.ToString());
 
                 IR = await userManager.AddToRoleAsync(user, role);
 

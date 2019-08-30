@@ -4,20 +4,16 @@ using SINners.Models;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ChummerHub.Client.Backend
 {
 
-    
+
     public class SearchTagExtractor
     {
-        
+
 
 
         /// <summary>
@@ -27,27 +23,27 @@ namespace ChummerHub.Client.Backend
         /// <param name="obj"></param>
         /// <param name="parenttag"></param>
         /// <returns>A list of Tags (that may have a lot of child-Tags as well).</returns>
-        internal static IList<SearchTag> ExtractTagsFromAttributes(Object obj, SearchTag parenttag)
+        internal static IList<SearchTag> ExtractTagsFromAttributes(object obj, SearchTag parenttag)
         {
             List<SearchTag> resulttags = new List<SearchTag>();
-            List<Tuple<PropertyInfo, Chummer.HubTagAttribute, Object>> props = new List<Tuple<PropertyInfo, Chummer.HubTagAttribute, Object>>();
+            List<Tuple<PropertyInfo, Chummer.HubTagAttribute, object>> props = new List<Tuple<PropertyInfo, Chummer.HubTagAttribute, object>>();
 
 
-            var test =  (from p in obj.GetType().GetProperties() select p).ToList();
-            var test2 = (from p in obj.GetType().GetProperties() let attr = p.GetCustomAttributes(typeof(Chummer.HubTagAttribute), true)  select attr).ToList();
-            var test4 = obj.GetType().GenericTypeArguments;
+            List<PropertyInfo> test = (from p in obj.GetType().GetProperties() select p).ToList();
+            List<object[]> test2 = (from p in obj.GetType().GetProperties() let attr = p.GetCustomAttributes(typeof(Chummer.HubTagAttribute), true) select attr).ToList();
+            Type[] test4 = obj.GetType().GenericTypeArguments;
 
-            
 
-            var props2 = from p in obj.GetType().GetProperties()
-                         let attr = p.GetCustomAttributes(typeof(Chummer.HubTagAttribute), true)
-                         where attr.Length > 0
-                         select new Tuple<PropertyInfo, Chummer.HubTagAttribute, Object>(p, attr.First() as Chummer.HubTagAttribute, obj);
+
+            IEnumerable<Tuple<PropertyInfo, HubTagAttribute, object>> props2 = from p in obj.GetType().GetProperties()
+                                                                               let attr = p.GetCustomAttributes(typeof(Chummer.HubTagAttribute), true)
+                                                                               where attr.Length > 0
+                                                                               select new Tuple<PropertyInfo, Chummer.HubTagAttribute, object>(p, attr.First() as Chummer.HubTagAttribute, obj);
 
             props.AddRange(props2);
-            
 
-            if (!typeof(String).IsAssignableFrom(obj.GetType()))
+
+            if (!typeof(string).IsAssignableFrom(obj.GetType()))
             {
                 IEnumerable islist = obj as IEnumerable;
 
@@ -60,48 +56,50 @@ namespace ChummerHub.Client.Backend
                     Type listtype = StaticUtils.GetListType(islist);
                     try
                     {
-                        Object generic = Activator.CreateInstance(listtype, new object[] { ucSINnersSearch.MySearchCharacter.MyCharacter });
-                        var result = ExtractTagsFromAttributes(generic, parenttag);
+                        object generic = Activator.CreateInstance(listtype, new object[] { ucSINnersSearch.MySearchCharacter.MyCharacter });
+                        IList<SearchTag> result = ExtractTagsFromAttributes(generic, parenttag);
                         return result;
                     }
-                    catch(Exception e1)
+                    catch (Exception)
                     {
                         try
                         {
-                            Object generic = Activator.CreateInstance(listtype);
-                            var result = ExtractTagsFromAttributes(generic, parenttag);
+                            object generic = Activator.CreateInstance(listtype);
+                            IList<SearchTag> result = ExtractTagsFromAttributes(generic, parenttag);
                             return result;
                         }
-                        catch(Exception e2)
+                        catch (Exception e2)
                         {
                             //seriously, that gets out of hand...
                             System.Diagnostics.Trace.TraceError(e2.ToString());
                             throw;
                         }
                     }
-                    
+
                 }
             }
 
-            foreach (var prop in props)
+            foreach (Tuple<PropertyInfo, HubTagAttribute, object> prop in props)
             {
-                SearchTag temptag = new SearchTag(prop.Item1, prop.Item2);
-                temptag.MyParentTag = parenttag;
-                temptag.SearchOpterator = EnumSSearchOpterator.bigger.ToString();
-                temptag.TagName = prop.Item1.Name;
-                temptag.TagValue = "";
-                temptag.MyRuntimePropertyValue = prop.Item1.GetValue(prop.Item3);
+                SearchTag temptag = new SearchTag(prop.Item1, prop.Item2)
+                {
+                    MyParentTag = parenttag,
+                    SearchOpterator = EnumSSearchOpterator.bigger.ToString(),
+                    TagName = prop.Item1.Name,
+                    TagValue = "",
+                    MyRuntimePropertyValue = prop.Item1.GetValue(prop.Item3)
+                };
                 resulttags.Add(temptag);
             }
             return resulttags;
         }
 
 
-        internal static IList<SearchTag> ExtractTagsFromAttributesForProperty(Tuple<PropertyInfo, Chummer.HubTagAttribute, Object> prop, SearchTag parenttag)
+        internal static IList<SearchTag> ExtractTagsFromAttributesForProperty(Tuple<PropertyInfo, Chummer.HubTagAttribute, object> prop, SearchTag parenttag)
         {
             List<SearchTag> proptaglist = new List<SearchTag>();
             Chummer.HubTagAttribute attribute = prop.Item2 as Chummer.HubTagAttribute;
-            Object propValue;
+            object propValue;
             PropertyInfo property = prop.Item1 as PropertyInfo;
             if (property == null)
             {
@@ -127,15 +125,17 @@ namespace ChummerHub.Client.Backend
             }
 
 
-            var tag = new SearchTag(property, attribute);
-            tag.MyRuntimePropertyValue = propValue;
-            tag.SearchTags = new List<SearchTag>();
-            tag.MyParentTag = parenttag;
+            SearchTag tag = new SearchTag(property, attribute)
+            {
+                MyRuntimePropertyValue = propValue,
+                SearchTags = new List<SearchTag>(),
+                MyParentTag = parenttag
+            };
             if (tag.MyParentTag != null)
                 tag.MyParentTag.SearchTags.Add(tag);
             tag.ParentTagId = parenttag?.Id;
             tag.Id = Guid.NewGuid();
-            if (!String.IsNullOrEmpty(attribute.TagName))
+            if (!string.IsNullOrEmpty(attribute.TagName))
                 tag.TagName = attribute.TagName;
             else if (prop.Item1 != null)
                 tag.TagName = prop.Item1.Name;
@@ -143,12 +143,12 @@ namespace ChummerHub.Client.Backend
                 tag.TagName = prop.Item3.ToString();
 
             Type t = prop.Item3.GetType();
-            if (!String.IsNullOrEmpty(attribute.TagNameFromProperty))
+            if (!string.IsNullOrEmpty(attribute.TagNameFromProperty))
             {
-                var addObject = t.GetProperty(attribute.TagNameFromProperty).GetValue(prop.Item3, null);
-                tag.TagName += String.Format("{0}", addObject);
+                object addObject = t.GetProperty(attribute.TagNameFromProperty).GetValue(prop.Item3, null);
+                tag.TagName += string.Format("{0}", addObject);
             }
-            tag.TagValue = String.Format("{0}", tag.MyRuntimePropertyValue);
+            tag.TagValue = string.Format("{0}", tag.MyRuntimePropertyValue);
             Type typeValue = tag.MyRuntimePropertyValue.GetType();
             //if (typeof(int).IsAssignableFrom(typeValue))
             //{
@@ -191,12 +191,12 @@ namespace ChummerHub.Client.Backend
             proptaglist.Add(tag);
             if (prop.Item1 != null)
             {
-                var childlist = ExtractTagsFromAttributes(tag.MyRuntimePropertyValue, tag);
+                IList<SearchTag> childlist = ExtractTagsFromAttributes(tag.MyRuntimePropertyValue, tag);
                 proptaglist.AddRange(childlist);
             }
             if (attribute.DeleteIfEmpty)
             {
-                if (!tag.Tags.Any() && String.IsNullOrEmpty(tag.TagValue))
+                if (!tag.Tags.Any() && string.IsNullOrEmpty(tag.TagValue))
                 {
                     tag.MyParentTag.SearchTags.Remove(tag);
                 }

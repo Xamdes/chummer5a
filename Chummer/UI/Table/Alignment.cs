@@ -18,7 +18,8 @@
  */
 using System;
 
-namespace Chummer.UI.Table {
+namespace Chummer.UI.Table
+{
 
     [FlagsAttribute()]
     public enum Alignment : byte

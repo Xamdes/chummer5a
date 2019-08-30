@@ -27,11 +27,17 @@ namespace ChummerHub.Areas.Identity.Pages.Account
 
         [BindProperty]
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'LoginWithRecoveryCodeModel.Input'
-        public InputModel Input { get; set; }
+        public InputModel Input
+        {
+            get; set;
+        }
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'LoginWithRecoveryCodeModel.Input'
 
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'LoginWithRecoveryCodeModel.ReturnUrl'
-        public string ReturnUrl { get; set; }
+        public string ReturnUrl
+        {
+            get; set;
+        }
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'LoginWithRecoveryCodeModel.ReturnUrl'
 
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'LoginWithRecoveryCodeModel.InputModel'
@@ -43,7 +49,10 @@ namespace ChummerHub.Areas.Identity.Pages.Account
             [DataType(DataType.Text)]
             [Display(Name = "Recovery Code")]
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'LoginWithRecoveryCodeModel.InputModel.RecoveryCode'
-            public string RecoveryCode { get; set; }
+            public string RecoveryCode
+            {
+                get; set;
+            }
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'LoginWithRecoveryCodeModel.InputModel.RecoveryCode'
         }
 
@@ -52,7 +61,7 @@ namespace ChummerHub.Areas.Identity.Pages.Account
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'LoginWithRecoveryCodeModel.OnGetAsync(string)'
         {
             // Ensure the user has gone through the username & password screen first
-            var user = await _signInManager.GetTwoFactorAuthenticationUserAsync();
+            ApplicationUser user = await _signInManager.GetTwoFactorAuthenticationUserAsync();
             if (user == null)
             {
                 throw new InvalidOperationException($"Unable to load two-factor authentication user.");
@@ -72,15 +81,15 @@ namespace ChummerHub.Areas.Identity.Pages.Account
                 return Page();
             }
 
-            var user = await _signInManager.GetTwoFactorAuthenticationUserAsync();
+            ApplicationUser user = await _signInManager.GetTwoFactorAuthenticationUserAsync();
             if (user == null)
             {
                 throw new InvalidOperationException($"Unable to load two-factor authentication user.");
             }
 
-            var recoveryCode = Input.RecoveryCode.Replace(" ", string.Empty);
+            string recoveryCode = Input.RecoveryCode.Replace(" ", string.Empty);
 
-            var result = await _signInManager.TwoFactorRecoveryCodeSignInAsync(recoveryCode);
+            Microsoft.AspNetCore.Identity.SignInResult result = await _signInManager.TwoFactorRecoveryCodeSignInAsync(recoveryCode);
 
             if (result.Succeeded)
             {

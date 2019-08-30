@@ -65,7 +65,7 @@ namespace Chummer
             LanguageBookTooltip = CommonFunctions.LanguageBookLong(strSource, Language) +
                                 _strCachedSpace + LanguageManager.GetString("String_Page", strLanguage) + _strCachedSpace + _intPage;
         }
-        
+
         public override string ToString()
         {
             return Code + _strCachedSpace + Page;
@@ -74,12 +74,18 @@ namespace Chummer
         /// <summary>
         /// Language code originally used to construct the source info (alters book code, possibly alters page numbers)
         /// </summary>
-        public string Language { get; }
+        public string Language
+        {
+            get;
+        }
 
         /// <summary>
         /// Book code of the source info, possibly modified from English by the language of the source info
         /// </summary>
-        public string Code { get; }
+        public string Code
+        {
+            get;
+        }
 
         /// <summary>
         /// Page of the source info, possibly modified from English by the language of the source info
@@ -89,7 +95,10 @@ namespace Chummer
         /// <summary>
         /// Provides the long-form name of the object's sourcebook and page reference. 
         /// </summary>
-        public string LanguageBookTooltip { get; }
+        public string LanguageBookTooltip
+        {
+            get;
+        }
 
         public int CompareTo(object obj)
         {

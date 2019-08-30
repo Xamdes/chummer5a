@@ -18,19 +18,38 @@
  */
 namespace Chummer
 {
-    interface IHasPhysicalConditionMonitor
+    internal interface IHasPhysicalConditionMonitor
     {
-        int PhysicalCM { get; }
-        int PhysicalCMFilled { get; set; }
+        int PhysicalCM
+        {
+            get;
+        }
+        int PhysicalCMFilled
+        {
+            get; set;
+        }
     }
     public interface IHasMatrixConditionMonitor
     {
-        int MatrixCM { get; }
-        int MatrixCMFilled { get; set; }
+        int MatrixCM
+        {
+            get;
+        }
+        int MatrixCMFilled
+        {
+            get; set;
+        }
     }
-    interface IHasStunConditionMonitor
+
+    internal interface IHasStunConditionMonitor
     {
-        int StunCM { get; }
-        int StunCMFilled { get; set; }
+        int StunCM
+        {
+            get;
+        }
+        int StunCMFilled
+        {
+            get; set;
+        }
     }
 }

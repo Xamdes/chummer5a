@@ -18,10 +18,13 @@
  */
 namespace Chummer
 {
-    interface IHasCustomName
+    internal interface IHasCustomName
     {
         string DisplayName(string s);
 
-        string CustomName { get; set; }
+        string CustomName
+        {
+            get; set;
+        }
     }
 }

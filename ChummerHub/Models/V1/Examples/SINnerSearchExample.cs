@@ -28,7 +28,7 @@ namespace ChummerHub.Models.V1.Examples
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'SINnerSearchExample.GetSINnerSearchExample()'
         {
             Guid parentTagGuid = Guid.NewGuid();
-            var sin = new SearchTag
+            SearchTag sin = new SearchTag
             {
                 TagName = "Reflection",
                 TagValue = "",

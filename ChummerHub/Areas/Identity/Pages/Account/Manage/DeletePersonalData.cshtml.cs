@@ -30,7 +30,10 @@ namespace ChummerHub.Areas.Identity.Pages.Account.Manage
 
         [BindProperty]
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'DeletePersonalDataModel.Input'
-        public InputModel Input { get; set; }
+        public InputModel Input
+        {
+            get; set;
+        }
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'DeletePersonalDataModel.Input'
 
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'DeletePersonalDataModel.InputModel'
@@ -40,19 +43,25 @@ namespace ChummerHub.Areas.Identity.Pages.Account.Manage
             [Required]
             [DataType(DataType.Password)]
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'DeletePersonalDataModel.InputModel.Password'
-            public string Password { get; set; }
+            public string Password
+            {
+                get; set;
+            }
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'DeletePersonalDataModel.InputModel.Password'
         }
 
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'DeletePersonalDataModel.RequirePassword'
-        public bool RequirePassword { get; set; }
+        public bool RequirePassword
+        {
+            get; set;
+        }
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'DeletePersonalDataModel.RequirePassword'
 
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'DeletePersonalDataModel.OnGet()'
         public async Task<IActionResult> OnGet()
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'DeletePersonalDataModel.OnGet()'
         {
-            var user = await _userManager.GetUserAsync(User);
+            ApplicationUser user = await _userManager.GetUserAsync(User);
             if (user == null)
             {
                 return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
@@ -66,7 +75,7 @@ namespace ChummerHub.Areas.Identity.Pages.Account.Manage
         public async Task<IActionResult> OnPostAsync()
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'DeletePersonalDataModel.OnPostAsync()'
         {
-            var user = await _userManager.GetUserAsync(User);
+            ApplicationUser user = await _userManager.GetUserAsync(User);
             if (user == null)
             {
                 return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
@@ -82,8 +91,8 @@ namespace ChummerHub.Areas.Identity.Pages.Account.Manage
                 }
             }
 
-            var result = await _userManager.DeleteAsync(user);
-            var userId = await _userManager.GetUserIdAsync(user);
+            IdentityResult result = await _userManager.DeleteAsync(user);
+            string userId = await _userManager.GetUserIdAsync(user);
             if (!result.Succeeded)
             {
                 throw new InvalidOperationException($"Unexpected error occurred deleteing user with ID '{userId}'.");

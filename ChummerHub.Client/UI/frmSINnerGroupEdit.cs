@@ -1,14 +1,6 @@
 using SINners.Models;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-using NLog;
 
 namespace ChummerHub.Client.UI
 {
@@ -28,8 +20,14 @@ namespace ChummerHub.Client.UI
                 MySINnerGroupCreate.EditMode = true;
             MySINnerGroupCreate.InitializeMe(onlyPWHash);
         }
-        
 
-        public ucSINnerGroupCreate MySINnerGroupCreate { get { return this.siNnerGroupCreate1; } }
+
+        public ucSINnerGroupCreate MySINnerGroupCreate
+        {
+            get
+            {
+                return this.siNnerGroupCreate1;
+            }
+        }
     }
 }

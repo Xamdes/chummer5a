@@ -16,15 +16,15 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
+using Chummer.Annotations;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Globalization;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Xml;
-using Chummer.Annotations;
-using System.Globalization;
 
 namespace Chummer.Backend.Skills
 {
@@ -212,7 +212,7 @@ namespace Chummer.Backend.Skills
                             _intCachedCareerIncrease = 0;
                         else
                         {
-                            var firstOrDefault = _lstAffectedSkills.FirstOrDefault(x => x.Enabled);
+                            Skill firstOrDefault = _lstAffectedSkills.FirstOrDefault(x => x.Enabled);
                             if (firstOrDefault != null)
                             {
                                 int intFirstSkillTotalBaseRating = firstOrDefault.TotalBaseRating;
@@ -324,7 +324,7 @@ namespace Chummer.Backend.Skills
             {
                 if (objSkillGroup.Name == objSkill.SkillGroup)
                 {
-                    if(!objSkillGroup.SkillList.Contains(objSkill))
+                    if (!objSkillGroup.SkillList.Contains(objSkill))
                         objSkillGroup.Add(objSkill);
                     return objSkillGroup;
                 }
@@ -552,7 +552,10 @@ namespace Chummer.Backend.Skills
 
         public string UpgradeToolTip
         {
-            get { return string.Format(LanguageManager.GetString("Tip_ImproveItem", GlobalOptions.Language), SkillList.Where(x => x.Enabled).Select(x => x.TotalBaseRating).DefaultIfEmpty().Min() + 1, UpgradeKarmaCost); }
+            get
+            {
+                return string.Format(LanguageManager.GetString("Tip_ImproveItem", GlobalOptions.Language), SkillList.Where(x => x.Enabled).Select(x => x.TotalBaseRating).DefaultIfEmpty().Min() + 1, UpgradeKarmaCost);
+            }
         }
 
         private Guid _guidId = Guid.NewGuid();
@@ -562,42 +565,66 @@ namespace Chummer.Backend.Skills
         #region HasWhateverSkills
         public bool HasCombatSkills
         {
-            get { return _lstAffectedSkills.Any(x => x.SkillCategory == "Combat Active"); }
+            get
+            {
+                return _lstAffectedSkills.Any(x => x.SkillCategory == "Combat Active");
+            }
         }
 
         public bool HasPhysicalSkills
         {
-            get { return _lstAffectedSkills.Any(x => x.SkillCategory == "Physical Active"); }
+            get
+            {
+                return _lstAffectedSkills.Any(x => x.SkillCategory == "Physical Active");
+            }
         }
 
         public bool HasSocialSkills
         {
-            get { return _lstAffectedSkills.Any(x => x.SkillCategory == "Social Active"); }
+            get
+            {
+                return _lstAffectedSkills.Any(x => x.SkillCategory == "Social Active");
+            }
         }
 
         public bool HasTechnicalSkills
         {
-            get { return _lstAffectedSkills.Any(x => x.SkillCategory == "Technical Active"); }
+            get
+            {
+                return _lstAffectedSkills.Any(x => x.SkillCategory == "Technical Active");
+            }
         }
 
         public bool HasVehicleSkills
         {
-            get { return _lstAffectedSkills.Any(x => x.SkillCategory == "Vehicle Active"); }
+            get
+            {
+                return _lstAffectedSkills.Any(x => x.SkillCategory == "Vehicle Active");
+            }
         }
 
         public bool HasMagicalSkills
         {
-            get { return _lstAffectedSkills.Any(x => x.SkillCategory == "Magical Active"); }
+            get
+            {
+                return _lstAffectedSkills.Any(x => x.SkillCategory == "Magical Active");
+            }
         }
 
         public bool HasResonanceSkills
         {
-            get { return _lstAffectedSkills.Any(x => x.SkillCategory == "Resonance Active"); }
+            get
+            {
+                return _lstAffectedSkills.Any(x => x.SkillCategory == "Resonance Active");
+            }
         }
 
         public IEnumerable<string> GetRelevantSkillCategories
         {
-            get { return _lstAffectedSkills.Select(x => x.SkillCategory).Distinct(); }
+            get
+            {
+                return _lstAffectedSkills.Select(x => x.SkillCategory).Distinct();
+            }
         }
         #endregion
 

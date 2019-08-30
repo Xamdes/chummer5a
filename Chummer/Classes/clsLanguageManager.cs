@@ -16,14 +16,14 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
- using System;
+using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
- using System.IO;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
- using System.Windows.Forms;
+using System.Windows.Forms;
 using System.Xml;
 
 namespace Chummer
@@ -32,11 +32,17 @@ namespace Chummer
     {
         public class LanguageData
         {
-            public bool IsRightToLeftScript { get; }
+            public bool IsRightToLeftScript
+            {
+                get;
+            }
             public IDictionary<string, string> TranslatedStrings { get; } = new Dictionary<string, string>();
             public XmlDocument DataDocument { get; } = new XmlDocument();
             public string ErrorMessage { get; } = string.Empty;
-            public bool ErrorAlreadyShown { get; set; }
+            public bool ErrorAlreadyShown
+            {
+                get; set;
+            }
 
             public LanguageData(string strLanguage)
             {
@@ -264,7 +270,7 @@ namespace Chummer
         {
             if (objParent == null)
                 return;
-            
+
             objParent.RightToLeft = eIntoRightToLeft;
 
             if (objParent is Form frmForm)
@@ -482,7 +488,7 @@ namespace Chummer
                 new Tuple<string, bool>(strInput.Substring(0, intStartPosition), false)
             };
 
-            char[] achrCurlyBrackets = {'{', '}'};
+            char[] achrCurlyBrackets = { '{', '}' };
             // Current bracket level. This needs to be tracked so that this method can be performed recursively on curly bracket sets inside of curly bracket sets
             int intBracketLevel = 1;
             // Loop will be jumping to instances of '{' or '}' within strInput until it reaches the last closing curly bracket (at intEndPosition)
@@ -492,34 +498,34 @@ namespace Chummer
                 switch (chrLoop)
                 {
                     case '{':
-                    {
-                        if (intBracketLevel == 0)
                         {
-                            // End of area between sets of curly brackets, push it to lstStringWithCompoundsSplit with Item2 set to False
-                            lstStringWithCompoundsSplit.Add(new Tuple<string, bool>(strInput.Substring(intStartPosition + 1, i - 1), false));
-                            // Tracks the start of the top-level curly bracket opening to know where to start the substring when this item will be closed by a closing curly bracket
-                            intStartPosition = i;
-                        }
-                        intBracketLevel += 1;
-                        break;
-                    }
-                    case '}':
-                    {
-                        // Makes sure the function doesn't mess up when there's a closing curly bracket without a matching opening curly bracket
-                        if (intBracketLevel > 0)
-                        {
-                            intBracketLevel -= 1;
                             if (intBracketLevel == 0)
                             {
-                                // End of area enclosed by curly brackets, push it to lstStringWithCompoundsSplit with Item2 set to True
-                                lstStringWithCompoundsSplit.Add(new Tuple<string, bool>(strInput.Substring(intStartPosition + 1, i - 1), true));
-                                // Tracks the start of the area between curly bracket sets to know where to start the substring when the next set of curly brackets is encountered
+                                // End of area between sets of curly brackets, push it to lstStringWithCompoundsSplit with Item2 set to False
+                                lstStringWithCompoundsSplit.Add(new Tuple<string, bool>(strInput.Substring(intStartPosition + 1, i - 1), false));
+                                // Tracks the start of the top-level curly bracket opening to know where to start the substring when this item will be closed by a closing curly bracket
                                 intStartPosition = i;
                             }
+                            intBracketLevel += 1;
+                            break;
                         }
+                    case '}':
+                        {
+                            // Makes sure the function doesn't mess up when there's a closing curly bracket without a matching opening curly bracket
+                            if (intBracketLevel > 0)
+                            {
+                                intBracketLevel -= 1;
+                                if (intBracketLevel == 0)
+                                {
+                                    // End of area enclosed by curly brackets, push it to lstStringWithCompoundsSplit with Item2 set to True
+                                    lstStringWithCompoundsSplit.Add(new Tuple<string, bool>(strInput.Substring(intStartPosition + 1, i - 1), true));
+                                    // Tracks the start of the area between curly bracket sets to know where to start the substring when the next set of curly brackets is encountered
+                                    intStartPosition = i;
+                                }
+                            }
 
-                        break;
-                    }
+                            break;
+                        }
                 }
             }
 
@@ -757,7 +763,8 @@ namespace Chummer
         /// <param name="strIntoLanguage">Language into which the string should be translated</param>
         public static string TranslateExtra(string strExtra, string strIntoLanguage)
         {
-            if (String.IsNullOrEmpty(strExtra)) return "";
+            if (string.IsNullOrEmpty(strExtra))
+                return "";
             string strReturn = string.Empty;
 
             // Only attempt to translate if we're not using English. Don't attempt to translate an empty string either.
@@ -830,26 +837,26 @@ namespace Chummer
                         string strExtraNoQuotes = strExtra.FastEscape('\"');
 
                         object strReturnLock = new object();
-                        Parallel.For((long) 0, s_LstXPathsToSearch.Length, (i, state) =>
-                        {
-                            Tuple<string, string, Func<XmlNode, string>, Func<XmlNode, string>> objXPathPair = s_LstXPathsToSearch[i];
-                            using (XmlNodeList xmlNodeList = XmlManager.Load(objXPathPair.Item1, strIntoLanguage).SelectNodes(objXPathPair.Item2))
-                                if (xmlNodeList != null)
-                                    foreach (XmlNode objNode in xmlNodeList)
-                                    {
-                                        if (objXPathPair.Item3(objNode) == strExtraNoQuotes)
-                                        {
-                                            string strTranslate = objXPathPair.Item4(objNode);
-                                            if (!string.IsNullOrEmpty(strTranslate))
-                                            {
-                                                lock (strReturnLock)
-                                                    strReturn = strTranslate;
-                                                state.Stop();
-                                                break;
-                                            }
-                                        }
-                                    }
-                        });
+                        Parallel.For((long)0, s_LstXPathsToSearch.Length, (i, state) =>
+                       {
+                           Tuple<string, string, Func<XmlNode, string>, Func<XmlNode, string>> objXPathPair = s_LstXPathsToSearch[i];
+                           using (XmlNodeList xmlNodeList = XmlManager.Load(objXPathPair.Item1, strIntoLanguage).SelectNodes(objXPathPair.Item2))
+                               if (xmlNodeList != null)
+                                   foreach (XmlNode objNode in xmlNodeList)
+                                   {
+                                       if (objXPathPair.Item3(objNode) == strExtraNoQuotes)
+                                       {
+                                           string strTranslate = objXPathPair.Item4(objNode);
+                                           if (!string.IsNullOrEmpty(strTranslate))
+                                           {
+                                               lock (strReturnLock)
+                                                   strReturn = strTranslate;
+                                               state.Stop();
+                                               break;
+                                           }
+                                       }
+                                   }
+                       });
                         break;
                 }
             }
@@ -920,7 +927,7 @@ namespace Chummer
                     return "EDG";
                 }
 
-                if(strExtra == GetString("String_AttributeMAGShort", strFromLanguage))
+                if (strExtra == GetString("String_AttributeMAGShort", strFromLanguage))
                 {
                     return "MAG";
                 }
@@ -978,26 +985,26 @@ namespace Chummer
                 string strExtraNoQuotes = strExtra.FastEscape('\"');
 
                 object strReturnLock = new object();
-                Parallel.For((long) 0, s_LstXPathsToSearch.Length, (i, state) =>
-                {
-                    Tuple<string, string, Func<XmlNode, string>, Func<XmlNode, string>> objXPathPair = s_LstXPathsToSearch[i];
-                    using (XmlNodeList xmlNodeList = XmlManager.Load(objXPathPair.Item1, strFromLanguage).SelectNodes(objXPathPair.Item2))
-                        if (xmlNodeList != null)
-                            foreach (XmlNode xmlNode in xmlNodeList)
-                            {
-                                if (objXPathPair.Item4(xmlNode) == strExtraNoQuotes)
-                                {
-                                    string strOriginal = objXPathPair.Item3(xmlNode);
-                                    if (!string.IsNullOrEmpty(strOriginal))
-                                    {
-                                        lock (strReturnLock)
-                                            strReturn = strOriginal;
-                                        state.Stop();
-                                        break;
-                                    }
-                                }
-                            }
-                });
+                Parallel.For((long)0, s_LstXPathsToSearch.Length, (i, state) =>
+               {
+                   Tuple<string, string, Func<XmlNode, string>, Func<XmlNode, string>> objXPathPair = s_LstXPathsToSearch[i];
+                   using (XmlNodeList xmlNodeList = XmlManager.Load(objXPathPair.Item1, strFromLanguage).SelectNodes(objXPathPair.Item2))
+                       if (xmlNodeList != null)
+                           foreach (XmlNode xmlNode in xmlNodeList)
+                           {
+                               if (objXPathPair.Item4(xmlNode) == strExtraNoQuotes)
+                               {
+                                   string strOriginal = objXPathPair.Item3(xmlNode);
+                                   if (!string.IsNullOrEmpty(strOriginal))
+                                   {
+                                       lock (strReturnLock)
+                                           strReturn = strOriginal;
+                                       state.Stop();
+                                       break;
+                                   }
+                               }
+                           }
+               });
             }
 
             return strReturn;

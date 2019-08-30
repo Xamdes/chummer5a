@@ -16,6 +16,7 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
+using NLog;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -24,7 +25,6 @@ using System.Globalization;
 using System.Linq;
 using System.Windows.Forms;
 using System.Xml;
-using NLog;
 
 namespace Chummer.Backend.Equipment
 {
@@ -92,10 +92,10 @@ namespace Chummer.Backend.Equipment
             return QualitySource.Selected;
 #endif
         }
-    #endregion
+        #endregion
 
         #region Constructor, Create, Save, Load, and Print Methods
-    public LifestyleQuality(Character objCharacter)
+        public LifestyleQuality(Character objCharacter)
         {
             // Create the GUID for the new LifestyleQuality.
             _guiID = Guid.NewGuid();
@@ -224,7 +224,7 @@ namespace Chummer.Backend.Equipment
             {
                 _guiID = Guid.NewGuid();
             }
-            if(!objNode.TryGetGuidFieldQuickly("sourceid", ref _guiSourceID))
+            if (!objNode.TryGetGuidFieldQuickly("sourceid", ref _guiSourceID))
             {
                 XmlNode node = GetNode(GlobalOptions.Language);
                 node?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
@@ -352,7 +352,7 @@ namespace Chummer.Backend.Equipment
                 objWriter.WriteElementString("notes", Notes);
             objWriter.WriteEndElement();
         }
-#endregion
+        #endregion
 
         #region Properties
         /// <summary>
@@ -588,22 +588,34 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Comfort LP is increased/reduced by this Quality.
         /// </summary>
-        public int Comfort { get; set; }
+        public int Comfort
+        {
+            get; set;
+        }
 
         /// <summary>
         /// Comfort LP maximum is increased/reduced by this Quality.
         /// </summary>
-        public int ComfortMaximum { get; set; }
+        public int ComfortMaximum
+        {
+            get; set;
+        }
 
         /// <summary>
         /// Security LP value is increased/reduced by this Quality.
         /// </summary>
-        public int SecurityMaximum { get; set; }
+        public int SecurityMaximum
+        {
+            get; set;
+        }
 
         /// <summary>
         /// Security LP value is increased/reduced by this Quality.
         /// </summary>
-        public int Security { get; set; }
+        public int Security
+        {
+            get; set;
+        }
 
         /// <summary>
         /// Percentage by which the quality increases the overall Lifestyle Cost.
@@ -635,12 +647,18 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Area/Neighborhood LP Cost/Benefit of the Quality.
         /// </summary>
-        public int AreaMaximum { get; set; }
+        public int AreaMaximum
+        {
+            get; set;
+        }
 
         /// <summary>
         /// Area/Neighborhood minimum is increased/reduced by this Quality.
         /// </summary>
-        public int Area { get; set; }
+        public int Area
+        {
+            get; set;
+        }
 
         private XmlNode _objCachedMyXmlNode;
         private string _strCachedXmlNodeLanguage = string.Empty;
@@ -655,7 +673,8 @@ namespace Chummer.Backend.Equipment
             if (_objCachedMyXmlNode == null || strLanguage != _strCachedXmlNodeLanguage || GlobalOptions.LiveCustomData)
             {
 
-                if (_objCachedMyXmlNode != null && strLanguage == _strCachedXmlNodeLanguage && !GlobalOptions.LiveCustomData) return _objCachedMyXmlNode;
+                if (_objCachedMyXmlNode != null && strLanguage == _strCachedXmlNodeLanguage && !GlobalOptions.LiveCustomData)
+                    return _objCachedMyXmlNode;
                 _objCachedMyXmlNode = SourceID == Guid.Empty
                     ? XmlManager.Load("lifestyles.xml", strLanguage)
                         .SelectSingleNode($"/chummer/qualities/quality[name = \"{Name}\"]")

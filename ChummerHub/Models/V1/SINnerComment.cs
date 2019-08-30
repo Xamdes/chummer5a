@@ -12,27 +12,45 @@ namespace ChummerHub.Models.V1
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
 
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'SINnerComment.Id'
-        public Guid? Id { get; set; }
+        public Guid? Id
+        {
+            get; set;
+        }
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'SINnerComment.Id'
 
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'SINnerComment.SINnerId'
-        public Guid? SINnerId { get; set; }
+        public Guid? SINnerId
+        {
+            get; set;
+        }
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'SINnerComment.SINnerId'
 
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'SINnerComment.MyDateTime'
-        public DateTime MyDateTime { get; }
+        public DateTime MyDateTime
+        {
+            get;
+        }
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'SINnerComment.MyDateTime'
 
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'SINnerComment.Comment'
-        public string Comment { get; set; }
+        public string Comment
+        {
+            get; set;
+        }
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'SINnerComment.Comment'
 
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'SINnerComment.Email'
-        public string Email { get; set; }
+        public string Email
+        {
+            get; set;
+        }
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'SINnerComment.Email'
 
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'SINnerComment.Downloads'
-        public int Downloads { get; set; }
+        public int Downloads
+        {
+            get; set;
+        }
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'SINnerComment.Downloads'
     }
 }

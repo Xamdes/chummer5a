@@ -4,19 +4,18 @@
 
 namespace SINners.Models
 {
-    using System;
-    using System.Linq;
-    using System.Collections.Generic;
     using Newtonsoft.Json;
-    using Microsoft.Rest;
-    using Microsoft.Rest.Serialization;
+    using System;
+    using System.Collections.Generic;
 
     public partial class ApplicationUser
     {
         /// <summary>
         /// Initializes a new instance of the ApplicationUser class.
         /// </summary>
-        public ApplicationUser() { }
+        public ApplicationUser()
+        {
+        }
 
         /// <summary>
         /// Initializes a new instance of the ApplicationUser class.
@@ -44,82 +43,130 @@ namespace SINners.Models
         /// <summary>
         /// </summary>
         [JsonProperty(PropertyName = "favoriteGroups")]
-        public IList<ApplicationUserFavoriteGroup> FavoriteGroups { get; set; }
+        public IList<ApplicationUserFavoriteGroup> FavoriteGroups
+        {
+            get; set;
+        }
 
         /// <summary>
         /// </summary>
         [JsonProperty(PropertyName = "id")]
-        public Guid? Id { get; set; }
+        public Guid? Id
+        {
+            get; set;
+        }
 
         /// <summary>
         /// </summary>
         [JsonProperty(PropertyName = "userName")]
-        public string UserName { get; set; }
+        public string UserName
+        {
+            get; set;
+        }
 
         /// <summary>
         /// </summary>
         [JsonProperty(PropertyName = "normalizedUserName")]
-        public string NormalizedUserName { get; set; }
+        public string NormalizedUserName
+        {
+            get; set;
+        }
 
         /// <summary>
         /// </summary>
         [JsonProperty(PropertyName = "email")]
-        public string Email { get; set; }
+        public string Email
+        {
+            get; set;
+        }
 
         /// <summary>
         /// </summary>
         [JsonProperty(PropertyName = "normalizedEmail")]
-        public string NormalizedEmail { get; set; }
+        public string NormalizedEmail
+        {
+            get; set;
+        }
 
         /// <summary>
         /// </summary>
         [JsonProperty(PropertyName = "emailConfirmed")]
-        public bool? EmailConfirmed { get; set; }
+        public bool? EmailConfirmed
+        {
+            get; set;
+        }
 
         /// <summary>
         /// </summary>
         [JsonProperty(PropertyName = "passwordHash")]
-        public string PasswordHash { get; set; }
+        public string PasswordHash
+        {
+            get; set;
+        }
 
         /// <summary>
         /// </summary>
         [JsonProperty(PropertyName = "securityStamp")]
-        public string SecurityStamp { get; set; }
+        public string SecurityStamp
+        {
+            get; set;
+        }
 
         /// <summary>
         /// </summary>
         [JsonProperty(PropertyName = "concurrencyStamp")]
-        public string ConcurrencyStamp { get; set; }
+        public string ConcurrencyStamp
+        {
+            get; set;
+        }
 
         /// <summary>
         /// </summary>
         [JsonProperty(PropertyName = "phoneNumber")]
-        public string PhoneNumber { get; set; }
+        public string PhoneNumber
+        {
+            get; set;
+        }
 
         /// <summary>
         /// </summary>
         [JsonProperty(PropertyName = "phoneNumberConfirmed")]
-        public bool? PhoneNumberConfirmed { get; set; }
+        public bool? PhoneNumberConfirmed
+        {
+            get; set;
+        }
 
         /// <summary>
         /// </summary>
         [JsonProperty(PropertyName = "twoFactorEnabled")]
-        public bool? TwoFactorEnabled { get; set; }
+        public bool? TwoFactorEnabled
+        {
+            get; set;
+        }
 
         /// <summary>
         /// </summary>
         [JsonProperty(PropertyName = "lockoutEnd")]
-        public DateTime? LockoutEnd { get; set; }
+        public DateTime? LockoutEnd
+        {
+            get; set;
+        }
 
         /// <summary>
         /// </summary>
         [JsonProperty(PropertyName = "lockoutEnabled")]
-        public bool? LockoutEnabled { get; set; }
+        public bool? LockoutEnabled
+        {
+            get; set;
+        }
 
         /// <summary>
         /// </summary>
         [JsonProperty(PropertyName = "accessFailedCount")]
-        public int? AccessFailedCount { get; set; }
+        public int? AccessFailedCount
+        {
+            get; set;
+        }
 
     }
 }

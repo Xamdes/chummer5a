@@ -1,7 +1,4 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -33,7 +30,7 @@ namespace ChummerHub.Client.Backend
 
         {
 
-            var tcs = new TaskCompletionSource<bool>();
+            TaskCompletionSource<bool> tcs = new TaskCompletionSource<bool>();
 
             using (cancellationToken.Register(
 
@@ -73,7 +70,7 @@ namespace ChummerHub.Client.Backend
 
         {
 
-            var tcs = new TaskCompletionSource<bool>();
+            TaskCompletionSource<bool> tcs = new TaskCompletionSource<bool>();
 
             using (cancellationToken.Register(
 
@@ -113,11 +110,11 @@ namespace ChummerHub.Client.Backend
 
         {
 
-            var cts = new CancellationTokenSource();
+            CancellationTokenSource cts = new CancellationTokenSource();
 
             cts.CancelAfter(milliseconds);
 
-            var tcs = new TaskCompletionSource<bool>();
+            TaskCompletionSource<bool> tcs = new TaskCompletionSource<bool>();
 
             using (cts.Token.Register(
 
@@ -157,11 +154,11 @@ namespace ChummerHub.Client.Backend
 
         {
 
-            var cts = new CancellationTokenSource();
+            CancellationTokenSource cts = new CancellationTokenSource();
 
             cts.CancelAfter(milliseconds);
 
-            var tcs = new TaskCompletionSource<bool>();
+            TaskCompletionSource<bool> tcs = new TaskCompletionSource<bool>();
 
             using (cts.Token.Register(
 

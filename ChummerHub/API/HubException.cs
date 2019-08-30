@@ -41,7 +41,7 @@ namespace ChummerHub.API
         public override string ToString()
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'HubException.ToString()'
         {
-            var strOut = base.ToString() + " Message: " + this.Message;
+            string strOut = base.ToString() + " Message: " + this.Message;
             return strOut;
         }
 

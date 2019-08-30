@@ -4,19 +4,18 @@
 
 namespace SINners.Models
 {
-    using System;
-    using System.Linq;
-    using System.Collections.Generic;
     using Newtonsoft.Json;
-    using Microsoft.Rest;
-    using Microsoft.Rest.Serialization;
+    using System;
+    using System.Collections.Generic;
 
     public partial class SINnerMetaData
     {
         /// <summary>
         /// Initializes a new instance of the SINnerMetaData class.
         /// </summary>
-        public SINnerMetaData() { }
+        public SINnerMetaData()
+        {
+        }
 
         /// <summary>
         /// Initializes a new instance of the SINnerMetaData class.
@@ -31,17 +30,26 @@ namespace SINners.Models
         /// <summary>
         /// </summary>
         [JsonProperty(PropertyName = "id")]
-        public Guid? Id { get; set; }
+        public Guid? Id
+        {
+            get; set;
+        }
 
         /// <summary>
         /// </summary>
         [JsonProperty(PropertyName = "visibility")]
-        public SINnerVisibility Visibility { get; set; }
+        public SINnerVisibility Visibility
+        {
+            get; set;
+        }
 
         /// <summary>
         /// </summary>
         [JsonProperty(PropertyName = "tags")]
-        public IList<Tag> Tags { get; set; }
+        public IList<Tag> Tags
+        {
+            get; set;
+        }
 
     }
 }

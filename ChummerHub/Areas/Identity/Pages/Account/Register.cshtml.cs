@@ -37,11 +37,17 @@ namespace ChummerHub.Areas.Identity.Pages.Account
 
         [BindProperty]
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'RegisterModel.Input'
-        public InputModel Input { get; set; }
+        public InputModel Input
+        {
+            get; set;
+        }
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'RegisterModel.Input'
 
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'RegisterModel.ReturnUrl'
-        public string ReturnUrl { get; set; }
+        public string ReturnUrl
+        {
+            get; set;
+        }
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'RegisterModel.ReturnUrl'
 
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'RegisterModel.InputModel'
@@ -52,7 +58,10 @@ namespace ChummerHub.Areas.Identity.Pages.Account
             [EmailAddress]
             [Display(Name = "Email")]
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'RegisterModel.InputModel.Email'
-            public string Email { get; set; }
+            public string Email
+            {
+                get; set;
+            }
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'RegisterModel.InputModel.Email'
 
             [Required]
@@ -60,14 +69,20 @@ namespace ChummerHub.Areas.Identity.Pages.Account
             [DataType(DataType.Password)]
             [Display(Name = "Password")]
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'RegisterModel.InputModel.Password'
-            public string Password { get; set; }
+            public string Password
+            {
+                get; set;
+            }
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'RegisterModel.InputModel.Password'
 
             [DataType(DataType.Password)]
             [Display(Name = "Confirm password")]
             [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'RegisterModel.InputModel.ConfirmPassword'
-            public string ConfirmPassword { get; set; }
+            public string ConfirmPassword
+            {
+                get; set;
+            }
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'RegisterModel.InputModel.ConfirmPassword'
         }
 
@@ -85,19 +100,23 @@ namespace ChummerHub.Areas.Identity.Pages.Account
             returnUrl = returnUrl ?? Url.Content("~/");
             if (ModelState.IsValid)
             {
-                var user = new ApplicationUser { UserName = Input.Email, Email = Input.Email };
-                var result = await _userManager.CreateAsync(user, Input.Password);
+                ApplicationUser user = new ApplicationUser { UserName = Input.Email, Email = Input.Email };
+                IdentityResult result = await _userManager.CreateAsync(user, Input.Password);
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("User created a new account with password.");
 
-                    var result1 = await _userManager.AddToRoleAsync(user, ChummerHub.API.Authorizarion.Constants.UserRoleRegistered);
+                    IdentityResult result1 = await _userManager.AddToRoleAsync(user, ChummerHub.API.Authorizarion.Constants.UserRoleRegistered);
 
-                    var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-                    var callbackUrl = Url.Page(
+                    string code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+                    string callbackUrl = Url.Page(
                         "/Account/ConfirmEmail",
                         pageHandler: null,
-                        values: new { userId = user.Id, code = code },
+                        values: new
+                        {
+                            userId = user.Id,
+                            code = code
+                        },
                         protocol: Request.Scheme);
 
                     await _emailSender.SendEmailAsync(Input.Email, "Confirm your email",
@@ -106,7 +125,7 @@ namespace ChummerHub.Areas.Identity.Pages.Account
                     await _signInManager.SignInAsync(user, isPersistent: true);
                     return LocalRedirect(returnUrl);
                 }
-                foreach (var error in result.Errors)
+                foreach (IdentityError error in result.Errors)
                 {
                     ModelState.AddModelError(string.Empty, error.Description);
                 }

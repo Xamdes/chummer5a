@@ -101,20 +101,26 @@ namespace Chummer.UI.Table
         public SortOrder SortType
         {
             get => _eSortType;
-            set {
+            set
+            {
                 _eSortType = value;
                 Invalidate();
             }
         }
 
-        public object TextTag {
+        public object TextTag
+        {
             get => _lblCellText.Tag;
             set => _lblCellText.Tag = value;
         }
 
-        internal bool Sortable { get; set; }
+        internal bool Sortable
+        {
+            get; set;
+        }
 
-        public virtual event EventHandler HeaderClick {
+        public virtual event EventHandler HeaderClick
+        {
             add
             {
                 Click += value;
@@ -133,7 +139,8 @@ namespace Chummer.UI.Table
             Rectangle rect = new Rectangle(0, 0, Width, Height);
             e.Graphics.FillRectangle(new LinearGradientBrush(rect, SystemColors.ControlLight, SystemColors.ControlDark, LinearGradientMode.Vertical), rect);
 
-            if (Sortable && SortType != SortOrder.None) {
+            if (Sortable && SortType != SortOrder.None)
+            {
                 // draw arrow
                 int intTipY = ArrowPadding + ArrowSize / 6;
                 int intBottomY = (ArrowPadding + ArrowSize) - ArrowSize / 6;
@@ -148,7 +155,7 @@ namespace Chummer.UI.Table
                     intTipY = intBottomY;
                     intBottomY = intTemp;
                 }
-                e.Graphics.FillPolygon(_objArrowBrush, new [] { new Point(intLeft, intBottomY), new Point(intTipX, intTipY), new Point(intRight, intBottomY) });
+                e.Graphics.FillPolygon(_objArrowBrush, new[] { new Point(intLeft, intBottomY), new Point(intTipX, intTipY), new Point(intRight, intBottomY) });
             }
             base.OnPaint(e);
         }

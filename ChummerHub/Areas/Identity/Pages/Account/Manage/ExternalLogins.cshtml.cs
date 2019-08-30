@@ -27,27 +27,39 @@ namespace ChummerHub.Areas.Identity.Pages.Account.Manage
         }
 
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'ExternalLoginsModel.CurrentLogins'
-        public IList<UserLoginInfo> CurrentLogins { get; set; }
+        public IList<UserLoginInfo> CurrentLogins
+        {
+            get; set;
+        }
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'ExternalLoginsModel.CurrentLogins'
 
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'ExternalLoginsModel.OtherLogins'
-        public IList<AuthenticationScheme> OtherLogins { get; set; }
+        public IList<AuthenticationScheme> OtherLogins
+        {
+            get; set;
+        }
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'ExternalLoginsModel.OtherLogins'
 
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'ExternalLoginsModel.ShowRemoveButton'
-        public bool ShowRemoveButton { get; set; }
+        public bool ShowRemoveButton
+        {
+            get; set;
+        }
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'ExternalLoginsModel.ShowRemoveButton'
 
         [TempData]
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'ExternalLoginsModel.StatusMessage'
-        public string StatusMessage { get; set; }
+        public string StatusMessage
+        {
+            get; set;
+        }
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'ExternalLoginsModel.StatusMessage'
 
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'ExternalLoginsModel.OnGetAsync()'
         public async Task<IActionResult> OnGetAsync()
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'ExternalLoginsModel.OnGetAsync()'
         {
-            var user = await _userManager.GetUserAsync(User);
+            ApplicationUser user = await _userManager.GetUserAsync(User);
             if (user == null)
             {
                 return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
@@ -65,16 +77,16 @@ namespace ChummerHub.Areas.Identity.Pages.Account.Manage
         public async Task<IActionResult> OnPostRemoveLoginAsync(string loginProvider, string providerKey)
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'ExternalLoginsModel.OnPostRemoveLoginAsync(string, string)'
         {
-            var user = await _userManager.GetUserAsync(User);
+            ApplicationUser user = await _userManager.GetUserAsync(User);
             if (user == null)
             {
                 return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
             }
 
-            var result = await _userManager.RemoveLoginAsync(user, loginProvider, providerKey);
+            IdentityResult result = await _userManager.RemoveLoginAsync(user, loginProvider, providerKey);
             if (!result.Succeeded)
             {
-                var userId = await _userManager.GetUserIdAsync(user);
+                string userId = await _userManager.GetUserIdAsync(user);
                 throw new InvalidOperationException($"Unexpected error occurred removing external login for user with ID '{userId}'.");
             }
 
@@ -91,8 +103,8 @@ namespace ChummerHub.Areas.Identity.Pages.Account.Manage
             await HttpContext.SignOutAsync(IdentityConstants.ExternalScheme);
 
             // Request a redirect to the external login provider to link a login for the current user
-            var redirectUrl = Url.Page("./ExternalLogins", pageHandler: "LinkLoginCallback");
-            var properties = _signInManager.ConfigureExternalAuthenticationProperties(provider, redirectUrl, _userManager.GetUserId(User));
+            string redirectUrl = Url.Page("./ExternalLogins", pageHandler: "LinkLoginCallback");
+            AuthenticationProperties properties = _signInManager.ConfigureExternalAuthenticationProperties(provider, redirectUrl, _userManager.GetUserId(User));
             return new ChallengeResult(provider, properties);
         }
 
@@ -100,19 +112,19 @@ namespace ChummerHub.Areas.Identity.Pages.Account.Manage
         public async Task<IActionResult> OnGetLinkLoginCallbackAsync()
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'ExternalLoginsModel.OnGetLinkLoginCallbackAsync()'
         {
-            var user = await _userManager.GetUserAsync(User);
+            ApplicationUser user = await _userManager.GetUserAsync(User);
             if (user == null)
             {
                 return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
             }
 
-            var info = await _signInManager.GetExternalLoginInfoAsync(await _userManager.GetUserIdAsync(user));
+            ExternalLoginInfo info = await _signInManager.GetExternalLoginInfoAsync(await _userManager.GetUserIdAsync(user));
             if (info == null)
             {
                 throw new InvalidOperationException($"Unexpected error occurred loading external login info for user with ID '{user.Id}'.");
             }
 
-            var result = await _userManager.AddLoginAsync(user, info);
+            IdentityResult result = await _userManager.AddLoginAsync(user, info);
             if (!result.Succeeded)
             {
                 throw new InvalidOperationException($"Unexpected error occurred adding external login for user with ID '{user.Id}'.");

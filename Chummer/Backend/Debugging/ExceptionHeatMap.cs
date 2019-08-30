@@ -28,7 +28,7 @@ namespace Chummer.Backend
 {
     public sealed class ExceptionHeatMap
     {
-        readonly ConcurrentDictionary<string, int> _map = new ConcurrentDictionary<string, int>();
+        private readonly ConcurrentDictionary<string, int> _map = new ConcurrentDictionary<string, int>();
 
         public void OnException(object sender, FirstChanceExceptionEventArgs e)
         {
@@ -40,7 +40,8 @@ namespace Chummer.Backend
             // This kind of resolves a crash due to other applications querying Chummer's frames.
             // Specifically, the NVDA screen reader. See https://github.com/chummer5a/chummer5a/issues/1888
             // In theory shouldn't mask any existing issues?
-            if (frame == null) return;
+            if (frame == null)
+                return;
             string heat = $"{frame.GetFileName()}:{frame.GetFileLineNumber()}";
 
             if (_map.TryGetValue(heat, out int intTmp))
@@ -58,12 +59,13 @@ namespace Chummer.Backend
             StringBuilder builder = new StringBuilder(Environment.NewLine);
             int lenght = -1;
             IOrderedEnumerable<KeyValuePair<string, int>> exceptions = from i in _map
-                orderby -i.Value
-                select i;
+                                                                       orderby -i.Value
+                                                                       select i;
 
             foreach (KeyValuePair<string, int> exception in exceptions)
             {
-                builder.Append('\t'); builder.Append('\t');
+                builder.Append('\t');
+                builder.Append('\t');
                 lenght = Math.Max((int)Math.Ceiling(Math.Log10(exception.Value)), lenght);
                 builder.Append(exception.Value.ToString($"D{lenght}"));
 

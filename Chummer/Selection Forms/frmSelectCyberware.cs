@@ -16,15 +16,15 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
+using Chummer.Backend.Equipment;
+using NLog;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Windows.Forms;
 using System.Xml;
 using System.Xml.XPath;
-using Chummer.Backend.Equipment;
-using System.Text;
-using NLog;
 
 namespace Chummer
 {
@@ -341,7 +341,7 @@ namespace Chummer
                         objForcedGrade = _objForcedGrade ?? _lstGrades.FirstOrDefault(x => x.SourceIDString == strForceGrade);
                     }
                 }
-                
+
                 chkBlackMarketDiscount.Checked = _objCharacter.BlackMarketDiscount && _setBlackMarketMaps.Contains(xmlCyberware.SelectSingleNode("category")?.Value);
 
                 // We may need to rebuild the Grade list since Cultured Bioware is not allowed to select Standard (Second-Hand) as Grade and ForceGrades can change.
@@ -515,7 +515,10 @@ namespace Chummer
         /// <summary>
         /// Whether or not the user wants to add another item after this one.
         /// </summary>
-        public bool AddAgain { get; private set; }
+        public bool AddAgain
+        {
+            get; private set;
+        }
 
         /// <summary>
         /// Essence cost multiplier from the character.
@@ -541,7 +544,7 @@ namespace Chummer
         /// Essence cost multiplier for Basic Bioware.
         /// </summary>
         public decimal BasicBiowareESSMultiplier { get; set; } = 1.0m;
-        
+
         /// <summary>
         /// Whether or not the item has no cost.
         /// </summary>
@@ -605,29 +608,47 @@ namespace Chummer
         /// <summary>
         /// Grade of the selected piece of Cyberware.
         /// </summary>
-        public Grade SelectedGrade { get; private set; }
+        public Grade SelectedGrade
+        {
+            get; private set;
+        }
 
         /// <summary>
         /// Rating of the selected piece of Cyberware (0 if not applicable).
         /// </summary>
-        public int SelectedRating { get; private set; }
+        public int SelectedRating
+        {
+            get; private set;
+        }
 
         /// <summary>
         /// Selected Essence cost discount.
         /// </summary>
-        public int SelectedESSDiscount { get; private set; }
+        public int SelectedESSDiscount
+        {
+            get; private set;
+        }
 
         /// <summary>
         /// Whether or not the selected Vehicle is used.
         /// </summary>
-        public bool BlackMarketDiscount { get; private set; }
-        
+        public bool BlackMarketDiscount
+        {
+            get; private set;
+        }
+
         /// <summary>
         /// Parent vehicle that the cyberlimb will be attached to.
         /// </summary>
-        public Vehicle ParentVehicle { set; get; }
+        public Vehicle ParentVehicle
+        {
+            set; get;
+        }
 
-        public decimal Markup { get; set; }
+        public decimal Markup
+        {
+            get; set;
+        }
 
         /// <summary>
         /// Whether the bioware should be discounted by Prototype Transhuman.
@@ -637,12 +658,18 @@ namespace Chummer
         /// <summary>
         /// Parent cyberware that the current selection will be added to.
         /// </summary>
-        public Cyberware CyberwareParent { get; set; }
+        public Cyberware CyberwareParent
+        {
+            get; set;
+        }
 
         /// <summary>
         /// Default text string to filter by.
         /// </summary>
-        public string DefaultSearchText { get; set; }
+        public string DefaultSearchText
+        {
+            get; set;
+        }
         #endregion
 
         #region Methods
@@ -914,7 +941,7 @@ namespace Chummer
                 return null;
             }
 
-            string strFilter = "(" + _objCharacter.Options.BookXPath() +')';
+            string strFilter = "(" + _objCharacter.Options.BookXPath() + ')';
             string strCategoryFilter = "(";
             if (strCategory != "Show All" && (_objCharacter.Options.SearchInCategoryOnly || txtSearch.TextLength == 0))
                 strCategoryFilter += "category = \"" + strCategory + '\"';
@@ -1111,7 +1138,8 @@ namespace Chummer
                 lstCyberwares.Add(new ListItem(xmlCyberware.SelectSingleNode("id")?.Value, xmlCyberware.SelectSingleNode("translate")?.Value ?? xmlCyberware.SelectSingleNode("name")?.Value));
                 if (blnTerminateAfterFirst)
                     break;
-                NextCyberware:;
+NextCyberware:
+                ;
             }
             if (blnDoUIUpdate)
             {
@@ -1137,7 +1165,10 @@ namespace Chummer
         /// <summary>
         /// Is a given piece of ware being Upgraded?
         /// </summary>
-        public bool Upgrading { get; set; }
+        public bool Upgrading
+        {
+            get; set;
+        }
 
         /// <summary>
         /// Lock the Grade so it cannot be changed.

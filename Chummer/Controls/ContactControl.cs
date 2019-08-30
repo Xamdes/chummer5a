@@ -17,11 +17,11 @@
  *  https://github.com/chummer5a/chummer5a
  */
 using System;
-using System.IO;
-using System.Windows.Forms;
 using System.Collections.Generic;
-using System.Xml;
+using System.IO;
 using System.Linq;
+using System.Windows.Forms;
+using System.Xml;
 
 namespace Chummer
 {
@@ -266,7 +266,8 @@ namespace Chummer
                 openFileDialog.FileName = Path.GetFileName(_objContact.FileName);
             }
 
-            if (openFileDialog.ShowDialog(this) != DialogResult.OK) return;
+            if (openFileDialog.ShowDialog(this) != DialogResult.OK)
+                return;
             _objContact.FileName = openFileDialog.FileName;
             imgLink.SetToolTip(_objContact.EntityType == ContactType.Enemy
                     ? LanguageManager.GetString("Tip_Enemy_OpenFile", GlobalOptions.Language)
@@ -356,10 +357,12 @@ namespace Chummer
         {
             get
             {
-                if (_lstContactArchetypes != null) return _lstContactArchetypes;
-                _lstContactArchetypes = new List<ListItem>{ListItem.Blank};
+                if (_lstContactArchetypes != null)
+                    return _lstContactArchetypes;
+                _lstContactArchetypes = new List<ListItem> { ListItem.Blank };
                 XmlNode xmlContactsBaseNode = XmlManager.Load("contacts.xml").SelectSingleNode("/chummer");
-                if (xmlContactsBaseNode == null) return _lstContactArchetypes;
+                if (xmlContactsBaseNode == null)
+                    return _lstContactArchetypes;
                 using (XmlNodeList xmlNodeList = xmlContactsBaseNode.SelectNodes("contacts/contact"))
                     if (xmlNodeList != null)
                         foreach (XmlNode xmlNode in xmlNodeList)
@@ -415,7 +418,7 @@ namespace Chummer
             {
                 ListItem.Blank
             };
-            
+
             XmlNode xmlContactsBaseNode = XmlManager.Load("contacts.xml").SelectSingleNode("/chummer");
             if (xmlContactsBaseNode != null)
             {

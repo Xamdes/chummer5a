@@ -28,7 +28,10 @@ namespace Chummer
             Text = strText;
         }
 
-        public string Text { get; }
+        public string Text
+        {
+            get;
+        }
     }
 
     [ComVisible(true)]

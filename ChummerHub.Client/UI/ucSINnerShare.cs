@@ -1,27 +1,16 @@
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Drawing;
-using System.Data;
-using System.IO.Packaging;
-using System.Linq;
-using System.Net;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Web;
-using System.Windows;
-using System.Windows.Forms;
 using Chummer;
 using Chummer.Plugins;
 using ChummerHub.Client.Backend;
 using ChummerHub.Client.Model;
-using Microsoft.Rest;
-using NLog;
 using SINners;
 using SINners.Models;
-using MessageBox = System.Windows.Forms.MessageBox;
-using Utils = Chummer.Utils;
+using System;
+using System.Collections.Generic;
+using System.Data;
+using System.Linq;
+using System.Net;
+using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace ChummerHub.Client.UI
 {
@@ -30,11 +19,23 @@ namespace ChummerHub.Client.UI
         private NLog.Logger Log = LogManager.GetCurrentClassLogger();
         public frmSINnerShare MyFrmSINnerShare;
 
-        public frmCharacterRoster.CharacterCache MyCharacterCache { get; set; }
-        public Func<Task<MyUserState>> DoWork { get; }
+        public frmCharacterRoster.CharacterCache MyCharacterCache
+        {
+            get; set;
+        }
+        public Func<Task<MyUserState>> DoWork
+        {
+            get;
+        }
         //public Func<int, Task<MyUserState>> ReportProgress { get; }
-        public Action<MyUserState> RunWorkerCompleted { get; }
-        public Action<int, MyUserState> ReportProgress { get; }
+        public Action<MyUserState> RunWorkerCompleted
+        {
+            get;
+        }
+        public Action<int, MyUserState> ReportProgress
+        {
+            get;
+        }
 
         //public event DoWorkEventHandler DoWork;
         //public event ProgressChangedEventHandler ProgressChanged;
@@ -52,19 +53,34 @@ namespace ChummerHub.Client.UI
 
         public class MyUserState
         {
-            public string LinkText { get; set; }
-            public string StatusText { get; set; }
-            public ucSINnerShare myWorker { get; set; }
+            public string LinkText
+            {
+                get; set;
+            }
+            public string StatusText
+            {
+                get; set;
+            }
+            public ucSINnerShare myWorker
+            {
+                get; set;
+            }
 
             public MyUserState(ucSINnerShare worker)
             {
                 myWorker = worker;
             }
-            public int CurrentProgress { get; internal set; }
+            public int CurrentProgress
+            {
+                get; internal set;
+            }
             /// <summary>
             /// 5 Steps are made in total!
             /// </summary>
-            public int ProgressSteps { get; internal set; }
+            public int ProgressSteps
+            {
+                get; internal set;
+            }
         }
 
         private async Task<MyUserState> ShareChummer_DoWork()
@@ -72,33 +88,35 @@ namespace ChummerHub.Client.UI
             string hash = "";
             try
             {
-                using (var op_shareChummer = Timekeeper.StartSyncron("Share Chummer", null,
+                using (CustomActivity op_shareChummer = Timekeeper.StartSyncron("Share Chummer", null,
                     CustomActivity.OperationType.DependencyOperation, MyCharacterCache?.FilePath))
                 {
                     MyUserState myState = new MyUserState(this);
                     CharacterExtended ce = null;
-                    var client = StaticUtils.GetClient();
+                    SINnersClient client = StaticUtils.GetClient();
                     string sinnerid = "";
                     Guid SINid = Guid.Empty;
 
                     async Task<CharacterExtended> GetCharacterExtended(CustomActivity parentActivity)
                     {
-                        using (var op_prepChummer = Timekeeper.StartSyncron("Loading Chummerfile", parentActivity,
+                        using (CustomActivity op_prepChummer = Timekeeper.StartSyncron("Loading Chummerfile", parentActivity,
                             CustomActivity.OperationType.DependencyOperation, MyCharacterCache?.FilePath))
                         {
                             Character c = new Character()
                             {
                                 FileName = MyCharacterCache.FilePath
                             };
-                            var foundchar = (from a in PluginHandler.MainForm.OpenCharacters
-                                             where a.FileName == MyCharacterCache.FilePath
-                                             select a).ToList();
+                            List<Character> foundchar = (from a in PluginHandler.MainForm.OpenCharacters
+                                                         where a.FileName == MyCharacterCache.FilePath
+                                                         select a).ToList();
                             if (foundchar?.Any() == true)
                                 c = foundchar?.FirstOrDefault();
                             else
                             {
                                 using (frmLoading frmLoadingForm = new frmLoading
-                                { CharacterFile = MyCharacterCache.FilePath })
+                                {
+                                    CharacterFile = MyCharacterCache.FilePath
+                                })
                                 {
                                     frmLoadingForm.Reset(36);
                                     frmLoadingForm.TopMost = true;
@@ -124,7 +142,7 @@ namespace ChummerHub.Client.UI
 
 
 
-                    if (MyCharacterCache.MyPluginDataDic.TryGetValue("SINnerId", out Object sinneridobj))
+                    if (MyCharacterCache.MyPluginDataDic.TryGetValue("SINnerId", out object sinneridobj))
                     {
                         sinnerid = sinneridobj?.ToString();
                     }
@@ -137,7 +155,7 @@ namespace ChummerHub.Client.UI
 
 
 
-                    if ((String.IsNullOrEmpty(sinnerid)
+                    if ((string.IsNullOrEmpty(sinnerid)
                          || (!Guid.TryParse(sinnerid, out SINid))))
                     {
                         myState.StatusText = "SINner Id is unknown or not issued!";
@@ -153,7 +171,7 @@ namespace ChummerHub.Client.UI
 
                     HttpOperationResponse<ResultSinnerGetSINById> checkresult = null;
                     //check if char is already online and updated
-                    using (var op_checkOnlineVersionChummer = Timekeeper.StartSyncron(
+                    using (CustomActivity op_checkOnlineVersionChummer = Timekeeper.StartSyncron(
                         "check if online", op_shareChummer,
                         CustomActivity.OperationType.DependencyOperation, MyCharacterCache?.FilePath))
                     {
@@ -179,8 +197,8 @@ namespace ChummerHub.Client.UI
                         }
                     }
 
-                    
-                    var lastWriteTimeUtc = System.IO.File.GetLastWriteTimeUtc(MyCharacterCache.FilePath);
+
+                    DateTime lastWriteTimeUtc = System.IO.File.GetLastWriteTimeUtc(MyCharacterCache.FilePath);
                     if (checkresult.Response.StatusCode == HttpStatusCode.NotFound
                         || (checkresult.Body.MySINner.LastChange < lastWriteTimeUtc))
                     {
@@ -192,7 +210,7 @@ namespace ChummerHub.Client.UI
                             ce = await GetCharacterExtended(op_shareChummer);
                         }
 
-                        using (var op_uploadChummer = Timekeeper.StartSyncron(
+                        using (CustomActivity op_uploadChummer = Timekeeper.StartSyncron(
                             "Uploading Chummer", op_shareChummer,
                             CustomActivity.OperationType.DependencyOperation, MyCharacterCache?.FilePath))
                         {
@@ -201,7 +219,7 @@ namespace ChummerHub.Client.UI
                             myState.CurrentProgress = 35;
                             ReportProgress(myState.CurrentProgress, myState);
                             myState.ProgressSteps = 10;
-                            var uploadtask = await ce.Upload(myState, op_uploadChummer);
+                            bool uploadtask = await ce.Upload(myState, op_uploadChummer);
                             SINid = ce.MySINnerFile.Id.Value;
                             var result = await client.GetSINByIdWithHttpMessagesAsync(SINid);
                             if (result == null)
@@ -258,7 +276,7 @@ namespace ChummerHub.Client.UI
                 });
                 tbLink.DoThreadSafe(() =>
                 {
-                    if (!String.IsNullOrEmpty(us.LinkText) && (us.LinkText != tbLink.Text))
+                    if (!string.IsNullOrEmpty(us.LinkText) && (us.LinkText != tbLink.Text))
                     {
                         tbLink.Text = us.LinkText;
                     }

@@ -20,7 +20,7 @@ using System;
 
 namespace Chummer
 {
-    class NuyenString : IComparable
+    internal class NuyenString : IComparable
     {
         private readonly string _strBaseString;
         private readonly decimal _decValue;

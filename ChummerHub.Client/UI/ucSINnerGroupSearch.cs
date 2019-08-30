@@ -1,34 +1,28 @@
+using Chummer;
+using Chummer.Plugins;
+using ChummerHub.Client.Backend;
+using ChummerHub.Client.Model;
+using SINners.Models;
 using System;
-using System.CodeDom;
-using System.CodeDom.Compiler;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
-using System.Diagnostics.Eventing.Reader;
 using System.Drawing;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using ChummerHub.Client.Backend;
 using System.Net;
 using System.Threading;
-using System.Windows;
-using Chummer;
-using SINners.Models;
-using ChummerHub.Client.Model;
-using Chummer.Plugins;
-using Microsoft.Rest;
-using MessageBox = System.Windows.Forms.MessageBox;
+using System.Threading.Tasks;
+using System.Windows.Forms;
 using Point = System.Drawing.Point;
-using NLog;
 
 namespace ChummerHub.Client.UI
 {
     public partial class ucSINnerGroupSearch : UserControl
     {
         private Logger Log = NLog.LogManager.GetCurrentClassLogger();
-        public CharacterExtended MyCE { get; set; }
+        public CharacterExtended MyCE
+        {
+            get; set;
+        }
         public EventHandler<SINnerGroup> OnGroupJoinCallback = null;
 
         private SINSearchGroupResult _mySINSearchGroupResult = null;
@@ -53,7 +47,7 @@ namespace ChummerHub.Client.UI
                         else if (_mySINSearchGroupResult.SinGroups != null)
                         {
                             this.bJoinGroup.Enabled = _mySINSearchGroupResult.SinGroups.Any();
-                            var rootseq = (from a in MySINSearchGroupResult?.SinGroups select a).ToList();
+                            List<SINnerSearchGroup> rootseq = (from a in MySINSearchGroupResult?.SinGroups select a).ToList();
                             List<TreeNode> nodes = CreateTreeViewNodes(rootseq);
                             this.DoThreadSafe(() =>
                             {
@@ -61,7 +55,7 @@ namespace ChummerHub.Client.UI
                             });
                         }
 
-                        
+
                     });
                 }
                 catch (Exception ex)
@@ -74,14 +68,14 @@ namespace ChummerHub.Client.UI
 
         private List<TreeNode> CreateTreeViewNodes(IList<SINnerSearchGroup> sinGroups)
         {
-            var res = new List<TreeNode>();
+            List<TreeNode> res = new List<TreeNode>();
             if (sinGroups == null)
                 return res;
 
-            foreach (var ssg in sinGroups)
+            foreach (SINnerSearchGroup ssg in sinGroups)
             {
                 TreeNode tn = new TreeNode(ssg.GroupDisplayname);
-                if (String.IsNullOrEmpty(ssg.Language))
+                if (string.IsNullOrEmpty(ssg.Language))
                     ssg.Language = "en-us";
                 int index = frmViewer.LstLanguages.FindIndex(c => c.Value?.ToString() == ssg.Language);
                 if (index != -1)
@@ -93,7 +87,7 @@ namespace ChummerHub.Client.UI
                 tn.ToolTipText = ssg.Description;
                 if (this.cbShowMembers.Checked == true)
                 {
-                    foreach (var member in ssg.MyMembers)
+                    foreach (SINnerSearchGroupMember member in ssg.MyMembers)
                     {
                         TreeNode tnm = new TreeNode(member.MySINner.Alias)
                         {
@@ -101,7 +95,7 @@ namespace ChummerHub.Client.UI
                         };
                         tnm.ImageIndex = tvGroupSearchResult.ImageList.Images.Count - 1;
                         tnm.SelectedImageIndex = tvGroupSearchResult.ImageList.Images.Count - 1;
-                        if (!String.IsNullOrEmpty(member?.MySINner?.Language))
+                        if (!string.IsNullOrEmpty(member?.MySINner?.Language))
                         {
                             int mindex = frmViewer.LstLanguages.FindIndex(c => c.Value?.ToString() == member?.MySINner?.Language);
                             if (mindex != -1)
@@ -113,7 +107,7 @@ namespace ChummerHub.Client.UI
                         tn.Nodes.Add(tnm);
                     }
                 }
-                var nodes = CreateTreeViewNodes(ssg.MySINSearchGroups);
+                List<TreeNode> nodes = CreateTreeViewNodes(ssg.MySINSearchGroups);
                 tn.Nodes.AddRange(nodes.ToArray());
                 res.Add(tn);
             }
@@ -121,39 +115,42 @@ namespace ChummerHub.Client.UI
             return res;
         }
 
-        public frmSINnerGroupSearch MyParentForm { get; internal set; }
+        public frmSINnerGroupSearch MyParentForm
+        {
+            get; internal set;
+        }
 
         public ucSINnerGroupSearch()
         {
             InitializeComponent();
-            
+
             ImageList myCountryImageList = new ImageList();
-            
-            foreach (var lang in frmViewer.LstLanguages)
+
+            foreach (ListItem lang in frmViewer.LstLanguages)
             {
-                var img = FlagImageGetter.GetFlagFromCountryCode(lang.Value.ToString().Substring(3, 2));
+                Image img = FlagImageGetter.GetFlagFromCountryCode(lang.Value.ToString().Substring(3, 2));
                 myCountryImageList.Images.Add(img);
             }
-            var empty = FlagImageGetter.GetFlagFromCountryCode("noimagedots");
+            Image empty = FlagImageGetter.GetFlagFromCountryCode("noimagedots");
             myCountryImageList.Images.Add(empty);
             tvGroupSearchResult.ImageList = myCountryImageList;
             bCreateGroup.Enabled = true;
             bJoinGroup.Enabled = false;
-            
+
         }
 
-        
+
         private async Task<SINnerGroup> CreateGroup(SINnerGroup mygroup)
         {
             try
             {
-                if (String.IsNullOrEmpty(this.tbSearchGroupname.Text) && mygroup == null)
+                if (string.IsNullOrEmpty(this.tbSearchGroupname.Text) && mygroup == null)
                 {
                     Program.MainForm.ShowMessageBox("Please specify a groupename to create!");
                     this.tbSearchGroupname.Focus();
                     return null;
                 }
-                var client = StaticUtils.GetClient();
+                SINners.SINnersClient client = StaticUtils.GetClient();
                 var res = await client.PostGroupWithHttpMessagesAsync(
                     mygroup,
                     MyCE?.MySINnerFile?.Id);
@@ -186,7 +183,7 @@ namespace ChummerHub.Client.UI
                     MySINSearchGroupResult = await SearchForGroups(this.tbSearchGroupname.Text);
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 Log.Error(ex);
                 Program.MainForm.ShowMessageBox(ex.Message);
@@ -196,32 +193,31 @@ namespace ChummerHub.Client.UI
                 this.bSearch.Text = "Search";
                 TvGroupSearchResult_AfterSelect(sender, new TreeViewEventArgs(new TreeNode()));
             }
-            
+
         }
 
         private async Task<SINSearchGroupResult> SearchForGroups(string groupname)
         {
             try
             {
-                var a = await SearchForGroupsTask(groupname);
+                SINSearchGroupResult a = await SearchForGroupsTask(groupname);
                 return a;
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 Log.Error(e);
                 throw;
             }
-            
+
         }
 
         private async Task<SINSearchGroupResult> SearchForGroupsTask(string groupname)
         {
             try
             {
-                SINSearchGroupResult ssgr = null;
-                var client = StaticUtils.GetClient();
+                SINners.SINnersClient client = StaticUtils.GetClient();
                 var res = await client.GetSearchGroupsWithHttpMessagesAsync(groupname, null, null);
-                var result = await Backend.Utils.HandleError(res, res.Body) as ResultGroupGetSearchGroups;
+                ResultGroupGetSearchGroups result = await Backend.Utils.HandleError(res, res.Body) as ResultGroupGetSearchGroups;
                 if (result == null)
                     return null;
                 if (result.CallSuccess == true)
@@ -234,7 +230,7 @@ namespace ChummerHub.Client.UI
             {
                 throw;
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 Log.Error(e);
                 throw;
@@ -242,8 +238,8 @@ namespace ChummerHub.Client.UI
             return null;
         }
 
-     
-      
+
+
 
         private async void bJoinGroup_Click(object sender, EventArgs e)
         {
@@ -270,7 +266,7 @@ namespace ChummerHub.Client.UI
                     //{
                     using (new CursorWait(false, this))
                     {
-                        var task = JoinGroupTask(item, MyCE);
+                        Task<SINSearchGroupResult> task = JoinGroupTask(item, MyCE);
                         await task.ContinueWith(a =>
                         {
                             using (new CursorWait(false, this))
@@ -281,7 +277,7 @@ namespace ChummerHub.Client.UI
                                     if ((a.Exception != null) && (a.Exception is AggregateException))
                                     {
                                         msg = "";
-                                        foreach (var exp in (a.Exception as AggregateException).InnerExceptions)
+                                        foreach (Exception exp in (a.Exception as AggregateException).InnerExceptions)
                                         {
                                             msg += exp.Message + Environment.NewLine;
                                         }
@@ -296,7 +292,7 @@ namespace ChummerHub.Client.UI
                                     return;
                                 }
 
-                                if (!String.IsNullOrEmpty(a.Result?.ErrorText))
+                                if (!string.IsNullOrEmpty(a.Result?.ErrorText))
                                 {
                                     Log.Error(a.Result.ErrorText);
                                 }
@@ -340,7 +336,7 @@ namespace ChummerHub.Client.UI
             }
             catch (Exception ex)
             {
-                Log.Error(ex); 
+                Log.Error(ex);
                 throw;
             }
 
@@ -350,7 +346,7 @@ namespace ChummerHub.Client.UI
         {
             try
             {
-                var client = StaticUtils.GetClient();
+                SINners.SINnersClient client = StaticUtils.GetClient();
                 var response = await client.DeleteLeaveGroupWithHttpMessagesAsync(myGroup.Id, mySINnerFile.Id);
                 if ((response.Response.StatusCode == HttpStatusCode.OK))
                 {
@@ -362,7 +358,7 @@ namespace ChummerHub.Client.UI
                     }
                     catch (Exception e)
                     {
-                        Log.Warn("Group disbanded: "  + e.Message);
+                        Log.Warn("Group disbanded: " + e.Message);
                         Program.MainForm.ShowMessageBox("Group " + myGroup.Groupname + " disbanded because of no members left.");
                     }
                     finally
@@ -415,7 +411,7 @@ namespace ChummerHub.Client.UI
                     {
                         using (new CursorWait(true, this))
                         {
-                            var client = StaticUtils.GetClient();
+                            SINners.SINnersClient client = StaticUtils.GetClient();
                             var response =
                                 await client.PutSINerInGroupWithHttpMessagesAsync(searchgroup.Id, myCE.MySINnerFile.Id,
                                     groupEdit?.MySINnerGroupCreate?.MyGroup?.PasswordHash);
@@ -451,14 +447,14 @@ namespace ChummerHub.Client.UI
                             {
                                 var found = await client.GetGroupByIdWithHttpMessagesAsync(searchgroup.Id, null,
                                     CancellationToken.None);
-                                var res = Backend.Utils.HandleError(found);
+                                Task<object> res = Backend.Utils.HandleError(found);
                                 if (found?.Response?.IsSuccessStatusCode == true)
                                 {
                                     ssgr = new SINSearchGroupResult(found.Body.MyGroup);
                                 }
                             }
                         }
-                        
+
                     }
                     catch (Exception e)
                     {
@@ -481,8 +477,8 @@ namespace ChummerHub.Client.UI
 
                 throw;
             }
-            
-            
+
+
             return ssgr;
         }
 
@@ -499,15 +495,15 @@ namespace ChummerHub.Client.UI
             {
                 using (new CursorWait(true, this))
                 {
-                    
+
                     try
                     {
                         using (new CursorWait(true, this))
                         {
                             //MySINSearchGroupResult = null;
-                            if (String.IsNullOrEmpty(this.tbSearchGroupname.Text))
+                            if (string.IsNullOrEmpty(this.tbSearchGroupname.Text))
                             {
-                                var temp = new SINSearchGroupResult(MyCE?.MySINnerFile.MyGroup);
+                                SINSearchGroupResult temp = new SINSearchGroupResult(MyCE?.MySINnerFile.MyGroup);
                                 MySINSearchGroupResult = temp;
 
                             }
@@ -517,7 +513,7 @@ namespace ChummerHub.Client.UI
                             }
                         }
                     }
-                    catch (ArgumentNullException ex)
+                    catch (ArgumentNullException)
                     {
                         Log.Info(
                             "No group found with name: " + MyCE?.MySINnerFile.MyGroup.Groupname);
@@ -535,7 +531,7 @@ namespace ChummerHub.Client.UI
                         TvGroupSearchResult_AfterSelect(sender, new TreeViewEventArgs(new TreeNode()));
                     }
                 }
-                
+
             }
         }
 
@@ -562,8 +558,8 @@ namespace ChummerHub.Client.UI
             {
                 if (MyCE == null)
                     this.bJoinGroup.Enabled = false;
-                
-                var item = tvGroupSearchResult.SelectedNode?.Tag as SINnerSearchGroup;
+
+                SINnerSearchGroup item = tvGroupSearchResult.SelectedNode?.Tag as SINnerSearchGroup;
                 if (item != null)
                 {
                     if (this.MyCE?.MySINnerFile.MyGroup == null)
@@ -585,7 +581,7 @@ namespace ChummerHub.Client.UI
                         this.bJoinGroup.Enabled = true;
                         this.bJoinGroup.Text = "leave group";
                     }
-                    var members = item.MyMembers;
+                    IList<SINnerSearchGroupMember> members = item.MyMembers;
                 }
                 else
                 {
@@ -599,7 +595,7 @@ namespace ChummerHub.Client.UI
             PluginHandler.MainForm.DoThreadSafe(() =>
             {
                 TreeNode selectedNode = tvGroupSearchResult.SelectedNode;
-                var item = selectedNode?.Tag as SINnerSearchGroup;
+                SINnerSearchGroup item = selectedNode?.Tag as SINnerSearchGroup;
                 while (item == null && selectedNode?.Parent != null)
                 {
                     selectedNode = selectedNode.Parent;
@@ -607,9 +603,9 @@ namespace ChummerHub.Client.UI
                 }
                 if (item != null)
                 {
-                    var list = new List<SINnerSearchGroup>() {item};
-                    var nodelist = ChummerHub.Client.Backend.Utils.CharacterRosterTreeNodifyGroupList(list);
-                    foreach (var node in nodelist)
+                    List<SINnerSearchGroup> list = new List<SINnerSearchGroup>() { item };
+                    List<TreeNode> nodelist = ChummerHub.Client.Backend.Utils.CharacterRosterTreeNodifyGroupList(list);
+                    foreach (TreeNode node in nodelist)
                     {
                         PluginHandler.MyTreeNodes2Add.AddOrUpdate(node.Name, node, (key, oldValue) => node);
                     }
@@ -622,12 +618,12 @@ namespace ChummerHub.Client.UI
 
         private async void BGroupsFoundDeleteGroup_Click(object sender, EventArgs e)
         {
-            var item = tvGroupSearchResult.SelectedNode?.Tag as SINnerSearchGroup;
+            SINnerSearchGroup item = tvGroupSearchResult.SelectedNode?.Tag as SINnerSearchGroup;
             if (item != null)
             {
                 try
                 {
-                    var client = StaticUtils.GetClient();
+                    SINners.SINnersClient client = StaticUtils.GetClient();
                     var response = await client.DeleteGroupWithHttpMessagesAsync(item.Id).CancelAfter(1000 * 30);
                     if ((response.Response.StatusCode == HttpStatusCode.OK))
                     {
@@ -649,7 +645,7 @@ namespace ChummerHub.Client.UI
                         {
                             ex = Newtonsoft.Json.JsonConvert.DeserializeObject<Exception>(rescontent);
                         }
-                        catch (Exception exception)
+                        catch (Exception)
                         {
                             throw new ArgumentException(rescontent);
                         }
@@ -663,8 +659,8 @@ namespace ChummerHub.Client.UI
                     Program.MainForm.ShowMessageBox(exception.ToString(), "Error deleting Group", MessageBoxButtons.OK,
                         MessageBoxIcon.Error);
                 }
-            
-               
+
+
             }
         }
 
@@ -732,10 +728,10 @@ namespace ChummerHub.Client.UI
                 {
                     // Yes. Move the node, expand it, and select it.
 
-                    var client = StaticUtils.GetClient();
+                    SINners.SINnersClient client = StaticUtils.GetClient();
                     if (draggedGroup != null)
                     {
-                        
+
                         var res = await client.PutGroupInGroupWithHttpMessagesAsync(draggedGroup.Id,
                             draggedGroup.Groupname, targetGroup?.Id,
                             draggedGroup.MyAdminIdentityRole, draggedGroup.IsPublic);
@@ -750,7 +746,7 @@ namespace ChummerHub.Client.UI
                         {
                             var res = await client.DeleteLeaveGroupWithHttpMessagesAsync(
                                 draggedSINner.MySINner.MyGroup.Id, draggedSINner.MySINner.Id);
-                            var response = Backend.Utils.HandleError(res, res.Body);
+                            Task<object> response = Backend.Utils.HandleError(res, res.Body);
                             if (res.Response.StatusCode == HttpStatusCode.OK)
                             {
                                 bSearch_Click(sender, e);
@@ -760,11 +756,11 @@ namespace ChummerHub.Client.UI
                             return;
                         if (draggedSINner.MySINner.MyGroup == null && targetGroup.Id == null)
                             return;
-                        
+
                         try
                         {
                             var res = await client.PutSINerInGroupWithHttpMessagesAsync(targetGroup.Id, draggedSINner.MySINner.Id);
-                            var response = Backend.Utils.HandleError(res, res.Body);
+                            Task<object> response = Backend.Utils.HandleError(res, res.Body);
                             if (res.Response.StatusCode == HttpStatusCode.OK)
                             {
                                 bSearch_Click(sender, e);
@@ -774,14 +770,14 @@ namespace ChummerHub.Client.UI
                         {
                             await Backend.Utils.HandleError(exception);
                         }
-                       
+
                     }
 
                     if ((draggedSINner?.MySINner?.MyGroup?.Id != null) && (targetNode == null))
                     {
                         var res = await client.DeleteLeaveGroupWithHttpMessagesAsync(
                             draggedSINner.MySINner.MyGroup.Id, draggedSINner.MySINner.Id);
-                        var response = Backend.Utils.HandleError(res, res.Body);
+                        Task<object> response = Backend.Utils.HandleError(res, res.Body);
                         if (res.Response.StatusCode == HttpStatusCode.OK)
                         {
                             MoveNode(draggedNode, targetNode);
@@ -790,7 +786,7 @@ namespace ChummerHub.Client.UI
                     else if ((draggedSINner?.MySINner != null && (targetNode == null)))
                     {
                         var res = await client.PutSINerInGroupWithHttpMessagesAsync(null, draggedSINner.MySINner.Id);
-                        var response = Backend.Utils.HandleError(res, res.Body);
+                        Task<object> response = Backend.Utils.HandleError(res, res.Body);
                         if (res.Response.StatusCode == HttpStatusCode.OK)
                         {
                             MoveNode(draggedNode, targetNode);
@@ -799,7 +795,7 @@ namespace ChummerHub.Client.UI
                     else if (draggedSINner != null && targetGroup != null)
                     {
                         var res = await client.PutSINerInGroupWithHttpMessagesAsync(targetGroup.Id, draggedSINner.MySINner.Id);
-                        var response = Backend.Utils.HandleError(res, res.Body);
+                        Task<object> response = Backend.Utils.HandleError(res, res.Body);
                         if (res.Response.StatusCode == HttpStatusCode.OK)
                         {
                             MoveNode(draggedNode, targetNode);
@@ -808,13 +804,13 @@ namespace ChummerHub.Client.UI
 
 
                 }
-            
+
             }
 
             // Optional: Select the dropped node and navigate (however you do it)
             tvGroupSearchResult.SelectedNode = draggedNode;
             // NavigateToContent(draggedNode.Tag);
-          
+
         }
 
         private void MoveNode(TreeNode draggedNode, TreeNode targetNode)
@@ -854,8 +850,8 @@ namespace ChummerHub.Client.UI
                     {
                         bSearch_Click(this, new EventArgs());
                     });
-                    
-                }); 
+
+                });
             }
         }
 
@@ -863,11 +859,13 @@ namespace ChummerHub.Client.UI
         {
             try
             {
-                var group = new SINnerGroup();
-                group.Groupname = this.tbSearchGroupname.Text;
-                group.IsPublic = false;
+                SINnerGroup group = new SINnerGroup
+                {
+                    Groupname = this.tbSearchGroupname.Text,
+                    IsPublic = false
+                };
                 if ((MyCE?.MySINnerFile.MyGroup != null)
-                    && ((String.IsNullOrEmpty(tbSearchGroupname.Text))
+                    && ((string.IsNullOrEmpty(tbSearchGroupname.Text))
                         || (tbSearchGroupname.Text == MyCE?.MySINnerFile.MyGroup?.Groupname)))
                 {
                     group = MyCE?.MySINnerFile.MyGroup;
@@ -882,7 +880,7 @@ namespace ChummerHub.Client.UI
                     }
                 }
                 frmSINnerGroupEdit ge = new frmSINnerGroupEdit(group, false);
-                var result = ge.ShowDialog(this);
+                DialogResult result = ge.ShowDialog(this);
                 if (result == DialogResult.OK)
                 {
                     group = ge.MySINnerGroupCreate.MyGroup;
@@ -899,11 +897,13 @@ namespace ChummerHub.Client.UI
         {
             try
             {
-                var group = new SINnerGroup();
-                group.Groupname = this.tbSearchGroupname.Text;
-                group.IsPublic = false;
+                SINnerGroup group = new SINnerGroup
+                {
+                    Groupname = this.tbSearchGroupname.Text,
+                    IsPublic = false
+                };
                 if ((MyCE?.MySINnerFile.MyGroup != null)
-                    && ((String.IsNullOrEmpty(tbSearchGroupname.Text))
+                    && ((string.IsNullOrEmpty(tbSearchGroupname.Text))
                         || (tbSearchGroupname.Text == MyCE?.MySINnerFile.MyGroup?.Groupname)))
                 {
                     group = MyCE?.MySINnerFile.MyGroup;
@@ -918,7 +918,7 @@ namespace ChummerHub.Client.UI
                     }
                 }
                 frmSINnerGroupEdit ge = new frmSINnerGroupEdit(group, false);
-                var result = ge.ShowDialog(this);
+                DialogResult result = ge.ShowDialog(this);
                 if (result == DialogResult.OK)
                 {
                     group = ge.MySINnerGroupCreate.MyGroup;
@@ -926,7 +926,7 @@ namespace ChummerHub.Client.UI
                     {
                         using (new CursorWait(false, this))
                         {
-                            var a = await CreateGroup(ge.MySINnerGroupCreate.MyGroup);
+                            SINnerGroup a = await CreateGroup(ge.MySINnerGroupCreate.MyGroup);
                             if (a != null)
                             {
                                 MySINSearchGroupResult = await SearchForGroups(a.Groupname);
@@ -951,7 +951,7 @@ namespace ChummerHub.Client.UI
 
         private void CbShowMembers_CheckedChanged(object sender, EventArgs e)
         {
-            var setMeAgain = MySINSearchGroupResult;
+            SINSearchGroupResult setMeAgain = MySINSearchGroupResult;
             MySINSearchGroupResult = setMeAgain;
         }
     }

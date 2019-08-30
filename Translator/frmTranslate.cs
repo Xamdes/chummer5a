@@ -216,7 +216,8 @@ namespace Translator
                 XmlNode xmlNodeLocal = _objDataDoc.SelectSingleNode(strBaseXPath + "/id[text()=\"" + strId + "\"]/..") ??
                                        _objDataDoc.SelectSingleNode(strBaseXPath + "/text[text()=\"" + strEnglish + "\"]/..");
                 XmlElement element = xmlNodeLocal["translate"];
-                if (element != null) element.InnerText = strTranslated;
+                if (element != null)
+                    element.InnerText = strTranslated;
 
                 XmlAttribute objAttrib = xmlNodeLocal.Attributes?["translated"];
                 if (objAttrib != null)
@@ -265,9 +266,11 @@ namespace Translator
                 else
                 {
                     XmlElement element = xmlNodeLocal["translate"];
-                    if (element != null) element.InnerText = strTranslated;
+                    if (element != null)
+                        element.InnerText = strTranslated;
                     element = xmlNodeLocal.Name == "book" ? xmlNodeLocal["altcode"] : xmlNodeLocal["altpage"];
-                    if (element != null) element.InnerText = strPage;
+                    if (element != null)
+                        element.InnerText = strPage;
                     if (blnHasNameOnPage)
                     {
                         element = xmlNodeLocal["altnameonpage"];
@@ -488,7 +491,7 @@ namespace Translator
 
                         if (!blnTranslated || !chkOnlyTranslation.Checked)
                         {
-                            object[] objArray = {strKey, strEnglish, strTranslated, blnTranslated};
+                            object[] objArray = { strKey, strEnglish, strTranslated, blnTranslated };
                             lock (arrayRowsToDisplayLock)
                                 arrayRowsToDisplay[i] = objArray;
                         }
@@ -656,7 +659,8 @@ namespace Translator
                                     XmlNode xmlNodeLocal = !string.IsNullOrEmpty(strId)
                                         ? xmlDocument.SelectSingleNode("/chummer/" + strSection + "/*[id=\"" + strId + "\"]")
                                         : xmlDocument.SelectSingleNode("/chummer/" + strSection + "/*[name=\"" + strName + "\"]");
-                                    if (xmlNodeLocal == null) MessageBox.Show(strName);
+                                    if (xmlNodeLocal == null)
+                                        MessageBox.Show(strName);
                                     strSource = xmlNodeLocal?["source"]?.InnerText ?? string.Empty;
                                     strTranslated = xmlChildNode["translate"]?.InnerText ?? string.Empty;
                                     blnTranslated = strName != strTranslated || xmlChildNode.Attributes?["translated"]?.InnerText == bool.TrueString;
@@ -828,7 +832,7 @@ namespace Translator
         private void Save(XmlDocument objXmlDocument, bool blnData = true)
         {
             string strPath = Path.Combine(ApplicationPath, "lang", Code + (blnData ? "_data.xml" : ".xml"));
-            XmlWriterSettings xwsSettings = new XmlWriterSettings {IndentChars = ("\t"), Indent = true};
+            XmlWriterSettings xwsSettings = new XmlWriterSettings { IndentChars = ("\t"), Indent = true };
             using (XmlWriter xwWriter = XmlWriter.Create(strPath, xwsSettings))
             {
                 objXmlDocument.Save(xwWriter);
@@ -839,11 +843,20 @@ namespace Translator
 
         #region Properties
 
-        public string Language { get; }
+        public string Language
+        {
+            get;
+        }
 
-        public string Code { get; }
+        public string Code
+        {
+            get;
+        }
 
-        public string ApplicationPath { get; }
+        public string ApplicationPath
+        {
+            get;
+        }
 
         #endregion
     }

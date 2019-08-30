@@ -16,20 +16,19 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
- using System;
-using System.ComponentModel;
- using System.IO;
- using System.IO.Compression;
- using System.Net;
-using System.Text;
-using System.Windows.Forms;
-using System.Reflection;
- using Application = System.Windows.Forms.Application;
- using MessageBox = System.Windows.Forms.MessageBox;
+using NLog;
+using System;
 using System.Collections.Generic;
- using System.Linq;
- using System.Threading;
- using NLog;
+using System.ComponentModel;
+using System.IO;
+using System.IO.Compression;
+using System.Net;
+using System.Reflection;
+using System.Text;
+using System.Threading;
+using System.Windows.Forms;
+using Application = System.Windows.Forms.Application;
+using MessageBox = System.Windows.Forms.MessageBox;
 
 namespace Chummer
 {
@@ -385,7 +384,10 @@ namespace Chummer
         /// <summary>
         /// Latest release build number located on Github.
         /// </summary>
-        public string CurrentVersion { get; }
+        public string CurrentVersion
+        {
+            get;
+        }
 
         public void DoVersionTextUpdate()
         {
@@ -619,7 +621,7 @@ namespace Chummer
             if (blnDoRestart)
             {
                 List<string> lstBlocked = new List<string>();
-                foreach (var strFileToDelete in lstFilesToDelete)
+                foreach (string strFileToDelete in lstFilesToDelete)
                 {
                     //TODO: This will quite likely leave some wreckage behind. Introduce a sleep and scream after x seconds. 
                     if (!IsFileLocked(strFileToDelete))

@@ -16,6 +16,8 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
+using Chummer.Annotations;
+using NLog;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -27,8 +29,6 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Windows.Forms;
 using System.Xml;
-using Chummer.Annotations;
-using NLog;
 
 // ReSharper disable ConvertToAutoProperty
 
@@ -185,7 +185,8 @@ namespace Chummer.Backend.Equipment
             xmlLifestyleNode.TryGetInt32FieldQuickly("limit", ref _intSecurityMaximum);
             using (XmlNodeList lstGridNodes = objXmlLifestyle.SelectNodes("freegrids/freegrid"))
             {
-                if (!(lstGridNodes?.Count > 0)) return;
+                if (!(lstGridNodes?.Count > 0))
+                    return;
                 FreeGrids.Clear();
                 foreach (XmlNode xmlNode in lstGridNodes)
                 {
@@ -278,7 +279,7 @@ namespace Chummer.Backend.Equipment
                 _guiID = Guid.NewGuid();
             }
             objNode.TryGetStringFieldQuickly("name", ref _strName);
-            if(!objNode.TryGetGuidFieldQuickly("sourceid", ref _guiSourceID))
+            if (!objNode.TryGetGuidFieldQuickly("sourceid", ref _guiSourceID))
             {
                 XmlNode node = GetNode(GlobalOptions.Language);
                 node?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
@@ -445,7 +446,8 @@ namespace Chummer.Backend.Equipment
         {
             //Lifestyles would previously store the entire calculated value of their Cost, Area, Comforts and Security. Better to have it be a volatile Complex Property.
             if (_objCharacter.LastSavedVersion > new Version("5.197.0") ||
-                xmlLifestyleNode["costforarea"] != null) return;
+                xmlLifestyleNode["costforarea"] != null)
+                return;
             XmlDocument objXmlDocument = XmlManager.Load("lifestyles.xml");
             XmlNode objLifestyleQualityNode = objXmlDocument.SelectSingleNode("/chummer/lifestyles/lifestyle[name = \"" + _strBaseLifestyle + "\"]");
             if (objLifestyleQualityNode != null)
@@ -718,7 +720,8 @@ namespace Chummer.Backend.Equipment
             get => _strBaseLifestyle;
             set
             {
-                if (_strBaseLifestyle == value) return;
+                if (_strBaseLifestyle == value)
+                    return;
                 _strBaseLifestyle = value;
                 XmlDocument xmlLifestyleDocument = XmlManager.Load("lifestyles.xml");
                 // This needs a handler for translations, will fix later.
@@ -867,7 +870,7 @@ namespace Chummer.Backend.Equipment
 
         public int TotalComfortsMaximum => ComfortsMaximum + LifestyleQualities.Sum(lq => lq.ComfortMaximum);
         public int TotalSecurityMaximum => SecurityMaximum + LifestyleQualities.Sum(lq => lq.SecurityMaximum);
-        public int TotalAreaMaximum     => AreaMaximum     + LifestyleQualities.Sum(lq => lq.AreaMaximum);
+        public int TotalAreaMaximum => AreaMaximum + LifestyleQualities.Sum(lq => lq.AreaMaximum);
         /// <summary>
         /// Advanced Lifestyle Qualities.
         /// </summary>
@@ -1057,7 +1060,7 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public int TotalSecurity => BaseSecurity + Security + LifestyleQualities.Sum(lq => lq.Security);
 
-        public decimal AreaDelta     => Math.Max(TotalAreaMaximum - (BaseArea + LifestyleQualities.Sum(lq => lq.Area)), 0);
+        public decimal AreaDelta => Math.Max(TotalAreaMaximum - (BaseArea + LifestyleQualities.Sum(lq => lq.Area)), 0);
         public decimal ComfortsDelta => Math.Max(TotalComfortsMaximum - (BaseComforts + LifestyleQualities.Sum(lq => lq.Comfort)), 0);
         public decimal SecurityDelta => Math.Max(TotalSecurityMaximum - (BaseSecurity + LifestyleQualities.Sum(lq => lq.Security)), 0);
 
@@ -1119,7 +1122,7 @@ namespace Chummer.Backend.Equipment
                 {
                     decReturn /= _intRoommates + 1.0m;
                 }
-                decReturn *= Percentage /100;
+                decReturn *= Percentage / 100;
 
                 switch (IncrementType)
                 {
@@ -1173,14 +1176,14 @@ namespace Chummer.Backend.Equipment
         {
             // Create the Expense Log Entry.
             decimal decAmount = TotalMonthlyCost;
-                if (decAmount > CharacterObject.Nuyen)
+            if (decAmount > CharacterObject.Nuyen)
             {
                 Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_NotEnoughNuyen", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_NotEnoughNuyen", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
             ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-            objExpense.Create(decAmount* -1, LanguageManager.GetString("String_ExpenseLifestyle", GlobalOptions.Language) + ' ' + DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen, DateTime.Now);
+            objExpense.Create(decAmount * -1, LanguageManager.GetString("String_ExpenseLifestyle", GlobalOptions.Language) + ' ' + DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen, DateTime.Now);
             CharacterObject.ExpenseEntries.AddWithSort(objExpense);
             CharacterObject.Nuyen -= decAmount;
 
@@ -1288,7 +1291,8 @@ namespace Chummer.Backend.Equipment
 
         public bool Remove(Character characterObject, bool blnConfirmDelete = true)
         {
-            if (!blnConfirmDelete) return characterObject.Lifestyles.Remove(this);
+            if (!blnConfirmDelete)
+                return characterObject.Lifestyles.Remove(this);
             return characterObject.ConfirmDelete(LanguageManager.GetString("Message_DeleteLifestyle", GlobalOptions.Language)) && characterObject.Lifestyles.Remove(this);
         }
 

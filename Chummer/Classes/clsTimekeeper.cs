@@ -16,17 +16,12 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
- using System;
+using NLog;
+using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
- using System.Diagnostics;
- using System.Text;
- using System.Threading.Tasks;
- using Microsoft.ApplicationInsights;
- using Microsoft.ApplicationInsights.Channel;
- using Microsoft.ApplicationInsights.DataContracts;
- using Microsoft.ApplicationInsights.Extensibility;
- using NLog;
+using System.Diagnostics;
+using System.Text;
 
 namespace Chummer
 {
@@ -37,21 +32,21 @@ namespace Chummer
         private static readonly ConcurrentDictionary<string, TimeSpan> s_DictionaryStarts = new ConcurrentDictionary<string, TimeSpan>();
         private static readonly ConcurrentDictionary<string, Tuple<TimeSpan, int>> s_DictionaryStatistics = new ConcurrentDictionary<string, Tuple<TimeSpan, int>>();
 
-        static Timekeeper ()
+        static Timekeeper()
         {
             s_Time.Start();
         }
 
         public static CustomActivity StartSyncron(string taskname, CustomActivity parentActivity, CustomActivity.OperationType operationType, string target)
         {
-            var dependencyActivity = new CustomActivity(taskname, parentActivity, operationType, target);
+            CustomActivity dependencyActivity = new CustomActivity(taskname, parentActivity, operationType, target);
             s_DictionaryStarts.TryAdd(taskname, s_Time.Elapsed);
             return dependencyActivity;
         }
 
         public static CustomActivity StartSyncron(string taskname, CustomActivity parentActivity)
         {
-            var dependencyActivity = new CustomActivity(taskname, parentActivity);
+            CustomActivity dependencyActivity = new CustomActivity(taskname, parentActivity);
             s_DictionaryStarts.TryAdd(taskname, s_Time.Elapsed);
             return dependencyActivity;
         }

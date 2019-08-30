@@ -16,16 +16,15 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
+using Chummer.Backend.Attributes;
+using Chummer.Backend.Equipment;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Chummer.Backend.Equipment;
-using Chummer.Backend.Attributes;
 
 namespace Chummer.Backend.Skills
 {
-
-    partial class Skill : IHasInternalId
+    public partial class Skill : IHasInternalId
     {
         private int _intBase;
         private int _intKarma;
@@ -212,7 +211,7 @@ namespace Chummer.Backend.Skills
             get
             {
                 int intOtherBonus = RelevantImprovements(x => x.ImproveType == Improvement.ImprovementType.Skill && x.Enabled).Sum(x => x.Maximum);
-                return (CharacterObject.Created  || CharacterObject.IgnoreRules
+                return (CharacterObject.Created || CharacterObject.IgnoreRules
                     ? 12
                     : (IsKnowledgeSkill && CharacterObject.BuildMethod == CharacterBuildMethod.LifeModule ? 9 : 6)) + intOtherBonus;
             }
@@ -382,7 +381,8 @@ namespace Chummer.Backend.Skills
                 //No rating can obv not cost anything
                 //Makes debugging easier as we often only care about value calculation
                 int intTotalBaseRating = TotalBaseRating;
-                if (intTotalBaseRating == 0) return 0;
+                if (intTotalBaseRating == 0)
+                    return 0;
 
                 int intCost;
                 int intLower;
@@ -449,7 +449,7 @@ namespace Chummer.Backend.Skills
                 return 0;
 
             int intLevelsModded = upper * (upper + 1); //cost if nothing else was there
-            intLevelsModded -= lower*(lower + 1); //remove "karma" costs from base + free
+            intLevelsModded -= lower * (lower + 1); //remove "karma" costs from base + free
 
             intLevelsModded /= 2; //we get square, we need triangle
 

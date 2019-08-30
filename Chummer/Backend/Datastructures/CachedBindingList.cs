@@ -62,7 +62,13 @@ namespace Chummer
             OldIndex = intOldIndex;
         }
 
-        public object OldObject { get; }
-        public int OldIndex { get; }
+        public object OldObject
+        {
+            get;
+        }
+        public int OldIndex
+        {
+            get;
+        }
     }
 }

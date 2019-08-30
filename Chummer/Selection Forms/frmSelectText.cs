@@ -16,8 +16,8 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
- using System;
-﻿using System.Windows.Forms;
+using System;
+using System.Windows.Forms;
 
 namespace Chummer
 {
@@ -77,8 +77,14 @@ namespace Chummer
             set => lblDescription.Text = value;
         }
 
-        public bool PreventXPathErrors { get; internal set; }
-        public string DefaultString { get; internal set; }
+        public bool PreventXPathErrors
+        {
+            get; internal set;
+        }
+        public string DefaultString
+        {
+            get; internal set;
+        }
         #endregion
     }
 }

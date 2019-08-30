@@ -16,36 +16,36 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
+using Chummer.Backend.Equipment;
+using NLog;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using System.Xml;
-using Chummer.Backend.Equipment;
-using NLog;
 
 namespace Chummer
 {
     public partial class frmCreateCustomDrug : Form
-	{
+    {
         private static Logger Log = NLog.LogManager.GetCurrentClassLogger();
         private readonly Dictionary<string, DrugComponent> _dicDrugComponents = new Dictionary<string, DrugComponent>();
         private readonly List<clsNodeData> _lstSelectedDrugComponents;
-		private readonly List<ListItem> _lstGrade = new List<ListItem>();
-		private readonly Character _objCharacter;
-	    private Drug _objDrug;
-	    readonly XmlDocument _objXmlDocument = XmlManager.Load("drugcomponents.xml");
-		private double _dblCostMultiplier;
-		private int _intAddictionThreshold;
+        private readonly List<ListItem> _lstGrade = new List<ListItem>();
+        private readonly Character _objCharacter;
+        private Drug _objDrug;
+        private readonly XmlDocument _objXmlDocument = XmlManager.Load("drugcomponents.xml");
+        private double _dblCostMultiplier;
+        private int _intAddictionThreshold;
 
-		public frmCreateCustomDrug(Character objCharacter, Drug objDrug = null)
+        public frmCreateCustomDrug(Character objCharacter, Drug objDrug = null)
         {
-	        if (objDrug == null)
-	        {
-	            objDrug = new Drug(objCharacter);
-	        }
-	        _objCharacter = objCharacter;
+            if (objDrug == null)
+            {
+                objDrug = new Drug(objCharacter);
+            }
+            _objCharacter = objCharacter;
             InitializeComponent();
             LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
             LoadData();
@@ -81,8 +81,8 @@ namespace Chummer
             }
             treAvailableComponents.ExpandAll();
             treChosenComponents.ExpandAll();
-	        PopulateGrades();
-			UpdateCustomDrugStats();
+            PopulateGrades();
+            UpdateCustomDrugStats();
             lblDrugDescription.Text = objDrug.Description;
         }
 
@@ -99,28 +99,28 @@ namespace Chummer
                 }
             }
         }
-		
-		/// <summary>
-		/// Populate the list of Drug Grades.
-		/// </summary>
-		private void PopulateGrades()
-		{
-		    IList<Grade>  objGradeList = _objCharacter.GetGradeList(Improvement.ImprovementSource.Drug);
 
-			_lstGrade.Clear();
-			foreach (Grade objGrade in objGradeList)
-			{
-			    _lstGrade.Add(new ListItem(objGrade.Name, objGrade.DisplayName(GlobalOptions.Language)));
-			}
+        /// <summary>
+        /// Populate the list of Drug Grades.
+        /// </summary>
+        private void PopulateGrades()
+        {
+            IList<Grade> objGradeList = _objCharacter.GetGradeList(Improvement.ImprovementSource.Drug);
+
+            _lstGrade.Clear();
+            foreach (Grade objGrade in objGradeList)
+            {
+                _lstGrade.Add(new ListItem(objGrade.Name, objGrade.DisplayName(GlobalOptions.Language)));
+            }
             cboGrade.BeginUpdate();
-			cboGrade.DataSource = null;
-			cboGrade.ValueMember = "Value";
-			cboGrade.DisplayMember = "Name";
-			cboGrade.DataSource = _lstGrade;
+            cboGrade.DataSource = null;
+            cboGrade.ValueMember = "Value";
+            cboGrade.DisplayMember = "Name";
+            cboGrade.DataSource = _lstGrade;
             cboGrade.EndUpdate();
-		}
+        }
 
-		private void UpdateCustomDrugStats()
+        private void UpdateCustomDrugStats()
         {
             _objDrug = new Drug(_objCharacter)
             {
@@ -137,27 +137,27 @@ namespace Chummer
             }
         }
 
-		private void AcceptForm()
-		{
-		    // Make sure the suite and file name fields are populated.
-		    if (string.IsNullOrEmpty(txtDrugName.Text))
-		    {
-		        Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_CustomDrug_Name", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_CustomDrug_Name", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
+        private void AcceptForm()
+        {
+            // Make sure the suite and file name fields are populated.
+            if (string.IsNullOrEmpty(txtDrugName.Text))
+            {
+                Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_CustomDrug_Name", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_CustomDrug_Name", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
-		    }
+            }
 
-		    if (_objDrug.Components.Count(o => o.Category == "Foundation") != 1)
-		    {
-		        Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_CustomDrug_MissingFoundation", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_CustomDrug_Foundation", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
-		        return;
+            if (_objDrug.Components.Count(o => o.Category == "Foundation") != 1)
+            {
+                Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_CustomDrug_MissingFoundation", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_CustomDrug_Foundation", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
             }
 
             _objDrug.Quantity = 1;
-		    DialogResult = DialogResult.OK;
-		    Close();
+            DialogResult = DialogResult.OK;
+            Close();
         }
 
-		private void AddSelectedComponent()
+        private void AddSelectedComponent()
         {
             if (!(treAvailableComponents.SelectedNode?.Tag is clsNodeData objNodeData) || objNodeData.Level == -1)
             {
@@ -174,12 +174,12 @@ namespace Chummer
 
             if (!string.IsNullOrEmpty(txtDrugName.Text))
 
-            //prevent adding same component twice
-            if (_lstSelectedDrugComponents.Any(c => c.DrugComponent.Name == objNodeData.DrugComponent.Name))
-            {
-                Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_DuplicateDrugComponentWarning"));
-                return;
-            }
+                //prevent adding same component twice
+                if (_lstSelectedDrugComponents.Any(c => c.DrugComponent.Name == objNodeData.DrugComponent.Name))
+                {
+                    Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_DuplicateDrugComponentWarning"));
+                    return;
+                }
 
             //drug can have only one foundation
             if (objNodeData.DrugComponent.Category == "Foundation")
@@ -235,7 +235,7 @@ namespace Chummer
 
         public Drug CustomDrug => _objDrug;
 
-	    private void treAvailableComponents_AfterSelect(object sender, TreeViewEventArgs e)
+        private void treAvailableComponents_AfterSelect(object sender, TreeViewEventArgs e)
         {
             if (treAvailableComponents.SelectedNode?.Tag is clsNodeData objNodeData)
             {
@@ -282,37 +282,43 @@ namespace Chummer
 
         private void btnOk_Click(object sender, EventArgs e)
         {
-	        AcceptForm();
+            AcceptForm();
         }
 
-		private void btnCancel_Click(object sender, EventArgs e)
+        private void btnCancel_Click(object sender, EventArgs e)
         {
             _objDrug = null;
             DialogResult = DialogResult.Cancel;
             Close();
         }
 
-		private void cboGrade_SelectedIndexChanged(object sender, EventArgs e)
-		{
-			if (cboGrade.SelectedValue == null)
-				return;
+        private void cboGrade_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (cboGrade.SelectedValue == null)
+                return;
 
-			// Update the Essence and Cost multipliers based on the Grade that has been selected.
-			// Retrieve the information for the selected Grade.
-			XmlNode objXmlGrade = _objXmlDocument.SelectSingleNode("/chummer/grades/grade[name = \"" + cboGrade.SelectedValue + "\"]");
-		    if (!objXmlGrade.TryGetDoubleFieldQuickly("cost", ref _dblCostMultiplier))
-		        _dblCostMultiplier = 1.0;
+            // Update the Essence and Cost multipliers based on the Grade that has been selected.
+            // Retrieve the information for the selected Grade.
+            XmlNode objXmlGrade = _objXmlDocument.SelectSingleNode("/chummer/grades/grade[name = \"" + cboGrade.SelectedValue + "\"]");
+            if (!objXmlGrade.TryGetDoubleFieldQuickly("cost", ref _dblCostMultiplier))
+                _dblCostMultiplier = 1.0;
             if (!objXmlGrade.TryGetInt32FieldQuickly("addictionthreshold", ref _intAddictionThreshold))
-		        _intAddictionThreshold = 0;
+                _intAddictionThreshold = 0;
             UpdateCustomDrugStats();
-			lblDrugDescription.Text = _objDrug.GenerateDescription(0);
-		}
-	}
+            lblDrugDescription.Text = _objDrug.GenerateDescription(0);
+        }
+    }
 
-	class clsNodeData : Object
+    internal class clsNodeData : object
     {
-        public DrugComponent DrugComponent { get; }
-        public int Level { get; }
+        public DrugComponent DrugComponent
+        {
+            get;
+        }
+        public int Level
+        {
+            get;
+        }
         public clsNodeData(DrugComponent objDrugComponent, int level = -1)
         {
             DrugComponent = objDrugComponent;

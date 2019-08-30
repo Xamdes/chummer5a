@@ -4,19 +4,17 @@
 
 namespace SINners.Models
 {
-    using System;
-    using System.Linq;
-    using System.Collections.Generic;
     using Newtonsoft.Json;
-    using Microsoft.Rest;
-    using Microsoft.Rest.Serialization;
+    using System.Collections.Generic;
 
     public partial class ResultSinnerPostSIN
     {
         /// <summary>
         /// Initializes a new instance of the ResultSinnerPostSIN class.
         /// </summary>
-        public ResultSinnerPostSIN() { }
+        public ResultSinnerPostSIN()
+        {
+        }
 
         /// <summary>
         /// Initializes a new instance of the ResultSinnerPostSIN class.
@@ -32,22 +30,34 @@ namespace SINners.Models
         /// <summary>
         /// </summary>
         [JsonProperty(PropertyName = "mySINners")]
-        public IList<SINner> MySINners { get; set; }
+        public IList<SINner> MySINners
+        {
+            get; set;
+        }
 
         /// <summary>
         /// </summary>
         [JsonProperty(PropertyName = "myException")]
-        public object MyException { get; set; }
+        public object MyException
+        {
+            get; set;
+        }
 
         /// <summary>
         /// </summary>
         [JsonProperty(PropertyName = "callSuccess")]
-        public bool? CallSuccess { get; set; }
+        public bool? CallSuccess
+        {
+            get; set;
+        }
 
         /// <summary>
         /// </summary>
         [JsonProperty(PropertyName = "errorText")]
-        public string ErrorText { get; set; }
+        public string ErrorText
+        {
+            get; set;
+        }
 
     }
 }

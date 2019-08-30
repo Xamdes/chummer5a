@@ -26,9 +26,18 @@ namespace Chummer
 {
     public interface IHasMugshots
     {
-        IList<Image> Mugshots { get; }
-        Image MainMugshot { get; set; }
-        int MainMugshotIndex { get; set; }
+        IList<Image> Mugshots
+        {
+            get;
+        }
+        Image MainMugshot
+        {
+            get; set;
+        }
+        int MainMugshotIndex
+        {
+            get; set;
+        }
 
         void SaveMugshots(XmlTextWriter objWriter);
         void LoadMugshots(XPathNavigator xmlSavedNode);

@@ -8,7 +8,10 @@ namespace ChummerHub.Data
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'ApplicationRole'
     {
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'ApplicationRole.MyRole'
-        public string MyRole { get; set; }
+        public string MyRole
+        {
+            get; set;
+        }
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'ApplicationRole.MyRole'
 
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'ApplicationRole.ApplicationRole()'

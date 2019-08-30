@@ -71,8 +71,8 @@ namespace ChummerHub.Controllers
             ResultAccountGetPossibleRoles res;
             try
             {
-                var roles = await _context.Roles.ToListAsync();
-                var list = (from a in roles select a.Name).ToList();
+                List<ApplicationRole> roles = await _context.Roles.ToListAsync();
+                List<string> list = (from a in roles select a.Name).ToList();
                 res = new ResultAccountGetPossibleRoles(list);
                 return Ok(res);
             }
@@ -99,14 +99,14 @@ namespace ChummerHub.Controllers
             try
             {
                 //var user = _userManager.FindByEmailAsync(email).Result;
-                var user = await _signInManager.UserManager.GetUserAsync(User);
+                ApplicationUser user = await _signInManager.UserManager.GetUserAsync(User);
                 if (user.EmailConfirmed)
                 {
                     await SeedData.EnsureRole(Program.MyHost.Services, user.Id, API.Authorizarion.Constants.UserRoleConfirmed, _roleManager, _userManager);
                 }
-                var roles = await _userManager.GetRolesAsync(user);
-                var possibleRoles = await _context.Roles.ToListAsync();
-                var list = (from a in possibleRoles select a.Name).ToList();
+                IList<string> roles = await _userManager.GetRolesAsync(user);
+                List<ApplicationRole> possibleRoles = await _context.Roles.ToListAsync();
+                List<string> list = (from a in possibleRoles select a.Name).ToList();
                 res = new ResultAccountGetRoles(roles, list);
 
                 return Ok(res);
@@ -131,7 +131,7 @@ namespace ChummerHub.Controllers
             ResultAccountGetUserByEmail res;
             try
             {
-                var user = await _userManager.FindByEmailAsync(email);
+                ApplicationUser user = await _userManager.FindByEmailAsync(email);
                 res = new ResultAccountGetUserByEmail(user);
                 if (user == null)
                     return NotFound(res);
@@ -160,22 +160,22 @@ namespace ChummerHub.Controllers
             string result = "";
             try
             {
-                if (String.IsNullOrEmpty(username))
+                if (string.IsNullOrEmpty(username))
                     throw new ArgumentNullException(nameof(username));
-                if (String.IsNullOrEmpty(password))
+                if (string.IsNullOrEmpty(password))
                     throw new ArgumentNullException(nameof(password));
 
                 IPAddress startaddress = null;
-                if (!String.IsNullOrEmpty(start_ip_address))
+                if (!string.IsNullOrEmpty(start_ip_address))
                 {
                     startaddress = IPAddress.Parse(start_ip_address);
                 }
                 IPAddress endaddress = null;
-                if (!String.IsNullOrEmpty(end_ip_address))
+                if (!string.IsNullOrEmpty(end_ip_address))
                 {
                     endaddress = IPAddress.Parse(end_ip_address);
                 }
-                if (String.IsNullOrEmpty(Startup.ConnectionStringToMasterSqlDb))
+                if (string.IsNullOrEmpty(Startup.ConnectionStringToMasterSqlDb))
                 {
                     throw new ArgumentNullException("Startup.ConnectionStringToMasterSqlDB");
                 }
@@ -298,7 +298,7 @@ namespace ChummerHub.Controllers
             {
                 try
                 {
-                    var user = await _signInManager.UserManager.GetUserAsync(User);
+                    ApplicationUser user = await _signInManager.UserManager.GetUserAsync(User);
                     //var tc = new Microsoft.ApplicationInsights.TelemetryClient();
                     ExceptionTelemetry et = new ExceptionTelemetry(e);
                     et.Properties.Add("user", User.Identity.Name);
@@ -329,7 +329,7 @@ namespace ChummerHub.Controllers
         {
             try
             {
-                var user = await _userManager.FindByEmailAsync(email);
+                ApplicationUser user = await _userManager.FindByEmailAsync(email);
                 if (user == null)
                     return NotFound();
                 await SeedData.EnsureRole(Program.MyHost.Services, user.Id, userrole, _roleManager, _userManager);
@@ -341,7 +341,7 @@ namespace ChummerHub.Controllers
             {
                 try
                 {
-                    var user = await _signInManager.UserManager.GetUserAsync(User);
+                    ApplicationUser user = await _signInManager.UserManager.GetUserAsync(User);
                     //var tc = new Microsoft.ApplicationInsights.TelemetryClient();
                     ExceptionTelemetry et = new ExceptionTelemetry(e);
                     et.Properties.Add("user", User.Identity.Name);
@@ -372,7 +372,7 @@ namespace ChummerHub.Controllers
             ResultAccountGetUserByAuthorization res;
             try
             {
-                var user = await _signInManager.UserManager.GetUserAsync(User);
+                ApplicationUser user = await _signInManager.UserManager.GetUserAsync(User);
                 res = new ResultAccountGetUserByAuthorization(user);
                 if (user == null)
                     return NotFound(res);
@@ -385,7 +385,7 @@ namespace ChummerHub.Controllers
             {
                 try
                 {
-                    var user = await _signInManager.UserManager.GetUserAsync(User);
+                    ApplicationUser user = await _signInManager.UserManager.GetUserAsync(User);
                     //var tc = new Microsoft.ApplicationInsights.TelemetryClient();
                     ExceptionTelemetry et = new ExceptionTelemetry(e);
                     et.Properties.Add("user", User.Identity.Name);
@@ -412,14 +412,14 @@ namespace ChummerHub.Controllers
         {
             try
             {
-                var user = await _signInManager.UserManager.GetUserAsync(User);
+                ApplicationUser user = await _signInManager.UserManager.GetUserAsync(User);
                 if (user == null)
                     return Unauthorized();
-                var roles = await _userManager.GetRolesAsync(user);
+                IList<string> roles = await _userManager.GetRolesAsync(user);
                 if (!roles.Contains("Administrator"))
                     return Unauthorized();
-                var count = await _context.SINners.CountAsync();
-                using (var transaction = _context.Database.BeginTransaction())
+                int count = await _context.SINners.CountAsync();
+                using (Microsoft.EntityFrameworkCore.Storage.IDbContextTransaction transaction = _context.Database.BeginTransaction())
                 {
                     _context.UserRights.RemoveRange(_context.UserRights.ToList());
                     _context.SINnerComments.RemoveRange(_context.SINnerComments.ToList());
@@ -440,7 +440,7 @@ namespace ChummerHub.Controllers
             {
                 try
                 {
-                    var user = await _signInManager.UserManager.GetUserAsync(User);
+                    ApplicationUser user = await _signInManager.UserManager.GetUserAsync(User);
                     //var tc = new Microsoft.ApplicationInsights.TelemetryClient();
                     ExceptionTelemetry et = new ExceptionTelemetry(e);
                     et.Properties.Add("user", User.Identity.Name);
@@ -487,7 +487,7 @@ namespace ChummerHub.Controllers
             {
                 try
                 {
-                    var user = await _signInManager.UserManager.GetUserAsync(User);
+                    ApplicationUser user = await _signInManager.UserManager.GetUserAsync(User);
                     //var tc = new Microsoft.ApplicationInsights.TelemetryClient();
                     ExceptionTelemetry et = new ExceptionTelemetry(e);
                     et.Properties.Add("user", User.Identity.Name);
@@ -518,7 +518,7 @@ namespace ChummerHub.Controllers
         {
             try
             {
-                var res = await GetSINnersByAuthorizationInternal();
+                ActionResult<ResultAccountGetSinnersByAuthorization> res = await GetSINnersByAuthorizationInternal();
                 return res;
             }
             catch (Exception e)
@@ -542,7 +542,7 @@ namespace ChummerHub.Controllers
             {
                 MyMembers = new List<SINnerSearchGroupMember>()
             };
-            using (var t = new TransactionScope(TransactionScopeOption.Required,
+            using (TransactionScope t = new TransactionScope(TransactionScopeOption.Required,
                 new TransactionOptions
                 {
                     IsolationLevel = System.Transactions.IsolationLevel.ReadUncommitted
@@ -550,11 +550,11 @@ namespace ChummerHub.Controllers
             {
                 try
                 {
-                    var user = await _signInManager.UserManager.GetUserAsync(User);
+                    ApplicationUser user = await _signInManager.UserManager.GetUserAsync(User);
 
                     if (user == null)
                     {
-                        var e = new AuthenticationException("User is not authenticated.");
+                        AuthenticationException e = new AuthenticationException("User is not authenticated.");
                         res = new ResultAccountGetSinnersByAuthorization(e)
                         {
                             ErrorText = "Unauthorized"
@@ -562,7 +562,7 @@ namespace ChummerHub.Controllers
                         return BadRequest(res);
                     }
 
-                    var roles = await _userManager.GetRolesAsync(user);
+                    IList<string> roles = await _userManager.GetRolesAsync(user);
                     ret.Roles = roles.ToList();
                     ssg.Groupname = user.UserName;
                     ssg.Id = Guid.Empty;
@@ -571,10 +571,10 @@ namespace ChummerHub.Controllers
                     MetricTelemetry mt = new MetricTelemetry("GetSINersByAuthorization", "SINners found",
                         mySinners.Count, 0, 0, 0, 0);
                     tc.TrackMetric(mt);
-                    foreach (var sin in mySinners)
+                    foreach (SINner sin in mySinners)
                     {
                         //check if that char is already added:
-                        var foundseq = (from a in ssg.MyMembers where a.MySINner.Id == sin.Id select a);
+                        IEnumerable<SINnerSearchGroupMember> foundseq = (from a in ssg.MyMembers where a.MySINner.Id == sin.Id select a);
                         if (foundseq.Any())
                             continue;
                         sin.LastDownload = DateTime.Now;
@@ -601,10 +601,10 @@ namespace ChummerHub.Controllers
                     user.FavoriteGroups = user.FavoriteGroups.GroupBy(a => a.FavoriteGuid).Select(b => b.First()).ToList();
 
 
-                    foreach (var singroupId in user.FavoriteGroups)
+                    foreach (ApplicationUserFavoriteGroup singroupId in user.FavoriteGroups)
                     {
                         SINnerSearchGroup ssgFromSIN;
-                        var singroup = await _context.SINnerGroups.FirstOrDefaultAsync(a => a.Id == singroupId.FavoriteGuid);
+                        SINnerGroup singroup = await _context.SINnerGroups.FirstOrDefaultAsync(a => a.Id == singroupId.FavoriteGuid);
                         if (ssg.MySINSearchGroups.Any(a => a.Id == singroupId.FavoriteGuid))
                         {
                             ssgFromSIN = ssg.MySINSearchGroups.FirstOrDefault(a => a.Id == singroupId.FavoriteGuid);
@@ -616,8 +616,8 @@ namespace ChummerHub.Controllers
                         }
 
                         //add all members of his group
-                        var members = await singroup.GetGroupMembers(_context, false);
-                        foreach (var member in members)
+                        List<SINner> members = await singroup.GetGroupMembers(_context, false);
+                        foreach (SINner member in members)
                         {
                             member.LastDownload = DateTime.Now;
                             member.MyGroup = singroup;
@@ -627,7 +627,7 @@ namespace ChummerHub.Controllers
                                 MySINner = member
                             };
                             //check if it is already added:
-                            var groupseq = from a in ssgFromSIN.MyMembers where a.MySINner == member select a;
+                            IEnumerable<SINnerSearchGroupMember> groupseq = from a in ssgFromSIN.MyMembers where a.MySINner == member select a;
                             if (groupseq.Any())
                                 continue;
                             ssgFromSIN.MyMembers.Add(sinssgGroupMember);
@@ -647,7 +647,7 @@ namespace ChummerHub.Controllers
                 {
                     try
                     {
-                        var user = await _signInManager.UserManager.GetUserAsync(User);
+                        ApplicationUser user = await _signInManager.UserManager.GetUserAsync(User);
                         ExceptionTelemetry et = new ExceptionTelemetry(e);
                         et.Properties.Add("user", User.Identity.Name);
                         tc.TrackException(et);
@@ -698,17 +698,17 @@ namespace ChummerHub.Controllers
             };
             try
             {
-                var user = await _signInManager.UserManager.GetUserAsync(User);
+                ApplicationUser user = await _signInManager.UserManager.GetUserAsync(User);
                 if (user == null)
                 {
-                    var e = new AuthenticationException("User is not authenticated.");
+                    AuthenticationException e = new AuthenticationException("User is not authenticated.");
                     res = new ResultAccountGetSinnersByAuthorization(e)
                     {
                         ErrorText = "Unauthorized"
                     };
                     return BadRequest(res);
                 }
-                var roles = await _userManager.GetRolesAsync(user);
+                IList<string> roles = await _userManager.GetRolesAsync(user);
                 ret.Roles = roles.ToList();
                 ssg.Groupname = user.Email;
                 ssg.Id = Guid.Empty;
@@ -718,7 +718,7 @@ namespace ChummerHub.Controllers
                     .OrderByDescending(a => a.UploadDateTime)
                     .Take(200)
                     .ToListAsync();
-                foreach (var sin in mySinners)
+                foreach (SINner sin in mySinners)
                 {
                     SINnerSearchGroupMember ssgm = new SINnerSearchGroupMember
                     {
@@ -739,8 +739,8 @@ namespace ChummerHub.Controllers
                             ssg.MySINSearchGroups.Add(ssgFromSIN);
                         }
                         //add all members of his group
-                        var members = await sin.MyGroup.GetGroupMembers(_context, false);
-                        foreach (var member in members)
+                        List<SINner> members = await sin.MyGroup.GetGroupMembers(_context, false);
+                        foreach (SINner member in members)
                         {
                             member.MyGroup = sin.MyGroup;
                             member.MyGroup.MyGroups = new List<SINnerGroup>();
@@ -764,7 +764,7 @@ namespace ChummerHub.Controllers
             {
                 try
                 {
-                    var user = await _signInManager.UserManager.GetUserAsync(User);
+                    ApplicationUser user = await _signInManager.UserManager.GetUserAsync(User);
                     //var tc = new Microsoft.ApplicationInsights.TelemetryClient();
                     ExceptionTelemetry et = new ExceptionTelemetry(e);
                     et.Properties.Add("user", User.Identity.Name);
@@ -802,7 +802,7 @@ namespace ChummerHub.Controllers
             {
                 try
                 {
-                    var user = await _signInManager.UserManager.GetUserAsync(User);
+                    ApplicationUser user = await _signInManager.UserManager.GetUserAsync(User);
                     //var tc = new Microsoft.ApplicationInsights.TelemetryClient();
                     ExceptionTelemetry et = new ExceptionTelemetry(e);
                     et.Properties.Add("user", User.Identity.Name);

@@ -4,21 +4,16 @@
 
 namespace SINners
 {
+    using Models;
+    using Newtonsoft.Json;
     using System;
-    using System.Linq;
     using System.Collections.Generic;
-    using System.Diagnostics;
     using System.Net;
     using System.Net.Http;
     using System.Net.Http.Headers;
     using System.Text;
-    using System.Text.RegularExpressions;
     using System.Threading;
     using System.Threading.Tasks;
-    using Microsoft.Rest;
-    using Microsoft.Rest.Serialization;
-    using Newtonsoft.Json;
-    using Models;
 
     /// <summary>
     /// Description for API v1 to store and search Chummer Xml files
@@ -28,22 +23,34 @@ namespace SINners
         /// <summary>
         /// The base URI of the service.
         /// </summary>
-        public Uri BaseUri { get; set; }
+        public Uri BaseUri
+        {
+            get; set;
+        }
 
         /// <summary>
         /// Gets or sets json serialization settings.
         /// </summary>
-        public JsonSerializerSettings SerializationSettings { get; private set; }
+        public JsonSerializerSettings SerializationSettings
+        {
+            get; private set;
+        }
 
         /// <summary>
         /// Gets or sets json deserialization settings.
         /// </summary>
-        public JsonSerializerSettings DeserializationSettings { get; private set; }        
+        public JsonSerializerSettings DeserializationSettings
+        {
+            get; private set;
+        }
 
         /// <summary>
         /// Subscription credentials which uniquely identify client subscription.
         /// </summary>
-        public ServiceClientCredentials Credentials { get; private set; }
+        public ServiceClientCredentials Credentials
+        {
+            get; private set;
+        }
 
         /// <summary>
         /// Initializes a new instance of the SINnersClient class.
@@ -255,7 +262,7 @@ namespace SINners
                     }
             };
             CustomInitialize();
-        }    
+        }
         /// <param name='customHeaders'>
         /// Headers that will be added to request.
         /// </param>
@@ -273,13 +280,15 @@ namespace SINners
             if (_shouldTrace)
             {
                 _invocationId = ServiceClientTracing.NextInvocationId.ToString();
-                Dictionary<string, object> tracingParameters = new Dictionary<string, object>();
-                tracingParameters.Add("cancellationToken", cancellationToken);
+                Dictionary<string, object> tracingParameters = new Dictionary<string, object>
+                {
+                    { "cancellationToken", cancellationToken }
+                };
                 ServiceClientTracing.Enter(_invocationId, this, "GetPossibleRoles", tracingParameters);
             }
             // Construct URL
-            var _baseUrl = this.BaseUri.AbsoluteUri;
-            var _url = new Uri(new Uri(_baseUrl + (_baseUrl.EndsWith("/") ? "" : "/")), "api/v1/Account/GetPossibleRoles").ToString();
+            string _baseUrl = this.BaseUri.AbsoluteUri;
+            string _url = new Uri(new Uri(_baseUrl + (_baseUrl.EndsWith("/") ? "" : "/")), "api/v1/Account/GetPossibleRoles").ToString();
             // Create HTTP transport objects
             HttpRequestMessage _httpRequest = new HttpRequestMessage();
             HttpResponseMessage _httpResponse = null;
@@ -288,7 +297,7 @@ namespace SINners
             // Set Headers
             if (customHeaders != null)
             {
-                foreach(var _header in customHeaders)
+                foreach (KeyValuePair<string, List<string>> _header in customHeaders)
                 {
                     if (_httpRequest.Headers.Contains(_header.Key))
                     {
@@ -338,9 +347,11 @@ namespace SINners
                 throw ex;
             }
             // Create Result
-            var _result = new HttpOperationResponse<ResultAccountGetPossibleRoles>();
-            _result.Request = _httpRequest;
-            _result.Response = _httpResponse;
+            var _result = new HttpOperationResponse<ResultAccountGetPossibleRoles>
+            {
+                Request = _httpRequest,
+                Response = _httpResponse
+            };
             // Deserialize Response
             if ((int)_statusCode == 200)
             {
@@ -383,13 +394,15 @@ namespace SINners
             if (_shouldTrace)
             {
                 _invocationId = ServiceClientTracing.NextInvocationId.ToString();
-                Dictionary<string, object> tracingParameters = new Dictionary<string, object>();
-                tracingParameters.Add("cancellationToken", cancellationToken);
+                Dictionary<string, object> tracingParameters = new Dictionary<string, object>
+                {
+                    { "cancellationToken", cancellationToken }
+                };
                 ServiceClientTracing.Enter(_invocationId, this, "GetRoles", tracingParameters);
             }
             // Construct URL
-            var _baseUrl = this.BaseUri.AbsoluteUri;
-            var _url = new Uri(new Uri(_baseUrl + (_baseUrl.EndsWith("/") ? "" : "/")), "api/v1/Account/GetRoles").ToString();
+            string _baseUrl = this.BaseUri.AbsoluteUri;
+            string _url = new Uri(new Uri(_baseUrl + (_baseUrl.EndsWith("/") ? "" : "/")), "api/v1/Account/GetRoles").ToString();
             // Create HTTP transport objects
             HttpRequestMessage _httpRequest = new HttpRequestMessage();
             HttpResponseMessage _httpResponse = null;
@@ -398,7 +411,7 @@ namespace SINners
             // Set Headers
             if (customHeaders != null)
             {
-                foreach(var _header in customHeaders)
+                foreach (KeyValuePair<string, List<string>> _header in customHeaders)
                 {
                     if (_httpRequest.Headers.Contains(_header.Key))
                     {
@@ -448,9 +461,11 @@ namespace SINners
                 throw ex;
             }
             // Create Result
-            var _result = new HttpOperationResponse<ResultAccountGetRoles>();
-            _result.Request = _httpRequest;
-            _result.Response = _httpResponse;
+            var _result = new HttpOperationResponse<ResultAccountGetRoles>
+            {
+                Request = _httpRequest,
+                Response = _httpResponse
+            };
             // Deserialize Response
             if ((int)_statusCode == 200)
             {
@@ -495,14 +510,16 @@ namespace SINners
             if (_shouldTrace)
             {
                 _invocationId = ServiceClientTracing.NextInvocationId.ToString();
-                Dictionary<string, object> tracingParameters = new Dictionary<string, object>();
-                tracingParameters.Add("email", email);
-                tracingParameters.Add("cancellationToken", cancellationToken);
+                Dictionary<string, object> tracingParameters = new Dictionary<string, object>
+                {
+                    { "email", email },
+                    { "cancellationToken", cancellationToken }
+                };
                 ServiceClientTracing.Enter(_invocationId, this, "GetUserByEmail", tracingParameters);
             }
             // Construct URL
-            var _baseUrl = this.BaseUri.AbsoluteUri;
-            var _url = new Uri(new Uri(_baseUrl + (_baseUrl.EndsWith("/") ? "" : "/")), "api/v1/Account/GetUserByEmail").ToString();
+            string _baseUrl = this.BaseUri.AbsoluteUri;
+            string _url = new Uri(new Uri(_baseUrl + (_baseUrl.EndsWith("/") ? "" : "/")), "api/v1/Account/GetUserByEmail").ToString();
             List<string> _queryParameters = new List<string>();
             if (email != null)
             {
@@ -520,7 +537,7 @@ namespace SINners
             // Set Headers
             if (customHeaders != null)
             {
-                foreach(var _header in customHeaders)
+                foreach (KeyValuePair<string, List<string>> _header in customHeaders)
                 {
                     if (_httpRequest.Headers.Contains(_header.Key))
                     {
@@ -570,9 +587,11 @@ namespace SINners
                 throw ex;
             }
             // Create Result
-            var _result = new HttpOperationResponse<ResultAccountGetUserByEmail>();
-            _result.Request = _httpRequest;
-            _result.Response = _httpResponse;
+            var _result = new HttpOperationResponse<ResultAccountGetUserByEmail>
+            {
+                Request = _httpRequest,
+                Response = _httpResponse
+            };
             // Deserialize Response
             if ((int)_statusCode == 200)
             {
@@ -623,17 +642,19 @@ namespace SINners
             if (_shouldTrace)
             {
                 _invocationId = ServiceClientTracing.NextInvocationId.ToString();
-                Dictionary<string, object> tracingParameters = new Dictionary<string, object>();
-                tracingParameters.Add("username", username);
-                tracingParameters.Add("password", password);
-                tracingParameters.Add("startIpAddress", startIpAddress);
-                tracingParameters.Add("endIpAddress", endIpAddress);
-                tracingParameters.Add("cancellationToken", cancellationToken);
+                Dictionary<string, object> tracingParameters = new Dictionary<string, object>
+                {
+                    { "username", username },
+                    { "password", password },
+                    { "startIpAddress", startIpAddress },
+                    { "endIpAddress", endIpAddress },
+                    { "cancellationToken", cancellationToken }
+                };
                 ServiceClientTracing.Enter(_invocationId, this, "GetAddSqlDbUser", tracingParameters);
             }
             // Construct URL
-            var _baseUrl = this.BaseUri.AbsoluteUri;
-            var _url = new Uri(new Uri(_baseUrl + (_baseUrl.EndsWith("/") ? "" : "/")), "api/v1/Account/GetAddSqlDbUser").ToString();
+            string _baseUrl = this.BaseUri.AbsoluteUri;
+            string _url = new Uri(new Uri(_baseUrl + (_baseUrl.EndsWith("/") ? "" : "/")), "api/v1/Account/GetAddSqlDbUser").ToString();
             List<string> _queryParameters = new List<string>();
             if (username != null)
             {
@@ -663,7 +684,7 @@ namespace SINners
             // Set Headers
             if (customHeaders != null)
             {
-                foreach(var _header in customHeaders)
+                foreach (KeyValuePair<string, List<string>> _header in customHeaders)
                 {
                     if (_httpRequest.Headers.Contains(_header.Key))
                     {
@@ -713,9 +734,11 @@ namespace SINners
                 throw ex;
             }
             // Create Result
-            var _result = new HttpOperationResponse<string>();
-            _result.Request = _httpRequest;
-            _result.Response = _httpResponse;
+            var _result = new HttpOperationResponse<string>
+            {
+                Request = _httpRequest,
+                Response = _httpResponse
+            };
             // Deserialize Response
             if ((int)_statusCode == 200)
             {
@@ -762,15 +785,17 @@ namespace SINners
             if (_shouldTrace)
             {
                 _invocationId = ServiceClientTracing.NextInvocationId.ToString();
-                Dictionary<string, object> tracingParameters = new Dictionary<string, object>();
-                tracingParameters.Add("email", email);
-                tracingParameters.Add("userrole", userrole);
-                tracingParameters.Add("cancellationToken", cancellationToken);
+                Dictionary<string, object> tracingParameters = new Dictionary<string, object>
+                {
+                    { "email", email },
+                    { "userrole", userrole },
+                    { "cancellationToken", cancellationToken }
+                };
                 ServiceClientTracing.Enter(_invocationId, this, "PostSetUserRole", tracingParameters);
             }
             // Construct URL
-            var _baseUrl = this.BaseUri.AbsoluteUri;
-            var _url = new Uri(new Uri(_baseUrl + (_baseUrl.EndsWith("/") ? "" : "/")), "api/v1/Account/PostSetUserRole").ToString();
+            string _baseUrl = this.BaseUri.AbsoluteUri;
+            string _url = new Uri(new Uri(_baseUrl + (_baseUrl.EndsWith("/") ? "" : "/")), "api/v1/Account/PostSetUserRole").ToString();
             List<string> _queryParameters = new List<string>();
             if (email != null)
             {
@@ -792,7 +817,7 @@ namespace SINners
             // Set Headers
             if (customHeaders != null)
             {
-                foreach(var _header in customHeaders)
+                foreach (KeyValuePair<string, List<string>> _header in customHeaders)
                 {
                     if (_httpRequest.Headers.Contains(_header.Key))
                     {
@@ -842,9 +867,11 @@ namespace SINners
                 throw ex;
             }
             // Create Result
-            var _result = new HttpOperationResponse<ApplicationUser>();
-            _result.Request = _httpRequest;
-            _result.Response = _httpResponse;
+            var _result = new HttpOperationResponse<ApplicationUser>
+            {
+                Request = _httpRequest,
+                Response = _httpResponse
+            };
             // Deserialize Response
             if ((int)_statusCode == 200)
             {
@@ -887,13 +914,15 @@ namespace SINners
             if (_shouldTrace)
             {
                 _invocationId = ServiceClientTracing.NextInvocationId.ToString();
-                Dictionary<string, object> tracingParameters = new Dictionary<string, object>();
-                tracingParameters.Add("cancellationToken", cancellationToken);
+                Dictionary<string, object> tracingParameters = new Dictionary<string, object>
+                {
+                    { "cancellationToken", cancellationToken }
+                };
                 ServiceClientTracing.Enter(_invocationId, this, "GetUserByAuthorization", tracingParameters);
             }
             // Construct URL
-            var _baseUrl = this.BaseUri.AbsoluteUri;
-            var _url = new Uri(new Uri(_baseUrl + (_baseUrl.EndsWith("/") ? "" : "/")), "api/v1/Account/GetUserByAuthorization").ToString();
+            string _baseUrl = this.BaseUri.AbsoluteUri;
+            string _url = new Uri(new Uri(_baseUrl + (_baseUrl.EndsWith("/") ? "" : "/")), "api/v1/Account/GetUserByAuthorization").ToString();
             // Create HTTP transport objects
             HttpRequestMessage _httpRequest = new HttpRequestMessage();
             HttpResponseMessage _httpResponse = null;
@@ -902,7 +931,7 @@ namespace SINners
             // Set Headers
             if (customHeaders != null)
             {
-                foreach(var _header in customHeaders)
+                foreach (KeyValuePair<string, List<string>> _header in customHeaders)
                 {
                     if (_httpRequest.Headers.Contains(_header.Key))
                     {
@@ -952,9 +981,11 @@ namespace SINners
                 throw ex;
             }
             // Create Result
-            var _result = new HttpOperationResponse<ResultAccountGetUserByAuthorization>();
-            _result.Request = _httpRequest;
-            _result.Response = _httpResponse;
+            var _result = new HttpOperationResponse<ResultAccountGetUserByAuthorization>
+            {
+                Request = _httpRequest,
+                Response = _httpResponse
+            };
             // Deserialize Response
             if ((int)_statusCode == 200)
             {
@@ -997,13 +1028,15 @@ namespace SINners
             if (_shouldTrace)
             {
                 _invocationId = ServiceClientTracing.NextInvocationId.ToString();
-                Dictionary<string, object> tracingParameters = new Dictionary<string, object>();
-                tracingParameters.Add("cancellationToken", cancellationToken);
+                Dictionary<string, object> tracingParameters = new Dictionary<string, object>
+                {
+                    { "cancellationToken", cancellationToken }
+                };
                 ServiceClientTracing.Enter(_invocationId, this, "GetDeleteAllSINnersDb", tracingParameters);
             }
             // Construct URL
-            var _baseUrl = this.BaseUri.AbsoluteUri;
-            var _url = new Uri(new Uri(_baseUrl + (_baseUrl.EndsWith("/") ? "" : "/")), "api/v1/Account/GetDeleteAllSINnersDb").ToString();
+            string _baseUrl = this.BaseUri.AbsoluteUri;
+            string _url = new Uri(new Uri(_baseUrl + (_baseUrl.EndsWith("/") ? "" : "/")), "api/v1/Account/GetDeleteAllSINnersDb").ToString();
             // Create HTTP transport objects
             HttpRequestMessage _httpRequest = new HttpRequestMessage();
             HttpResponseMessage _httpResponse = null;
@@ -1012,7 +1045,7 @@ namespace SINners
             // Set Headers
             if (customHeaders != null)
             {
-                foreach(var _header in customHeaders)
+                foreach (KeyValuePair<string, List<string>> _header in customHeaders)
                 {
                     if (_httpRequest.Headers.Contains(_header.Key))
                     {
@@ -1062,9 +1095,11 @@ namespace SINners
                 throw ex;
             }
             // Create Result
-            var _result = new HttpOperationResponse<string>();
-            _result.Request = _httpRequest;
-            _result.Response = _httpResponse;
+            var _result = new HttpOperationResponse<string>
+            {
+                Request = _httpRequest,
+                Response = _httpResponse
+            };
             // Deserialize Response
             if ((int)_statusCode == 200)
             {
@@ -1107,13 +1142,15 @@ namespace SINners
             if (_shouldTrace)
             {
                 _invocationId = ServiceClientTracing.NextInvocationId.ToString();
-                Dictionary<string, object> tracingParameters = new Dictionary<string, object>();
-                tracingParameters.Add("cancellationToken", cancellationToken);
+                Dictionary<string, object> tracingParameters = new Dictionary<string, object>
+                {
+                    { "cancellationToken", cancellationToken }
+                };
                 ServiceClientTracing.Enter(_invocationId, this, "GetDeleteAndRecreateDb", tracingParameters);
             }
             // Construct URL
-            var _baseUrl = this.BaseUri.AbsoluteUri;
-            var _url = new Uri(new Uri(_baseUrl + (_baseUrl.EndsWith("/") ? "" : "/")), "api/v1/Account/GetDeleteAndRecreateDb").ToString();
+            string _baseUrl = this.BaseUri.AbsoluteUri;
+            string _url = new Uri(new Uri(_baseUrl + (_baseUrl.EndsWith("/") ? "" : "/")), "api/v1/Account/GetDeleteAndRecreateDb").ToString();
             // Create HTTP transport objects
             HttpRequestMessage _httpRequest = new HttpRequestMessage();
             HttpResponseMessage _httpResponse = null;
@@ -1122,7 +1159,7 @@ namespace SINners
             // Set Headers
             if (customHeaders != null)
             {
-                foreach(var _header in customHeaders)
+                foreach (KeyValuePair<string, List<string>> _header in customHeaders)
                 {
                     if (_httpRequest.Headers.Contains(_header.Key))
                     {
@@ -1172,9 +1209,11 @@ namespace SINners
                 throw ex;
             }
             // Create Result
-            var _result = new HttpOperationResponse<string>();
-            _result.Request = _httpRequest;
-            _result.Response = _httpResponse;
+            var _result = new HttpOperationResponse<string>
+            {
+                Request = _httpRequest,
+                Response = _httpResponse
+            };
             // Deserialize Response
             if ((int)_statusCode == 200)
             {
@@ -1220,13 +1259,15 @@ namespace SINners
             if (_shouldTrace)
             {
                 _invocationId = ServiceClientTracing.NextInvocationId.ToString();
-                Dictionary<string, object> tracingParameters = new Dictionary<string, object>();
-                tracingParameters.Add("cancellationToken", cancellationToken);
+                Dictionary<string, object> tracingParameters = new Dictionary<string, object>
+                {
+                    { "cancellationToken", cancellationToken }
+                };
                 ServiceClientTracing.Enter(_invocationId, this, "GetSINnersByAuthorization", tracingParameters);
             }
             // Construct URL
-            var _baseUrl = this.BaseUri.AbsoluteUri;
-            var _url = new Uri(new Uri(_baseUrl + (_baseUrl.EndsWith("/") ? "" : "/")), "api/v1/Account/GetSINnersByAuthorization").ToString();
+            string _baseUrl = this.BaseUri.AbsoluteUri;
+            string _url = new Uri(new Uri(_baseUrl + (_baseUrl.EndsWith("/") ? "" : "/")), "api/v1/Account/GetSINnersByAuthorization").ToString();
             // Create HTTP transport objects
             HttpRequestMessage _httpRequest = new HttpRequestMessage();
             HttpResponseMessage _httpResponse = null;
@@ -1235,7 +1276,7 @@ namespace SINners
             // Set Headers
             if (customHeaders != null)
             {
-                foreach(var _header in customHeaders)
+                foreach (KeyValuePair<string, List<string>> _header in customHeaders)
                 {
                     if (_httpRequest.Headers.Contains(_header.Key))
                     {
@@ -1285,9 +1326,11 @@ namespace SINners
                 throw ex;
             }
             // Create Result
-            var _result = new HttpOperationResponse<ResultAccountGetSinnersByAuthorization>();
-            _result.Request = _httpRequest;
-            _result.Response = _httpResponse;
+            var _result = new HttpOperationResponse<ResultAccountGetSinnersByAuthorization>
+            {
+                Request = _httpRequest,
+                Response = _httpResponse
+            };
             // Deserialize Response
             if ((int)_statusCode == 200)
             {
@@ -1330,13 +1373,15 @@ namespace SINners
             if (_shouldTrace)
             {
                 _invocationId = ServiceClientTracing.NextInvocationId.ToString();
-                Dictionary<string, object> tracingParameters = new Dictionary<string, object>();
-                tracingParameters.Add("cancellationToken", cancellationToken);
+                Dictionary<string, object> tracingParameters = new Dictionary<string, object>
+                {
+                    { "cancellationToken", cancellationToken }
+                };
                 ServiceClientTracing.Enter(_invocationId, this, "GetSinnerAsAdmin", tracingParameters);
             }
             // Construct URL
-            var _baseUrl = this.BaseUri.AbsoluteUri;
-            var _url = new Uri(new Uri(_baseUrl + (_baseUrl.EndsWith("/") ? "" : "/")), "api/v1/Account/GetSinnerAsAdmin").ToString();
+            string _baseUrl = this.BaseUri.AbsoluteUri;
+            string _url = new Uri(new Uri(_baseUrl + (_baseUrl.EndsWith("/") ? "" : "/")), "api/v1/Account/GetSinnerAsAdmin").ToString();
             // Create HTTP transport objects
             HttpRequestMessage _httpRequest = new HttpRequestMessage();
             HttpResponseMessage _httpResponse = null;
@@ -1345,7 +1390,7 @@ namespace SINners
             // Set Headers
             if (customHeaders != null)
             {
-                foreach(var _header in customHeaders)
+                foreach (KeyValuePair<string, List<string>> _header in customHeaders)
                 {
                     if (_httpRequest.Headers.Contains(_header.Key))
                     {
@@ -1395,9 +1440,11 @@ namespace SINners
                 throw ex;
             }
             // Create Result
-            var _result = new HttpOperationResponse<ResultGroupGetSearchGroups>();
-            _result.Request = _httpRequest;
-            _result.Response = _httpResponse;
+            var _result = new HttpOperationResponse<ResultGroupGetSearchGroups>
+            {
+                Request = _httpRequest,
+                Response = _httpResponse
+            };
             // Deserialize Response
             if ((int)_statusCode == 200)
             {
@@ -1440,13 +1487,15 @@ namespace SINners
             if (_shouldTrace)
             {
                 _invocationId = ServiceClientTracing.NextInvocationId.ToString();
-                Dictionary<string, object> tracingParameters = new Dictionary<string, object>();
-                tracingParameters.Add("cancellationToken", cancellationToken);
+                Dictionary<string, object> tracingParameters = new Dictionary<string, object>
+                {
+                    { "cancellationToken", cancellationToken }
+                };
                 ServiceClientTracing.Enter(_invocationId, this, "Logout", tracingParameters);
             }
             // Construct URL
-            var _baseUrl = this.BaseUri.AbsoluteUri;
-            var _url = new Uri(new Uri(_baseUrl + (_baseUrl.EndsWith("/") ? "" : "/")), "api/v1/Account/Logout").ToString();
+            string _baseUrl = this.BaseUri.AbsoluteUri;
+            string _url = new Uri(new Uri(_baseUrl + (_baseUrl.EndsWith("/") ? "" : "/")), "api/v1/Account/Logout").ToString();
             // Create HTTP transport objects
             HttpRequestMessage _httpRequest = new HttpRequestMessage();
             HttpResponseMessage _httpResponse = null;
@@ -1455,7 +1504,7 @@ namespace SINners
             // Set Headers
             if (customHeaders != null)
             {
-                foreach(var _header in customHeaders)
+                foreach (KeyValuePair<string, List<string>> _header in customHeaders)
                 {
                     if (_httpRequest.Headers.Contains(_header.Key))
                     {
@@ -1505,9 +1554,11 @@ namespace SINners
                 throw ex;
             }
             // Create Result
-            var _result = new HttpOperationResponse<bool?>();
-            _result.Request = _httpRequest;
-            _result.Response = _httpResponse;
+            var _result = new HttpOperationResponse<bool?>
+            {
+                Request = _httpRequest,
+                Response = _httpResponse
+            };
             // Deserialize Response
             if ((int)_statusCode == 200)
             {
@@ -1558,15 +1609,17 @@ namespace SINners
             if (_shouldTrace)
             {
                 _invocationId = ServiceClientTracing.NextInvocationId.ToString();
-                Dictionary<string, object> tracingParameters = new Dictionary<string, object>();
-                tracingParameters.Add("hash", hash);
-                tracingParameters.Add("apiVersion", apiVersion);
-                tracingParameters.Add("cancellationToken", cancellationToken);
+                Dictionary<string, object> tracingParameters = new Dictionary<string, object>
+                {
+                    { "hash", hash },
+                    { "apiVersion", apiVersion },
+                    { "cancellationToken", cancellationToken }
+                };
                 ServiceClientTracing.Enter(_invocationId, this, "Open", tracingParameters);
             }
             // Construct URL
-            var _baseUrl = this.BaseUri.AbsoluteUri;
-            var _url = new Uri(new Uri(_baseUrl + (_baseUrl.EndsWith("/") ? "" : "/")), "Open/{Hash}").ToString();
+            string _baseUrl = this.BaseUri.AbsoluteUri;
+            string _url = new Uri(new Uri(_baseUrl + (_baseUrl.EndsWith("/") ? "" : "/")), "Open/{Hash}").ToString();
             _url = _url.Replace("{Hash}", Uri.EscapeDataString(hash));
             List<string> _queryParameters = new List<string>();
             if (apiVersion != null)
@@ -1585,7 +1638,7 @@ namespace SINners
             // Set Headers
             if (customHeaders != null)
             {
-                foreach(var _header in customHeaders)
+                foreach (KeyValuePair<string, List<string>> _header in customHeaders)
                 {
                     if (_httpRequest.Headers.Contains(_header.Key))
                     {
@@ -1635,9 +1688,11 @@ namespace SINners
                 throw ex;
             }
             // Create Result
-            var _result = new HttpOperationResponse();
-            _result.Request = _httpRequest;
-            _result.Response = _httpResponse;
+            var _result = new HttpOperationResponse
+            {
+                Request = _httpRequest,
+                Response = _httpResponse
+            };
             if (_shouldTrace)
             {
                 ServiceClientTracing.Exit(_invocationId, _result);
@@ -1662,13 +1717,15 @@ namespace SINners
             if (_shouldTrace)
             {
                 _invocationId = ServiceClientTracing.NextInvocationId.ToString();
-                Dictionary<string, object> tracingParameters = new Dictionary<string, object>();
-                tracingParameters.Add("cancellationToken", cancellationToken);
+                Dictionary<string, object> tracingParameters = new Dictionary<string, object>
+                {
+                    { "cancellationToken", cancellationToken }
+                };
                 ServiceClientTracing.Enter(_invocationId, this, "GetVersion", tracingParameters);
             }
             // Construct URL
-            var _baseUrl = this.BaseUri.AbsoluteUri;
-            var _url = new Uri(new Uri(_baseUrl + (_baseUrl.EndsWith("/") ? "" : "/")), "api/v1/ChummerHelper/GetVersion").ToString();
+            string _baseUrl = this.BaseUri.AbsoluteUri;
+            string _url = new Uri(new Uri(_baseUrl + (_baseUrl.EndsWith("/") ? "" : "/")), "api/v1/ChummerHelper/GetVersion").ToString();
             // Create HTTP transport objects
             HttpRequestMessage _httpRequest = new HttpRequestMessage();
             HttpResponseMessage _httpResponse = null;
@@ -1677,7 +1734,7 @@ namespace SINners
             // Set Headers
             if (customHeaders != null)
             {
-                foreach(var _header in customHeaders)
+                foreach (KeyValuePair<string, List<string>> _header in customHeaders)
                 {
                     if (_httpRequest.Headers.Contains(_header.Key))
                     {
@@ -1727,9 +1784,11 @@ namespace SINners
                 throw ex;
             }
             // Create Result
-            var _result = new HttpOperationResponse<ChummerHubVersion>();
-            _result.Request = _httpRequest;
-            _result.Response = _httpResponse;
+            var _result = new HttpOperationResponse<ChummerHubVersion>
+            {
+                Request = _httpRequest,
+                Response = _httpResponse
+            };
             // Deserialize Response
             if ((int)_statusCode == 200)
             {
@@ -1777,14 +1836,16 @@ namespace SINners
             if (_shouldTrace)
             {
                 _invocationId = ServiceClientTracing.NextInvocationId.ToString();
-                Dictionary<string, object> tracingParameters = new Dictionary<string, object>();
-                tracingParameters.Add("sinnerid", sinnerid);
-                tracingParameters.Add("cancellationToken", cancellationToken);
+                Dictionary<string, object> tracingParameters = new Dictionary<string, object>
+                {
+                    { "sinnerid", sinnerid },
+                    { "cancellationToken", cancellationToken }
+                };
                 ServiceClientTracing.Enter(_invocationId, this, "GetDownloadFile", tracingParameters);
             }
             // Construct URL
-            var _baseUrl = this.BaseUri.AbsoluteUri;
-            var _url = new Uri(new Uri(_baseUrl + (_baseUrl.EndsWith("/") ? "" : "/")), "api/v1/SIN/GetDownloadFile/{sinnerid}").ToString();
+            string _baseUrl = this.BaseUri.AbsoluteUri;
+            string _url = new Uri(new Uri(_baseUrl + (_baseUrl.EndsWith("/") ? "" : "/")), "api/v1/SIN/GetDownloadFile/{sinnerid}").ToString();
             _url = _url.Replace("{sinnerid}", Uri.EscapeDataString(SafeJsonConvert.SerializeObject(sinnerid, this.SerializationSettings).Trim('"')));
             // Create HTTP transport objects
             HttpRequestMessage _httpRequest = new HttpRequestMessage();
@@ -1794,7 +1855,7 @@ namespace SINners
             // Set Headers
             if (customHeaders != null)
             {
-                foreach(var _header in customHeaders)
+                foreach (KeyValuePair<string, List<string>> _header in customHeaders)
                 {
                     if (_httpRequest.Headers.Contains(_header.Key))
                     {
@@ -1844,9 +1905,11 @@ namespace SINners
                 throw ex;
             }
             // Create Result
-            var _result = new HttpOperationResponse<System.IO.Stream>();
-            _result.Request = _httpRequest;
-            _result.Response = _httpResponse;
+            var _result = new HttpOperationResponse<System.IO.Stream>
+            {
+                Request = _httpRequest,
+                Response = _httpResponse
+            };
             // Deserialize Response
             if ((int)_statusCode == 200)
             {
@@ -1878,14 +1941,16 @@ namespace SINners
             if (_shouldTrace)
             {
                 _invocationId = ServiceClientTracing.NextInvocationId.ToString();
-                Dictionary<string, object> tracingParameters = new Dictionary<string, object>();
-                tracingParameters.Add("id", id);
-                tracingParameters.Add("cancellationToken", cancellationToken);
+                Dictionary<string, object> tracingParameters = new Dictionary<string, object>
+                {
+                    { "id", id },
+                    { "cancellationToken", cancellationToken }
+                };
                 ServiceClientTracing.Enter(_invocationId, this, "GetSINnerGroupFromSINerById", tracingParameters);
             }
             // Construct URL
-            var _baseUrl = this.BaseUri.AbsoluteUri;
-            var _url = new Uri(new Uri(_baseUrl + (_baseUrl.EndsWith("/") ? "" : "/")), "api/v1/SIN/GetSINnerGroupFromSINerById/{id}").ToString();
+            string _baseUrl = this.BaseUri.AbsoluteUri;
+            string _url = new Uri(new Uri(_baseUrl + (_baseUrl.EndsWith("/") ? "" : "/")), "api/v1/SIN/GetSINnerGroupFromSINerById/{id}").ToString();
             _url = _url.Replace("{id}", Uri.EscapeDataString(SafeJsonConvert.SerializeObject(id, this.SerializationSettings).Trim('"')));
             // Create HTTP transport objects
             HttpRequestMessage _httpRequest = new HttpRequestMessage();
@@ -1895,7 +1960,7 @@ namespace SINners
             // Set Headers
             if (customHeaders != null)
             {
-                foreach(var _header in customHeaders)
+                foreach (KeyValuePair<string, List<string>> _header in customHeaders)
                 {
                     if (_httpRequest.Headers.Contains(_header.Key))
                     {
@@ -1945,9 +2010,11 @@ namespace SINners
                 throw ex;
             }
             // Create Result
-            var _result = new HttpOperationResponse<ResultSinnerGetSINnerGroupFromSINerById>();
-            _result.Request = _httpRequest;
-            _result.Response = _httpResponse;
+            var _result = new HttpOperationResponse<ResultSinnerGetSINnerGroupFromSINerById>
+            {
+                Request = _httpRequest,
+                Response = _httpResponse
+            };
             // Deserialize Response
             if ((int)_statusCode == 200)
             {
@@ -1992,14 +2059,16 @@ namespace SINners
             if (_shouldTrace)
             {
                 _invocationId = ServiceClientTracing.NextInvocationId.ToString();
-                Dictionary<string, object> tracingParameters = new Dictionary<string, object>();
-                tracingParameters.Add("id", id);
-                tracingParameters.Add("cancellationToken", cancellationToken);
+                Dictionary<string, object> tracingParameters = new Dictionary<string, object>
+                {
+                    { "id", id },
+                    { "cancellationToken", cancellationToken }
+                };
                 ServiceClientTracing.Enter(_invocationId, this, "GetSINById", tracingParameters);
             }
             // Construct URL
-            var _baseUrl = this.BaseUri.AbsoluteUri;
-            var _url = new Uri(new Uri(_baseUrl + (_baseUrl.EndsWith("/") ? "" : "/")), "api/v1/SIN/GetSINById/{id}").ToString();
+            string _baseUrl = this.BaseUri.AbsoluteUri;
+            string _url = new Uri(new Uri(_baseUrl + (_baseUrl.EndsWith("/") ? "" : "/")), "api/v1/SIN/GetSINById/{id}").ToString();
             _url = _url.Replace("{id}", Uri.EscapeDataString(SafeJsonConvert.SerializeObject(id, this.SerializationSettings).Trim('"')));
             // Create HTTP transport objects
             HttpRequestMessage _httpRequest = new HttpRequestMessage();
@@ -2009,7 +2078,7 @@ namespace SINners
             // Set Headers
             if (customHeaders != null)
             {
-                foreach(var _header in customHeaders)
+                foreach (KeyValuePair<string, List<string>> _header in customHeaders)
                 {
                     if (_httpRequest.Headers.Contains(_header.Key))
                     {
@@ -2059,9 +2128,11 @@ namespace SINners
                 throw ex;
             }
             // Create Result
-            var _result = new HttpOperationResponse<ResultSinnerGetSINById>();
-            _result.Request = _httpRequest;
-            _result.Response = _httpResponse;
+            var _result = new HttpOperationResponse<ResultSinnerGetSINById>
+            {
+                Request = _httpRequest,
+                Response = _httpResponse
+            };
             // Deserialize Response
             if ((int)_statusCode == 200)
             {
@@ -2106,14 +2177,16 @@ namespace SINners
             if (_shouldTrace)
             {
                 _invocationId = ServiceClientTracing.NextInvocationId.ToString();
-                Dictionary<string, object> tracingParameters = new Dictionary<string, object>();
-                tracingParameters.Add("id", id);
-                tracingParameters.Add("cancellationToken", cancellationToken);
+                Dictionary<string, object> tracingParameters = new Dictionary<string, object>
+                {
+                    { "id", id },
+                    { "cancellationToken", cancellationToken }
+                };
                 ServiceClientTracing.Enter(_invocationId, this, "GetSINnerVisibilityById", tracingParameters);
             }
             // Construct URL
-            var _baseUrl = this.BaseUri.AbsoluteUri;
-            var _url = new Uri(new Uri(_baseUrl + (_baseUrl.EndsWith("/") ? "" : "/")), "api/v1/SIN/GetSINnerVisibilityById/{id}").ToString();
+            string _baseUrl = this.BaseUri.AbsoluteUri;
+            string _url = new Uri(new Uri(_baseUrl + (_baseUrl.EndsWith("/") ? "" : "/")), "api/v1/SIN/GetSINnerVisibilityById/{id}").ToString();
             _url = _url.Replace("{id}", Uri.EscapeDataString(SafeJsonConvert.SerializeObject(id, this.SerializationSettings).Trim('"')));
             // Create HTTP transport objects
             HttpRequestMessage _httpRequest = new HttpRequestMessage();
@@ -2123,7 +2196,7 @@ namespace SINners
             // Set Headers
             if (customHeaders != null)
             {
-                foreach(var _header in customHeaders)
+                foreach (KeyValuePair<string, List<string>> _header in customHeaders)
                 {
                     if (_httpRequest.Headers.Contains(_header.Key))
                     {
@@ -2173,9 +2246,11 @@ namespace SINners
                 throw ex;
             }
             // Create Result
-            var _result = new HttpOperationResponse<ResultSinnerGetSINnerVisibilityById>();
-            _result.Request = _httpRequest;
-            _result.Response = _httpResponse;
+            var _result = new HttpOperationResponse<ResultSinnerGetSINnerVisibilityById>
+            {
+                Request = _httpRequest,
+                Response = _httpResponse
+            };
             // Deserialize Response
             if ((int)_statusCode == 200)
             {
@@ -2224,14 +2299,16 @@ namespace SINners
             if (_shouldTrace)
             {
                 _invocationId = ServiceClientTracing.NextInvocationId.ToString();
-                Dictionary<string, object> tracingParameters = new Dictionary<string, object>();
-                tracingParameters.Add("id", id);
-                tracingParameters.Add("cancellationToken", cancellationToken);
+                Dictionary<string, object> tracingParameters = new Dictionary<string, object>
+                {
+                    { "id", id },
+                    { "cancellationToken", cancellationToken }
+                };
                 ServiceClientTracing.Enter(_invocationId, this, "SinnerGetOwnedSINByAlias", tracingParameters);
             }
             // Construct URL
-            var _baseUrl = this.BaseUri.AbsoluteUri;
-            var _url = new Uri(new Uri(_baseUrl + (_baseUrl.EndsWith("/") ? "" : "/")), "api/v1/SIN/GetOwnedSINByAlias/{id}").ToString();
+            string _baseUrl = this.BaseUri.AbsoluteUri;
+            string _url = new Uri(new Uri(_baseUrl + (_baseUrl.EndsWith("/") ? "" : "/")), "api/v1/SIN/GetOwnedSINByAlias/{id}").ToString();
             _url = _url.Replace("{id}", Uri.EscapeDataString(id));
             // Create HTTP transport objects
             HttpRequestMessage _httpRequest = new HttpRequestMessage();
@@ -2241,7 +2318,7 @@ namespace SINners
             // Set Headers
             if (customHeaders != null)
             {
-                foreach(var _header in customHeaders)
+                foreach (KeyValuePair<string, List<string>> _header in customHeaders)
                 {
                     if (_httpRequest.Headers.Contains(_header.Key))
                     {
@@ -2291,9 +2368,11 @@ namespace SINners
                 throw ex;
             }
             // Create Result
-            var _result = new HttpOperationResponse<ResultSinnerGetOwnedSINByAlias>();
-            _result.Request = _httpRequest;
-            _result.Response = _httpResponse;
+            var _result = new HttpOperationResponse<ResultSinnerGetOwnedSINByAlias>
+            {
+                Request = _httpRequest,
+                Response = _httpResponse
+            };
             // Deserialize Response
             if ((int)_statusCode == 200)
             {
@@ -2343,15 +2422,17 @@ namespace SINners
             if (_shouldTrace)
             {
                 _invocationId = ServiceClientTracing.NextInvocationId.ToString();
-                Dictionary<string, object> tracingParameters = new Dictionary<string, object>();
-                tracingParameters.Add("id", id);
-                tracingParameters.Add("uploadedFile", uploadedFile);
-                tracingParameters.Add("cancellationToken", cancellationToken);
+                Dictionary<string, object> tracingParameters = new Dictionary<string, object>
+                {
+                    { "id", id },
+                    { "uploadedFile", uploadedFile },
+                    { "cancellationToken", cancellationToken }
+                };
                 ServiceClientTracing.Enter(_invocationId, this, "PutSIN", tracingParameters);
             }
             // Construct URL
-            var _baseUrl = this.BaseUri.AbsoluteUri;
-            var _url = new Uri(new Uri(_baseUrl + (_baseUrl.EndsWith("/") ? "" : "/")), "api/v1/SIN/PutSIN/{id}").ToString();
+            string _baseUrl = this.BaseUri.AbsoluteUri;
+            string _url = new Uri(new Uri(_baseUrl + (_baseUrl.EndsWith("/") ? "" : "/")), "api/v1/SIN/PutSIN/{id}").ToString();
             _url = _url.Replace("{id}", Uri.EscapeDataString(SafeJsonConvert.SerializeObject(id, this.SerializationSettings).Trim('"')));
             // Create HTTP transport objects
             HttpRequestMessage _httpRequest = new HttpRequestMessage();
@@ -2361,7 +2442,7 @@ namespace SINners
             // Set Headers
             if (customHeaders != null)
             {
-                foreach(var _header in customHeaders)
+                foreach (KeyValuePair<string, List<string>> _header in customHeaders)
                 {
                     if (_httpRequest.Headers.Contains(_header.Key))
                     {
@@ -2381,11 +2462,13 @@ namespace SINners
                 System.IO.FileStream _uploadedFileAsFileStream = uploadedFile as System.IO.FileStream;
                 if (_uploadedFileAsFileStream != null)
                 {
-                    ContentDispositionHeaderValue _contentDispositionHeaderValue = new ContentDispositionHeaderValue("form-data");
-                    _contentDispositionHeaderValue.Name = "uploadedFile";
-                    _contentDispositionHeaderValue.FileName = _uploadedFileAsFileStream.Name;
-                    _uploadedFile.Headers.ContentDisposition = _contentDispositionHeaderValue;        
-                }    
+                    ContentDispositionHeaderValue _contentDispositionHeaderValue = new ContentDispositionHeaderValue("form-data")
+                    {
+                        Name = "uploadedFile",
+                        FileName = _uploadedFileAsFileStream.Name
+                    };
+                    _uploadedFile.Headers.ContentDisposition = _contentDispositionHeaderValue;
+                }
                 _multiPartContent.Add(_uploadedFile, "uploadedFile");
             }
             _httpRequest.Content = _multiPartContent;
@@ -2427,9 +2510,11 @@ namespace SINners
                 throw ex;
             }
             // Create Result
-            var _result = new HttpOperationResponse<ResultSINnerPut>();
-            _result.Request = _httpRequest;
-            _result.Response = _httpResponse;
+            var _result = new HttpOperationResponse<ResultSINnerPut>
+            {
+                Request = _httpRequest,
+                Response = _httpResponse
+            };
             // Deserialize Response
             if ((int)_statusCode == 200)
             {
@@ -2476,15 +2561,17 @@ namespace SINners
             if (_shouldTrace)
             {
                 _invocationId = ServiceClientTracing.NextInvocationId.ToString();
-                Dictionary<string, object> tracingParameters = new Dictionary<string, object>();
-                tracingParameters.Add("sINnerId", sINnerId);
-                tracingParameters.Add("index", index);
-                tracingParameters.Add("cancellationToken", cancellationToken);
+                Dictionary<string, object> tracingParameters = new Dictionary<string, object>
+                {
+                    { "sINnerId", sINnerId },
+                    { "index", index },
+                    { "cancellationToken", cancellationToken }
+                };
                 ServiceClientTracing.Enter(_invocationId, this, "GetThumbnailById", tracingParameters);
             }
             // Construct URL
-            var _baseUrl = this.BaseUri.AbsoluteUri;
-            var _url = new Uri(new Uri(_baseUrl + (_baseUrl.EndsWith("/") ? "" : "/")), "api/v1/SIN/GetThumbnailById").ToString();
+            string _baseUrl = this.BaseUri.AbsoluteUri;
+            string _url = new Uri(new Uri(_baseUrl + (_baseUrl.EndsWith("/") ? "" : "/")), "api/v1/SIN/GetThumbnailById").ToString();
             List<string> _queryParameters = new List<string>();
             if (sINnerId != null)
             {
@@ -2506,7 +2593,7 @@ namespace SINners
             // Set Headers
             if (customHeaders != null)
             {
-                foreach(var _header in customHeaders)
+                foreach (KeyValuePair<string, List<string>> _header in customHeaders)
                 {
                     if (_httpRequest.Headers.Contains(_header.Key))
                     {
@@ -2556,9 +2643,11 @@ namespace SINners
                 throw ex;
             }
             // Create Result
-            var _result = new HttpOperationResponse();
-            _result.Request = _httpRequest;
-            _result.Response = _httpResponse;
+            var _result = new HttpOperationResponse
+            {
+                Request = _httpRequest,
+                Response = _httpResponse
+            };
             if (_shouldTrace)
             {
                 ServiceClientTracing.Exit(_invocationId, _result);
@@ -2590,14 +2679,16 @@ namespace SINners
             if (_shouldTrace)
             {
                 _invocationId = ServiceClientTracing.NextInvocationId.ToString();
-                Dictionary<string, object> tracingParameters = new Dictionary<string, object>();
-                tracingParameters.Add("uploadInfo", uploadInfo);
-                tracingParameters.Add("cancellationToken", cancellationToken);
+                Dictionary<string, object> tracingParameters = new Dictionary<string, object>
+                {
+                    { "uploadInfo", uploadInfo },
+                    { "cancellationToken", cancellationToken }
+                };
                 ServiceClientTracing.Enter(_invocationId, this, "PostSIN", tracingParameters);
             }
             // Construct URL
-            var _baseUrl = this.BaseUri.AbsoluteUri;
-            var _url = new Uri(new Uri(_baseUrl + (_baseUrl.EndsWith("/") ? "" : "/")), "api/v1/SIN/PostSIN").ToString();
+            string _baseUrl = this.BaseUri.AbsoluteUri;
+            string _url = new Uri(new Uri(_baseUrl + (_baseUrl.EndsWith("/") ? "" : "/")), "api/v1/SIN/PostSIN").ToString();
             // Create HTTP transport objects
             HttpRequestMessage _httpRequest = new HttpRequestMessage();
             HttpResponseMessage _httpResponse = null;
@@ -2606,7 +2697,7 @@ namespace SINners
             // Set Headers
             if (customHeaders != null)
             {
-                foreach(var _header in customHeaders)
+                foreach (KeyValuePair<string, List<string>> _header in customHeaders)
                 {
                     if (_httpRequest.Headers.Contains(_header.Key))
                     {
@@ -2618,7 +2709,7 @@ namespace SINners
 
             // Serialize Request
             string _requestContent = null;
-            if(uploadInfo != null)
+            if (uploadInfo != null)
             {
                 _requestContent = SafeJsonConvert.SerializeObject(uploadInfo, this.SerializationSettings);
                 _httpRequest.Content = new StringContent(_requestContent, Encoding.UTF8);
@@ -2662,9 +2753,11 @@ namespace SINners
                 throw ex;
             }
             // Create Result
-            var _result = new HttpOperationResponse<ResultSinnerPostSIN>();
-            _result.Request = _httpRequest;
-            _result.Response = _httpResponse;
+            var _result = new HttpOperationResponse<ResultSinnerPostSIN>
+            {
+                Request = _httpRequest,
+                Response = _httpResponse
+            };
             // Deserialize Response
             if ((int)_statusCode == 200)
             {
@@ -2727,14 +2820,16 @@ namespace SINners
             if (_shouldTrace)
             {
                 _invocationId = ServiceClientTracing.NextInvocationId.ToString();
-                Dictionary<string, object> tracingParameters = new Dictionary<string, object>();
-                tracingParameters.Add("id", id);
-                tracingParameters.Add("cancellationToken", cancellationToken);
+                Dictionary<string, object> tracingParameters = new Dictionary<string, object>
+                {
+                    { "id", id },
+                    { "cancellationToken", cancellationToken }
+                };
                 ServiceClientTracing.Enter(_invocationId, this, "Delete", tracingParameters);
             }
             // Construct URL
-            var _baseUrl = this.BaseUri.AbsoluteUri;
-            var _url = new Uri(new Uri(_baseUrl + (_baseUrl.EndsWith("/") ? "" : "/")), "api/v1/SIN/Delete/{id}").ToString();
+            string _baseUrl = this.BaseUri.AbsoluteUri;
+            string _url = new Uri(new Uri(_baseUrl + (_baseUrl.EndsWith("/") ? "" : "/")), "api/v1/SIN/Delete/{id}").ToString();
             _url = _url.Replace("{id}", Uri.EscapeDataString(SafeJsonConvert.SerializeObject(id, this.SerializationSettings).Trim('"')));
             // Create HTTP transport objects
             HttpRequestMessage _httpRequest = new HttpRequestMessage();
@@ -2744,7 +2839,7 @@ namespace SINners
             // Set Headers
             if (customHeaders != null)
             {
-                foreach(var _header in customHeaders)
+                foreach (KeyValuePair<string, List<string>> _header in customHeaders)
                 {
                     if (_httpRequest.Headers.Contains(_header.Key))
                     {
@@ -2794,9 +2889,11 @@ namespace SINners
                 throw ex;
             }
             // Create Result
-            var _result = new HttpOperationResponse<ResultSinnerDelete>();
-            _result.Request = _httpRequest;
-            _result.Response = _httpResponse;
+            var _result = new HttpOperationResponse<ResultSinnerDelete>
+            {
+                Request = _httpRequest,
+                Response = _httpResponse
+            };
             // Deserialize Response
             if ((int)_statusCode == 200)
             {
@@ -2853,18 +2950,20 @@ namespace SINners
             if (_shouldTrace)
             {
                 _invocationId = ServiceClientTracing.NextInvocationId.ToString();
-                Dictionary<string, object> tracingParameters = new Dictionary<string, object>();
-                tracingParameters.Add("groupId", groupId);
-                tracingParameters.Add("groupname", groupname);
-                tracingParameters.Add("parentGroupId", parentGroupId);
-                tracingParameters.Add("adminIdentityRole", adminIdentityRole);
-                tracingParameters.Add("isPublicVisible", isPublicVisible);
-                tracingParameters.Add("cancellationToken", cancellationToken);
+                Dictionary<string, object> tracingParameters = new Dictionary<string, object>
+                {
+                    { "groupId", groupId },
+                    { "groupname", groupname },
+                    { "parentGroupId", parentGroupId },
+                    { "adminIdentityRole", adminIdentityRole },
+                    { "isPublicVisible", isPublicVisible },
+                    { "cancellationToken", cancellationToken }
+                };
                 ServiceClientTracing.Enter(_invocationId, this, "PutGroupInGroup", tracingParameters);
             }
             // Construct URL
-            var _baseUrl = this.BaseUri.AbsoluteUri;
-            var _url = new Uri(new Uri(_baseUrl + (_baseUrl.EndsWith("/") ? "" : "/")), "api/v1/SINGroup/PutGroupInGroup").ToString();
+            string _baseUrl = this.BaseUri.AbsoluteUri;
+            string _url = new Uri(new Uri(_baseUrl + (_baseUrl.EndsWith("/") ? "" : "/")), "api/v1/SINGroup/PutGroupInGroup").ToString();
             List<string> _queryParameters = new List<string>();
             if (groupId != null)
             {
@@ -2898,7 +2997,7 @@ namespace SINners
             // Set Headers
             if (customHeaders != null)
             {
-                foreach(var _header in customHeaders)
+                foreach (KeyValuePair<string, List<string>> _header in customHeaders)
                 {
                     if (_httpRequest.Headers.Contains(_header.Key))
                     {
@@ -2948,9 +3047,11 @@ namespace SINners
                 throw ex;
             }
             // Create Result
-            var _result = new HttpOperationResponse<ResultGroupPutGroupInGroup>();
-            _result.Request = _httpRequest;
-            _result.Response = _httpResponse;
+            var _result = new HttpOperationResponse<ResultGroupPutGroupInGroup>
+            {
+                Request = _httpRequest,
+                Response = _httpResponse
+            };
             // Deserialize Response
             if ((int)_statusCode == 200)
             {
@@ -3000,15 +3101,17 @@ namespace SINners
             if (_shouldTrace)
             {
                 _invocationId = ServiceClientTracing.NextInvocationId.ToString();
-                Dictionary<string, object> tracingParameters = new Dictionary<string, object>();
-                tracingParameters.Add("id", id);
-                tracingParameters.Add("uploadedFile", uploadedFile);
-                tracingParameters.Add("cancellationToken", cancellationToken);
+                Dictionary<string, object> tracingParameters = new Dictionary<string, object>
+                {
+                    { "id", id },
+                    { "uploadedFile", uploadedFile },
+                    { "cancellationToken", cancellationToken }
+                };
                 ServiceClientTracing.Enter(_invocationId, this, "PutGroupSetting", tracingParameters);
             }
             // Construct URL
-            var _baseUrl = this.BaseUri.AbsoluteUri;
-            var _url = new Uri(new Uri(_baseUrl + (_baseUrl.EndsWith("/") ? "" : "/")), "api/v1/SINGroup/PutGroupSetting/{id}").ToString();
+            string _baseUrl = this.BaseUri.AbsoluteUri;
+            string _url = new Uri(new Uri(_baseUrl + (_baseUrl.EndsWith("/") ? "" : "/")), "api/v1/SINGroup/PutGroupSetting/{id}").ToString();
             _url = _url.Replace("{id}", Uri.EscapeDataString(SafeJsonConvert.SerializeObject(id, this.SerializationSettings).Trim('"')));
             // Create HTTP transport objects
             HttpRequestMessage _httpRequest = new HttpRequestMessage();
@@ -3018,7 +3121,7 @@ namespace SINners
             // Set Headers
             if (customHeaders != null)
             {
-                foreach(var _header in customHeaders)
+                foreach (KeyValuePair<string, List<string>> _header in customHeaders)
                 {
                     if (_httpRequest.Headers.Contains(_header.Key))
                     {
@@ -3038,11 +3141,13 @@ namespace SINners
                 System.IO.FileStream _uploadedFileAsFileStream = uploadedFile as System.IO.FileStream;
                 if (_uploadedFileAsFileStream != null)
                 {
-                    ContentDispositionHeaderValue _contentDispositionHeaderValue = new ContentDispositionHeaderValue("form-data");
-                    _contentDispositionHeaderValue.Name = "uploadedFile";
-                    _contentDispositionHeaderValue.FileName = _uploadedFileAsFileStream.Name;
-                    _uploadedFile.Headers.ContentDisposition = _contentDispositionHeaderValue;        
-                }    
+                    ContentDispositionHeaderValue _contentDispositionHeaderValue = new ContentDispositionHeaderValue("form-data")
+                    {
+                        Name = "uploadedFile",
+                        FileName = _uploadedFileAsFileStream.Name
+                    };
+                    _uploadedFile.Headers.ContentDisposition = _contentDispositionHeaderValue;
+                }
                 _multiPartContent.Add(_uploadedFile, "uploadedFile");
             }
             _httpRequest.Content = _multiPartContent;
@@ -3084,9 +3189,11 @@ namespace SINners
                 throw ex;
             }
             // Create Result
-            var _result = new HttpOperationResponse<ResultGroupPutSetting>();
-            _result.Request = _httpRequest;
-            _result.Response = _httpResponse;
+            var _result = new HttpOperationResponse<ResultGroupPutSetting>
+            {
+                Request = _httpRequest,
+                Response = _httpResponse
+            };
             // Deserialize Response
             if ((int)_statusCode == 200)
             {
@@ -3140,15 +3247,17 @@ namespace SINners
             if (_shouldTrace)
             {
                 _invocationId = ServiceClientTracing.NextInvocationId.ToString();
-                Dictionary<string, object> tracingParameters = new Dictionary<string, object>();
-                tracingParameters.Add("mygroup", mygroup);
-                tracingParameters.Add("sinnerId", sinnerId);
-                tracingParameters.Add("cancellationToken", cancellationToken);
+                Dictionary<string, object> tracingParameters = new Dictionary<string, object>
+                {
+                    { "mygroup", mygroup },
+                    { "sinnerId", sinnerId },
+                    { "cancellationToken", cancellationToken }
+                };
                 ServiceClientTracing.Enter(_invocationId, this, "PostGroup", tracingParameters);
             }
             // Construct URL
-            var _baseUrl = this.BaseUri.AbsoluteUri;
-            var _url = new Uri(new Uri(_baseUrl + (_baseUrl.EndsWith("/") ? "" : "/")), "api/v1/SINGroup/PostGroup").ToString();
+            string _baseUrl = this.BaseUri.AbsoluteUri;
+            string _url = new Uri(new Uri(_baseUrl + (_baseUrl.EndsWith("/") ? "" : "/")), "api/v1/SINGroup/PostGroup").ToString();
             List<string> _queryParameters = new List<string>();
             if (sinnerId != null)
             {
@@ -3166,7 +3275,7 @@ namespace SINners
             // Set Headers
             if (customHeaders != null)
             {
-                foreach(var _header in customHeaders)
+                foreach (KeyValuePair<string, List<string>> _header in customHeaders)
                 {
                     if (_httpRequest.Headers.Contains(_header.Key))
                     {
@@ -3178,7 +3287,7 @@ namespace SINners
 
             // Serialize Request
             string _requestContent = null;
-            if(mygroup != null)
+            if (mygroup != null)
             {
                 _requestContent = SafeJsonConvert.SerializeObject(mygroup, this.SerializationSettings);
                 _httpRequest.Content = new StringContent(_requestContent, Encoding.UTF8);
@@ -3222,9 +3331,11 @@ namespace SINners
                 throw ex;
             }
             // Create Result
-            var _result = new HttpOperationResponse<ResultGroupPostGroup>();
-            _result.Request = _httpRequest;
-            _result.Response = _httpResponse;
+            var _result = new HttpOperationResponse<ResultGroupPostGroup>
+            {
+                Request = _httpRequest,
+                Response = _httpResponse
+            };
             // Deserialize Response
             if ((int)_statusCode == 201)
             {
@@ -3276,16 +3387,18 @@ namespace SINners
             if (_shouldTrace)
             {
                 _invocationId = ServiceClientTracing.NextInvocationId.ToString();
-                Dictionary<string, object> tracingParameters = new Dictionary<string, object>();
-                tracingParameters.Add("groupId", groupId);
-                tracingParameters.Add("sinnerId", sinnerId);
-                tracingParameters.Add("pwhash", pwhash);
-                tracingParameters.Add("cancellationToken", cancellationToken);
+                Dictionary<string, object> tracingParameters = new Dictionary<string, object>
+                {
+                    { "groupId", groupId },
+                    { "sinnerId", sinnerId },
+                    { "pwhash", pwhash },
+                    { "cancellationToken", cancellationToken }
+                };
                 ServiceClientTracing.Enter(_invocationId, this, "PutSINerInGroup", tracingParameters);
             }
             // Construct URL
-            var _baseUrl = this.BaseUri.AbsoluteUri;
-            var _url = new Uri(new Uri(_baseUrl + (_baseUrl.EndsWith("/") ? "" : "/")), "api/v1/SINGroup/PutSINerInGroup").ToString();
+            string _baseUrl = this.BaseUri.AbsoluteUri;
+            string _url = new Uri(new Uri(_baseUrl + (_baseUrl.EndsWith("/") ? "" : "/")), "api/v1/SINGroup/PutSINerInGroup").ToString();
             List<string> _queryParameters = new List<string>();
             if (groupId != null)
             {
@@ -3311,7 +3424,7 @@ namespace SINners
             // Set Headers
             if (customHeaders != null)
             {
-                foreach(var _header in customHeaders)
+                foreach (KeyValuePair<string, List<string>> _header in customHeaders)
                 {
                     if (_httpRequest.Headers.Contains(_header.Key))
                     {
@@ -3361,9 +3474,11 @@ namespace SINners
                 throw ex;
             }
             // Create Result
-            var _result = new HttpOperationResponse<object>();
-            _result.Request = _httpRequest;
-            _result.Response = _httpResponse;
+            var _result = new HttpOperationResponse<object>
+            {
+                Request = _httpRequest,
+                Response = _httpResponse
+            };
             // Deserialize Response
             if ((int)_statusCode == 200)
             {
@@ -3429,14 +3544,16 @@ namespace SINners
             if (_shouldTrace)
             {
                 _invocationId = ServiceClientTracing.NextInvocationId.ToString();
-                Dictionary<string, object> tracingParameters = new Dictionary<string, object>();
-                tracingParameters.Add("groupid", groupid);
-                tracingParameters.Add("cancellationToken", cancellationToken);
+                Dictionary<string, object> tracingParameters = new Dictionary<string, object>
+                {
+                    { "groupid", groupid },
+                    { "cancellationToken", cancellationToken }
+                };
                 ServiceClientTracing.Enter(_invocationId, this, "GetGroupById", tracingParameters);
             }
             // Construct URL
-            var _baseUrl = this.BaseUri.AbsoluteUri;
-            var _url = new Uri(new Uri(_baseUrl + (_baseUrl.EndsWith("/") ? "" : "/")), "api/v1/SINGroup/GetGroupById").ToString();
+            string _baseUrl = this.BaseUri.AbsoluteUri;
+            string _url = new Uri(new Uri(_baseUrl + (_baseUrl.EndsWith("/") ? "" : "/")), "api/v1/SINGroup/GetGroupById").ToString();
             List<string> _queryParameters = new List<string>();
             if (groupid != null)
             {
@@ -3454,7 +3571,7 @@ namespace SINners
             // Set Headers
             if (customHeaders != null)
             {
-                foreach(var _header in customHeaders)
+                foreach (KeyValuePair<string, List<string>> _header in customHeaders)
                 {
                     if (_httpRequest.Headers.Contains(_header.Key))
                     {
@@ -3504,9 +3621,11 @@ namespace SINners
                 throw ex;
             }
             // Create Result
-            var _result = new HttpOperationResponse<ResultGroupGetGroupById>();
-            _result.Request = _httpRequest;
-            _result.Response = _httpResponse;
+            var _result = new HttpOperationResponse<ResultGroupGetGroupById>
+            {
+                Request = _httpRequest,
+                Response = _httpResponse
+            };
             // Deserialize Response
             if ((int)_statusCode == 200)
             {
@@ -3556,15 +3675,17 @@ namespace SINners
             if (_shouldTrace)
             {
                 _invocationId = ServiceClientTracing.NextInvocationId.ToString();
-                Dictionary<string, object> tracingParameters = new Dictionary<string, object>();
-                tracingParameters.Add("groupname", groupname);
-                tracingParameters.Add("language", language);
-                tracingParameters.Add("cancellationToken", cancellationToken);
+                Dictionary<string, object> tracingParameters = new Dictionary<string, object>
+                {
+                    { "groupname", groupname },
+                    { "language", language },
+                    { "cancellationToken", cancellationToken }
+                };
                 ServiceClientTracing.Enter(_invocationId, this, "GetPublicGroup", tracingParameters);
             }
             // Construct URL
-            var _baseUrl = this.BaseUri.AbsoluteUri;
-            var _url = new Uri(new Uri(_baseUrl + (_baseUrl.EndsWith("/") ? "" : "/")), "api/v1/SINGroup/GetPublicGroup").ToString();
+            string _baseUrl = this.BaseUri.AbsoluteUri;
+            string _url = new Uri(new Uri(_baseUrl + (_baseUrl.EndsWith("/") ? "" : "/")), "api/v1/SINGroup/GetPublicGroup").ToString();
             List<string> _queryParameters = new List<string>();
             if (groupname != null)
             {
@@ -3586,7 +3707,7 @@ namespace SINners
             // Set Headers
             if (customHeaders != null)
             {
-                foreach(var _header in customHeaders)
+                foreach (KeyValuePair<string, List<string>> _header in customHeaders)
                 {
                     if (_httpRequest.Headers.Contains(_header.Key))
                     {
@@ -3636,9 +3757,11 @@ namespace SINners
                 throw ex;
             }
             // Create Result
-            var _result = new HttpOperationResponse<ResultGroupGetSearchGroups>();
-            _result.Request = _httpRequest;
-            _result.Response = _httpResponse;
+            var _result = new HttpOperationResponse<ResultGroupGetSearchGroups>
+            {
+                Request = _httpRequest,
+                Response = _httpResponse
+            };
             // Deserialize Response
             if ((int)_statusCode == 200)
             {
@@ -3692,17 +3815,19 @@ namespace SINners
             if (_shouldTrace)
             {
                 _invocationId = ServiceClientTracing.NextInvocationId.ToString();
-                Dictionary<string, object> tracingParameters = new Dictionary<string, object>();
-                tracingParameters.Add("groupname", groupname);
-                tracingParameters.Add("language", language);
-                tracingParameters.Add("email", email);
-                tracingParameters.Add("password", password);
-                tracingParameters.Add("cancellationToken", cancellationToken);
+                Dictionary<string, object> tracingParameters = new Dictionary<string, object>
+                {
+                    { "groupname", groupname },
+                    { "language", language },
+                    { "email", email },
+                    { "password", password },
+                    { "cancellationToken", cancellationToken }
+                };
                 ServiceClientTracing.Enter(_invocationId, this, "GetGroupmembers", tracingParameters);
             }
             // Construct URL
-            var _baseUrl = this.BaseUri.AbsoluteUri;
-            var _url = new Uri(new Uri(_baseUrl + (_baseUrl.EndsWith("/") ? "" : "/")), "api/v1/SINGroup/GetGroupmembers").ToString();
+            string _baseUrl = this.BaseUri.AbsoluteUri;
+            string _url = new Uri(new Uri(_baseUrl + (_baseUrl.EndsWith("/") ? "" : "/")), "api/v1/SINGroup/GetGroupmembers").ToString();
             List<string> _queryParameters = new List<string>();
             if (groupname != null)
             {
@@ -3732,7 +3857,7 @@ namespace SINners
             // Set Headers
             if (customHeaders != null)
             {
-                foreach(var _header in customHeaders)
+                foreach (KeyValuePair<string, List<string>> _header in customHeaders)
                 {
                     if (_httpRequest.Headers.Contains(_header.Key))
                     {
@@ -3782,9 +3907,11 @@ namespace SINners
                 throw ex;
             }
             // Create Result
-            var _result = new HttpOperationResponse<ResultGroupGetSearchGroups>();
-            _result.Request = _httpRequest;
-            _result.Response = _httpResponse;
+            var _result = new HttpOperationResponse<ResultGroupGetSearchGroups>
+            {
+                Request = _httpRequest,
+                Response = _httpResponse
+            };
             // Deserialize Response
             if ((int)_statusCode == 200)
             {
@@ -3838,17 +3965,19 @@ namespace SINners
             if (_shouldTrace)
             {
                 _invocationId = ServiceClientTracing.NextInvocationId.ToString();
-                Dictionary<string, object> tracingParameters = new Dictionary<string, object>();
-                tracingParameters.Add("groupname", groupname);
-                tracingParameters.Add("usernameOrEmail", usernameOrEmail);
-                tracingParameters.Add("sINnerName", sINnerName);
-                tracingParameters.Add("language", language);
-                tracingParameters.Add("cancellationToken", cancellationToken);
+                Dictionary<string, object> tracingParameters = new Dictionary<string, object>
+                {
+                    { "groupname", groupname },
+                    { "usernameOrEmail", usernameOrEmail },
+                    { "sINnerName", sINnerName },
+                    { "language", language },
+                    { "cancellationToken", cancellationToken }
+                };
                 ServiceClientTracing.Enter(_invocationId, this, "GetSearchGroups", tracingParameters);
             }
             // Construct URL
-            var _baseUrl = this.BaseUri.AbsoluteUri;
-            var _url = new Uri(new Uri(_baseUrl + (_baseUrl.EndsWith("/") ? "" : "/")), "api/v1/SINGroup/GetSearchGroups").ToString();
+            string _baseUrl = this.BaseUri.AbsoluteUri;
+            string _url = new Uri(new Uri(_baseUrl + (_baseUrl.EndsWith("/") ? "" : "/")), "api/v1/SINGroup/GetSearchGroups").ToString();
             List<string> _queryParameters = new List<string>();
             if (groupname != null)
             {
@@ -3878,7 +4007,7 @@ namespace SINners
             // Set Headers
             if (customHeaders != null)
             {
-                foreach(var _header in customHeaders)
+                foreach (KeyValuePair<string, List<string>> _header in customHeaders)
                 {
                     if (_httpRequest.Headers.Contains(_header.Key))
                     {
@@ -3928,9 +4057,11 @@ namespace SINners
                 throw ex;
             }
             // Create Result
-            var _result = new HttpOperationResponse<ResultGroupGetSearchGroups>();
-            _result.Request = _httpRequest;
-            _result.Response = _httpResponse;
+            var _result = new HttpOperationResponse<ResultGroupGetSearchGroups>
+            {
+                Request = _httpRequest,
+                Response = _httpResponse
+            };
             // Deserialize Response
             if ((int)_statusCode == 200)
             {
@@ -3981,15 +4112,17 @@ namespace SINners
             if (_shouldTrace)
             {
                 _invocationId = ServiceClientTracing.NextInvocationId.ToString();
-                Dictionary<string, object> tracingParameters = new Dictionary<string, object>();
-                tracingParameters.Add("groupid", groupid);
-                tracingParameters.Add("sinnerid", sinnerid);
-                tracingParameters.Add("cancellationToken", cancellationToken);
+                Dictionary<string, object> tracingParameters = new Dictionary<string, object>
+                {
+                    { "groupid", groupid },
+                    { "sinnerid", sinnerid },
+                    { "cancellationToken", cancellationToken }
+                };
                 ServiceClientTracing.Enter(_invocationId, this, "DeleteLeaveGroup", tracingParameters);
             }
             // Construct URL
-            var _baseUrl = this.BaseUri.AbsoluteUri;
-            var _url = new Uri(new Uri(_baseUrl + (_baseUrl.EndsWith("/") ? "" : "/")), "api/v1/SINGroup/DeleteLeaveGroup").ToString();
+            string _baseUrl = this.BaseUri.AbsoluteUri;
+            string _url = new Uri(new Uri(_baseUrl + (_baseUrl.EndsWith("/") ? "" : "/")), "api/v1/SINGroup/DeleteLeaveGroup").ToString();
             List<string> _queryParameters = new List<string>();
             if (groupid != null)
             {
@@ -4011,7 +4144,7 @@ namespace SINners
             // Set Headers
             if (customHeaders != null)
             {
-                foreach(var _header in customHeaders)
+                foreach (KeyValuePair<string, List<string>> _header in customHeaders)
                 {
                     if (_httpRequest.Headers.Contains(_header.Key))
                     {
@@ -4061,9 +4194,11 @@ namespace SINners
                 throw ex;
             }
             // Create Result
-            var _result = new HttpOperationResponse<bool?>();
-            _result.Request = _httpRequest;
-            _result.Response = _httpResponse;
+            var _result = new HttpOperationResponse<bool?>
+            {
+                Request = _httpRequest,
+                Response = _httpResponse
+            };
             // Deserialize Response
             if ((int)_statusCode == 200)
             {
@@ -4111,14 +4246,16 @@ namespace SINners
             if (_shouldTrace)
             {
                 _invocationId = ServiceClientTracing.NextInvocationId.ToString();
-                Dictionary<string, object> tracingParameters = new Dictionary<string, object>();
-                tracingParameters.Add("groupid", groupid);
-                tracingParameters.Add("cancellationToken", cancellationToken);
+                Dictionary<string, object> tracingParameters = new Dictionary<string, object>
+                {
+                    { "groupid", groupid },
+                    { "cancellationToken", cancellationToken }
+                };
                 ServiceClientTracing.Enter(_invocationId, this, "DeleteGroup", tracingParameters);
             }
             // Construct URL
-            var _baseUrl = this.BaseUri.AbsoluteUri;
-            var _url = new Uri(new Uri(_baseUrl + (_baseUrl.EndsWith("/") ? "" : "/")), "api/v1/SINGroup/DeleteGroup").ToString();
+            string _baseUrl = this.BaseUri.AbsoluteUri;
+            string _url = new Uri(new Uri(_baseUrl + (_baseUrl.EndsWith("/") ? "" : "/")), "api/v1/SINGroup/DeleteGroup").ToString();
             List<string> _queryParameters = new List<string>();
             if (groupid != null)
             {
@@ -4136,7 +4273,7 @@ namespace SINners
             // Set Headers
             if (customHeaders != null)
             {
-                foreach(var _header in customHeaders)
+                foreach (KeyValuePair<string, List<string>> _header in customHeaders)
                 {
                     if (_httpRequest.Headers.Contains(_header.Key))
                     {
@@ -4186,9 +4323,11 @@ namespace SINners
                 throw ex;
             }
             // Create Result
-            var _result = new HttpOperationResponse<bool?>();
-            _result.Request = _httpRequest;
-            _result.Response = _httpResponse;
+            var _result = new HttpOperationResponse<bool?>
+            {
+                Request = _httpRequest,
+                Response = _httpResponse
+            };
             // Deserialize Response
             if ((int)_statusCode == 200)
             {
@@ -4236,14 +4375,16 @@ namespace SINners
             if (_shouldTrace)
             {
                 _invocationId = ServiceClientTracing.NextInvocationId.ToString();
-                Dictionary<string, object> tracingParameters = new Dictionary<string, object>();
-                tracingParameters.Add("groupid", groupid);
-                tracingParameters.Add("cancellationToken", cancellationToken);
+                Dictionary<string, object> tracingParameters = new Dictionary<string, object>
+                {
+                    { "groupid", groupid },
+                    { "cancellationToken", cancellationToken }
+                };
                 ServiceClientTracing.Enter(_invocationId, this, "GetGroupmembersById", tracingParameters);
             }
             // Construct URL
-            var _baseUrl = this.BaseUri.AbsoluteUri;
-            var _url = new Uri(new Uri(_baseUrl + (_baseUrl.EndsWith("/") ? "" : "/")), "api/v1/SINGroup/GetGroupmembersById").ToString();
+            string _baseUrl = this.BaseUri.AbsoluteUri;
+            string _url = new Uri(new Uri(_baseUrl + (_baseUrl.EndsWith("/") ? "" : "/")), "api/v1/SINGroup/GetGroupmembersById").ToString();
             List<string> _queryParameters = new List<string>();
             if (groupid != null)
             {
@@ -4261,7 +4402,7 @@ namespace SINners
             // Set Headers
             if (customHeaders != null)
             {
-                foreach(var _header in customHeaders)
+                foreach (KeyValuePair<string, List<string>> _header in customHeaders)
                 {
                     if (_httpRequest.Headers.Contains(_header.Key))
                     {
@@ -4311,9 +4452,11 @@ namespace SINners
                 throw ex;
             }
             // Create Result
-            var _result = new HttpOperationResponse<ResultGroupGetSearchGroups>();
-            _result.Request = _httpRequest;
-            _result.Response = _httpResponse;
+            var _result = new HttpOperationResponse<ResultGroupGetSearchGroups>
+            {
+                Request = _httpRequest,
+                Response = _httpResponse
+            };
             // Deserialize Response
             if ((int)_statusCode == 200)
             {
@@ -4362,14 +4505,16 @@ namespace SINners
             if (_shouldTrace)
             {
                 _invocationId = ServiceClientTracing.NextInvocationId.ToString();
-                Dictionary<string, object> tracingParameters = new Dictionary<string, object>();
-                tracingParameters.Add("searchTag", searchTag);
-                tracingParameters.Add("cancellationToken", cancellationToken);
+                Dictionary<string, object> tracingParameters = new Dictionary<string, object>
+                {
+                    { "searchTag", searchTag },
+                    { "cancellationToken", cancellationToken }
+                };
                 ServiceClientTracing.Enter(_invocationId, this, "Search", tracingParameters);
             }
             // Construct URL
-            var _baseUrl = this.BaseUri.AbsoluteUri;
-            var _url = new Uri(new Uri(_baseUrl + (_baseUrl.EndsWith("/") ? "" : "/")), "api/v1/SINSearch/Search").ToString();
+            string _baseUrl = this.BaseUri.AbsoluteUri;
+            string _url = new Uri(new Uri(_baseUrl + (_baseUrl.EndsWith("/") ? "" : "/")), "api/v1/SINSearch/Search").ToString();
             // Create HTTP transport objects
             HttpRequestMessage _httpRequest = new HttpRequestMessage();
             HttpResponseMessage _httpResponse = null;
@@ -4378,7 +4523,7 @@ namespace SINners
             // Set Headers
             if (customHeaders != null)
             {
-                foreach(var _header in customHeaders)
+                foreach (KeyValuePair<string, List<string>> _header in customHeaders)
                 {
                     if (_httpRequest.Headers.Contains(_header.Key))
                     {
@@ -4390,7 +4535,7 @@ namespace SINners
 
             // Serialize Request
             string _requestContent = null;
-            if(searchTag != null)
+            if (searchTag != null)
             {
                 _requestContent = SafeJsonConvert.SerializeObject(searchTag, this.SerializationSettings);
                 _httpRequest.Content = new StringContent(_requestContent, Encoding.UTF8);
@@ -4434,9 +4579,11 @@ namespace SINners
                 throw ex;
             }
             // Create Result
-            var _result = new HttpOperationResponse<IList<SINner>>();
-            _result.Request = _httpRequest;
-            _result.Response = _httpResponse;
+            var _result = new HttpOperationResponse<IList<SINner>>
+            {
+                Request = _httpRequest,
+                Response = _httpResponse
+            };
             // Deserialize Response
             if ((int)_statusCode == 200)
             {
@@ -4479,13 +4626,15 @@ namespace SINners
             if (_shouldTrace)
             {
                 _invocationId = ServiceClientTracing.NextInvocationId.ToString();
-                Dictionary<string, object> tracingParameters = new Dictionary<string, object>();
-                tracingParameters.Add("cancellationToken", cancellationToken);
+                Dictionary<string, object> tracingParameters = new Dictionary<string, object>
+                {
+                    { "cancellationToken", cancellationToken }
+                };
                 ServiceClientTracing.Enter(_invocationId, this, "AdminGetSINners", tracingParameters);
             }
             // Construct URL
-            var _baseUrl = this.BaseUri.AbsoluteUri;
-            var _url = new Uri(new Uri(_baseUrl + (_baseUrl.EndsWith("/") ? "" : "/")), "api/v1/SINSearch/AdminGetSINners").ToString();
+            string _baseUrl = this.BaseUri.AbsoluteUri;
+            string _url = new Uri(new Uri(_baseUrl + (_baseUrl.EndsWith("/") ? "" : "/")), "api/v1/SINSearch/AdminGetSINners").ToString();
             // Create HTTP transport objects
             HttpRequestMessage _httpRequest = new HttpRequestMessage();
             HttpResponseMessage _httpResponse = null;
@@ -4494,7 +4643,7 @@ namespace SINners
             // Set Headers
             if (customHeaders != null)
             {
-                foreach(var _header in customHeaders)
+                foreach (KeyValuePair<string, List<string>> _header in customHeaders)
                 {
                     if (_httpRequest.Headers.Contains(_header.Key))
                     {
@@ -4544,9 +4693,11 @@ namespace SINners
                 throw ex;
             }
             // Create Result
-            var _result = new HttpOperationResponse<IList<SINner>>();
-            _result.Request = _httpRequest;
-            _result.Response = _httpResponse;
+            var _result = new HttpOperationResponse<IList<SINner>>
+            {
+                Request = _httpRequest,
+                Response = _httpResponse
+            };
             // Deserialize Response
             if ((int)_statusCode == 200)
             {
@@ -4589,13 +4740,15 @@ namespace SINners
             if (_shouldTrace)
             {
                 _invocationId = ServiceClientTracing.NextInvocationId.ToString();
-                Dictionary<string, object> tracingParameters = new Dictionary<string, object>();
-                tracingParameters.Add("cancellationToken", cancellationToken);
+                Dictionary<string, object> tracingParameters = new Dictionary<string, object>
+                {
+                    { "cancellationToken", cancellationToken }
+                };
                 ServiceClientTracing.Enter(_invocationId, this, "GetSomeTestUploadClients", tracingParameters);
             }
             // Construct URL
-            var _baseUrl = this.BaseUri.AbsoluteUri;
-            var _url = new Uri(new Uri(_baseUrl + (_baseUrl.EndsWith("/") ? "" : "/")), "api/v1/UploadClient/GetSomeTestUploadClients").ToString();
+            string _baseUrl = this.BaseUri.AbsoluteUri;
+            string _url = new Uri(new Uri(_baseUrl + (_baseUrl.EndsWith("/") ? "" : "/")), "api/v1/UploadClient/GetSomeTestUploadClients").ToString();
             // Create HTTP transport objects
             HttpRequestMessage _httpRequest = new HttpRequestMessage();
             HttpResponseMessage _httpResponse = null;
@@ -4604,7 +4757,7 @@ namespace SINners
             // Set Headers
             if (customHeaders != null)
             {
-                foreach(var _header in customHeaders)
+                foreach (KeyValuePair<string, List<string>> _header in customHeaders)
                 {
                     if (_httpRequest.Headers.Contains(_header.Key))
                     {
@@ -4654,9 +4807,11 @@ namespace SINners
                 throw ex;
             }
             // Create Result
-            var _result = new HttpOperationResponse<IList<UploadClient>>();
-            _result.Request = _httpRequest;
-            _result.Response = _httpResponse;
+            var _result = new HttpOperationResponse<IList<UploadClient>>
+            {
+                Request = _httpRequest,
+                Response = _httpResponse
+            };
             // Deserialize Response
             if ((int)_statusCode == 200)
             {
@@ -4701,14 +4856,16 @@ namespace SINners
             if (_shouldTrace)
             {
                 _invocationId = ServiceClientTracing.NextInvocationId.ToString();
-                Dictionary<string, object> tracingParameters = new Dictionary<string, object>();
-                tracingParameters.Add("id", id);
-                tracingParameters.Add("cancellationToken", cancellationToken);
+                Dictionary<string, object> tracingParameters = new Dictionary<string, object>
+                {
+                    { "id", id },
+                    { "cancellationToken", cancellationToken }
+                };
                 ServiceClientTracing.Enter(_invocationId, this, "GetUploadClient", tracingParameters);
             }
             // Construct URL
-            var _baseUrl = this.BaseUri.AbsoluteUri;
-            var _url = new Uri(new Uri(_baseUrl + (_baseUrl.EndsWith("/") ? "" : "/")), "api/v1/UploadClient/GetUploadClient/{id}").ToString();
+            string _baseUrl = this.BaseUri.AbsoluteUri;
+            string _url = new Uri(new Uri(_baseUrl + (_baseUrl.EndsWith("/") ? "" : "/")), "api/v1/UploadClient/GetUploadClient/{id}").ToString();
             _url = _url.Replace("{id}", Uri.EscapeDataString(SafeJsonConvert.SerializeObject(id, this.SerializationSettings).Trim('"')));
             // Create HTTP transport objects
             HttpRequestMessage _httpRequest = new HttpRequestMessage();
@@ -4718,7 +4875,7 @@ namespace SINners
             // Set Headers
             if (customHeaders != null)
             {
-                foreach(var _header in customHeaders)
+                foreach (KeyValuePair<string, List<string>> _header in customHeaders)
                 {
                     if (_httpRequest.Headers.Contains(_header.Key))
                     {
@@ -4768,9 +4925,11 @@ namespace SINners
                 throw ex;
             }
             // Create Result
-            var _result = new HttpOperationResponse();
-            _result.Request = _httpRequest;
-            _result.Response = _httpResponse;
+            var _result = new HttpOperationResponse
+            {
+                Request = _httpRequest,
+                Response = _httpResponse
+            };
             if (_shouldTrace)
             {
                 ServiceClientTracing.Exit(_invocationId, _result);
@@ -4797,14 +4956,16 @@ namespace SINners
             if (_shouldTrace)
             {
                 _invocationId = ServiceClientTracing.NextInvocationId.ToString();
-                Dictionary<string, object> tracingParameters = new Dictionary<string, object>();
-                tracingParameters.Add("id", id);
-                tracingParameters.Add("cancellationToken", cancellationToken);
+                Dictionary<string, object> tracingParameters = new Dictionary<string, object>
+                {
+                    { "id", id },
+                    { "cancellationToken", cancellationToken }
+                };
                 ServiceClientTracing.Enter(_invocationId, this, "GetSINners", tracingParameters);
             }
             // Construct URL
-            var _baseUrl = this.BaseUri.AbsoluteUri;
-            var _url = new Uri(new Uri(_baseUrl + (_baseUrl.EndsWith("/") ? "" : "/")), "api/v1/UploadClient/GetSINners/{id}").ToString();
+            string _baseUrl = this.BaseUri.AbsoluteUri;
+            string _url = new Uri(new Uri(_baseUrl + (_baseUrl.EndsWith("/") ? "" : "/")), "api/v1/UploadClient/GetSINners/{id}").ToString();
             _url = _url.Replace("{id}", Uri.EscapeDataString(SafeJsonConvert.SerializeObject(id, this.SerializationSettings).Trim('"')));
             // Create HTTP transport objects
             HttpRequestMessage _httpRequest = new HttpRequestMessage();
@@ -4814,7 +4975,7 @@ namespace SINners
             // Set Headers
             if (customHeaders != null)
             {
-                foreach(var _header in customHeaders)
+                foreach (KeyValuePair<string, List<string>> _header in customHeaders)
                 {
                     if (_httpRequest.Headers.Contains(_header.Key))
                     {
@@ -4864,9 +5025,11 @@ namespace SINners
                 throw ex;
             }
             // Create Result
-            var _result = new HttpOperationResponse();
-            _result.Request = _httpRequest;
-            _result.Response = _httpResponse;
+            var _result = new HttpOperationResponse
+            {
+                Request = _httpRequest,
+                Response = _httpResponse
+            };
             if (_shouldTrace)
             {
                 ServiceClientTracing.Exit(_invocationId, _result);

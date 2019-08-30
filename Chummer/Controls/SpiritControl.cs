@@ -16,15 +16,15 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
- using System;
+using Chummer.Backend.Equipment;
+using Chummer.Backend.Uniques;
+using System;
 using System.Collections.Generic;
- using System.ComponentModel;
- using System.IO;
+using System.ComponentModel;
+using System.IO;
 using System.Linq;
 using System.Windows.Forms;
 using System.Xml;
- using Chummer.Backend.Equipment;
-using Chummer.Backend.Uniques;
 
 namespace Chummer
 {
@@ -418,16 +418,16 @@ namespace Chummer
                 // Add any additional Sprites the character has Access to through improvements.
                 lstCritters.AddRange(from objImprovement in _objSpirit.CharacterObject.Improvements
                         .Where(imp => imp.ImproveType == Improvement.ImprovementType.AddSprite && imp.Enabled)
-                    let objXmlCritterNode = objXmlDocument.SelectSingleNode("/chummer/spirits/spirit[name = \"" + objImprovement.ImprovedName + "\"]")
-                    select new ListItem(objImprovement.ImprovedName, objXmlCritterNode?["translate"]?.InnerText ?? objImprovement.ImprovedName));
+                                     let objXmlCritterNode = objXmlDocument.SelectSingleNode("/chummer/spirits/spirit[name = \"" + objImprovement.ImprovedName + "\"]")
+                                     select new ListItem(objImprovement.ImprovedName, objXmlCritterNode?["translate"]?.InnerText ?? objImprovement.ImprovedName));
             }
             if (_objSpirit.CharacterObject.MAGEnabled)
             {
                 // Add any additional Spirits the character has Access to through improvements.
                 lstCritters.AddRange(from objImprovement in _objSpirit.CharacterObject.Improvements
                     .Where(imp => imp.ImproveType == Improvement.ImprovementType.AddSpirit && imp.Enabled)
-                    let objXmlCritterNode = objXmlDocument.SelectSingleNode("/chummer/spirits/spirit[name = \"" + objImprovement.ImprovedName + "\"]")
-                    select new ListItem(objImprovement.ImprovedName, objXmlCritterNode?["translate"]?.InnerText ?? objImprovement.ImprovedName));
+                                     let objXmlCritterNode = objXmlDocument.SelectSingleNode("/chummer/spirits/spirit[name = \"" + objImprovement.ImprovedName + "\"]")
+                                     select new ListItem(objImprovement.ImprovedName, objXmlCritterNode?["translate"]?.InnerText ?? objImprovement.ImprovedName));
             }
 
             cboSpiritName.BeginUpdate();

@@ -29,20 +29,32 @@ namespace ChummerHub.Areas.Identity.Pages.Account
 
         [BindProperty]
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'LoginModel.Input'
-        public InputModel Input { get; set; }
+        public InputModel Input
+        {
+            get; set;
+        }
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'LoginModel.Input'
 
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'LoginModel.ExternalLogins'
-        public IList<AuthenticationScheme> ExternalLogins { get; set; }
+        public IList<AuthenticationScheme> ExternalLogins
+        {
+            get; set;
+        }
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'LoginModel.ExternalLogins'
 
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'LoginModel.ReturnUrl'
-        public string ReturnUrl { get; set; }
+        public string ReturnUrl
+        {
+            get; set;
+        }
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'LoginModel.ReturnUrl'
 
         [TempData]
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'LoginModel.ErrorMessage'
-        public string ErrorMessage { get; set; }
+        public string ErrorMessage
+        {
+            get; set;
+        }
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'LoginModel.ErrorMessage'
 
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'LoginModel.InputModel'
@@ -52,18 +64,27 @@ namespace ChummerHub.Areas.Identity.Pages.Account
             [Required]
             [EmailAddress]
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'LoginModel.InputModel.Email'
-            public string Email { get; set; }
+            public string Email
+            {
+                get; set;
+            }
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'LoginModel.InputModel.Email'
 
             [Required]
             [DataType(DataType.Password)]
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'LoginModel.InputModel.Password'
-            public string Password { get; set; }
+            public string Password
+            {
+                get; set;
+            }
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'LoginModel.InputModel.Password'
 
             [Display(Name = "Remember me?")]
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'LoginModel.InputModel.RememberMe'
-            public bool RememberMe { get; set; }
+            public bool RememberMe
+            {
+                get; set;
+            }
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'LoginModel.InputModel.RememberMe'
         }
 
@@ -96,13 +117,13 @@ namespace ChummerHub.Areas.Identity.Pages.Account
             {
                 // This doesn't count login failures towards account lockout
                 // To enable password failures to trigger account lockout, set lockoutOnFailure: true
-                var user = await _signInManager.UserManager.FindByEmailAsync(Input.Email);
+                ApplicationUser user = await _signInManager.UserManager.FindByEmailAsync(Input.Email);
                 if (user == null)
                 {
                     ModelState.AddModelError(string.Empty, "Invalid login attempt.");
                     return Page();
                 }
-                var result = await _signInManager.PasswordSignInAsync(user, Input.Password, Input.RememberMe, lockoutOnFailure: true);
+                Microsoft.AspNetCore.Identity.SignInResult result = await _signInManager.PasswordSignInAsync(user, Input.Password, Input.RememberMe, lockoutOnFailure: true);
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("User logged in.");
@@ -110,7 +131,11 @@ namespace ChummerHub.Areas.Identity.Pages.Account
                 }
                 if (result.RequiresTwoFactor)
                 {
-                    return RedirectToPage("./LoginWith2fa", new { ReturnUrl = returnUrl, RememberMe = Input.RememberMe });
+                    return RedirectToPage("./LoginWith2fa", new
+                    {
+                        ReturnUrl = returnUrl,
+                        RememberMe = Input.RememberMe
+                    });
                 }
                 if (result.IsLockedOut)
                 {

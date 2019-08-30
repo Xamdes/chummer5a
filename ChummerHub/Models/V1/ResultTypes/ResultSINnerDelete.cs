@@ -6,7 +6,10 @@ namespace ChummerHub.Models.V1
     public class ResultSinnerDelete : ResultBase
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'ResultSinnerDelete'
     {
-        private bool Deleted { get; set; }
+        private bool Deleted
+        {
+            get; set;
+        }
 
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'ResultSinnerDelete.ResultSinnerDelete(Exception)'
         public ResultSinnerDelete(Exception e) : base(e)

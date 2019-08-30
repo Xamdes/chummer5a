@@ -1,11 +1,10 @@
+using Chummer;
+using ChummerHub.Client.UI;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
-using Chummer;
-using ChummerHub.Client.Backend;
-using ChummerHub.Client.UI;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace ChummerHub.Client.Tests
 {
@@ -43,7 +42,7 @@ namespace ChummerHub.Client.Tests
                         {
                             career.Show();
                             ucSINnersUserControl sINnersUsercontrol = new ucSINnersUserControl();
-                            var ce = await sINnersUsercontrol.SetCharacterFrom(career);
+                            Model.CharacterExtended ce = await sINnersUsercontrol.SetCharacterFrom(career);
                             await ChummerHub.Client.Backend.Utils.PostSINnerAsync(ce);
                             await ChummerHub.Client.Backend.Utils.UploadChummerFileAsync(ce);
                             career.Hide();
@@ -56,7 +55,7 @@ namespace ChummerHub.Client.Tests
                         {
                             create.Show();
                             ucSINnersUserControl sINnersUsercontrol = new ucSINnersUserControl();
-                            var ce = await sINnersUsercontrol.SetCharacterFrom(create);
+                            Model.CharacterExtended ce = await sINnersUsercontrol.SetCharacterFrom(create);
                             await ChummerHub.Client.Backend.Utils.PostSINnerAsync(ce);
                             await ChummerHub.Client.Backend.Utils.UploadChummerFileAsync(ce);
                             create.Hide();
@@ -64,7 +63,7 @@ namespace ChummerHub.Client.Tests
                         }
                     }
                 }
-                catch(Exception e)
+                catch (Exception e)
                 {
                     string msg = "Exception while loading " + file.FullName + ":";
                     msg += Environment.NewLine + e.ToString();
@@ -74,6 +73,6 @@ namespace ChummerHub.Client.Tests
             }
         }
 
-       
+
     }
 }

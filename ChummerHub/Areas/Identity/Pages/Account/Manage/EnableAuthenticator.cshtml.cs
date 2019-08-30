@@ -33,26 +33,41 @@ namespace ChummerHub.Areas.Identity.Pages.Account.Manage
         }
 
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'EnableAuthenticatorModel.SharedKey'
-        public string SharedKey { get; set; }
+        public string SharedKey
+        {
+            get; set;
+        }
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'EnableAuthenticatorModel.SharedKey'
 
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'EnableAuthenticatorModel.AuthenticatorUri'
-        public string AuthenticatorUri { get; set; }
+        public string AuthenticatorUri
+        {
+            get; set;
+        }
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'EnableAuthenticatorModel.AuthenticatorUri'
 
         [TempData]
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'EnableAuthenticatorModel.RecoveryCodes'
-        public string[] RecoveryCodes { get; set; }
+        public string[] RecoveryCodes
+        {
+            get; set;
+        }
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'EnableAuthenticatorModel.RecoveryCodes'
 
         [TempData]
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'EnableAuthenticatorModel.StatusMessage'
-        public string StatusMessage { get; set; }
+        public string StatusMessage
+        {
+            get; set;
+        }
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'EnableAuthenticatorModel.StatusMessage'
 
         [BindProperty]
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'EnableAuthenticatorModel.Input'
-        public InputModel Input { get; set; }
+        public InputModel Input
+        {
+            get; set;
+        }
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'EnableAuthenticatorModel.Input'
 
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'EnableAuthenticatorModel.InputModel'
@@ -64,7 +79,10 @@ namespace ChummerHub.Areas.Identity.Pages.Account.Manage
             [DataType(DataType.Text)]
             [Display(Name = "Verification Code")]
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'EnableAuthenticatorModel.InputModel.Code'
-            public string Code { get; set; }
+            public string Code
+            {
+                get; set;
+            }
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'EnableAuthenticatorModel.InputModel.Code'
         }
 
@@ -72,7 +90,7 @@ namespace ChummerHub.Areas.Identity.Pages.Account.Manage
         public async Task<IActionResult> OnGetAsync()
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'EnableAuthenticatorModel.OnGetAsync()'
         {
-            var user = await _userManager.GetUserAsync(User);
+            ApplicationUser user = await _userManager.GetUserAsync(User);
             if (user == null)
             {
                 return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
@@ -87,7 +105,7 @@ namespace ChummerHub.Areas.Identity.Pages.Account.Manage
         public async Task<IActionResult> OnPostAsync()
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'EnableAuthenticatorModel.OnPostAsync()'
         {
-            var user = await _userManager.GetUserAsync(User);
+            ApplicationUser user = await _userManager.GetUserAsync(User);
             if (user == null)
             {
                 return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
@@ -100,9 +118,9 @@ namespace ChummerHub.Areas.Identity.Pages.Account.Manage
             }
 
             // Strip spaces and hypens
-            var verificationCode = Input.Code.Replace(" ", string.Empty).Replace("-", string.Empty);
+            string verificationCode = Input.Code.Replace(" ", string.Empty).Replace("-", string.Empty);
 
-            var is2faTokenValid = await _userManager.VerifyTwoFactorTokenAsync(
+            bool is2faTokenValid = await _userManager.VerifyTwoFactorTokenAsync(
                 user, _userManager.Options.Tokens.AuthenticatorTokenProvider, verificationCode);
 
             if (!is2faTokenValid)
@@ -113,14 +131,14 @@ namespace ChummerHub.Areas.Identity.Pages.Account.Manage
             }
 
             await _userManager.SetTwoFactorEnabledAsync(user, true);
-            var userId = await _userManager.GetUserIdAsync(user);
+            string userId = await _userManager.GetUserIdAsync(user);
             _logger.LogInformation("User with ID '{UserId}' has enabled 2FA with an authenticator app.", userId);
 
             StatusMessage = "Your authenticator app has been verified.";
 
             if (await _userManager.CountRecoveryCodesAsync(user) == 0)
             {
-                var recoveryCodes = await _userManager.GenerateNewTwoFactorRecoveryCodesAsync(user, 10);
+                System.Collections.Generic.IEnumerable<string> recoveryCodes = await _userManager.GenerateNewTwoFactorRecoveryCodesAsync(user, 10);
                 RecoveryCodes = recoveryCodes.ToArray();
                 return RedirectToPage("./ShowRecoveryCodes");
             }
@@ -133,7 +151,7 @@ namespace ChummerHub.Areas.Identity.Pages.Account.Manage
         private async Task LoadSharedKeyAndQrCodeUriAsync(ApplicationUser user)
         {
             // Load the authenticator key & QR code URI to display on the form
-            var unformattedKey = await _userManager.GetAuthenticatorKeyAsync(user);
+            string unformattedKey = await _userManager.GetAuthenticatorKeyAsync(user);
             if (string.IsNullOrEmpty(unformattedKey))
             {
                 await _userManager.ResetAuthenticatorKeyAsync(user);
@@ -142,13 +160,13 @@ namespace ChummerHub.Areas.Identity.Pages.Account.Manage
 
             SharedKey = FormatKey(unformattedKey);
 
-            var email = await _userManager.GetEmailAsync(user);
+            string email = await _userManager.GetEmailAsync(user);
             AuthenticatorUri = GenerateQrCodeUri(email, unformattedKey);
         }
 
         private string FormatKey(string unformattedKey)
         {
-            var result = new StringBuilder();
+            StringBuilder result = new StringBuilder();
             int currentPosition = 0;
             while (currentPosition + 4 < unformattedKey.Length)
             {

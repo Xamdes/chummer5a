@@ -16,10 +16,10 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Diagnostics;
 using System.IO;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Chummer.Tests
 {
@@ -47,7 +47,7 @@ namespace Chummer.Tests
                     {
                         _mainForm = new frmChummerMain(true);
                     }
-                    catch(Exception e)
+                    catch (Exception e)
                     {
                         Debug.WriteLine(e);
                         Console.WriteLine(e);
@@ -63,7 +63,7 @@ namespace Chummer.Tests
         public void LoadThenSave()
         {
             Debug.WriteLine("Unit test initialized for: LoadCharacter()");
-            
+
             string strPath = Path.Combine(AppDomain.CurrentDomain.SetupInformation.ApplicationBase, "TestFiles");
             string strTestPath = Path.Combine(strPath, DateTime.Now.ToString("yyyy-MM-dd-HH-mm", GlobalOptions.InvariantCultureInfo));
             DirectoryInfo objTestPath = Directory.CreateDirectory(strTestPath);

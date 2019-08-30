@@ -20,7 +20,7 @@ using System;
 #if DEBUG
 using System.Diagnostics;
 #endif
- using System.Globalization;
+using System.Globalization;
 using System.Xml;
 using System.Runtime.CompilerServices;
 using NLog;
@@ -95,7 +95,7 @@ namespace Chummer
 
             try
             {
-                read = (T) Convert.ChangeType(fieldValue, typeof (T), GlobalOptions.InvariantCultureInfo);
+                read = (T)Convert.ChangeType(fieldValue, typeof(T), GlobalOptions.InvariantCultureInfo);
                 return true;
             }
             catch (Exception)
@@ -162,7 +162,7 @@ namespace Chummer
                     (
                         "Tried to read missing field \"{0}\" of type \"{1}\" in {1}.{2}",
                         field,
-                        typeof (T),
+                        typeof(T),
                         mth.ReflectedType?.Name
                     );
 #else //So if DEBUG flag is missing we don't reflect info
@@ -315,32 +315,32 @@ namespace Chummer
 
                                                 case "like":
                                                 case "contains":
-                                                {
-                                                    boolSubNodeResult =
-                                                        strTargetNodeText.Contains(strOperationChildNodeText) !=
-                                                        blnInvert;
-                                                    break;
-                                                }
+                                                    {
+                                                        boolSubNodeResult =
+                                                            strTargetNodeText.Contains(strOperationChildNodeText) !=
+                                                            blnInvert;
+                                                        break;
+                                                    }
                                                 case "greaterthan":
                                                 case ">":
-                                                {
-                                                    boolSubNodeResult =
-                                                        (int.TryParse(strTargetNodeText, out int intTargetNodeValue) &&
-                                                         int.TryParse(strOperationChildNodeText,
-                                                             out int intChildNodeValue) &&
-                                                         intTargetNodeValue > intChildNodeValue) != blnInvert;
-                                                    break;
-                                                }
+                                                    {
+                                                        boolSubNodeResult =
+                                                            (int.TryParse(strTargetNodeText, out int intTargetNodeValue) &&
+                                                             int.TryParse(strOperationChildNodeText,
+                                                                 out int intChildNodeValue) &&
+                                                             intTargetNodeValue > intChildNodeValue) != blnInvert;
+                                                        break;
+                                                    }
                                                 case "greaterthanequals":
                                                 case ">=":
-                                                {
-                                                    boolSubNodeResult =
-                                                        (int.TryParse(strTargetNodeText, out int intTargetNodeValue) &&
-                                                         int.TryParse(strOperationChildNodeText,
-                                                             out int intChildNodeValue) &&
-                                                         intTargetNodeValue >= intChildNodeValue) != blnInvert;
-                                                    break;
-                                                }
+                                                    {
+                                                        boolSubNodeResult =
+                                                            (int.TryParse(strTargetNodeText, out int intTargetNodeValue) &&
+                                                             int.TryParse(strOperationChildNodeText,
+                                                                 out int intChildNodeValue) &&
+                                                             intTargetNodeValue >= intChildNodeValue) != blnInvert;
+                                                        break;
+                                                    }
                                                 case "==":
                                                 default:
                                                     boolSubNodeResult =
@@ -393,7 +393,8 @@ namespace Chummer
                 return true;
             }
             XmlAttribute objAttribute = node?.Attributes?[field];
-            if (objAttribute == null) return false;
+            if (objAttribute == null)
+                return false;
             read = objAttribute.InnerText;
             return true;
         }
@@ -405,10 +406,12 @@ namespace Chummer
         public static bool TryGetInt32FieldQuickly(this XmlNode node, string field, ref int read, IFormatProvider objCulture = null)
         {
             XmlElement objField = node?[field];
-            if (objField == null) return false;
+            if (objField == null)
+                return false;
             if (objCulture == null)
                 objCulture = GlobalOptions.InvariantCultureInfo;
-            if (!int.TryParse(objField.InnerText, NumberStyles.Any, objCulture, out int intTmp)) return false;
+            if (!int.TryParse(objField.InnerText, NumberStyles.Any, objCulture, out int intTmp))
+                return false;
             read = intTmp;
             return true;
         }
@@ -420,8 +423,10 @@ namespace Chummer
         public static bool TryGetBoolFieldQuickly(this XmlNode node, string field, ref bool read)
         {
             XmlElement objField = node?[field];
-            if (objField == null) return false;
-            if (!bool.TryParse(objField.InnerText, out bool blnTmp)) return false;
+            if (objField == null)
+                return false;
+            if (!bool.TryParse(objField.InnerText, out bool blnTmp))
+                return false;
             read = blnTmp;
             return true;
         }
@@ -433,10 +438,12 @@ namespace Chummer
         public static bool TryGetDecFieldQuickly(this XmlNode node, string field, ref decimal read, IFormatProvider objCulture = null)
         {
             XmlElement objField = node?[field];
-            if (objField == null) return false;
+            if (objField == null)
+                return false;
             if (objCulture == null)
                 objCulture = GlobalOptions.InvariantCultureInfo;
-            if (!decimal.TryParse(objField.InnerText, NumberStyles.Any, objCulture, out decimal decTmp)) return false;
+            if (!decimal.TryParse(objField.InnerText, NumberStyles.Any, objCulture, out decimal decTmp))
+                return false;
             read = decTmp;
             return true;
         }
@@ -448,10 +455,12 @@ namespace Chummer
         public static bool TryGetDoubleFieldQuickly(this XmlNode node, string field, ref double read, IFormatProvider objCulture = null)
         {
             XmlElement objField = node?[field];
-            if (objField == null) return false;
+            if (objField == null)
+                return false;
             if (objCulture == null)
                 objCulture = GlobalOptions.InvariantCultureInfo;
-            if (!double.TryParse(objField.InnerText, NumberStyles.Any, objCulture, out double dblTmp)) return false;
+            if (!double.TryParse(objField.InnerText, NumberStyles.Any, objCulture, out double dblTmp))
+                return false;
             read = dblTmp;
             return true;
         }
@@ -463,10 +472,12 @@ namespace Chummer
         public static bool TryGetFloatFieldQuickly(this XmlNode node, string field, ref float read, IFormatProvider objCulture = null)
         {
             XmlElement objField = node?[field];
-            if (objField == null) return false;
+            if (objField == null)
+                return false;
             if (objCulture == null)
                 objCulture = GlobalOptions.InvariantCultureInfo;
-            if (!float.TryParse(objField.InnerText, NumberStyles.Any, objCulture, out float fltTmp)) return false;
+            if (!float.TryParse(objField.InnerText, NumberStyles.Any, objCulture, out float fltTmp))
+                return false;
             read = fltTmp;
             return true;
         }
@@ -482,8 +493,10 @@ namespace Chummer
         public static bool TryGetGuidFieldQuickly(this XmlNode node, string field, ref Guid read, bool falseIfEmpty = true)
         {
             XmlNode objField = node.SelectSingleNode(field);
-            if (objField == null) return false;
-            if (!Guid.TryParse(objField.InnerText, out Guid fltTmp)) return false;
+            if (objField == null)
+                return false;
+            if (!Guid.TryParse(objField.InnerText, out Guid fltTmp))
+                return false;
             if (fltTmp == Guid.Empty && falseIfEmpty)
             {
                 return false;
