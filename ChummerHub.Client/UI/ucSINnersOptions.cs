@@ -133,8 +133,6 @@ namespace ChummerHub.Client.UI
         {
             InitializeComponent();
             InitializeMe();
-
-
         }
 
         public static bool UploadOnSave
@@ -466,9 +464,9 @@ namespace ChummerHub.Client.UI
 
                     HttpOperationResponse<ResultAccountGetRoles> myresult = await client.GetRolesWithHttpMessagesAsync();
 
-                    PluginHandler.MainForm.DoThreadSafe(new Action(() =>
+                    PluginHandler.MainForm.DoThreadSafe(new Action(async () =>
                     {
-                        Backend.Utils.HandleError(myresult, myresult.Body);
+                        await Backend.Utils.HandleError(myresult, myresult.Body);
                         if (myresult.Body.CallSuccess == true)
                         {
                             StaticUtils.UserRoles = myresult.Body.Roles.ToList();
