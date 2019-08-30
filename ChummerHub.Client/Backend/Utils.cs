@@ -1183,7 +1183,6 @@ namespace ChummerHub.Client.Backend
                 Log.Error(ex);
                 throw;
             }
-            return res;
         }
 
 

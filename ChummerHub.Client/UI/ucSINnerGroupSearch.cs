@@ -170,7 +170,6 @@ namespace ChummerHub.Client.UI
                 Program.MainForm.ShowMessageBox(ex.Message);
                 throw;
             }
-            return null;
         }
 
         private async void bSearch_Click(object sender, EventArgs e)

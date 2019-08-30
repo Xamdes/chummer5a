@@ -41,7 +41,6 @@ namespace SINners.Models
                         {
                             loadFilePath = file;
                             return loadFilePath;
-                            break;
                         }
                         File.Delete(file);
                     }
