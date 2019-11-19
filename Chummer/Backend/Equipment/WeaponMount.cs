@@ -34,7 +34,7 @@ namespace Chummer.Backend.Equipment
     /// Vehicle Modification.
     /// </summary>
     [DebuggerDisplay("{DisplayName(GlobalOptions.DefaultLanguage)}")]
-    public class WeaponMount : IHasInternalId, IHasName, IHasXmlNode, IHasNotes, ICanSell, ICanEquip, IHasSource, ICanSort, IHasStolenProperty
+    public class WeaponMount : IHasInternalId, IHasName, IHasXmlNode, IHasNotes, ICanSell, ICanEquip, IHasSource, ICanSort, IHasStolenProperty, ICanPaste
     {
         private static Logger Log = NLog.LogManager.GetCurrentClassLogger();
         private Guid _guiID;
@@ -135,7 +135,7 @@ namespace Chummer.Backend.Equipment
 
         private SourceString _objCachedSourceDetail;
         public SourceString SourceDetail => _objCachedSourceDetail ?? (_objCachedSourceDetail =
-                                                new SourceString(Source, Page(GlobalOptions.Language), GlobalOptions.Language));
+                                                new SourceString(Source, DisplayPage(GlobalOptions.Language), GlobalOptions.Language));
 
         /// <summary>
 		/// Save the object's XML to the XmlWriter.
@@ -293,7 +293,7 @@ namespace Chummer.Backend.Equipment
 			objWriter.WriteElementString("cost", TotalCost.ToString(_objCharacter.Options.NuyenFormat, objCulture));
 			objWriter.WriteElementString("owncost", OwnCost.ToString(_objCharacter.Options.NuyenFormat, objCulture));
 			objWriter.WriteElementString("source", CommonFunctions.LanguageBookShort(Source, strLanguageToPrint));
-		    objWriter.WriteElementString("page", Page(strLanguageToPrint));
+		    objWriter.WriteElementString("page", DisplayPage(strLanguageToPrint));
 		    objWriter.WriteElementString("location", _strLocation);
             objWriter.WriteElementString("included", IncludedInVehicle.ToString());
             objWriter.WriteStartElement("weapons");
@@ -502,15 +502,28 @@ namespace Chummer.Backend.Equipment
             set => _strSource = value;
         }
 
+
         /// <summary>
         /// Sourcebook Page Number.
         /// </summary>
-        public string Page(string strLanguage)
+        public string Page
+        {
+            get => _strPage;
+            set => _strPage = value;
+        }
+
+        /// <summary>
+        /// Sourcebook Page Number using a given language file.
+        /// Returns Page if not found or the string is empty.
+        /// </summary>
+        /// <param name="strLanguage">Language file keyword to use.</param>
+        /// <returns></returns>
+        public string DisplayPage(string strLanguage)
         {
             if (strLanguage == GlobalOptions.DefaultLanguage)
-                return _strPage;
-
-            return GetNode(strLanguage)?["altpage"]?.InnerText ?? _strPage;
+                return Page;
+            string s = GetNode(strLanguage)?["altpage"]?.InnerText ?? Page;
+            return !string.IsNullOrWhiteSpace(s) ? s : Page;
         }
 
         /// <summary>
@@ -671,7 +684,7 @@ namespace Chummer.Backend.Equipment
                 }
             }
 
-            return new AvailabilityValue(intAvail, chrLastAvailChar, blnModifyParentAvail);
+            return new AvailabilityValue(intAvail, chrLastAvailChar, blnModifyParentAvail, IncludedInVehicle);
         }
 
         /// <summary>
@@ -991,6 +1004,38 @@ namespace Chummer.Backend.Equipment
             if (_objCachedSourceDetail?.Language != GlobalOptions.Language)
                 _objCachedSourceDetail = null;
             SourceDetail.SetControl(sourceControl);
+        }
+
+        public bool AllowPasteXml
+        {
+            get
+            {
+                switch (GlobalOptions.ClipboardContentType)
+                {
+                    case ClipboardContentType.Weapon:
+                    {
+                        if (AllowedWeapons != string.Empty)
+                        {
+                            if (!AllowedWeapons.Contains(GlobalOptions.Clipboard.SelectSingleNode("name").InnerText))
+                                return false;
+                        }
+                        if (AllowedWeaponCategories != string.Empty)
+                        {
+                            if (!AllowedWeaponCategories.Contains(GlobalOptions.Clipboard.SelectSingleNode("category").InnerText))
+                                return false;
+                        }
+
+                        return Weapons.Count == 0; //todo: something something sizes
+                    }
+                    default:
+                        return false;
+                }
+            }
+        }
+
+        public bool AllowPasteObject(object input)
+        {
+            throw new NotImplementedException();
         }
     }
 

@@ -40,6 +40,8 @@ namespace Chummer
                     return objImprovementAdder.qualitylevel;
                 case "SELECTTEXT":
                     return objImprovementAdder.selecttext;
+                case "SURPRISE":
+                    return objImprovementAdder.surprise;
                 case "SPELLRESISTANCE":
                     return objImprovementAdder.spellresistance;
                 case "MENTALMANIPULATIONRESIST":
@@ -511,6 +513,8 @@ namespace Chummer
                     return objImprovementAdder.skilldisable;
                 case "SKILLGROUPDISABLE":
                     return objImprovementAdder.skillgroupdisable;
+                case "SKILLGROUPDISABLECHOICE":
+                    return objImprovementAdder.skillgroupdisablechoice;
                 case "SKILLGROUPCATEGORYDISABLE":
                     return objImprovementAdder.skillgroupcategorydisable;
                 case "SKILLGROUPCATEGORYKARMACOST":
@@ -592,7 +596,8 @@ namespace Chummer
                 case "WEAPONSKILLACCURACY":
                     return objImprovementAdder.weaponskillaccuracy;
                 case "METAGENETICLIMIT":
-                    return objImprovementAdder.metageneticlimit;
+                case "METAGENICLIMIT":
+                    return objImprovementAdder.metageniclimit;
                 case "SPECIALMODIFICATIONLIMIT":
                     return objImprovementAdder.specialmodificationlimit;
                 case "CYBERADEPTDAEMON":

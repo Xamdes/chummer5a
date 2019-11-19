@@ -31,16 +31,10 @@ namespace ChummerHub.Client.UI
         public frmSINnerShare MyFrmSINnerShare;
 
         public frmCharacterRoster.CharacterCache MyCharacterCache { get; set; }
+        public SINnerSearchGroup MySINnerSearchGroup { get; set; }
         public Func<Task<MyUserState>> DoWork { get; }
-        //public Func<int, Task<MyUserState>> ReportProgress { get; }
         public Action<MyUserState> RunWorkerCompleted { get; }
         public Action<int, MyUserState> ReportProgress { get; }
-
-        //public event DoWorkEventHandler DoWork;
-        //public event ProgressChangedEventHandler ProgressChanged;
-        //public event RunWorkerCompletedEventHandler RunWorkerCompleted;
-
-        //public BackgroundWorker backgroundWorker1 = new BackgroundWorker();
 
         public ucSINnerShare()
         {
@@ -69,6 +63,100 @@ namespace ChummerHub.Client.UI
 
         private async Task<MyUserState> ShareChummer_DoWork()
         {
+            if (this.MySINnerSearchGroup != null)
+            {
+                return await ShareChummerGroup();
+            }
+            else if (this.MyCharacterCache != null)
+            {
+                return await ShareSingleChummer();
+            }
+
+            throw new ArgumentException("Either MySINnerSearchGroup or MyCharacterCache must be set!");
+        }
+
+        private async Task<MyUserState> ShareChummerGroup()
+        {
+            try
+            {
+                string hash = "";
+                using (var op_shareChummer = Timekeeper.StartSyncron("Share Group", null,
+                    CustomActivity.OperationType.DependencyOperation, MySINnerSearchGroup?.Groupname))
+                {
+                    MyUserState myState = new MyUserState(this);
+                    var client = StaticUtils.GetClient();
+                  
+                    
+                    
+
+                    if ((String.IsNullOrEmpty(MySINnerSearchGroup?.Id?.ToString())))
+                    {
+                        myState.StatusText = "Group Id is unknown or not issued!";
+                        ReportProgress(30, myState);
+                    }
+                    else
+                    {
+                        myState.StatusText = "Group Id is " + MySINnerSearchGroup?.Id + ".";
+                        myState.CurrentProgress = 30;
+                        ReportProgress(myState.CurrentProgress, myState);
+                    }
+
+
+                    HttpOperationResponse<ResultGroupGetGroupById> checkresult = null;
+                    //check if char is already online and updated
+                    using (var op_checkOnlineVersionChummer = Timekeeper.StartSyncron(
+                        "check if online", op_shareChummer,
+                        CustomActivity.OperationType.DependencyOperation, MySINnerSearchGroup?.Groupname))
+                    {
+                        checkresult = await client.GetGroupByIdWithHttpMessagesAsync(MySINnerSearchGroup?.Id).ConfigureAwait(false);
+                        if (checkresult == null)
+                            throw new ArgumentException("Could not parse result from SINners Webservice!");
+                        if (checkresult.Response.StatusCode != HttpStatusCode.NotFound)
+                        {
+                            if (checkresult.Body.CallSuccess != true)
+                            {
+                                if (checkresult.Body.MyException is Exception myException)
+                                    throw new ArgumentException(
+                                        "Error from SINners Webservice: " + checkresult.Body.ErrorText,
+                                        myException);
+                                else
+                                    throw new ArgumentException("Error from SINners Webservice: " +
+                                                                checkresult.Body.ErrorText);
+                            }
+                            else
+                            {
+                                hash = checkresult.Body.MyGroup.MyHash;
+                            }
+                        }
+                    }
+
+
+                    myState.StatusText = "Group is online available.";
+                    myState.CurrentProgress = 90;
+                    ReportProgress(myState.CurrentProgress, myState);
+
+                    string url = client.BaseUri + "G";
+                    url += "/" + hash;
+                    if (Properties.Settings.Default.OpenChummerFromSharedLinks == true)
+                    {
+                        url += "?open=true";
+                    }
+
+                    myState.LinkText = url;
+                    ReportProgress(100, myState);
+                    RunWorkerCompleted(myState);
+                    return myState;
+                }
+            }
+            catch (Exception exception)
+            {
+                Log.Warn(exception);
+                throw;
+            }
+        }
+
+        private async Task<MyUserState> ShareSingleChummer()
+        {
             string hash = "";
             try
             {
@@ -91,14 +179,14 @@ namespace ChummerHub.Client.UI
                                 FileName = MyCharacterCache.FilePath
                             };
                             var foundchar = (from a in PluginHandler.MainForm.OpenCharacters
-                                             where a.FileName == MyCharacterCache.FilePath
-                                             select a).ToList();
+                                where a.FileName == MyCharacterCache.FilePath
+                                select a).ToList();
                             if (foundchar?.Any() == true)
                                 c = foundchar?.FirstOrDefault();
                             else
                             {
                                 using (frmLoading frmLoadingForm = new frmLoading
-                                { CharacterFile = MyCharacterCache.FilePath })
+                                    {CharacterFile = MyCharacterCache.FilePath})
                                 {
                                     frmLoadingForm.Reset(36);
                                     frmLoadingForm.TopMost = true;
@@ -123,7 +211,6 @@ namespace ChummerHub.Client.UI
                     }
 
 
-
                     if (MyCharacterCache.MyPluginDataDic.TryGetValue("SINnerId", out Object sinneridobj))
                     {
                         sinnerid = sinneridobj?.ToString();
@@ -134,7 +221,6 @@ namespace ChummerHub.Client.UI
                         sinnerid = ce.MySINnerFile.Id.ToString();
                         hash = ce?.MySINnerFile?.MyHash;
                     }
-
 
 
                     if ((String.IsNullOrEmpty(sinnerid)
@@ -179,7 +265,7 @@ namespace ChummerHub.Client.UI
                         }
                     }
 
-                    
+
                     var lastWriteTimeUtc = System.IO.File.GetLastWriteTimeUtc(MyCharacterCache.FilePath);
                     if (checkresult.Response.StatusCode == HttpStatusCode.NotFound
                         || (checkresult.Body.MySINner.LastChange < lastWriteTimeUtc))
@@ -196,7 +282,6 @@ namespace ChummerHub.Client.UI
                             "Uploading Chummer", op_shareChummer,
                             CustomActivity.OperationType.DependencyOperation, MyCharacterCache?.FilePath))
                         {
-
                             myState.StatusText = "Checking SINner availability (and if necessary upload it).";
                             myState.CurrentProgress = 35;
                             ReportProgress(myState.CurrentProgress, myState);
@@ -229,6 +314,11 @@ namespace ChummerHub.Client.UI
 
                     string url = client.BaseUri + "O";
                     url += "/" + hash;
+                    if (Properties.Settings.Default.OpenChummerFromSharedLinks == true)
+                    {
+                        url += "?open=true";
+                    }
+
                     myState.LinkText = url;
                     ReportProgress(100, myState);
                     RunWorkerCompleted(myState);
@@ -267,11 +357,17 @@ namespace ChummerHub.Client.UI
         }
         private void ShareChummer_RunWorkerCompleted(MyUserState us)
         {
-            pgbStatus.Value = 100;
-            tbLink.Text = us.LinkText;
-            tbStatus.Text += "Link copied to clipboard." + Environment.NewLine;
-            Clipboard.SetText(us.LinkText);
-            tbStatus.Text += "Process was completed" + Environment.NewLine;
+            pgbStatus.DoThreadSafe(() => { pgbStatus.Value = 100; });
+            tbLink.DoThreadSafe(() =>
+            {
+                tbLink.Text = us.LinkText;
+            });
+            tbStatus.DoThreadSafe(() =>
+            {
+                tbStatus.Text += "Link copied to clipboard." + Environment.NewLine;
+                Clipboard.SetText(us.LinkText);
+                tbStatus.Text += "Process was completed" + Environment.NewLine;
+            });
         }
 
         private void BOk_Click(object sender, EventArgs e)

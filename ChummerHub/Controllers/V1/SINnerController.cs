@@ -13,6 +13,7 @@ using Microsoft.Extensions.Logging;
 using Swashbuckle.AspNetCore.Filters;
 using System;
 using System.Collections.Generic;
+using System.Data.SqlClient;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
@@ -27,7 +28,7 @@ namespace ChummerHub.Controllers.V1
     //[Route("api/v{version:apiVersion}/[controller]")]
     [Route("api/v{api-version:apiVersion}/[controller]/[action]")]
     [ApiController]
-    [EnableCors("AllowAllOrigins")]
+    [EnableCors("AllowOrigin")]
     [ApiVersion("1.0")]
     [ControllerName("SIN")]
     [Authorize]
@@ -130,7 +131,7 @@ namespace ChummerHub.Controllers.V1
                 {
                     oktoDownload = true;
                 }
-                if ((!oktoDownload) && (user != null && chummerFile.SINnerMetaData.Visibility.UserRights.Any(a => a.EMail.ToLowerInvariant() == user.Email.ToLowerInvariant())))
+                if ((!oktoDownload) && (user != null && chummerFile.SINnerMetaData.Visibility.UserRights.Any(a => a.EMail?.ToLowerInvariant() == user.Email.ToLowerInvariant())))
                 {
                     oktoDownload = true;
                 }
@@ -264,7 +265,7 @@ namespace ChummerHub.Controllers.V1
                 {
                     oktoDownload = true;
                 }
-                if ((!oktoDownload) && (user != null && sin.SINnerMetaData.Visibility.UserRights.Any(a => a.EMail.ToLowerInvariant() == user.Email.ToLowerInvariant())))
+                if ((!oktoDownload) && (user != null && sin.SINnerMetaData.Visibility.UserRights.Any(a => a.EMail?.ToLowerInvariant() == user.Email.ToLowerInvariant())))
                 {
                     oktoDownload = true;
                 }
@@ -281,7 +282,7 @@ namespace ChummerHub.Controllers.V1
                     return Ok(res);
 
 
-                var list = (from a in sin.SINnerMetaData.Visibility.UserRights where a.EMail.ToUpperInvariant() == user.NormalizedEmail select a);
+                var list = (from a in sin.SINnerMetaData.Visibility.UserRights where a.EMail?.ToUpperInvariant() == user.NormalizedEmail select a);
                 if (list.Any())
                     return Ok(res);
 
@@ -371,7 +372,7 @@ namespace ChummerHub.Controllers.V1
                         download.Add(sin);
                     else if ((user != null &&
                                             sin.SINnerMetaData.Visibility.UserRights.Any(a =>
-                                                a.EMail.ToLowerInvariant() == user.Email.ToLowerInvariant())))
+                                                a.EMail?.ToLowerInvariant() == user.Email.ToLowerInvariant())))
                     {
                         download.Add(sin);
                     }
@@ -691,11 +692,15 @@ namespace ChummerHub.Controllers.V1
                     sinner.SINnerMetaData.Id = Guid.NewGuid();
                     foreach (var tag in sinner.SINnerMetaData.Tags)
                     {
+                        if (tag == null)
+                            continue;
                         tag.TagValueFloat = null;
-                        if (float.TryParse(tag.TagValue, out float result))
+                        if (Single.TryParse(tag.TagValue, out float result))
                         {
                             tag.TagValueFloat = result;
                         }
+                        if (tag.TagValueFloat != null && Single.IsNaN(tag.TagValueFloat.Value))
+                            tag.TagValueFloat = null;
                     }
 
                     var oldsinner = (from a in _context.SINners
@@ -837,7 +842,7 @@ namespace ChummerHub.Controllers.V1
                                 {
                                     try
                                     {
-                                        Utils.DbUpdateConcurrencyExceptionHandler(entry, _logger);
+                                        Utils.DbUpdateExceptionHandler(entry, _logger);
                                     }
                                     catch (Exception e)
                                     {
@@ -865,7 +870,7 @@ namespace ChummerHub.Controllers.V1
                         await _context.SINners.AddAsync(sinner);
                         string msg = "Sinner " + sinner.Id + " updated: " + _context.Entry(dbsinner).State.ToString();
                         msg += Environment.NewLine + Environment.NewLine + "LastChange: " + dbsinner.LastChange;
-                        _logger.LogError(msg);
+                        _logger.LogInformation(msg);
                         List<Tag> taglist = sinner.SINnerMetaData.Tags;
                         UpdateEntityEntries(taglist);
                     }
@@ -873,7 +878,7 @@ namespace ChummerHub.Controllers.V1
                     {
                         returncode = HttpStatusCode.Created;
                         sinner.MyGroup = null;
-                        _context.SINners.Add(sinner);
+                        await _context.SINners.AddAsync(sinner);
                     }
 
                     if (sinner.MyGroup?.Id != null && sinner.MyGroup?.Id != Guid.Empty)
@@ -884,6 +889,7 @@ namespace ChummerHub.Controllers.V1
                                 FavoriteGuid = sinner.MyGroup.Id.Value
                             });
                     }
+                    
                     if (user != null)
                         user.FavoriteGroups = user.FavoriteGroups.GroupBy(a => a.FavoriteGuid).Select(b => b.First()).ToList();
 
@@ -893,9 +899,21 @@ namespace ChummerHub.Controllers.V1
                         if (oldgroup != null)
                         {
                             var roles = await _userManager.GetRolesAsync(user);
-                            await SINnerGroupController.PutSiNerInGroupInternal(oldgroup.Id.Value, sinner.Id.Value, user, _context,
+                            await SINnerGroupController.PutSiNerInGroupInternal(oldgroup.Id.Value, sinner.Id.Value,
+                                user, _context,
                                 _logger, oldgroup.PasswordHash, roles, tc);
                         }
+
+                        if (oldsinner == null)
+                        {
+                            if (!user.FavoriteGroups.Any(a => a.FavoriteGuid == sinner.Id))
+                                user.FavoriteGroups.Add(new ApplicationUserFavoriteGroup()
+                                {
+                                    FavoriteGuid = sinner.Id.Value
+                                });
+                        }
+
+                        await _context.SaveChangesAsync();
                     }
                     catch (DbUpdateConcurrencyException ex)
                     {
@@ -905,7 +923,7 @@ namespace ChummerHub.Controllers.V1
                             {
                                 try
                                 {
-                                    Utils.DbUpdateConcurrencyExceptionHandler(entry, _logger);
+                                    Utils.DbUpdateExceptionHandler(entry, _logger);
                                 }
                                 catch (Exception e)
                                 {
@@ -925,7 +943,71 @@ namespace ChummerHub.Controllers.V1
                     }
                     catch (DbUpdateException ex)
                     {
+                        
                         res = new ResultSinnerPostSIN(ex);
+                        foreach (var entry in ex.Entries)
+                        {
+                            if (entry.Entity is SINner || entry.Entity is Tag)
+                            {
+                                try
+                                {
+                                    Utils.DbUpdateExceptionHandler(entry, _logger);
+                                }
+                                catch (Exception e)
+                                {
+                                    res = new ResultSinnerPostSIN(e);
+                                    return BadRequest(res);
+                                }
+                            }
+                            else
+                            {
+                                var e = new NotSupportedException(
+                                    "Don't know how to handle concurrency conflicts for "
+                                    + entry.Metadata.Name);
+                                res = new ResultSinnerPostSIN(e);
+                                return BadRequest(res);
+                            }
+                        }
+                        try
+                        {
+                            //var tc = new Microsoft.ApplicationInsights.TelemetryClient();
+                            Microsoft.ApplicationInsights.DataContracts.ExceptionTelemetry telemetry =
+                                new Microsoft.ApplicationInsights.DataContracts.ExceptionTelemetry(ex);
+                            telemetry.Properties.Add("User", user?.Email);
+                            telemetry.Properties.Add("SINnerId", sinner?.Id?.ToString());
+                            tc.TrackException(telemetry);
+                        }
+                        catch (Exception ex1)
+                        {
+                            _logger.LogError(ex1.ToString());
+                        }
+
+                        return BadRequest(res);
+                    }
+                    catch (SqlException ex)
+                    {
+                        res = new ResultSinnerPostSIN(ex);
+                        try
+                        {
+                            //var tc = new Microsoft.ApplicationInsights.TelemetryClient();
+                            Microsoft.ApplicationInsights.DataContracts.ExceptionTelemetry telemetry =
+                                new Microsoft.ApplicationInsights.DataContracts.ExceptionTelemetry(ex);
+                            telemetry.Properties.Add("User", user?.Email);
+                            telemetry.Properties.Add("SINnerId", sinner?.Id?.ToString());
+                            telemetry.Properties.Add("Procedure", ex.Procedure);
+                            string allerrors = "";
+                            foreach (var error in ex.Errors)
+                            {
+                                allerrors += error + Environment.NewLine;
+                            }
+                            telemetry.Properties.Add("Errors", allerrors);
+                            tc.TrackException(telemetry);
+                        }
+                        catch (Exception ex1)
+                        {
+                            _logger.LogError(ex1.ToString());
+                        }
+
                         return BadRequest(res);
                     }
                     catch (Exception e)

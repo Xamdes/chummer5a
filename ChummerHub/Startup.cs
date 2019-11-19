@@ -80,7 +80,7 @@ namespace ChummerHub
         public IServiceCollection MyServices { get; set; }
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'Startup.MyServices'
 
-        readonly string MyAllowAllOrigins = "AllowAllOrigins";
+        //readonly string MyAllowAllOrigins = "AllowAllOrigins";
 
         // This method gets called by the runtime. Use this method to add services to the container.
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'Startup.ConfigureServices(IServiceCollection)'
@@ -97,13 +97,18 @@ namespace ChummerHub
 
             services.AddCors(options =>
             {
-                options.AddPolicy(MyAllowAllOrigins,
+                options.AddPolicy("AllowOrigin",
                     builder =>
                     {
                         builder.AllowAnyOrigin()
                             .AllowAnyHeader()
                             .AllowAnyMethod()
                             .SetIsOriginAllowedToAllowWildcardSubdomains();
+                    });
+                options.AddDefaultPolicy(
+                    builder =>
+                    {
+                        builder.WithOrigins("https://www.shadowsprawl.com");
                     });
             });
 
@@ -401,7 +406,7 @@ namespace ChummerHub
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'Startup.Configure(IApplicationBuilder, IHostingEnvironment)'
         {
             //app.UseSession();
-            app.UseCors(MyAllowAllOrigins);
+            app.UseCors(options => options.AllowAnyOrigin());
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -463,7 +468,66 @@ namespace ChummerHub
 
             }
 
+            Seed(app);
 
+        }
+
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'Program.Seed()'
+        public static void Seed(IApplicationBuilder app)
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'Program.Seed()'
+        {
+            if (app == null)
+                throw new ArgumentNullException(nameof(app));
+            using (var scope = app.ApplicationServices.CreateScope())
+            {
+                var services = scope.ServiceProvider;
+                var logger = services.GetRequiredService<ILogger<Program>>();
+                ApplicationDbContext context = services.GetRequiredService<ApplicationDbContext>();
+                try
+                {
+                    context.Database.Migrate();
+                }
+                catch (Exception e)
+                {
+                    try
+                    {
+                        var tc = new Microsoft.ApplicationInsights.TelemetryClient();
+                        var telemetry = new Microsoft.ApplicationInsights.DataContracts.ExceptionTelemetry(e);
+                        tc.TrackException(telemetry);
+                    }
+                    catch (Exception ex)
+                    {
+                        logger.LogError(ex.ToString());
+                    }
+                    logger.LogError(e.Message, "An error occurred migrating the DB: " + e.ToString());
+                    context.Database.EnsureDeleted();
+                    context.Database.EnsureCreated();
+                }
+                // requires using Microsoft.Extensions.Configuration;
+                var config = services.GetRequiredService<IConfiguration>();
+                // Set password with the Secret Manager tool.
+                // dotnet user-secrets set SeedUserPW <pw>
+                var testUserPw = config["SeedUserPW"];
+                try
+                {
+                    var env = services.GetService<IHostingEnvironment>();
+                    SeedData.Initialize(services, testUserPw, env).Wait();
+                }
+                catch (Exception ex)
+                {
+                    try
+                    {
+                        var tc = new Microsoft.ApplicationInsights.TelemetryClient();
+                        var telemetry = new Microsoft.ApplicationInsights.DataContracts.ExceptionTelemetry(ex);
+                        tc.TrackException(telemetry);
+                    }
+                    catch (Exception e1)
+                    {
+                        logger.LogError(e1.ToString());
+                    }
+                    logger.LogError(ex.Message, "An error occurred seeding the DB: " + ex.ToString());
+                }
+            }
 
         }
     }

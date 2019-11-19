@@ -10,6 +10,7 @@ using Serilog;
 using Serilog.Events;
 using Serilog.Sinks.SystemConsole.Themes;
 using System;
+using Microsoft.Extensions.Logging.ApplicationInsights;
 
 namespace ChummerHub
 {
@@ -42,7 +43,6 @@ namespace ChummerHub
 #endif
 
             MyHost = CreateWebHostBuilder(args);
-            Seed();
             MyHost.Run();
             return;
         }
@@ -86,63 +86,7 @@ namespace ChummerHub
             }
         }
 
-#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'Program.Seed()'
-        public static void Seed()
-#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'Program.Seed()'
-        {
 
-            using (var scope = MyHost.Services.CreateScope())
-            {
-                var services = scope.ServiceProvider;
-                var logger = services.GetRequiredService<ILogger<Program>>();
-                ApplicationDbContext context = services.GetRequiredService<ApplicationDbContext>();
-                try
-                {
-                    context.Database.Migrate();
-                }
-                catch (Exception e)
-                {
-                    try
-                    {
-                        var tc = new Microsoft.ApplicationInsights.TelemetryClient();
-                        var telemetry = new Microsoft.ApplicationInsights.DataContracts.ExceptionTelemetry(e);
-                        tc.TrackException(telemetry);
-                    }
-                    catch (Exception ex)
-                    {
-                        logger.LogError(ex.ToString());
-                    }
-                    logger.LogError(e.Message, "An error occurred migrating the DB: " + e.ToString());
-                    context.Database.EnsureDeleted();
-                    context.Database.EnsureCreated();
-                }
-                // requires using Microsoft.Extensions.Configuration;
-                var config = services.GetRequiredService<IConfiguration>();
-                // Set password with the Secret Manager tool.
-                // dotnet user-secrets set SeedUserPW <pw>
-                var testUserPw = config["SeedUserPW"];
-                try
-                {
-                    var env = services.GetService<IHostingEnvironment>();
-                    SeedData.Initialize(services, testUserPw, env).Wait();
-                }
-                catch (Exception ex)
-                {
-                    try
-                    {
-                        var tc = new Microsoft.ApplicationInsights.TelemetryClient();
-                        var telemetry = new Microsoft.ApplicationInsights.DataContracts.ExceptionTelemetry(ex);
-                        tc.TrackException(telemetry);
-                    }
-                    catch (Exception e1)
-                    {
-                        logger.LogError(e1.ToString());
-                    }
-                    logger.LogError(ex.Message, "An error occurred seeding the DB: " + ex.ToString());
-                }
-            }
-
-        }
 
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'Program.CreateWebHostBuilder(string[])'
         public static IWebHost CreateWebHostBuilder(string[] args) =>
@@ -166,6 +110,11 @@ namespace ChummerHub
                     logging.AddConfiguration(hostingContext.Configuration.GetSection("Logging"));
                     logging.AddConsole();
                     logging.AddDebug();
+                    logging.AddApplicationInsights("95c486ab-aeb7-4361-8667-409b7bf62713");
+                    logging.AddFilter<ApplicationInsightsLoggerProvider>("", LogLevel.Trace);
+                    // Additional filtering For category starting in "Microsoft",
+                    // only Warning or above will be sent to Application Insights.
+                    logging.AddFilter<ApplicationInsightsLoggerProvider>("Microsoft", LogLevel.Warning);
                 })
                 .CaptureStartupErrors(true)
                 .Build();

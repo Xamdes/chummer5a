@@ -26,6 +26,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using System.Xml;
+using System.Xml.XPath;
 using Chummer.Backend.Attributes;
 using NLog;
 
@@ -35,7 +36,7 @@ namespace Chummer.Backend.Equipment
     /// Weapon Accessory.
     /// </summary>
     [DebuggerDisplay("{DisplayName(GlobalOptions.DefaultLanguage)}")]
-    public class WeaponAccessory : IHasInternalId, IHasName, IHasXmlNode, IHasNotes, ICanSell, ICanEquip, IHasSource, IHasRating, ICanSort, IHasWirelessBonus, IHasStolenProperty
+    public class WeaponAccessory : IHasInternalId, IHasName, IHasXmlNode, IHasNotes, ICanSell, ICanEquip, IHasSource, IHasRating, ICanSort, IHasWirelessBonus, IHasStolenProperty, ICanPaste
 	{
         private Logger Log = NLog.LogManager.GetCurrentClassLogger();
         private Guid _guiID;
@@ -62,6 +63,7 @@ namespace Chummer.Backend.Equipment
         private string _strPage = string.Empty;
         private string _strNotes = string.Empty;
         private string _strDicePool = string.Empty;
+	    private string _strRatingLabel = "String_Rating";
         private int _intAccuracy;
         private int _intMaxRating;
         private int _intRating;
@@ -132,6 +134,7 @@ namespace Chummer.Backend.Equipment
             _strExtraMount = strMount.Item2;
             _intRating = intRating;
             objXmlAccessory.TryGetInt32FieldQuickly("rating", ref _intMaxRating);
+            objXmlAccessory.TryGetStringFieldQuickly("ratinglabel", ref _strRatingLabel);
             objXmlAccessory.TryGetStringFieldQuickly("avail", ref _strAvail);
             // Check for a Variable Cost.
             if (blnSkipCost)
@@ -250,7 +253,7 @@ namespace Chummer.Backend.Equipment
 
         private SourceString _objCachedSourceDetail;
 	    public SourceString SourceDetail => _objCachedSourceDetail ?? (_objCachedSourceDetail =
-	                                            new SourceString(Source, Page(GlobalOptions.Language), GlobalOptions.Language));
+	                                            new SourceString(Source, DisplayPage(GlobalOptions.Language), GlobalOptions.Language));
 
         /// <summary>
         /// Save the object's XML to the XmlWriter.
@@ -267,6 +270,7 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("rc", _strRC);
             objWriter.WriteElementString("maxrating", _intMaxRating.ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteElementString("rating", _intRating.ToString(GlobalOptions.InvariantCultureInfo));
+            objWriter.WriteElementString("ratinglabel", _strRatingLabel);
             objWriter.WriteElementString("rcgroup", _intRCGroup.ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteElementString("rcdeployable", _blnDeployable.ToString());
             objWriter.WriteElementString("specialmodification", _blnSpecialModification.ToString());
@@ -347,6 +351,7 @@ namespace Chummer.Backend.Equipment
             objNode.TryGetStringFieldQuickly("extramount", ref _strExtraMount);
             objNode.TryGetStringFieldQuickly("rc", ref _strRC);
             objNode.TryGetInt32FieldQuickly("rating", ref _intRating);
+            objNode.TryGetStringFieldQuickly("ratinglabel", ref _strRatingLabel);
             objNode.TryGetInt32FieldQuickly("rcgroup", ref _intRCGroup);
             objNode.TryGetInt32FieldQuickly("accuracy", ref _intAccuracy);
             if (!objNode.TryGetInt32FieldQuickly("maxrating", ref _intMaxRating))
@@ -433,11 +438,12 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("rc", RC);
             objWriter.WriteElementString("conceal", TotalConcealability.ToString("+#,0;-#,0;0", objCulture));
             objWriter.WriteElementString("avail", TotalAvail(objCulture, strLanguageToPrint));
+            objWriter.WriteElementString("ratinglabel", RatingLabel);
             objWriter.WriteElementString("cost", TotalCost.ToString(_objCharacter.Options.NuyenFormat, objCulture));
             objWriter.WriteElementString("owncost", OwnCost.ToString(_objCharacter.Options.NuyenFormat, objCulture));
             objWriter.WriteElementString("included", IncludedInWeapon.ToString());
             objWriter.WriteElementString("source", CommonFunctions.LanguageBookShort(Source, strLanguageToPrint));
-            objWriter.WriteElementString("page", Page(strLanguageToPrint));
+            objWriter.WriteElementString("page", DisplayPage(strLanguageToPrint));
             objWriter.WriteElementString("accuracy", Accuracy.ToString("+#,0;-#,0;0", objCulture));
             if (Gear.Count > 0)
             {
@@ -727,6 +733,12 @@ namespace Chummer.Backend.Equipment
             }
         }
 
+	    public string RatingLabel
+	    {
+	        get => _strRatingLabel;
+	        set => _strRatingLabel = value;
+	    }
+
         /// <summary>
         /// Avail.
         /// </summary>
@@ -761,15 +773,28 @@ namespace Chummer.Backend.Equipment
             set => _strSource = value;
         }
 
+
         /// <summary>
         /// Sourcebook Page Number.
         /// </summary>
-        public string Page(string strLanguage)
+        public string Page
+        {
+            get => _strPage;
+            set => _strPage = value;
+        }
+
+        /// <summary>
+        /// Sourcebook Page Number using a given language file.
+        /// Returns Page if not found or the string is empty.
+        /// </summary>
+        /// <param name="strLanguage">Language file keyword to use.</param>
+        /// <returns></returns>
+        public string DisplayPage(string strLanguage)
         {
             if (strLanguage == GlobalOptions.DefaultLanguage)
-                return _strPage;
-
-            return GetNode(strLanguage)?["altpage"]?.InnerText ?? _strPage;
+                return Page;
+            string s = GetNode(strLanguage)?["altpage"]?.InnerText ?? Page;
+            return !string.IsNullOrWhiteSpace(s) ? s : Page;
         }
 
         /// <summary>
@@ -889,7 +914,7 @@ namespace Chummer.Backend.Equipment
             if (intAvail < 0)
                 intAvail = 0;
 
-            return new AvailabilityValue(intAvail, chrLastAvailChar, blnModifyParentAvail);
+            return new AvailabilityValue(intAvail, chrLastAvailChar, blnModifyParentAvail, IncludedInWeapon);
         }
 
         /// <summary>
@@ -1352,6 +1377,45 @@ namespace Chummer.Backend.Equipment
             if (_objCachedSourceDetail?.Language != GlobalOptions.Language)
                 _objCachedSourceDetail = null;
             SourceDetail.SetControl(sourceControl);
+        }
+
+        public bool AllowPasteXml
+        {
+            get
+            {
+                switch (GlobalOptions.ClipboardContentType)
+                {
+                    case ClipboardContentType.Gear:
+                        XPathNavigator checkNode = GlobalOptions.Clipboard.SelectSingleNode("/character/gears/gear")?.CreateNavigator();
+
+                        XmlNodeList xmlGearCategoryList = AllowGear?.SelectNodes("gearcategory");
+                        bool blnAdd = false;
+                        if (xmlGearCategoryList?.Count > 0)
+                        {
+                            if (xmlGearCategoryList.Cast<XmlNode>().Any(objAllowed => objAllowed.InnerText == checkNode.SelectSingleNode("category").Value))
+                            {
+                                blnAdd = true;
+                            }
+                        }
+                        XmlNodeList xmlGearNameList = AllowGear?.SelectNodes("gearname");
+                        if (xmlGearNameList?.Count > 0)
+                        {
+                            if (xmlGearCategoryList.Cast<XmlNode>().Any(objAllowed => objAllowed.InnerText == checkNode.SelectSingleNode("name").Value))
+                            {
+                                blnAdd = true;
+                            }
+                        }
+
+                        return blnAdd;
+                    default:
+                        return false;
+                }
+            }
+        }
+
+        public bool AllowPasteObject(object input)
+        {
+            throw new NotImplementedException();
         }
     }
 }

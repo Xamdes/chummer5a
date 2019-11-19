@@ -18,7 +18,6 @@
     https://github.com/chummer5a/chummer5a
 -->
 <chummer>
-  <version>-350</version>
   <name>English (en-US)</name>
   <righttoleft>False</righttoleft>
   <strings>
@@ -2594,6 +2593,10 @@
       <text>Cyber/Bioware Grade limit exceeded for the following items:</text>
     </string>
     <string>
+      <key>Message_InvalidPowerPoints</key>
+      <text>{0} over your Adept Power Point maximum ({1})</text>
+    </string>
+    <string>
       <key>Checkbox_PrototypeTranshuman</key>
       <text>Prototype Transhuman</text>
     </string>
@@ -2657,6 +2660,18 @@
       <key>Message_OverPositiveMetagenicQualities</key>
       <text>Too many positive Metagenic qualities. Current: {0} Maximum: {1}</text>
     </string>        
+    <string>
+      <key>Label_MetagenicKarmaValue</key>
+      <text>{0}P/{1}N - Max {2}</text>
+    </string>
+    <string>
+      <key>Label_MetagenicKarmaValueAppend</key>
+      <text> (1 Karma)</text>
+    </string>
+    <string>
+      <key>Label_SummaryMetagenicQualities</key>
+      <text>Metagenic Qualities</text>
+    </string>
     <string>
       <key>Message_OverNegativeMetagenicQualities</key>
       <text>Too many negative Metagenic qualities. Current: {0} Maximum: {1}</text>
@@ -3582,6 +3597,26 @@
       <key>String_SuppressiveFire</key>
       <text>Suppressive Fire ({0} {1})</text>
     </string>
+      <string>
+        <key>String_SingleShotNA</key>
+        <text>Single Shot (N/A)</text>
+      </string>
+      <string>
+        <key>String_ShortBurstNA</key>
+        <text>Short Burst (N/A)</text>
+      </string>
+      <string>
+        <key>String_LongBurstNA</key>
+        <text>Long Burst (N/A)</text>
+      </string>
+      <string>
+        <key>String_FullBurstNA</key>
+        <text>Full Burst (N/A)</text>
+      </string>
+      <string>
+        <key>String_SuppressiveFireNA</key>
+        <text>Suppressive Fire (N/A)</text>
+      </string>
     <string>
       <key>String_SelectVariableCost</key>
       <text>Select a Cost for {0}.</text>
@@ -4997,7 +5032,7 @@ Only one attribute may be at its Maximum value during character creation.</text>
     </string>
     <string>
       <key>Message_DuplicateDrugComponentWarning</key>
-      <text>You cannot add the same component twice.</text>
+      <text>You cannot add the same component more than {0} time(s).</text>
     </string>
     <string>
       <key>Message_DuplicateDrugFoundationWarning</key>
@@ -5566,6 +5601,14 @@ Only one attribute may be at its Maximum value during character creation.</text>
       <text>Allow Easter Eggs</text>
     </string>
     <string>
+      <key>Checkbox_Options_IncreasedImprovedAbilityModifier</key>
+      <text>Improved Ability is capped by Learned Rating x 1.5 instead of 0.5</text>
+    </string>
+    <string>
+      <key>Checkbox_Options_HideCharts</key>
+      <text>Hide charts that cause issues with Wine</text>
+    </string>
+    <string>
       <key>String_SelectBP_LifeModuleSummary</key>
       <text>Enter the maximum availability and karma you are allowed to create your character with (Default {0})</text>
     </string>
@@ -5680,8 +5723,12 @@ Only one attribute may be at its Maximum value during character creation.</text>
       <text>Fly:</text>
     </string>
     <string>
-      <key>Label_OtherCmposure</key>
+      <key>Label_OtherComposure</key>
       <text>Composure:</text>
+    </string>
+    <string>
+      <key>Label_OtherSurprise</key>
+      <text>Surprise:</text>
     </string>
     <string>
       <key>Label_OtherJudgeIntention</key>
@@ -5766,6 +5813,10 @@ Only one attribute may be at its Maximum value during character creation.</text>
     <string>
       <key>Tip_OtherMemory</key>
       <text>Memory is calculated as LOG + WIL.</text>
+    </string>
+    <string>
+      <key>Tip_OtherSurprise</key>
+      <text>Surprise is calculated as REA + INT.</text>
     </string>
     <string>
       <key>Tip_OtherCareerKarma</key>
@@ -8670,12 +8721,12 @@ Only one attribute may be at its Maximum value during character creation.</text>
       <text>Show only Qualities I can take</text>
     </string>
     <string>
-      <key>Checkbox_SelectQuality_Metagenetic</key>
-      <text>Show only Metagenetic Qualities</text>
+      <key>Checkbox_SelectQuality_Metagenic</key>
+      <text>Show only Metagenic Qualities</text>
     </string>
     <string>
-      <key>Checkbox_SelectQuality_Not_Metagenetic</key>
-      <text>Don't show Metagenetic Qualities</text>
+      <key>Checkbox_SelectQuality_Not_Metagenic</key>
+      <text>Don't show Metagenic Qualities</text>
     </string>
     <string>
       <key>Message_SelectQuality_QualityLimit</key>
@@ -9777,5 +9828,68 @@ Only one attribute may be at its Maximum value during character creation.</text>
       <key>Menu_ShareChummer</key>
       <text>Share Chummer</text>
     </string>
+    <string>
+      <key>Menu_ShowMySINners</key>
+      <text>Show all my data</text>
+    </string>
+      <string>
+        <key>Menu_RemovePinnedChummer</key>
+        <text>Remove Chummer from pinned</text>
+      </string>
+      <string>
+        <key>Menu_RemovePinnedGroup</key>
+        <text>Remove Group from pinned</text>
+      </string>
+      <string>
+        <key>Menu_AddPinnedChummer</key>
+        <text>Pin Chummer</text>
+      </string>
+      <string>
+        <key>Menu_DeleteFromSINners</key>
+        <text>Delete Chummer from SINners registry</text>
+      </string>
+      
+    <string>
+        <key>Menu_AddPinnedGroup</key>
+        <text>Pin Group</text>
+      </string>
+      <string>
+        <key>Menu_ShareChummerGroup</key>
+        <text>Share Chummer Group</text>
+      </string>
+    
+    
+      
+
+    <!-- Region Rating Strings -->
+      <string>
+          <key>Label_RatingFormat</key>
+          <text>{0}:</text>
+      </string>
+      <string>
+          <key>Rating_LengthInCmBy10</key>
+          <text>Length (cm)x10</text>
+      </string>
+      <string>
+          <key>Rating_Meters</key>
+          <text>Meters</text>
+      </string>
+    <!-- End Region -->
+      <string>
+        <key>String_SINners_HowToGroupParentDescription</key>
+        <text>A group can be appointed as sub-group per drag'n'drop after its creation.</text>
+      </string>
+      <string>
+        <key>String_SINners_EnterGroupPassword</key>
+        <text>This group is password protected. Please enter its password:</text>
+      </string>
+      <string>
+        <key>String_SINners_EnterGroupPasswordTitle</key>
+        <text>Enter Password</text>
+      </string>
+      <string>
+        <key>String_DisableSkillGroupPrompt</key>
+        <text>Choose one Skill Group to disable.</text>
+      </string>
   </strings>
 </chummer>

@@ -3708,7 +3708,7 @@
 			<text>飛行:</text>
 		</string>
 		<string>
-			<key>Label_OtherCmposure</key>
+			<key>Label_OtherComposure</key>
 			<text>冷静テスト:</text>
 		</string>
 		<string>
@@ -5932,11 +5932,11 @@
 			<text>習得できる資質のみを表示</text>
 		</string>
 		<string>
-			<key>Checkbox_SelectQuality_Metagenetic</key>
+			<key>Checkbox_SelectQuality_Metagenic</key>
 			<text>メタジェネティックの資質のみを表示</text>
 		</string>
 		<string>
-			<key>Checkbox_SelectQuality_Not_Metagenetic</key>
+			<key>Checkbox_SelectQuality_Not_Metagenic</key>
 			<text>メタ遺伝的資質を表示しません</text>
 		</string>
 		<string>
@@ -8229,10 +8229,6 @@
 		<string>
 			<key>Node_SelectedDrugs</key>
 			<text>Selected Drugs</text>
-		</string>
-		<string>
-			<key>Message_DuplicateDrugComponentWarning</key>
-			<text>You cannot add the same component twice.</text>
 		</string>
 		<string>
 			<key>Message_DuplicateDrugFoundationWarning</key>

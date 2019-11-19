@@ -24,7 +24,7 @@ namespace ChummerHub.Controllers
 {
     [Route("api/v{api-version:apiVersion}/[controller]/[action]")]
     [ApiController]
-    [EnableCors("AllowAllOrigins")]
+    [EnableCors("AllowOrigin")]
     [ApiVersion("1.0")]
     [Authorize]
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'AccountController'
@@ -480,7 +480,7 @@ namespace ChummerHub.Controllers
                     return Unauthorized();
 #endif
                 await _context.Database.EnsureDeletedAsync();
-                Program.Seed();
+                Startup.Seed(null);
                 return Ok("Database recreated");
             }
             catch (Exception e)
@@ -538,7 +538,20 @@ namespace ChummerHub.Controllers
             SINSearchGroupResult ret = new SINSearchGroupResult();
             res = new ResultAccountGetSinnersByAuthorization(ret);
             SINnerGroup sg = new SINnerGroup();
-            SINnerSearchGroup ssg = new SINnerSearchGroup(sg)
+            var user = await _signInManager.UserManager.GetUserAsync(User);
+
+            if (user == null)
+            {
+                var e = new AuthenticationException("User is not authenticated.");
+                res = new ResultAccountGetSinnersByAuthorization(e)
+                {
+                    ErrorText = "Unauthorized"
+                };
+                return BadRequest(res);
+            }
+            user.FavoriteGroups = user.FavoriteGroups.GroupBy(a => a.FavoriteGuid).Select(b => b.First()).ToList();
+
+            SINnerSearchGroup ssg = new SINnerSearchGroup(sg, user)
             {
                 MyMembers = new List<SINnerSearchGroupMember>()
             };
@@ -548,106 +561,71 @@ namespace ChummerHub.Controllers
                     IsolationLevel = System.Transactions.IsolationLevel.ReadUncommitted
                 }, TransactionScopeAsyncFlowOption.Enabled))
             {
+                
                 try
                 {
-                    var user = await _signInManager.UserManager.GetUserAsync(User);
-
-                    if (user == null)
-                    {
-                        var e = new AuthenticationException("User is not authenticated.");
-                        res = new ResultAccountGetSinnersByAuthorization(e)
-                        {
-                            ErrorText = "Unauthorized"
-                        };
-                        return BadRequest(res);
-                    }
+                    
 
                     var roles = await _userManager.GetRolesAsync(user);
                     ret.Roles = roles.ToList();
                     ssg.Groupname = user.UserName;
                     ssg.Id = Guid.Empty;
-                    //get all from visibility
-                    List<SINner> mySinners = await SINner.GetSINnersFromUser(user, _context, true);
-                    MetricTelemetry mt = new MetricTelemetry("GetSINersByAuthorization", "SINners found",
-                        mySinners.Count, 0, 0, 0, 0);
-                    tc.TrackMetric(mt);
-                    foreach (var sin in mySinners)
+                  
+                 
+                    var worklist = (from a in user.FavoriteGroups select a.FavoriteGuid).ToList();
+                    var groupworklist = await (from a in _context.SINnerGroups
+                            .Include(a => a.MyGroups)
+                            .ThenInclude(b => b.MyGroups)
+                            .ThenInclude(c => c.MyGroups)
+                            .ThenInclude(d => d.MyGroups)
+                                               where (a.Id != null && worklist.Contains(a.Id.Value) == true)
+                        select a).ToListAsync();
+                    ssg.MySINSearchGroups = await RecursiveBuildGroupMembers(groupworklist, user);
+                    var memberworklist = await (from a in _context.SINners
+                                .Include(a => a.MyGroup)
+                                .Include(a => a.SINnerMetaData.Visibility)
+                            where (a.Id != null && worklist.Contains(a.Id.Value) == true)
+                            select a
+                        ).ToListAsync();
+                    foreach (var member in memberworklist)
                     {
-                        //check if that char is already added:
-                        var foundseq = (from a in ssg.MyMembers where a.MySINner.Id == sin.Id select a);
-                        if (foundseq.Any())
-                            continue;
-                        sin.LastDownload = DateTime.Now;
-                        SINnerSearchGroupMember ssgm = new SINnerSearchGroupMember
-                        {
-                            MySINner = sin,
-                            Username = user.UserName
-                        };
-                        if (sin.MyGroup?.Id != null)
-                        {
-                            if (!user.FavoriteGroups.Any(a => a.FavoriteGuid == sin.MyGroup.Id.Value))
-                                user.FavoriteGroups.Add(new ApplicationUserFavoriteGroup()
-                                {
-                                    FavoriteGuid = sin.MyGroup.Id.Value
-                                });
-
-                        }
-                        else
-                        {
-                            ssg.MyMembers.Add(ssgm);
-                        }
-                    }
-
-                    user.FavoriteGroups = user.FavoriteGroups.GroupBy(a => a.FavoriteGuid).Select(b => b.First()).ToList();
-
-
-                    foreach (var singroupId in user.FavoriteGroups)
-                    {
-                        SINnerSearchGroup ssgFromSIN;
-                        var singroup = await _context.SINnerGroups.FirstOrDefaultAsync(a => a.Id == singroupId.FavoriteGuid);
-                        if (ssg.MySINSearchGroups.Any(a => a.Id == singroupId.FavoriteGuid))
-                        {
-                            ssgFromSIN = ssg.MySINSearchGroups.FirstOrDefault(a => a.Id == singroupId.FavoriteGuid);
-                        }
-                        else
-                        {
-                            ssgFromSIN = new SINnerSearchGroup(singroup);
-                            ssg.MySINSearchGroups.Add(ssgFromSIN);
-                        }
-
-                        //add all members of his group
-                        var members = await singroup.GetGroupMembers(_context, false);
-                        foreach (var member in members)
-                        {
-                            member.LastDownload = DateTime.Now;
-                            member.MyGroup = singroup;
-                            member.MyGroup.MyGroups = new List<SINnerGroup>();
-                            SINnerSearchGroupMember sinssgGroupMember = new SINnerSearchGroupMember
+                        
+                            if (member.SINnerMetaData?.Visibility?.IsGroupVisible == false)
                             {
-                                MySINner = member
-                            };
-                            //check if it is already added:
-                            var groupseq = from a in ssgFromSIN.MyMembers where a.MySINner == member select a;
-                            if (groupseq.Any())
-                                continue;
-                            ssgFromSIN.MyMembers.Add(sinssgGroupMember);
-                            //}
-                        }
-
-                        singroup.PasswordHash = "";
-                        singroup.MyGroups = new List<SINnerGroup>();
+                                if (member.SINnerMetaData?.Visibility.UserRights.Any(a =>
+                                        String.IsNullOrEmpty(a.EMail) == false) == true)
+                                {
+                                    if (member.SINnerMetaData?.Visibility.UserRights.Any(a =>
+                                            a.EMail?.ToUpperInvariant() == user.NormalizedEmail) == false)
+                                    {
+                                        //dont show this guy!
+                                        continue;
+                                    }
+                                }
+                            }
+                        
+                        member.LastDownload = DateTime.Now;
+                        if (member.MyGroup == null)
+                            member.MyGroup = new SINnerGroup();
+                        if (member.MyGroup.MyGroups == null)
+                            member.MyGroup.MyGroups = new List<SINnerGroup>();
+                        SINnerSearchGroupMember sinssgGroupMember = new SINnerSearchGroupMember(user, member)
+                        {
+                            MySINner = member
+                        };
+                        ssg.MyMembers.Add(sinssgGroupMember);
                     }
+
                     await _context.SaveChangesAsync();
                     ret.SINGroups.Add(ssg);
                     res = new ResultAccountGetSinnersByAuthorization(ret);
-
                     return Ok(res);
                 }
                 catch (Exception e)
                 {
                     try
                     {
-                        var user = await _signInManager.UserManager.GetUserAsync(User);
+                        user = await _signInManager.UserManager.GetUserAsync(User);
                         ExceptionTelemetry et = new ExceptionTelemetry(e);
                         et.Properties.Add("user", User.Identity.Name);
                         tc.TrackException(et);
@@ -662,16 +640,78 @@ namespace ChummerHub.Controllers
                 }
                 finally
                 {
-                    Microsoft.ApplicationInsights.DataContracts.AvailabilityTelemetry telemetry =
-                        new Microsoft.ApplicationInsights.DataContracts.AvailabilityTelemetry("GetSINnersByAuthorization",
-                            DateTimeOffset.Now, sw.Elapsed, "Azure", res?.CallSuccess ?? false, res?.ErrorText);
-                    tc.TrackAvailability(telemetry);
+                    Microsoft.ApplicationInsights.DataContracts.AvailabilityTelemetry telemetry = new Microsoft.ApplicationInsights.DataContracts.AvailabilityTelemetry("GetSINnersByAuthorization", DateTimeOffset.Now, sw.Elapsed, "Azure", res?.CallSuccess ?? false, res?.ErrorText);
+                    tc?.TrackAvailability(telemetry);
+                }
+            }
+        }
+
+        private async Task<List<SINnerSearchGroup>> RecursiveBuildGroupMembers(List<SINnerGroup> groupworklist, ApplicationUser user)
+        {
+            List<SINnerSearchGroup> addlist = new List<SINnerSearchGroup>();
+            foreach (var singroup in groupworklist)
+            {
+                if (singroup == null)
+                    continue;
+                SINnerSearchGroup ssgFromSIN;
+                if (addlist.Any(a => a.Id != null && a.Id == singroup.Id))
+                {
+                    ssgFromSIN = addlist.FirstOrDefault(a => a.Id != null && a.Id == singroup.Id);
+                }
+                else
+                {
+                    if (singroup.Id == null)
+                    {
+                        _context.SINnerGroups.Remove(singroup);
+                        continue;
+                    }
+                    ssgFromSIN = new SINnerSearchGroup(singroup, user);
+                    addlist.Add(ssgFromSIN);
+                    //for all groups in this group
+                    ssgFromSIN.MySINSearchGroups = await RecursiveBuildGroupMembers(singroup.MyGroups, user);
                 }
 
-#pragma warning disable CS0162 // Unreachable code detected
-                t.Complete();
-#pragma warning restore CS0162 // Unreachable code detected
+                //add all members of his group
+                var members = await singroup.GetGroupMembers(_context, false);
+                foreach (var member in members)
+                {
+                    if (singroup.IsPublic != true)
+                    {
+                        if (member.SINnerMetaData?.Visibility?.IsGroupVisible == false)
+                        {
+                            if (member.SINnerMetaData?.Visibility.UserRights.Any(a =>
+                                    String.IsNullOrEmpty(a.EMail) == false) == true)
+                            {
+                                if (member.SINnerMetaData?.Visibility.UserRights.Any(a =>
+                                        a.EMail?.ToUpperInvariant() == user.NormalizedEmail) == false)
+                                {
+                                    //dont show this guy!
+                                    continue;
+                                }
+                            }
+                        }
+                    }
+
+                    member.LastDownload = DateTime.Now;
+                    member.MyGroup = singroup;
+                    member.MyGroup.MyGroups = new List<SINnerGroup>();
+                    SINnerSearchGroupMember sinssgGroupMember = new SINnerSearchGroupMember(user, member)
+                    {
+                        MySINner = member
+                    };
+                    //check if it is already added:
+                    var groupseq = from a in ssgFromSIN.MyMembers where a.MySINner == member select a;
+                    if (groupseq.Any())
+                        continue;
+                    ssgFromSIN.MyMembers.Add(sinssgGroupMember);
+                }
+
+                singroup.PasswordHash = "";
+                
+                singroup.MyGroups = new List<SINnerGroup>();
             }
+
+            return addlist;
         }
 
 
@@ -692,22 +732,25 @@ namespace ChummerHub.Controllers
             SINSearchGroupResult ret = new SINSearchGroupResult();
             res = new ResultAccountGetSinnersByAuthorization(ret);
             SINnerGroup sg = new SINnerGroup();
-            SINnerSearchGroup ssg = new SINnerSearchGroup(sg)
+            var user = await _signInManager.UserManager.GetUserAsync(User);
+
+            if (user == null)
+            {
+                var e = new AuthenticationException("User is not authenticated.");
+                res = new ResultAccountGetSinnersByAuthorization(e)
+                {
+                    ErrorText = "Unauthorized"
+                };
+                return BadRequest(res);
+            }
+            user.FavoriteGroups = user.FavoriteGroups.GroupBy(a => a.FavoriteGuid).Select(b => b.First()).ToList();
+
+            SINnerSearchGroup ssg = new SINnerSearchGroup(sg, user)
             {
                 MyMembers = new List<SINnerSearchGroupMember>()
             };
             try
             {
-                var user = await _signInManager.UserManager.GetUserAsync(User);
-                if (user == null)
-                {
-                    var e = new AuthenticationException("User is not authenticated.");
-                    res = new ResultAccountGetSinnersByAuthorization(e)
-                    {
-                        ErrorText = "Unauthorized"
-                    };
-                    return BadRequest(res);
-                }
                 var roles = await _userManager.GetRolesAsync(user);
                 ret.Roles = roles.ToList();
                 ssg.Groupname = user.Email;
@@ -720,11 +763,7 @@ namespace ChummerHub.Controllers
                     .ToListAsync();
                 foreach (var sin in mySinners)
                 {
-                    SINnerSearchGroupMember ssgm = new SINnerSearchGroupMember
-                    {
-                        MySINner = sin,
-                        Username = user.UserName
-                    };
+                    SINnerSearchGroupMember ssgm = new SINnerSearchGroupMember(user, sin);
                     ssg.MyMembers.Add(ssgm);
                     if (sin.MyGroup != null)
                     {
@@ -735,7 +774,7 @@ namespace ChummerHub.Controllers
                         }
                         else
                         {
-                            ssgFromSIN = new SINnerSearchGroup(sin.MyGroup);
+                            ssgFromSIN = new SINnerSearchGroup(sin.MyGroup, user);
                             ssg.MySINSearchGroups.Add(ssgFromSIN);
                         }
                         //add all members of his group
@@ -744,10 +783,7 @@ namespace ChummerHub.Controllers
                         {
                             member.MyGroup = sin.MyGroup;
                             member.MyGroup.MyGroups = new List<SINnerGroup>();
-                            SINnerSearchGroupMember sinssgGroupMember = new SINnerSearchGroupMember
-                            {
-                                MySINner = member
-                            };
+                            SINnerSearchGroupMember sinssgGroupMember = new SINnerSearchGroupMember(user, member);
                             ssgFromSIN.MyMembers.Add(sinssgGroupMember);
                         }
                         sin.MyGroup.PasswordHash = "";
@@ -764,7 +800,7 @@ namespace ChummerHub.Controllers
             {
                 try
                 {
-                    var user = await _signInManager.UserManager.GetUserAsync(User);
+                    user = await _signInManager.UserManager.GetUserAsync(User);
                     //var tc = new Microsoft.ApplicationInsights.TelemetryClient();
                     ExceptionTelemetry et = new ExceptionTelemetry(e);
                     et.Properties.Add("user", User.Identity.Name);
